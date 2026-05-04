@@ -81,9 +81,9 @@ export default function FacultyStudentProfile() {
 
   return (
     <div className="flex h-screen bg-bg-base overflow-hidden font-sans">
-      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
           SIDEBAR
-      â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
+      Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
       <aside className={`${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'} flex-shrink-0 bg-white border-r border-gray-100 flex flex-col transition-all duration-300 shadow-sm`}>
         <div className="p-5 border-b border-gray-50">
           <div className="flex items-center gap-3">
@@ -92,7 +92,7 @@ export default function FacultyStudentProfile() {
             </div>
             <div className="overflow-hidden">
               <p className="font-semibold text-sm text-navy truncate">Prof. Priya Kapoor</p>
-              <p className="text-xs text-gray-500 truncate">CSE Department Â· 4 Subjects</p>
+              <p className="text-xs text-gray-500 truncate">CSE Department · 4 Subjects</p>
             </div>
           </div>
         </div>
@@ -122,9 +122,9 @@ export default function FacultyStudentProfile() {
         </div>
       </aside>
 
-      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
           MAIN CONTENT
-      â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
+      Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* TOP NAV */}
         <header className="bg-white border-b border-gray-100 px-6 py-3 flex items-center gap-4 flex-shrink-0 shadow-sm">
@@ -177,7 +177,7 @@ export default function FacultyStudentProfile() {
                     AS
                   </div>
                   <div className="min-w-0">
-                    <h1 className="text-xl font-bold text-navy truncate">Arman Singh</h1>
+                    <h1 className="text-xl font-bold text-navy truncate">Mahesh Singh</h1>
                     <p className="text-gray-500 text-sm mt-1">CSE · 2nd Year · Section B · Roll No: 2CS04</p>
                     <div className="flex flex-wrap gap-2 mt-3">
                       <span className="px-2 py-1 bg-teal-50 text-teal-700 text-[10px] font-bold rounded uppercase tracking-wider border border-teal-100">CSE 2nd Year</span>
@@ -267,7 +267,7 @@ export default function FacultyStudentProfile() {
                   {/* Left Column */}
                   <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
                     <div className="p-5 border-b border-gray-100">
-                      <h3 className="font-bold text-navy">Arman's Performance in Prof. Kapoor's Subjects</h3>
+                      <h3 className="font-bold text-navy">Mahesh's Performance in Prof. Kapoor's Subjects</h3>
                     </div>
                     <div className="p-5 space-y-4">
                       
@@ -294,11 +294,11 @@ export default function FacultyStudentProfile() {
                             </LineChart>
                           </ResponsiveContainer>
                         </div>
-                        <div className="mt-2 text-xs font-medium text-gray-600 bg-gray-50 p-2 rounded flex gap-3">
+                        <div className="mt-2 text-xs font-medium text-gray-600 bg-gray-50 p-2 rounded flex flex-wrap gap-3">
                           <span className="text-navy font-bold">CO Contribution:</span>
-                          <span>CO1: âœ…</span>
-                          <span>CO2: âš ï¸</span>
-                          <span>CO3: âŒ</span>
+                          <span className="inline-flex items-center gap-1">CO1: <CheckCircle2 size={14} className="text-teal-600" /></span>
+                          <span className="inline-flex items-center gap-1">CO2: <AlertTriangle size={14} className="text-amber-500" /></span>
+                          <span className="inline-flex items-center gap-1">CO3: <XCircle size={14} className="text-red-500" /></span>
                         </div>
                       </div>
 
@@ -325,11 +325,11 @@ export default function FacultyStudentProfile() {
                             </LineChart>
                           </ResponsiveContainer>
                         </div>
-                        <div className="mt-2 text-xs font-medium text-gray-600 bg-gray-50 p-2 rounded flex gap-3">
+                        <div className="mt-2 text-xs font-medium text-gray-600 bg-gray-50 p-2 rounded flex flex-wrap gap-3">
                           <span className="text-navy font-bold">CO Contribution:</span>
-                          <span>CO1: âœ…</span>
-                          <span>CO2: âš ï¸</span>
-                          <span>CO3: âš ï¸</span>
+                          <span className="inline-flex items-center gap-1">CO1: <CheckCircle2 size={14} className="text-teal-600" /></span>
+                          <span className="inline-flex items-center gap-1">CO2: <AlertTriangle size={14} className="text-amber-500" /></span>
+                          <span className="inline-flex items-center gap-1">CO3: <AlertTriangle size={14} className="text-amber-500" /></span>
                         </div>
                       </div>
 
@@ -337,7 +337,7 @@ export default function FacultyStudentProfile() {
                       <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex gap-3 mt-4">
                         <AlertTriangle className="text-amber-500 flex-shrink-0 mt-0.5" size={20} />
                         <p className="text-sm text-amber-900 leading-relaxed font-medium">
-                          Arman shows a consistent declining trend in both subjects over 3 units. Theory exam performance is weak but practical scores remain strong. Recommend targeted theory revision support before Unit 4.
+                          Mahesh shows a consistent declining trend in both subjects over 3 units. Theory exam performance is weak but practical scores remain strong. Recommend targeted theory revision support before Unit 4.
                         </p>
                       </div>
 
@@ -407,7 +407,7 @@ export default function FacultyStudentProfile() {
                               <PolarGrid stroke="#e5e7eb" />
                               <PolarAngleAxis dataKey="subject" tick={{ fill: '#6b7280', fontSize: 10 }} />
                               <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
-                              <Radar name="Arman" dataKey="A" stroke="#3B82F6" fill="#3B82F6" fillOpacity={0.5} />
+                              <Radar name="Mahesh" dataKey="A" stroke="#3B82F6" fill="#3B82F6" fillOpacity={0.5} />
                               <Tooltip />
                             </RadarChart>
                           </ResponsiveContainer>
@@ -417,7 +417,7 @@ export default function FacultyStudentProfile() {
                             <span className="font-bold">Strongest:</span> Kinesthetic (84) and Technical (78)
                           </div>
                           <div className="text-sm bg-red-50 text-red-800 px-3 py-2 rounded-lg border border-red-100">
-                            <span className="font-bold">Weakest:</span> Linguistic (58) â€” communication needs attention
+                            <span className="font-bold">Weakest:</span> Linguistic (58) — communication needs attention
                           </div>
                         </div>
                       </div>
@@ -430,7 +430,7 @@ export default function FacultyStudentProfile() {
               {activeTab === 'Academic Details' && (
                 <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
                   <div className="p-5 border-b border-gray-100 flex justify-between items-center">
-                    <h3 className="font-bold text-navy text-lg">All Assessments â€” Current Semester</h3>
+                    <h3 className="font-bold text-navy text-lg">All Assessments — Current Semester</h3>
                     <div className="flex gap-2">
                       <button className="px-3 py-1.5 text-xs font-bold rounded bg-gray-100 text-gray-700">All Types</button>
                       <button className="px-3 py-1.5 text-xs font-medium rounded hover:bg-gray-50 text-gray-500">Exams</button>
@@ -548,7 +548,7 @@ export default function FacultyStudentProfile() {
                   <div className="p-5 bg-red-50 border-t border-red-100 flex gap-3">
                     <AlertTriangle className="text-red-500 flex-shrink-0" size={20} />
                     <p className="text-sm font-medium text-red-900">
-                      2 missing assignment submissions detected. This is affecting Arman's consistency score in SPI.
+                      2 missing assignment submissions detected. This is affecting Mahesh's consistency score in SPI.
                     </p>
                   </div>
                 </div>
@@ -570,7 +570,7 @@ export default function FacultyStudentProfile() {
                               <PolarGrid stroke="#e5e7eb" />
                               <PolarAngleAxis dataKey="subject" tick={{ fill: '#4b5563', fontSize: 12, fontWeight: 'bold' }} />
                               <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
-                              <Radar name="Arman Singh" dataKey="A" stroke="#3B82F6" strokeWidth={2} fill="#3B82F6" fillOpacity={0.6} />
+                              <Radar name="Mahesh Singh" dataKey="A" stroke="#3B82F6" strokeWidth={2} fill="#3B82F6" fillOpacity={0.6} />
                               <Tooltip />
                             </RadarChart>
                           </ResponsiveContainer>
@@ -580,11 +580,11 @@ export default function FacultyStudentProfile() {
                     
                     <div className="bg-blue-50 rounded-2xl border border-blue-200 overflow-hidden">
                       <div className="p-4 border-b border-blue-200 bg-blue-100">
-                        <h4 className="font-bold text-blue-900 text-sm">Faculty Perspective â€” Arman Singh</h4>
+                        <h4 className="font-bold text-blue-900 text-sm">Faculty Perspective — Mahesh Singh</h4>
                       </div>
                       <div className="p-5">
                         <p className="text-sm text-blue-900 leading-relaxed font-medium">
-                          Arman's Kinesthetic and Technical scores (84 and 78) indicate a strong hands-on learner. His declining theory exam scores are inconsistent with his practical performance â€” suggesting exam anxiety or theory study gap rather than actual knowledge gap. Recommend practical-theory bridging exercises.
+                          Mahesh's Kinesthetic and Technical scores (84 and 78) indicate a strong hands-on learner. His declining theory exam scores are inconsistent with his practical performance — suggesting exam anxiety or a theory study gap rather than an actual knowledge gap. Recommend practical-theory bridging exercises.
                         </p>
                       </div>
                     </div>
@@ -602,7 +602,7 @@ export default function FacultyStudentProfile() {
                             <h4 className="font-bold text-navy text-lg">Lung Cancer Detection using CNN</h4>
                             <span className="px-2.5 py-1 bg-green-100 text-green-700 font-bold text-[10px] uppercase rounded">Completed</span>
                           </div>
-                          <p className="text-xs text-gray-500 mb-3">Python Â· TensorFlow Â· Keras Â· OpenCV</p>
+                          <p className="text-xs text-gray-500 mb-3">Python · TensorFlow · Keras · OpenCV</p>
                           <p className="text-sm text-gray-700 mb-4 leading-relaxed">A deep learning model to detect lung cancer nodules from CT scan images with 94% accuracy. Deployed as a web API.</p>
                           
                           {/* Faculty Section */}
@@ -624,7 +624,7 @@ export default function FacultyStudentProfile() {
                             <h4 className="font-bold text-navy text-lg">Smart Attendance System</h4>
                             <span className="px-2.5 py-1 bg-amber-100 text-amber-700 font-bold text-[10px] uppercase rounded">In Progress</span>
                           </div>
-                          <p className="text-xs text-gray-500 mb-3">React Â· Node.js Â· MongoDB</p>
+                          <p className="text-xs text-gray-500 mb-3">React · Node.js · MongoDB</p>
                           <p className="text-sm text-gray-700 leading-relaxed">Building an RFID and face-recognition based attendance tracking system for the department.</p>
                         </div>
                       </div>
@@ -696,12 +696,12 @@ export default function FacultyStudentProfile() {
                       <div className="flex justify-between items-start mb-2">
                         <div className="flex items-center gap-2">
                           <span className="font-bold text-navy text-sm">Prof. Priya Kapoor</span>
-                          <span className="text-xs text-gray-500">Â· 5 Apr 2026</span>
+                          <span className="text-xs text-gray-500">· 5 Apr 2026</span>
                         </div>
                         <span className="px-2 py-0.5 bg-teal-100 text-teal-800 text-[10px] font-bold rounded uppercase tracking-wider">Shared with Dean</span>
                       </div>
                       <p className="text-sm text-gray-700 leading-relaxed mb-4">
-                        Arman shows excellent understanding in lab sessions but needs to focus more on theoretical concepts. His DBMS practical work is outstanding â€” best in class for the CNN lab. Theory exam preparation needs work.
+                        Mahesh shows excellent understanding in lab sessions but needs to focus more on theoretical concepts. His DBMS practical work is outstanding — best in class for the CNN lab. Theory exam preparation needs work.
                       </p>
                       <div className="flex gap-4 text-xs font-medium text-gray-500">
                         <button className="hover:text-blue-600 transition">Edit</button>
@@ -714,12 +714,12 @@ export default function FacultyStudentProfile() {
                       <div className="flex justify-between items-start mb-2">
                         <div className="flex items-center gap-2">
                           <span className="font-bold text-navy text-sm">Prof. Priya Kapoor</span>
-                          <span className="text-xs text-gray-500">Â· 20 Mar 2026</span>
+                          <span className="text-xs text-gray-500">· 20 Mar 2026</span>
                         </div>
                         <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-[10px] font-bold rounded uppercase tracking-wider">Private</span>
                       </div>
                       <p className="text-sm text-gray-700 leading-relaxed mb-4">
-                        Noticed Arman helping classmates with React code during lab session unprompted. Good interpersonal skills. Consider recommending for TA role next semester.
+                        Noticed Mahesh helping classmates with React code during lab session unprompted. Good interpersonal skills. Consider recommending for TA role next semester.
                       </p>
                       <div className="flex gap-4 text-xs font-medium text-gray-500">
                         <button className="hover:text-blue-600 transition">Edit</button>
@@ -732,12 +732,12 @@ export default function FacultyStudentProfile() {
                       <div className="flex justify-between items-start mb-2">
                         <div className="flex items-center gap-2">
                           <span className="font-bold text-navy text-sm">Prof. Suresh Iyer</span>
-                          <span className="text-xs text-gray-500">Â· 15 Mar 2026</span>
+                          <span className="text-xs text-gray-500">· 15 Mar 2026</span>
                         </div>
                         <span className="px-2 py-0.5 bg-teal-100 text-teal-800 text-[10px] font-bold rounded uppercase tracking-wider">Shared with Dean</span>
                       </div>
                       <p className="text-sm text-gray-700 leading-relaxed">
-                        Good participation in TOC class discussions. Attendance needs improvement â€” has been late to class 3 times this month. Spoke to him â€” commute issue cited.
+                        Good participation in TOC class discussions. Attendance needs improvement — has been late to class 3 times this month. Spoke to him — commute issue cited.
                       </p>
                     </div>
                   </div>
@@ -765,7 +765,7 @@ export default function FacultyStudentProfile() {
                             <span className="px-2 py-0.5 bg-red-100 text-red-700 text-[10px] font-bold rounded uppercase tracking-wider">High</span>
                             <span className="text-xs font-bold text-red-500">Active</span>
                           </div>
-                          <h4 className="font-bold text-navy text-sm mb-1">TOC Attendance Warning â€” 74%</h4>
+                          <h4 className="font-bold text-navy text-sm mb-1">TOC Attendance Warning — 74%</h4>
                           <p className="text-xs text-gray-500 mb-3">Generated: 13 April 2026 by AI</p>
                           <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 mb-3">
                             <p className="text-xs font-bold text-gray-600 mb-1">Faculty action:</p>
@@ -787,11 +787,11 @@ export default function FacultyStudentProfile() {
                             <span className="px-2 py-0.5 bg-amber-100 text-amber-700 text-[10px] font-bold rounded uppercase tracking-wider">Medium</span>
                             <span className="text-xs font-bold text-amber-500">Active</span>
                           </div>
-                          <h4 className="font-bold text-navy text-sm mb-1">OS Score Decline â€” Unit 3 to 63%</h4>
+                          <h4 className="font-bold text-navy text-sm mb-1">OS Score Decline — Unit 3 to 63%</h4>
                           <p className="text-xs text-gray-500 mb-3">Generated: 10 April 2026 by AI</p>
                           <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 mb-3">
                             <p className="text-xs font-bold text-gray-600 mb-1">Faculty action:</p>
-                            <p className="text-sm text-gray-800">Noted â€” monitoring</p>
+                            <p className="text-sm text-gray-800">Noted — monitoring</p>
                           </div>
                           <button className="w-full py-2 bg-amber-50 border border-amber-200 text-amber-700 font-bold text-xs rounded-lg hover:bg-amber-100 transition">
                             Update Status
@@ -823,7 +823,7 @@ export default function FacultyStudentProfile() {
                           
                           <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 mb-2">
                             <p className="text-xs font-bold text-gray-500 mb-1">Action taken:</p>
-                            <p className="text-sm text-gray-700">Student given 3-day extension â€” submitted</p>
+                            <p className="text-sm text-gray-700">Student given 3-day extension — submitted</p>
                           </div>
                           <div className="inline-block mt-1 px-2 py-1 bg-green-50 text-green-700 font-bold text-xs rounded border border-green-100">
                             Outcome: Positive
@@ -841,14 +841,14 @@ export default function FacultyStudentProfile() {
                             <span className="text-xs text-gray-500 font-bold">Generated: 15 Feb 2026</span>
                             <span className="text-xs font-bold text-green-600">Resolved: 28 Feb</span>
                           </div>
-                          <h4 className="font-bold text-navy text-sm mb-3 line-through text-gray-500">Attendance Warning â€” OS 73%</h4>
+                          <h4 className="font-bold text-navy text-sm mb-3 line-through text-gray-500">Attendance Warning — OS 73%</h4>
                           
                           <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 mb-2">
                             <p className="text-xs font-bold text-gray-500 mb-1">Action taken:</p>
                             <p className="text-sm text-gray-700">Parent notified, student attended all classes</p>
                           </div>
                           <div className="inline-block mt-1 px-2 py-1 bg-green-50 text-green-700 font-bold text-xs rounded border border-green-100">
-                            Outcome: Positive â€” attendance recovered to 80%
+                            Outcome: Positive — attendance recovered to 80%
                           </div>
                         </div>
                       </div>
@@ -879,7 +879,7 @@ export default function FacultyStudentProfile() {
             
             <form onSubmit={handleAddNote} className="p-6">
               <div className="mb-6">
-                <label className="block text-sm font-bold text-gray-700 mb-2">Note for Arman Singh</label>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Note for Mahesh Singh</label>
                 <textarea 
                   className="w-full border border-gray-300 rounded-xl p-4 text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition min-h-[120px] resize-none"
                   placeholder="Type your observation here..."
