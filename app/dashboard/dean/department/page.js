@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import {
   Home, BookOpen, Bell, BarChart2, Users, CheckCircle,
   MessageCircle, FileText, Settings, LogOut, Search, ChevronDown,
-  TrendingUp, Download, PieChart, Lightbulb, Users2, Building
+  TrendingUp, Download, PieChart, Lightbulb, Users2, Building, Cpu
 } from 'lucide-react'
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, Cell,
@@ -13,11 +13,13 @@ import {
 } from 'recharts'
 
 const navLinks = [
-  { id: 'department', label: 'Department Overview', icon: Building, badge: null, path: '/dashboard/dean/department' },
-  { id: 'forecasting', label: 'Cohort Forecasting', icon: PieChart, badge: null, path: '/dashboard/dean/forecasting' },
-  { id: 'faculty', label: 'Faculty Analytics', icon: Users2, badge: null, path: '/dashboard/dean/department' },
-  { id: 'policy', label: 'Policy Simulation', icon: Lightbulb, badge: null, path: '/dashboard/dean/department' },
-  { id: 'reports', label: 'Reports', icon: FileText, badge: null, path: '/dashboard/dean/department' },
+  { id: 'department',  label: 'Department Overview',  icon: Building,  path: '/dashboard/dean/department' },
+  { id: 'forecasting', label: 'Cohort Forecasting',   icon: PieChart,  path: '/dashboard/dean/forecasting' },
+  { id: 'cross-branch',label: 'Cross-Branch Insights',icon: FileText,  path: '/dashboard/dean/cross-branch' },
+  { id: 'faculty',     label: 'Faculty Analytics',    icon: Users2,    path: '/dashboard/dean/faculty-performance' },
+  { id: 'curriculum',  label: 'Curriculum Gaps',      icon: Lightbulb, path: '/dashboard/dean/curriculum' },
+  { id: 'policy-simulation', label: 'Policy Simulation', icon: Cpu,      path: '/dashboard/dean/policy-simulation' },
+  { id: 'reports',     label: 'Reports',              icon: FileText,  path: '/dashboard/dean/reports' },
 ]
 
 const spiDistData = [
@@ -187,71 +189,75 @@ export default function DeanDepartmentPage() {
             </div>
 
             {/* HERO CARD */}
-            <div className="bg-[#0D1B2A] rounded-3xl overflow-hidden shadow-md flex flex-col lg:flex-row border border-navy">
-              {/* Left Score */}
-              <div className="p-8 lg:w-1/3 flex flex-col items-center justify-center border-b lg:border-b-0 lg:border-r border-white/10 relative">
-                <p className="text-white/70 font-semibold mb-4 text-center">Department Health Score</p>
-                <div className="relative flex items-center justify-center mb-4">
-                  <svg className="w-48 h-48 transform -rotate-90">
-                    <circle cx="96" cy="96" r="80" stroke="rgba(255,255,255,0.1)" strokeWidth="12" fill="none" />
-                    <circle cx="96" cy="96" r="80" stroke="#3B82F6" strokeWidth="12" fill="none" strokeDasharray="502" strokeDashoffset="135" strokeLinecap="round" />
+            <div className="rounded-2xl overflow-hidden flex flex-col lg:flex-row" style={{ background: '#0f1f33', border: '1px solid rgba(255,255,255,0.07)' }}>
+
+              {/* ── LEFT: Score panel ── */}
+              <div className="lg:w-56 shrink-0 flex flex-col items-center justify-center gap-3 py-8 px-6" style={{ borderRight: '1px solid rgba(255,255,255,0.07)' }}>
+                <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.45)' }}>Health Score</p>
+
+                {/* Ring */}
+                <div className="relative flex items-center justify-center">
+                  <svg width="120" height="120" style={{ transform: 'rotate(-90deg)' }}>
+                    <circle cx="60" cy="60" r="50" stroke="rgba(255,255,255,0.09)" strokeWidth="9" fill="none" />
+                    <circle cx="60" cy="60" r="50" stroke="#3b82f6" strokeWidth="9" fill="none"
+                      strokeDasharray="314" strokeDashoffset="85" strokeLinecap="round" />
                   </svg>
-                  <div className="absolute flex items-baseline">
-                    <span className="text-white font-black text-7xl">73</span>
-                    <span className="text-white/50 text-3xl font-bold">/100</span>
-                  </div>
-                </div>
-                <div className="bg-green-500/20 border border-green-500/30 px-3 py-1 rounded-full flex items-center gap-1 mb-2">
-                  <TrendingUp size={12} className="text-green-400" />
-                  <span className="text-green-400 text-xs font-bold">+4 from last semester</span>
-                </div>
-                <p className="text-white/50 text-xs mt-1 tracking-wider uppercase">Academic Year 2025-26</p>
-              </div>
-              
-              {/* Center Metrics & Right Breakdown */}
-              <div className="p-8 lg:w-2/3 flex flex-col justify-center bg-[#15253A]">
-                {/* 4 Metrics */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-                  <div className="bg-white/5 rounded-xl p-4 border border-white/5">
-                    <p className="text-white/60 text-xs font-bold uppercase mb-1 tracking-wider">Total Students</p>
-                    <p className="text-2xl font-bold text-white">1,240</p>
-                  </div>
-                  <div className="bg-white/5 rounded-xl p-4 border border-white/5">
-                    <p className="text-white/60 text-xs font-bold uppercase mb-1 tracking-wider">Total Faculty</p>
-                    <p className="text-2xl font-bold text-white">48</p>
-                  </div>
-                  <div className="bg-red-500/10 rounded-xl p-4 border border-red-500/20 relative overflow-hidden">
-                    <div className="absolute right-0 top-0 bottom-0 w-1 bg-red-500" />
-                    <p className="text-red-400/80 text-xs font-bold uppercase mb-1 tracking-wider">Active Alerts</p>
-                    <p className="text-2xl font-bold text-red-500">47</p>
-                  </div>
-                  <div className="bg-teal-500/10 rounded-xl p-4 border border-teal-500/20">
-                    <p className="text-teal-400/80 text-xs font-bold uppercase mb-1 tracking-wider">Avg SPI</p>
-                    <p className="text-2xl font-bold text-teal-400">67.3</p>
+                  <div className="absolute flex items-baseline" style={{ gap: '2px' }}>
+                    <span className="font-black text-white" style={{ fontSize: '2rem', lineHeight: 1 }}>73</span>
+                    <span className="font-bold" style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.38)' }}>/100</span>
                   </div>
                 </div>
 
-                {/* Breakdown Bars */}
+                {/* Badge */}
+                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full" style={{ background: 'rgba(34,197,94,0.14)', border: '1px solid rgba(34,197,94,0.28)' }}>
+                  <TrendingUp size={11} color="#4ade80" />
+                  <span className="text-xs font-semibold" style={{ color: '#4ade80' }}>+4 this sem</span>
+                </div>
+
+                <p style={{ color: 'rgba(255,255,255,0.28)', fontSize: '10px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>AY 2025–26</p>
+              </div>
+
+              {/* ── RIGHT: KPIs + bars ── */}
+              <div className="flex-1 flex flex-col justify-center gap-5 p-6" style={{ background: '#13243b' }}>
+
+                {/* 4 KPI tiles */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  {[
+                    { label: 'Total Students', value: '1,240', vc: '#fff',      bg: 'rgba(255,255,255,0.05)', bd: 'rgba(255,255,255,0.08)' },
+                    { label: 'Total Faculty',  value: '48',    vc: '#fff',      bg: 'rgba(255,255,255,0.05)', bd: 'rgba(255,255,255,0.08)' },
+                    { label: 'Active Alerts',  value: '47',    vc: '#f87171',   bg: 'rgba(239,68,68,0.1)',    bd: 'rgba(239,68,68,0.22)', accent: '#ef4444' },
+                    { label: 'Avg SPI',        value: '67.3',  vc: '#5eead4',   bg: 'rgba(20,184,166,0.1)',   bd: 'rgba(20,184,166,0.22)' },
+                  ].map(t => (
+                    <div key={t.label} className="rounded-xl px-4 py-3 relative overflow-hidden" style={{ background: t.bg, border: `1px solid ${t.bd}` }}>
+                      {t.accent && <div className="absolute left-0 top-0 bottom-0 w-0.5 rounded-l-xl" style={{ background: t.accent }} />}
+                      <p className="font-semibold uppercase mb-1" style={{ color: 'rgba(255,255,255,0.4)', fontSize: '10px', letterSpacing: '0.08em' }}>{t.label}</p>
+                      <p className="font-black text-xl leading-none" style={{ color: t.vc }}>{t.value}</p>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Score breakdown */}
                 <div>
-                  <p className="text-white/80 font-bold text-sm mb-4">Department Score Breakdown</p>
-                  <div className="space-y-3">
+                  <p className="text-xs font-semibold uppercase mb-3" style={{ color: 'rgba(255,255,255,0.45)', letterSpacing: '0.08em' }}>Score Breakdown</p>
+                  <div className="space-y-2.5">
                     {[
-                      { l: 'Academic Performance', s: 71, c: 'bg-blue-500' },
-                      { l: 'Faculty Effectiveness', s: 76, c: 'bg-teal-500' },
-                      { l: 'Placement Readiness', s: 61, c: 'bg-amber-500' },
-                      { l: 'Infrastructure Usage', s: 82, c: 'bg-green-500' },
-                      { l: 'CO Attainment', s: 69, c: 'bg-amber-500' },
+                      { l: 'Academic Performance', s: 71, c: '#3b82f6' },
+                      { l: 'Faculty Effectiveness', s: 76, c: '#14b8a6' },
+                      { l: 'Placement Readiness',  s: 61, c: '#f59e0b' },
+                      { l: 'Infrastructure Usage', s: 82, c: '#22c55e' },
+                      { l: 'CO Attainment',        s: 69, c: '#f59e0b' },
                     ].map(bar => (
-                      <div key={bar.l} className="flex items-center gap-4">
-                        <p className="w-40 text-white/60 text-xs font-medium">{bar.l}</p>
-                        <div className="flex-1 h-2 bg-white/10 rounded-full overflow-hidden">
-                          <div className={`h-full ${bar.c} rounded-full`} style={{ width: `${bar.s}%` }} />
+                      <div key={bar.l} className="flex items-center gap-3">
+                        <span className="text-xs shrink-0" style={{ color: 'rgba(255,255,255,0.5)', width: '148px' }}>{bar.l}</span>
+                        <div className="flex-1 rounded-full overflow-hidden" style={{ height: '6px', background: 'rgba(255,255,255,0.08)' }}>
+                          <div className="h-full rounded-full transition-all" style={{ width: `${bar.s}%`, background: bar.c }} />
                         </div>
-                        <p className="w-10 text-right text-white font-bold text-xs">{bar.s}/100</p>
+                        <span className="text-xs font-semibold shrink-0 text-right" style={{ color: 'rgba(255,255,255,0.7)', width: '38px' }}>{bar.s}/100</span>
                       </div>
                     ))}
                   </div>
                 </div>
+
               </div>
             </div>
 

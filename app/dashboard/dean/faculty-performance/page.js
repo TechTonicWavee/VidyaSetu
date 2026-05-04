@@ -3,9 +3,9 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
-  LayoutDashboard, LineChart, BarChart2, Users, BookOpen, Settings, Bell, Search,
+  LayoutDashboard, LineChart, BarChart2, Users, BookOpen, FileText, Settings, Bell, Search,
   ChevronDown, Download, CheckCircle2, TrendingUp, AlertTriangle, ArrowRight, XCircle,
-  Calendar, Clock, UserCheck
+  Calendar, Clock, UserCheck, Cpu
 } from 'lucide-react'
 import {
   PieChart, Pie, Cell, AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, 
@@ -13,11 +13,13 @@ import {
 } from 'recharts'
 
 const navLinks = [
-  { id: 'department', label: 'Department Overview', icon: LayoutDashboard, path: '/dashboard/dean/department' },
-  { id: 'forecasting', label: 'Cohort Forecasting', icon: LineChart, path: '/dashboard/dean/forecasting' },
-  { id: 'cross-branch', label: 'Cross-Branch Insights', icon: BarChart2, path: '/dashboard/dean/cross-branch' },
-  { id: 'faculty', label: 'Faculty Analytics', icon: Users, path: '/dashboard/dean/faculty-performance' },
-  { id: 'curriculum', label: 'Curriculum Gaps', icon: BookOpen, path: '/dashboard/dean/curriculum' },
+  { id: 'department',  label: 'Department Overview',  icon: LayoutDashboard, path: '/dashboard/dean/department' },
+  { id: 'forecasting', label: 'Cohort Forecasting',   icon: LineChart,       path: '/dashboard/dean/forecasting' },
+  { id: 'cross-branch',label: 'Cross-Branch Insights',icon: BarChart2,       path: '/dashboard/dean/cross-branch' },
+  { id: 'faculty',     label: 'Faculty Analytics',    icon: Users,           path: '/dashboard/dean/faculty-performance' },
+  { id: 'curriculum',  label: 'Curriculum Gaps',      icon: BookOpen,        path: '/dashboard/dean/curriculum' },
+  { id: 'policy-simulation', label: 'Policy Simulation', icon: Cpu,             path: '/dashboard/dean/policy-simulation' },
+  { id: 'reports',     label: 'Reports',              icon: FileText,        path: '/dashboard/dean/reports' },
 ]
 
 const facultyData = [

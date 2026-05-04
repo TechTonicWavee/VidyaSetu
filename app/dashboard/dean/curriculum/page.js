@@ -4,18 +4,20 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   LayoutDashboard, LineChart, BarChart2, Users, BookOpen, Settings, Bell, Search,
-  ChevronDown, Download, CheckCircle2, AlertTriangle, ArrowRight, XCircle, FileText
+  ChevronDown, Download, CheckCircle2, AlertTriangle, ArrowRight, XCircle, FileText, Cpu
 } from 'lucide-react'
 import {
-  BarChart, Bar, XAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell
+  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell
 } from 'recharts'
 
 const navLinks = [
-  { id: 'department', label: 'Department Overview', icon: LayoutDashboard, path: '/dashboard/dean/department' },
-  { id: 'forecasting', label: 'Cohort Forecasting', icon: LineChart, path: '/dashboard/dean/forecasting' },
-  { id: 'cross-branch', label: 'Cross-Branch Insights', icon: BarChart2, path: '/dashboard/dean/cross-branch' },
-  { id: 'faculty', label: 'Faculty Analytics', icon: Users, path: '/dashboard/dean/faculty-performance' },
-  { id: 'curriculum', label: 'Curriculum Gaps', icon: BookOpen, path: '/dashboard/dean/curriculum' },
+  { id: 'department',  label: 'Department Overview',  icon: LayoutDashboard, path: '/dashboard/dean/department' },
+  { id: 'forecasting', label: 'Cohort Forecasting',   icon: LineChart,       path: '/dashboard/dean/forecasting' },
+  { id: 'cross-branch',label: 'Cross-Branch Insights',icon: BarChart2,       path: '/dashboard/dean/cross-branch' },
+  { id: 'faculty',     label: 'Faculty Analytics',    icon: Users,           path: '/dashboard/dean/faculty-performance' },
+  { id: 'curriculum',  label: 'Curriculum Gaps',      icon: BookOpen,        path: '/dashboard/dean/curriculum' },
+  { id: 'policy-simulation', label: 'Policy Simulation', icon: Cpu,             path: '/dashboard/dean/policy-simulation' },
+  { id: 'reports',     label: 'Reports',              icon: FileText,        path: '/dashboard/dean/reports' },
 ]
 
 const heatmapData = [
@@ -444,7 +446,7 @@ export default function CurriculumGapAnalysis() {
                       <span className="text-xs font-bold text-red-600">60% average — worst performing topic in department</span>
                     </div>
 
-                    <h4 className="font-bold text-navy text-xs uppercase tracking-widest mb-2 text-gray-500">Why it's failing</h4>
+                    <h4 className="font-bold text-gray-500 text-xs uppercase tracking-widest mb-2">Why it's failing</h4>
                     <ul className="space-y-1.5 mb-5 pl-1">
                       <li className="flex items-start gap-2">
                         <span className="text-red-500 mt-1"><XCircle size={12} /></span>
@@ -512,7 +514,7 @@ export default function CurriculumGapAnalysis() {
 
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <div>
-                      <h4 className="font-bold text-navy text-xs uppercase tracking-widest mb-2 text-gray-500">Why it's failing</h4>
+                      <h4 className="font-bold text-gray-500 text-xs uppercase tracking-widest mb-2">Why it's failing</h4>
                       <ul className="space-y-1.5 pl-1">
                         <li className="flex items-start gap-2">
                           <span className="text-red-500 mt-1"><XCircle size={12} /></span>

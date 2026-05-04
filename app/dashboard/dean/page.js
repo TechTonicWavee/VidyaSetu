@@ -9,14 +9,14 @@ import {
 } from 'lucide-react'
 
 const navLinks = [
-  { id: 'dashboard', label: 'Dashboard', icon: Home, active: true },
-  { id: 'overview', label: 'Department Overview', icon: Layout, active: false },
-  { id: 'faculty', label: 'Faculty Performance', icon: Star, active: false },
-  { id: 'cohort', label: 'Cohort Forecasting', icon: TrendingUp, active: false },
-  { id: 'curriculum', label: 'Curriculum Analysis', icon: Book, active: false },
-  { id: 'policy', label: 'Policy Simulation', icon: Cpu, active: false },
-  { id: 'accreditation', label: 'Accreditation Reports', icon: Award, active: false },
-  { id: 'branch', label: 'Cross-Branch Insights', icon: GitBranch, active: false },
+  { id: 'dashboard',    label: 'Dashboard',            icon: Home,     path: null },
+  { id: 'overview',     label: 'Department Overview',  icon: Layout,   path: '/dashboard/dean/department' },
+  { id: 'faculty',      label: 'Faculty Performance',  icon: Star,     path: '/dashboard/dean/faculty-performance' },
+  { id: 'cohort',       label: 'Cohort Forecasting',   icon: TrendingUp,path: '/dashboard/dean/forecasting' },
+  { id: 'curriculum',   label: 'Curriculum Analysis',  icon: Book,     path: '/dashboard/dean/curriculum' },
+  { id: 'policy',       label: 'Policy Simulation',    icon: Cpu,      path: '/dashboard/dean/policy-simulation' },
+  { id: 'accreditation',label: 'Reports',              icon: Award,    path: '/dashboard/dean/reports' },
+  { id: 'branch',       label: 'Cross-Branch Insights',icon: GitBranch,path: '/dashboard/dean/cross-branch' },
 ]
 
 const statCards = [
@@ -114,7 +114,11 @@ export default function DeanDashboard() {
 
         <nav className="flex-1 p-3 overflow-y-auto">
           {navLinks.map(link => (
-            <button key={link.id} onClick={() => setActiveNav(link.id)} className={`nav-link w-full text-left mb-0.5 ${activeNav === link.id ? 'bg-purple-50 text-purple-700 font-semibold' : ''}`}>
+            <button
+              key={link.id}
+              onClick={() => link.path ? router.push(link.path) : setActiveNav(link.id)}
+              className={`nav-link w-full text-left mb-0.5 ${activeNav === link.id ? 'bg-purple-50 text-purple-700 font-semibold' : ''}`}
+            >
               <link.icon size={17} />
               <span className="flex-1">{link.label}</span>
             </button>

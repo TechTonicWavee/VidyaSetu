@@ -14,11 +14,13 @@ import {
 } from 'recharts'
 
 const navLinks = [
-  { id: 'department', label: 'Department Overview', icon: Building, badge: null, path: '/dashboard/dean/department' },
-  { id: 'forecasting', label: 'Cohort Forecasting', icon: PieIcon, badge: null, path: '/dashboard/dean/forecasting' },
-  { id: 'faculty', label: 'Faculty Analytics', icon: Users2, badge: null, path: '/dashboard/dean/department' },
-  { id: 'policy', label: 'Policy Simulation', icon: Lightbulb, badge: null, path: '/dashboard/dean/department' },
-  { id: 'reports', label: 'Reports', icon: FileText, badge: null, path: '/dashboard/dean/department' },
+  { id: 'department',  label: 'Department Overview',  icon: Building, path: '/dashboard/dean/department' },
+  { id: 'forecasting', label: 'Cohort Forecasting',   icon: PieIcon,  path: '/dashboard/dean/forecasting' },
+  { id: 'cross-branch',label: 'Cross-Branch Insights',icon: FileText, path: '/dashboard/dean/cross-branch' },
+  { id: 'faculty',     label: 'Faculty Analytics',    icon: Users2,   path: '/dashboard/dean/faculty-performance' },
+  { id: 'curriculum',  label: 'Curriculum Gaps',      icon: Lightbulb,path: '/dashboard/dean/curriculum' },
+  { id: 'policy-simulation', label: 'Policy Simulation', icon: Cpu,      path: '/dashboard/dean/policy-simulation' },
+  { id: 'reports',     label: 'Reports',              icon: FileText, path: '/dashboard/dean/reports' },
 ]
 
 const pieData = [
