@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 'use client'
 
 import { useState } from 'react'
@@ -10,18 +11,19 @@ import {
 } from 'lucide-react'
 
 const navLinks = [
-  { id: 'dashboard',   label: 'Dashboard',         icon: Home,          badge: null, path: '/dashboard/faculty' },
-  { id: 'analytics',   label: 'Subject Analytics', icon: Activity,      badge: null, path: '/dashboard/faculty/analytics' },
-  { id: 'attainment',  label: 'CO Attainment',     icon: Target,        badge: null, path: '/dashboard/faculty/co-attainment' },
-  { id: 'alerts',      label: 'Alert Management',  icon: AlertTriangle, badge: '5',  path: '/dashboard/faculty/alerts' },
-  { id: 'parents',     label: 'Parent Comm.',      icon: MessageSquare, badge: null, path: '/dashboard/faculty/parent-communication' },
-  { id: 'courses',     label: 'My Courses',        icon: BookOpen,      badge: null, path: '/dashboard/faculty/courses' },
-  { id: 'students',    label: 'My Students',       icon: User,          badge: null, path: '/dashboard/faculty/students' },
+  { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null, path: '/dashboard/faculty' },
+  { id: 'classes', label: 'My Classes', icon: BookOpen, badge: null, path: '/dashboard/faculty/my-classes' },
+  { id: 'alerts', label: 'Student Alerts', icon: Bell, badge: '5', path: '/dashboard/faculty/alerts' },
+  { id: 'analytics', label: 'Subject Analytics', icon: Activity, badge: null, path: '/dashboard/faculty/analytics' },
+  { id: 'profiles', label: 'Student Profiles', icon: User, badge: null, path: '/dashboard/faculty/student/profile' },
+  { id: 'co', label: 'CO Attainment', icon: Target, badge: null, path: '/dashboard/faculty/co-attainment' },
+  { id: 'parent', label: 'Parent Communication', icon: MessageSquare, badge: null, path: '/dashboard/faculty/parent-communication' },
+  { id: 'reports', label: 'Reports', icon: FileText, badge: null, path: '/dashboard/faculty/reports' },
 ]
 
 export default function FacultyParentCommunication() {
   const router = useRouter()
-  const [activeNav] = useState('parents')
+  const [activeNav, setActiveNav] = useState('parent')
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [messageInput, setMessageInput] = useState('')
   const [meetingsExpanded, setMeetingsExpanded] = useState(false)
@@ -51,35 +53,51 @@ export default function FacultyParentCommunication() {
   }
 
   return (
-    <div className="flex h-screen bg-bg-base overflow-hidden font-sans relative">
-      {/* ══════════════════════════════════
+    <div className="flex h-screen bg-bg-base overflow-hidden font-sans">
+      {/* A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•
           SIDEBAR
-      ══════════════════════════════════ */}
-      <aside className={`${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'} flex-shrink-0 bg-navy flex flex-col transition-all duration-300 shadow-xl z-20`}>
-        <div className="p-5 border-b border-white/10">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center text-navy font-bold text-sm flex-shrink-0 bg-white">PK</div>
+      A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A• */}
+      <aside className={`${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'} flex-shrink-0 bg-white border-r border-gray-100 flex flex-col transition-all duration-300 shadow-sm`}>
+        <div className="p-5 border-b border-gray-50">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style={{ background: 'linear-gradient(135deg, #0F766E, #047857)' }}>
+              PK
+            </div>
             <div className="overflow-hidden">
-              <p className="font-semibold text-sm text-white truncate">Prof. Priya Kapoor</p>
-              <p className="text-xs text-blue-200 truncate">Computer Science</p>
+              <p className="font-semibold text-sm text-navy truncate">Prof. Priya Kapoor</p>
+              <p className="text-xs text-gray-500 truncate">CSE Department · 4 Subjects</p>
             </div>
           </div>
         </div>
 
         <nav className="flex-1 p-3 overflow-y-auto">
           {navLinks.map(link => (
-            <button key={link.id} onClick={() => router.push(link.path)} className={`nav-link w-full text-left mb-0.5 ${activeNav === link.id ? 'bg-white/10 text-white font-semibold' : 'text-gray-300 hover:bg-white/5 hover:text-white'}`}>
+            <button
+              key={link.id}
+              onClick={() => {
+                setActiveNav(link.id)
+                if (link.path) router.push(link.path)
+              }}
+              className={`nav-link w-full text-left mb-0.5 ${activeNav === link.id ? 'bg-teal-50 text-teal-700 font-semibold' : ''}`}
+            >
               <link.icon size={17} />
               <span className="flex-1">{link.label}</span>
               {link.badge && <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{link.badge}</span>}
             </button>
           ))}
         </nav>
+
+        <div className="p-3 border-t border-gray-50">
+          <button onClick={() => router.push('/login')} className="nav-link w-full text-left text-red-500 hover:bg-red-50 hover:text-red-600">
+            <LogOut size={17} />
+            <span>Switch Role</span>
+          </button>
+        </div>
       </aside>
 
-      {/* ══════════════════════════════════
+      {/* A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•
           MAIN CONTENT
-      ══════════════════════════════════ */}
+      A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A• */}
       <div className="flex-1 flex flex-col overflow-hidden relative">
         {/* TOP NAV */}
         <header className="bg-white border-b border-gray-100 px-6 py-3 flex items-center gap-4 flex-shrink-0 shadow-sm z-10">
@@ -195,7 +213,7 @@ export default function FacultyParentCommunication() {
                       </h4>
                       <span className="text-xs text-blue-600 font-medium whitespace-nowrap">2 hours ago</span>
                     </div>
-                    <p className="text-xs text-gray-500 mb-2">Arman Singh · 2CS04</p>
+                    <p className="text-xs text-gray-500 mb-2">Mahesh Singh A· 2CS04</p>
                     <div className="flex justify-between items-end gap-4">
                       <p className="text-sm text-gray-700 truncate flex-1 font-medium text-navy">"Thank you for the update. We will make sure he..."</p>
                       <span className="flex items-center justify-center bg-blue-600 text-white text-[10px] font-bold w-5 h-5 rounded-full shrink-0">2</span>
@@ -211,7 +229,7 @@ export default function FacultyParentCommunication() {
                       </h4>
                       <span className="text-xs text-gray-500 whitespace-nowrap">5 hours ago</span>
                     </div>
-                    <p className="text-xs text-gray-500 mb-2">Rohit Sharma · 2CS47</p>
+                    <p className="text-xs text-gray-500 mb-2">Rohit Sharma A· 2CS47</p>
                     <div className="flex justify-between items-end gap-4">
                       <p className="text-sm text-gray-600 truncate flex-1 font-medium text-navy">"Is there any way to improve his DBMS scores before..."</p>
                       <span className="flex items-center justify-center bg-blue-600 text-white text-[10px] font-bold w-5 h-5 rounded-full shrink-0">1</span>
@@ -224,7 +242,7 @@ export default function FacultyParentCommunication() {
                       <h4 className="font-bold text-navy">Mr. Anil Patel</h4>
                       <span className="text-xs text-gray-500 whitespace-nowrap">Yesterday</span>
                     </div>
-                    <p className="text-xs text-gray-500 mb-2">Sneha Patel · 2CS23</p>
+                    <p className="text-xs text-gray-500 mb-2">Sneha Patel A· 2CS23</p>
                     <p className="text-sm text-gray-500 truncate">"We have spoken to Sneha. She will attend all..."</p>
                   </div>
 
@@ -234,7 +252,7 @@ export default function FacultyParentCommunication() {
                       <h4 className="font-bold text-navy">Mrs. Deepa Joshi</h4>
                       <span className="text-xs text-gray-500 whitespace-nowrap">Yesterday</span>
                     </div>
-                    <p className="text-xs text-gray-500 mb-2">Karan Joshi · 2CS15</p>
+                    <p className="text-xs text-gray-500 mb-2">Karan Joshi A· 2CS15</p>
                     <p className="text-sm text-gray-500 truncate">"Understood. We will monitor her attendance closely..."</p>
                   </div>
 
@@ -244,7 +262,7 @@ export default function FacultyParentCommunication() {
                       <h4 className="font-bold text-navy">Mr. Sunil Mehta</h4>
                       <span className="text-xs text-gray-500 whitespace-nowrap">2 days ago</span>
                     </div>
-                    <p className="text-xs text-gray-500 mb-2">Arjun Mehta · 2CS09</p>
+                    <p className="text-xs text-gray-500 mb-2">Arjun Mehta A· 2CS09</p>
                     <div className="flex justify-between items-end gap-4">
                       <p className="text-sm text-gray-500 truncate flex-1">"Can we schedule a meeting next week to discuss..."</p>
                       <Calendar size={16} className="text-teal-500 shrink-0" />
@@ -257,7 +275,7 @@ export default function FacultyParentCommunication() {
                       <h4 className="font-bold text-navy">Mrs. Priya Nair</h4>
                       <span className="text-xs text-gray-500 whitespace-nowrap">3 days ago</span>
                     </div>
-                    <p className="text-xs text-gray-500 mb-2">Divya Nair · 2CS31</p>
+                    <p className="text-xs text-gray-500 mb-2">Divya Nair A· 2CS31</p>
                     <p className="text-sm text-gray-500 truncate">"Thank you for the report. Very helpful to understand..."</p>
                   </div>
 
@@ -267,7 +285,7 @@ export default function FacultyParentCommunication() {
                       <h4 className="font-bold text-navy">Mr. Ravi Gupta</h4>
                       <span className="text-xs text-gray-500 whitespace-nowrap">4 days ago</span>
                     </div>
-                    <p className="text-xs text-gray-500 mb-2">Ananya Verma · 2CS07</p>
+                    <p className="text-xs text-gray-500 mb-2">Ananya Verma A· 2CS07</p>
                     <p className="text-sm text-gray-500 truncate">"Ananya has been working very hard. We appreciate..."</p>
                   </div>
 
@@ -277,7 +295,7 @@ export default function FacultyParentCommunication() {
                       <h4 className="font-bold text-navy">Mrs. Sonal Kumar</h4>
                       <span className="text-xs text-gray-500 whitespace-nowrap">5 days ago</span>
                     </div>
-                    <p className="text-xs text-gray-500 mb-2">Krish Singhal · 2CS22</p>
+                    <p className="text-xs text-gray-500 mb-2">Krish Singhal A· 2CS22</p>
                     <p className="text-sm text-gray-500 truncate">"We received the WhatsApp digest. Had a question about..."</p>
                   </div>
                 </div>
@@ -290,7 +308,7 @@ export default function FacultyParentCommunication() {
                 <div className="p-5 border-b border-gray-100 flex flex-wrap justify-between items-center gap-4 bg-white z-10 shadow-sm relative">
                   <div>
                     <h2 className="text-xl font-bold text-navy mb-1">Mr. Ramesh Singh</h2>
-                    <p className="text-xs text-gray-500 font-medium">Parent of Arman Singh · 2CS04 · CSE 2B</p>
+                    <p className="text-xs text-gray-500 font-medium">Parent of Mahesh Singh A· 2CS04 A· CSE 2B</p>
                   </div>
                   <div className="flex gap-2">
                     <button className="w-10 h-10 rounded-xl bg-gray-50 border border-gray-200 text-gray-600 flex items-center justify-center hover:bg-gray-100 transition" title="View Student Profile" onClick={() => router.push('/dashboard/faculty/student/profile')}>
@@ -327,7 +345,7 @@ export default function FacultyParentCommunication() {
                   <div className="flex flex-col items-end">
                     <div className="max-w-[75%] bg-blue-600 text-white p-4 rounded-2xl rounded-tr-sm shadow-sm">
                       <p className="text-sm leading-relaxed">
-                        Dear Mr. Singh, I wanted to inform you that Arman's attendance in Theory of Computation has dropped to 74% — just below the 75% minimum threshold. He needs to attend all remaining classes to maintain eligibility.
+                        Dear Mr. Singh, I wanted to inform you that Mahesh's attendance in Theory of Computation has dropped to 74% A€” just below the 75% minimum threshold. He needs to attend all remaining classes to maintain eligibility.
                       </p>
                     </div>
                     <div className="flex items-center gap-1 mt-1 text-[10px] text-gray-400">
@@ -340,7 +358,7 @@ export default function FacultyParentCommunication() {
                   <div className="flex flex-col items-start">
                     <div className="max-w-[75%] bg-white border border-gray-200 text-gray-800 p-4 rounded-2xl rounded-tl-sm shadow-sm">
                       <p className="text-sm leading-relaxed">
-                        Thank you for letting us know, Prof. Kapoor. We will speak with Arman today. Is there anything specific we should ask him to focus on for TOC?
+                        Thank you for letting us know, Prof. Kapoor. We will speak with Mahesh today. Is there anything specific we should ask him to focus on for TOC?
                       </p>
                     </div>
                     <div className="mt-1 text-[10px] text-gray-400 ml-1">
@@ -352,7 +370,7 @@ export default function FacultyParentCommunication() {
                   <div className="flex flex-col items-end">
                     <div className="max-w-[75%] bg-blue-600 text-white p-4 rounded-2xl rounded-tr-sm shadow-sm">
                       <p className="text-sm leading-relaxed">
-                        Yes, please encourage him to focus on Regular Expressions and Automata Theory concepts — these are the specific weak areas from his Unit 2 exam. I can share some revision notes if helpful.
+                        Yes, please encourage him to focus on Regular Expressions and Automata Theory concepts A€” these are the specific weak areas from his Unit 2 exam. I can share some revision notes if helpful.
                       </p>
                     </div>
                     <div className="flex items-center gap-1 mt-1 text-[10px] text-gray-400">
@@ -369,7 +387,7 @@ export default function FacultyParentCommunication() {
                   <div className="flex flex-col items-start">
                     <div className="max-w-[75%] bg-white border border-gray-200 text-gray-800 p-4 rounded-2xl rounded-tl-sm shadow-sm">
                       <p className="text-sm leading-relaxed">
-                        That would be very helpful. Also, Arman mentioned his DBMS practical went well — we are glad to hear that at least. Please do share the notes.
+                        That would be very helpful. Also, Mahesh mentioned his DBMS practical went well A€” we are glad to hear that at least. Please do share the notes.
                       </p>
                     </div>
                     <div className="mt-1 text-[10px] text-gray-400 ml-1">
@@ -503,7 +521,7 @@ export default function FacultyParentCommunication() {
                       
                       <div className="bg-gray-50 p-3 rounded-lg mb-5 border border-gray-100 text-sm text-gray-700">
                         <span className="font-bold text-navy block mb-1 text-xs uppercase tracking-wider">Agenda:</span>
-                        DBMS score decline — 3 consecutive units
+                        DBMS score decline across 3 consecutive units
                       </div>
                       
                       <div className="flex gap-2">
@@ -529,13 +547,13 @@ export default function FacultyParentCommunication() {
                           <Clock size={14} className="text-gray-400" /> 2:30 PM
                         </div>
                         <div className="flex items-center gap-2 text-sm text-blue-700 font-medium">
-                          <Video size={14} className="text-blue-500" /> Online — Google Meet
+                          <Video size={14} className="text-blue-500" /> Online A€” Google Meet
                         </div>
                       </div>
                       
                       <div className="bg-red-50 p-3 rounded-lg mb-5 border border-red-100 text-sm text-gray-700">
                         <span className="font-bold text-red-800 block mb-1 text-xs uppercase tracking-wider">Agenda:</span>
-                        <span className="text-red-900">Critical — attendance and multiple risk factors</span>
+                        <span className="text-red-900">Critical at attendance and multiple risk factors</span>
                       </div>
                       
                       <div className="flex gap-2">

@@ -12,13 +12,14 @@ import {
 } from 'recharts'
 
 const navLinks = [
-  { id: 'dashboard',   label: 'Dashboard',         icon: Home,          badge: null, path: '/dashboard/faculty' },
-  { id: 'analytics',   label: 'Subject Analytics', icon: Activity,      badge: null, path: '/dashboard/faculty/analytics' },
-  { id: 'attainment',  label: 'CO Attainment',     icon: Target,        badge: null, path: '/dashboard/faculty/co-attainment' },
-  { id: 'alerts',      label: 'Alert Management',  icon: AlertTriangle, badge: '5',  path: '/dashboard/faculty/alerts' },
-  { id: 'parents',     label: 'Parent Comm.',      icon: MessageSquare, badge: null, path: '/dashboard/faculty/parent-communication' },
-  { id: 'courses',     label: 'My Courses',        icon: BookOpen,      badge: null, path: '/dashboard/faculty/courses' },
-  { id: 'students',    label: 'My Students',       icon: User,          badge: null, path: '/dashboard/faculty/students' },
+  { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null, path: '/dashboard/faculty' },
+  { id: 'classes', label: 'My Classes', icon: BookOpen, badge: null, path: '/dashboard/faculty/my-classes' },
+  { id: 'alerts', label: 'Student Alerts', icon: Bell, badge: '5', path: '/dashboard/faculty/alerts' },
+  { id: 'analytics', label: 'Subject Analytics', icon: Activity, badge: null, path: '/dashboard/faculty/analytics' },
+  { id: 'profiles', label: 'Student Profiles', icon: User, badge: null, path: '/dashboard/faculty/student/profile' },
+  { id: 'co', label: 'CO Attainment', icon: Target, badge: null, path: '/dashboard/faculty/co-attainment' },
+  { id: 'parent', label: 'Parent Communication', icon: MessageSquare, badge: null, path: '/dashboard/faculty/parent-communication' },
+  { id: 'reports', label: 'Reports', icon: BookMarked, badge: null, path: '/dashboard/faculty/reports' },
 ]
 
 const subjectData = {
@@ -90,7 +91,7 @@ const chartData = [
 
 export default function FacultyCOAttainment() {
   const router = useRouter()
-  const [activeNav] = useState('attainment')
+  const [activeNav, setActiveNav] = useState('co')
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [activeTab, setActiveTab] = useState('DBMS')
   
@@ -110,70 +111,176 @@ export default function FacultyCOAttainment() {
   }
 
   const currentData = subjectData[activeTab]
+  const summaryRows = [
+    { subject: 'Database Management Systems', co1: 79, co2: 68, co3: 61 },
+    { subject: 'Operating Systems', co1: 77, co2: 64, co3: 71 },
+    { subject: 'Theory of Computation', co1: 61, co2: 63, co3: 71 },
+    { subject: 'Data Structures', co1: 84, co2: 79, co3: 82 },
+  ]
+  const atRiskCount = summaryRows.filter(r => Math.round((r.co1 + r.co2 + r.co3) / 3) < 75).length
 
   return (
-    <div className="flex h-screen bg-bg-base overflow-hidden font-sans relative">
-      {/* ══════════════════════════════════
+    <div className="flex h-screen bg-bg-base overflow-hidden font-sans">
+      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
           SIDEBAR
-      ══════════════════════════════════ */}
-      <aside className={`${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'} flex-shrink-0 bg-navy flex flex-col transition-all duration-300 shadow-xl z-20`}>
-        <div className="p-5 border-b border-white/10">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center text-navy font-bold text-sm flex-shrink-0 bg-white">PK</div>
+      â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
+      <aside className={`${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'} flex-shrink-0 bg-white border-r border-gray-100 flex flex-col transition-all duration-300 shadow-sm`}>
+        <div className="p-5 border-b border-gray-50">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style={{ background: 'linear-gradient(135deg, #0F766E, #047857)' }}>
+              PK
+            </div>
             <div className="overflow-hidden">
-              <p className="font-semibold text-sm text-white truncate">Prof. Priya Kapoor</p>
-              <p className="text-xs text-blue-200 truncate">Computer Science</p>
+              <p className="font-semibold text-sm text-navy truncate">Prof. Priya Kapoor</p>
+              <p className="text-xs text-gray-500 truncate">CSE Department · 4 Subjects</p>
             </div>
           </div>
         </div>
 
         <nav className="flex-1 p-3 overflow-y-auto">
           {navLinks.map(link => (
-            <button key={link.id} onClick={() => router.push(link.path)} className={`nav-link w-full text-left mb-0.5 ${activeNav === link.id ? 'bg-white/10 text-white font-semibold' : 'text-gray-300 hover:bg-white/5 hover:text-white'}`}>
+            <button
+              key={link.id}
+              onClick={() => {
+                setActiveNav(link.id)
+                if (link.path) router.push(link.path)
+              }}
+              className={`nav-link w-full text-left mb-0.5 ${activeNav === link.id ? 'bg-teal-50 text-teal-700 font-semibold' : ''}`}
+            >
               <link.icon size={17} />
               <span className="flex-1">{link.label}</span>
               {link.badge && <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{link.badge}</span>}
             </button>
           ))}
         </nav>
+
+        <div className="p-3 border-t border-gray-50">
+          <button onClick={() => router.push('/login')} className="nav-link w-full text-left text-red-500 hover:bg-red-50 hover:text-red-600">
+            <LogOut size={17} />
+            <span>Switch Role</span>
+          </button>
+        </div>
       </aside>
 
-      {/* ══════════════════════════════════
+      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
           MAIN CONTENT
-      ══════════════════════════════════ */}
-      <div className="flex-1 flex flex-col overflow-hidden relative">
+      â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
+      <div className="flex-1 flex flex-col overflow-hidden">
         {/* TOP NAV */}
-        <header className="bg-white border-b border-gray-100 px-6 py-3 flex items-center gap-4 flex-shrink-0 shadow-sm z-10">
-          <button onClick={() => setSidebarOpen(v => !v)} className="text-gray-400 hover:text-gray-700 transition">
+        <header className="bg-white border-b border-gray-100 px-6 py-3 flex items-center gap-4 flex-shrink-0 shadow-sm">
+          <button onClick={() => setSidebarOpen(v => !v)} className="text-gray-400 hover:text-gray-700 transition" aria-label="Toggle sidebar">
             <Settings size={20} />
           </button>
           <div className="flex items-center gap-2 mr-4">
-            <div className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs" style={{ background: '#4F46E5' }}>EA</div>
+            <div className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs" style={{ background: '#0F766E' }}>EA</div>
             <span className="font-bold text-navy text-sm hidden sm:block">Educator Analytics OS</span>
           </div>
           <div className="flex-1 max-w-md relative">
             <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input type="text" placeholder="Search resources, alerts..." className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-300 transition" />
+            <input type="text" placeholder="Search students, subjects, features..." className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-100 focus:border-teal-300 transition" />
           </div>
           <div className="flex-1" />
-          <button className="relative p-2 rounded-lg hover:bg-gray-100 transition text-gray-500">
-            <Bell size={19} />
-          </button>
-          <div className="flex items-center gap-2 cursor-pointer group">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-navy font-bold text-xs bg-gray-200">PK</div>
+          <div className="relative">
+            <button className="relative p-2 rounded-lg hover:bg-gray-100 transition text-gray-500" aria-label="Notifications">
+              <Bell size={19} />
+              <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">{Math.min(atRiskCount, 9)}</span>
+            </button>
+          </div>
+          <div className="flex items-center gap-2 cursor-pointer group" aria-label="Profile menu">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs" style={{ background: 'linear-gradient(135deg, #0F766E, #047857)' }}>PK</div>
             <ChevronDown size={14} className="text-gray-400 group-hover:text-gray-600 transition" />
           </div>
         </header>
 
         {/* PAGE BODY */}
-        <main className="flex-1 overflow-y-auto bg-gray-50/50">
-          <div className="max-w-[1400px] mx-auto p-6 md:p-8 animate-fade-in space-y-8 pb-20">
-            
+        <main className="flex-1 overflow-y-auto p-6">
+          <div className="space-y-6 animate-fade-in">
+            <div>
+              <h1 className="text-xl font-bold text-navy">CO Attainment</h1>
+              <p className="text-sm text-gray-500">Track course outcome achievement</p>
+            </div>
+
+            <div className="card animate-fade-in" style={{ animationDelay: '0.08s' }}>
+              <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-4">
+                <div>
+                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Overview</p>
+                  <p className="text-sm font-semibold text-navy">Subject-wise CO attainment (CO1-CO3)</p>
+                </div>
+                <div className="text-xs text-gray-500">
+                  Target threshold: <span className="font-semibold text-navy">75%</span>
+                </div>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse whitespace-nowrap">
+                  <thead>
+                    <tr className="bg-gray-50 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                      <th className="px-6 py-4">Subject</th>
+                      <th className="px-4 py-4 text-center">CO1</th>
+                      <th className="px-4 py-4 text-center">CO2</th>
+                      <th className="px-4 py-4 text-center">CO3</th>
+                      <th className="px-4 py-4 text-center">Overall %</th>
+                      <th className="px-6 py-4 text-right">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100 text-sm font-medium">
+                    {summaryRows.map((row) => {
+                      const overall = Math.round((row.co1 + row.co2 + row.co3) / 3)
+                      const isGood = overall >= 75
+
+                      const barClass = (pct) => {
+                        if (pct >= 75) return 'bg-teal-500'
+                        if (pct >= 65) return 'bg-amber-500'
+                        return 'bg-red-500'
+                      }
+
+                      const pillClass = isGood ? 'bg-teal-100 text-teal-700' : 'bg-red-100 text-red-700'
+                      const pillLabel = isGood ? 'GOOD' : 'AT RISK'
+
+                      const Cell = ({ value }) => (
+                        <div className="min-w-[96px]">
+                          <div className="font-semibold text-navy text-center">{value}%</div>
+                          <div className="mt-2 w-full bg-gray-200 rounded-full h-1.5">
+                            <div className={`h-1.5 rounded-full ${barClass(value)}`} style={{ width: `${value}%` }} />
+                          </div>
+                        </div>
+                      )
+
+                      return (
+                        <tr key={row.subject} className="hover:bg-gray-50/50">
+                          <td className="px-6 py-4 text-navy font-semibold">{row.subject}</td>
+                          <td className="px-4 py-4 text-center"><Cell value={row.co1} /></td>
+                          <td className="px-4 py-4 text-center"><Cell value={row.co2} /></td>
+                          <td className="px-4 py-4 text-center"><Cell value={row.co3} /></td>
+                          <td className="px-4 py-4 text-center">
+                            <div className="min-w-[96px]">
+                              <div className="font-bold text-navy">{overall}%</div>
+                              <div className="mt-2 w-full bg-gray-200 rounded-full h-1.5">
+                                <div className={`h-1.5 rounded-full ${barClass(overall)}`} style={{ width: `${overall}%` }} />
+                              </div>
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 text-right">
+                            <span className={`inline-block px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${pillClass}`}>
+                              {pillLabel}
+                            </span>
+                          </td>
+                        </tr>
+                      )
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            {/* Legacy detailed view kept (hidden) to preserve prior work */}
+            {false && (
+              <>
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
               <div>
                 <h1 className="text-3xl font-bold text-navy mb-1">CO Attainment Tracker</h1>
-                <p className="text-gray-500 text-sm max-w-2xl">Track Course Outcome attainment in real time across all your subjects — NBA requires 75% attainment on all COs</p>
+                <p className="text-gray-500 text-sm max-w-2xl">Track Course Outcome attainment in real time across all your subjects â€” NBA requires 75% attainment on all COs</p>
               </div>
               <div className="px-4 py-1.5 bg-blue-100 text-blue-800 font-bold text-sm rounded-full border border-blue-200 flex items-center gap-2 shadow-sm">
                 NBA Target: 75%
@@ -247,7 +354,7 @@ export default function FacultyCOAttainment() {
               </div>
 
               <div className="p-6">
-                <h3 className="font-bold text-navy text-lg mb-4">CO Attainment — {activeTab}</h3>
+                <h3 className="font-bold text-navy text-lg mb-4">CO Attainment â€” {activeTab}</h3>
                 
                 {/* TABLE */}
                 <div className="overflow-x-auto mb-6 rounded-xl border border-gray-200">
@@ -342,7 +449,7 @@ export default function FacultyCOAttainment() {
 
             {/* BOTTOM CHART SECTION */}
             <div className="bg-white shadow-sm border border-gray-200 rounded-2xl overflow-hidden p-6">
-              <h3 className="font-bold text-navy text-lg mb-6">CO Attainment Overview — All Subjects</h3>
+              <h3 className="font-bold text-navy text-lg mb-6">CO Attainment Overview â€” All Subjects</h3>
               <div className="h-[400px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
@@ -372,6 +479,8 @@ export default function FacultyCOAttainment() {
               </div>
             </div>
 
+              </>
+            )}
           </div>
         </main>
       </div>

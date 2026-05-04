@@ -1,9 +1,10 @@
+/* eslint-disable react/no-unescaped-entities */
 'use client'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
-  Home, User, Activity, BookOpen, Bell, Settings, LogOut, Search,
+  Home, User, Activity, BookOpen, Bell, FileText, Settings, LogOut, Search,
   ChevronDown, AlertTriangle, MessageSquare, ArrowLeft, Plus, Target,
   CheckCircle2, XCircle, TrendingDown, TrendingUp, Filter, Star
 } from 'lucide-react'
@@ -13,13 +14,14 @@ import {
 } from 'recharts'
 
 const navLinks = [
-  { id: 'dashboard',   label: 'Dashboard',         icon: Home,          badge: null, path: '/dashboard/faculty' },
-  { id: 'analytics',   label: 'Subject Analytics', icon: Activity,      badge: null, path: '/dashboard/faculty/analytics' },
-  { id: 'attainment',  label: 'CO Attainment',     icon: Target,        badge: null, path: '/dashboard/faculty/co-attainment' },
-  { id: 'alerts',      label: 'Alert Management',  icon: AlertTriangle, badge: '5',  path: '/dashboard/faculty/alerts' },
-  { id: 'parents',     label: 'Parent Comm.',      icon: MessageSquare, badge: null, path: '/dashboard/faculty/parent-communication' },
-  { id: 'courses',     label: 'My Courses',        icon: BookOpen,      badge: null, path: '/dashboard/faculty/courses' },
-  { id: 'students',    label: 'My Students',       icon: User,          badge: null, path: '/dashboard/faculty/students' },
+  { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null, path: '/dashboard/faculty' },
+  { id: 'classes', label: 'My Classes', icon: BookOpen, badge: null, path: '/dashboard/faculty/my-classes' },
+  { id: 'alerts', label: 'Student Alerts', icon: Bell, badge: '5', path: '/dashboard/faculty/alerts' },
+  { id: 'analytics', label: 'Subject Analytics', icon: Activity, badge: null, path: '/dashboard/faculty/analytics' },
+  { id: 'profiles', label: 'Student Profiles', icon: User, badge: null, path: '/dashboard/faculty/student/profile' },
+  { id: 'co', label: 'CO Attainment', icon: Target, badge: null, path: '/dashboard/faculty/co-attainment' },
+  { id: 'parent', label: 'Parent Communication', icon: MessageSquare, badge: null, path: '/dashboard/faculty/parent-communication' },
+  { id: 'reports', label: 'Reports', icon: FileText, badge: null, path: '/dashboard/faculty/reports' },
 ]
 
 const dbmsTrend = [
@@ -47,6 +49,7 @@ const radarData = [
 export default function FacultyStudentProfile() {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState('Overview')
+  const [activeNav, setActiveNav] = useState('profiles')
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [toastMessage, setToastMessage] = useState(null)
   
@@ -77,24 +80,33 @@ export default function FacultyStudentProfile() {
   }
 
   return (
-    <div className="flex h-screen bg-bg-base overflow-hidden font-sans relative">
-      {/* ══════════════════════════════════
+    <div className="flex h-screen bg-bg-base overflow-hidden font-sans">
+      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
           SIDEBAR
-      ══════════════════════════════════ */}
-      <aside className={`${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'} flex-shrink-0 bg-navy flex flex-col transition-all duration-300 shadow-xl z-20`}>
-        <div className="p-5 border-b border-white/10">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center text-navy font-bold text-sm flex-shrink-0 bg-white">PK</div>
+      Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
+      <aside className={`${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'} flex-shrink-0 bg-white border-r border-gray-100 flex flex-col transition-all duration-300 shadow-sm`}>
+        <div className="p-5 border-b border-gray-50">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style={{ background: 'linear-gradient(135deg, #0F766E, #047857)' }}>
+              PK
+            </div>
             <div className="overflow-hidden">
-              <p className="font-semibold text-sm text-white truncate">Prof. Priya Kapoor</p>
-              <p className="text-xs text-blue-200 truncate">Computer Science</p>
+              <p className="font-semibold text-sm text-navy truncate">Prof. Priya Kapoor</p>
+              <p className="text-xs text-gray-500 truncate">CSE Department · 4 Subjects</p>
             </div>
           </div>
         </div>
 
         <nav className="flex-1 p-3 overflow-y-auto">
           {navLinks.map(link => (
-            <button key={link.id} onClick={() => router.push(link.path)} className={`nav-link w-full text-left mb-0.5 text-gray-300 hover:bg-white/10 hover:text-white`}>
+            <button
+              key={link.id}
+              onClick={() => {
+                setActiveNav(link.id)
+                if (link.path) router.push(link.path)
+              }}
+              className={`nav-link w-full text-left mb-0.5 ${activeNav === link.id ? 'bg-teal-50 text-teal-700 font-semibold' : ''}`}
+            >
               <link.icon size={17} />
               <span className="flex-1">{link.label}</span>
               {link.badge && <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{link.badge}</span>}
@@ -102,37 +114,38 @@ export default function FacultyStudentProfile() {
           ))}
         </nav>
 
-        <div className="p-3 border-t border-white/10">
-          <button onClick={() => router.push('/login')} className="nav-link w-full text-left text-red-400 hover:bg-red-500/10 hover:text-red-300">
+        <div className="p-3 border-t border-gray-50">
+          <button onClick={() => router.push('/login')} className="nav-link w-full text-left text-red-500 hover:bg-red-50 hover:text-red-600">
             <LogOut size={17} />
-            <span>Log Out</span>
+            <span>Switch Role</span>
           </button>
         </div>
       </aside>
 
-      {/* ══════════════════════════════════
+      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
           MAIN CONTENT
-      ══════════════════════════════════ */}
-      <div className="flex-1 flex flex-col overflow-hidden relative">
+      Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
+      <div className="flex-1 flex flex-col overflow-hidden">
         {/* TOP NAV */}
-        <header className="bg-white border-b border-gray-100 px-6 py-3 flex items-center gap-4 flex-shrink-0 shadow-sm z-10">
-          <button onClick={() => setSidebarOpen(v => !v)} className="text-gray-400 hover:text-gray-700 transition">
+        <header className="bg-white border-b border-gray-100 px-6 py-3 flex items-center gap-4 flex-shrink-0 shadow-sm">
+          <button onClick={() => setSidebarOpen(v => !v)} className="text-gray-400 hover:text-gray-700 transition" aria-label="Toggle sidebar">
             <Settings size={20} />
           </button>
           <div className="flex items-center gap-2 mr-4">
-            <div className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs" style={{ background: '#4F46E5' }}>EA</div>
+            <div className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs" style={{ background: '#0F766E' }}>EA</div>
             <span className="font-bold text-navy text-sm hidden sm:block">Educator Analytics OS</span>
           </div>
           <div className="flex-1 max-w-md relative">
             <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input type="text" placeholder="Search student by name or roll no..." className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-300 transition" />
+            <input type="text" placeholder="Search students, subjects, features..." className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-100 focus:border-teal-300 transition" />
           </div>
           <div className="flex-1" />
-          <button className="relative p-2 rounded-lg hover:bg-gray-100 transition text-gray-500">
+          <button className="relative p-2 rounded-lg hover:bg-gray-100 transition text-gray-500" aria-label="Notifications">
             <Bell size={19} />
+            <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">2</span>
           </button>
-          <div className="flex items-center gap-2 cursor-pointer group">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-navy font-bold text-xs bg-gray-200">PK</div>
+          <div className="flex items-center gap-2 cursor-pointer group" aria-label="Profile menu">
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs" style={{ background: 'linear-gradient(135deg, #0F766E, #047857)' }}>PK</div>
             <ChevronDown size={14} className="text-gray-400 group-hover:text-gray-600 transition" />
           </div>
         </header>
@@ -157,66 +170,77 @@ export default function FacultyStudentProfile() {
             </div>
 
             {/* HERO CARD */}
-            <div className="bg-navy rounded-2xl p-6 md:p-8 flex flex-col lg:flex-row items-center justify-between gap-8 text-white relative overflow-hidden shadow-lg border border-navy">
-              <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4"></div>
-              
-              <div className="flex items-center gap-6 relative z-10 w-full lg:w-1/3">
-                <div className="w-[72px] h-[72px] rounded-full flex items-center justify-center text-white font-bold text-2xl flex-shrink-0 bg-blue-600 border-2 border-white/20">AS</div>
-                <div>
-                  <h1 className="text-2xl font-bold text-white mb-1">Arman Singh</h1>
-                  <p className="text-gray-300 text-sm mb-3">CSE · 2nd Year · Section B · Roll No: 2CS04</p>
-                  <div className="flex flex-wrap gap-2">
-                    <span className="px-2 py-1 bg-blue-500/20 text-blue-200 text-[10px] font-bold rounded uppercase tracking-wider border border-blue-500/30">CSE 2nd Year</span>
-                    <span className="px-2 py-1 bg-teal-500/20 text-teal-200 text-[10px] font-bold rounded uppercase tracking-wider border border-teal-500/30">Web Development</span>
-                    <span className="px-2 py-1 bg-purple-500/20 text-purple-200 text-[10px] font-bold rounded uppercase tracking-wider border border-purple-500/30">Team Player</span>
+            <div className="card animate-fade-in">
+              <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+                <div className="flex items-center gap-4 min-w-0">
+                  <div className="w-[64px] h-[64px] rounded-full flex items-center justify-center text-white font-bold text-xl flex-shrink-0" style={{ background: 'linear-gradient(135deg, #0F766E, #047857)' }}>
+                    AS
+                  </div>
+                  <div className="min-w-0">
+                    <h1 className="text-xl font-bold text-navy truncate">Mahesh Singh</h1>
+                    <p className="text-gray-500 text-sm mt-1">CSE · 2nd Year · Section B · Roll No: 2CS04</p>
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      <span className="px-2 py-1 bg-teal-50 text-teal-700 text-[10px] font-bold rounded uppercase tracking-wider border border-teal-100">CSE 2nd Year</span>
+                      <span className="px-2 py-1 bg-blue-50 text-blue-700 text-[10px] font-bold rounded uppercase tracking-wider border border-blue-100">Web Development</span>
+                      <span className="px-2 py-1 bg-gray-50 text-gray-700 text-[10px] font-bold rounded uppercase tracking-wider border border-gray-100">Team Player</span>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="flex-1 w-full relative z-10 grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:bg-white/10 transition">
-                  <p className="text-gray-400 text-xs font-bold uppercase tracking-wider mb-1">SPI</p>
-                  <div className="flex items-center justify-center gap-1 mb-1">
-                    <span className="text-2xl font-black text-blue-400">72</span>
+                <div className="flex-1 grid grid-cols-2 md:grid-cols-4 gap-4">
+                  <div className="p-4 rounded-xl border border-gray-100 bg-gray-50/50 text-center">
+                    <p className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1">SPI</p>
+                    <div className="flex items-center justify-center gap-1 mb-1">
+                      <span className="text-2xl font-black text-navy">72</span>
+                    </div>
+                    <p className="text-[10px] text-teal-700 flex items-center justify-center gap-0.5 font-semibold">
+                      <TrendingUp size={12} className="text-teal-600" /> +3 this month
+                    </p>
                   </div>
-                  <p className="text-[10px] text-green-400 flex items-center justify-center gap-0.5"><TrendingUp size={12}/> +3 this month</p>
-                </div>
-                <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:bg-white/10 transition">
-                  <p className="text-gray-400 text-xs font-bold uppercase tracking-wider mb-1">Attendance</p>
-                  <div className="flex items-center justify-center gap-1 mb-1">
-                    <span className="text-2xl font-black text-white">79%</span>
+                  <div className="p-4 rounded-xl border border-gray-100 bg-gray-50/50 text-center">
+                    <p className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1">Attendance</p>
+                    <div className="flex items-center justify-center gap-1 mb-1">
+                      <span className="text-2xl font-black text-navy">79%</span>
+                    </div>
+                    <p className="text-[10px] text-gray-600 flex items-center justify-center gap-0.5 font-semibold">
+                      <CheckCircle2 size={12} className="text-teal-600" /> Above threshold
+                    </p>
                   </div>
-                  <p className="text-[10px] text-teal-400 flex items-center justify-center gap-0.5"><CheckCircle2 size={12}/> Above threshold</p>
-                </div>
-                <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:bg-white/10 transition">
-                  <p className="text-gray-400 text-xs font-bold uppercase tracking-wider mb-1">Class Rank</p>
-                  <div className="flex items-center justify-center gap-1 mb-1">
-                    <span className="text-2xl font-black text-purple-400">#34</span>
+                  <div className="p-4 rounded-xl border border-gray-100 bg-gray-50/50 text-center">
+                    <p className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1">Class Rank</p>
+                    <div className="flex items-center justify-center gap-1 mb-1">
+                      <span className="text-2xl font-black text-navy">#34</span>
+                    </div>
+                    <p className="text-[10px] text-gray-500 font-semibold">of 120 students</p>
                   </div>
-                  <p className="text-[10px] text-gray-400">of 120 students</p>
+                  <button
+                    type="button"
+                    className="p-4 rounded-xl border border-gray-100 bg-gray-50/50 text-center hover:bg-gray-100/60 transition"
+                    onClick={() => setActiveTab('Alert History')}
+                  >
+                    <p className="text-gray-500 text-xs font-bold uppercase tracking-wider mb-1">Alerts</p>
+                    <div className="flex items-center justify-center gap-1 mb-1">
+                      <span className="text-2xl font-black text-red-600">2</span>
+                      <span className="text-sm font-bold text-gray-500">active</span>
+                    </div>
+                    <p className="text-[10px] text-red-600 font-bold">1 high priority</p>
+                  </button>
                 </div>
-                <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center hover:bg-white/10 transition cursor-pointer" onClick={() => setActiveTab('Alert History')}>
-                  <p className="text-gray-400 text-xs font-bold uppercase tracking-wider mb-1">Alerts</p>
-                  <div className="flex items-center justify-center gap-1 mb-1">
-                    <span className="text-2xl font-black text-red-400">2 Active</span>
-                  </div>
-                  <p className="text-[10px] text-red-400 font-bold">1 high priority</p>
-                </div>
-              </div>
 
-              <div className="w-full lg:w-auto relative z-10 flex flex-col gap-2">
-                <button onClick={() => setIsNoteModalOpen(true)} className="w-full lg:w-48 px-3 py-2 bg-transparent border border-blue-400/50 text-blue-300 font-medium text-xs rounded-lg hover:bg-blue-900/50 hover:border-blue-300 transition text-left">
-                  Add Behavioral Note
-                </button>
-                <button onClick={() => setIsAlertModalOpen(true)} className="w-full lg:w-48 px-3 py-2 bg-transparent border border-red-400/50 text-red-300 font-medium text-xs rounded-lg hover:bg-red-900/50 hover:border-red-300 transition text-left">
-                  Generate Alert
-                </button>
-                <button className="w-full lg:w-48 px-3 py-2 bg-transparent border border-teal-400/50 text-teal-300 font-medium text-xs rounded-lg hover:bg-teal-900/50 hover:border-teal-300 transition text-left">
-                  Send Parent Message
-                </button>
-                <button className="w-full lg:w-48 px-3 py-2 bg-transparent border border-gray-400/50 text-gray-300 font-medium text-xs rounded-lg hover:bg-gray-700/50 hover:border-gray-300 transition text-left">
-                  Schedule Meeting
-                </button>
+                <div className="w-full lg:w-auto flex flex-col gap-2">
+                  <button onClick={() => setIsNoteModalOpen(true)} className="w-full lg:w-56 px-4 py-2 bg-white border border-gray-200 text-gray-700 font-bold text-sm rounded-xl hover:bg-gray-50 transition shadow-sm text-left">
+                    Add Behavioral Note
+                  </button>
+                  <button onClick={() => setIsAlertModalOpen(true)} className="w-full lg:w-56 px-4 py-2 bg-white border border-red-200 text-red-600 font-bold text-sm rounded-xl hover:bg-red-50 transition shadow-sm text-left">
+                    Generate Alert
+                  </button>
+                  <button onClick={() => router.push('/dashboard/faculty/parent-communication')} className="w-full lg:w-56 px-4 py-2 bg-white border border-gray-200 text-gray-700 font-bold text-sm rounded-xl hover:bg-gray-50 transition shadow-sm text-left">
+                    Send Parent Message
+                  </button>
+                  <button className="w-full lg:w-56 px-4 py-2 bg-white border border-gray-200 text-gray-700 font-bold text-sm rounded-xl hover:bg-gray-50 transition shadow-sm text-left">
+                    Schedule Meeting
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -243,7 +267,7 @@ export default function FacultyStudentProfile() {
                   {/* Left Column */}
                   <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
                     <div className="p-5 border-b border-gray-100">
-                      <h3 className="font-bold text-navy">Arman's Performance in Prof. Kapoor's Subjects</h3>
+                      <h3 className="font-bold text-navy">Mahesh's Performance in Prof. Kapoor's Subjects</h3>
                     </div>
                     <div className="p-5 space-y-4">
                       
@@ -259,7 +283,7 @@ export default function FacultyStudentProfile() {
                             <div className="mt-1 px-2 py-0.5 bg-amber-100 text-amber-700 text-[10px] font-bold rounded uppercase tracking-wider inline-block">Slight decline</div>
                           </div>
                         </div>
-                        <div className="h-[100px] w-full mt-4 -ml-4">
+                        <div className="h-[100px] w-full mt-4 overflow-hidden">
                           <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={dbmsTrend} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
                               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
@@ -270,11 +294,11 @@ export default function FacultyStudentProfile() {
                             </LineChart>
                           </ResponsiveContainer>
                         </div>
-                        <div className="mt-2 text-xs font-medium text-gray-600 bg-gray-50 p-2 rounded flex gap-3">
+                        <div className="mt-2 text-xs font-medium text-gray-600 bg-gray-50 p-2 rounded flex flex-wrap gap-3">
                           <span className="text-navy font-bold">CO Contribution:</span>
-                          <span>CO1: ✅</span>
-                          <span>CO2: ⚠️</span>
-                          <span>CO3: ❌</span>
+                          <span className="inline-flex items-center gap-1">CO1: <CheckCircle2 size={14} className="text-teal-600" /></span>
+                          <span className="inline-flex items-center gap-1">CO2: <AlertTriangle size={14} className="text-amber-500" /></span>
+                          <span className="inline-flex items-center gap-1">CO3: <XCircle size={14} className="text-red-500" /></span>
                         </div>
                       </div>
 
@@ -290,7 +314,7 @@ export default function FacultyStudentProfile() {
                             <div className="mt-1 px-2 py-0.5 bg-red-100 text-red-700 text-[10px] font-bold rounded uppercase tracking-wider inline-block">Declining</div>
                           </div>
                         </div>
-                        <div className="h-[100px] w-full mt-4 -ml-4">
+                        <div className="h-[100px] w-full mt-4 overflow-hidden">
                           <ResponsiveContainer width="100%" height="100%">
                             <LineChart data={osTrend} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
                               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
@@ -301,11 +325,11 @@ export default function FacultyStudentProfile() {
                             </LineChart>
                           </ResponsiveContainer>
                         </div>
-                        <div className="mt-2 text-xs font-medium text-gray-600 bg-gray-50 p-2 rounded flex gap-3">
+                        <div className="mt-2 text-xs font-medium text-gray-600 bg-gray-50 p-2 rounded flex flex-wrap gap-3">
                           <span className="text-navy font-bold">CO Contribution:</span>
-                          <span>CO1: ✅</span>
-                          <span>CO2: ⚠️</span>
-                          <span>CO3: ⚠️</span>
+                          <span className="inline-flex items-center gap-1">CO1: <CheckCircle2 size={14} className="text-teal-600" /></span>
+                          <span className="inline-flex items-center gap-1">CO2: <AlertTriangle size={14} className="text-amber-500" /></span>
+                          <span className="inline-flex items-center gap-1">CO3: <AlertTriangle size={14} className="text-amber-500" /></span>
                         </div>
                       </div>
 
@@ -313,7 +337,7 @@ export default function FacultyStudentProfile() {
                       <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex gap-3 mt-4">
                         <AlertTriangle className="text-amber-500 flex-shrink-0 mt-0.5" size={20} />
                         <p className="text-sm text-amber-900 leading-relaxed font-medium">
-                          Arman shows a consistent declining trend in both subjects over 3 units. Theory exam performance is weak but practical scores remain strong. Recommend targeted theory revision support before Unit 4.
+                          Mahesh shows a consistent declining trend in both subjects over 3 units. Theory exam performance is weak but practical scores remain strong. Recommend targeted theory revision support before Unit 4.
                         </p>
                       </div>
 
@@ -383,7 +407,7 @@ export default function FacultyStudentProfile() {
                               <PolarGrid stroke="#e5e7eb" />
                               <PolarAngleAxis dataKey="subject" tick={{ fill: '#6b7280', fontSize: 10 }} />
                               <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
-                              <Radar name="Arman" dataKey="A" stroke="#3B82F6" fill="#3B82F6" fillOpacity={0.5} />
+                              <Radar name="Mahesh" dataKey="A" stroke="#3B82F6" fill="#3B82F6" fillOpacity={0.5} />
                               <Tooltip />
                             </RadarChart>
                           </ResponsiveContainer>
@@ -524,7 +548,7 @@ export default function FacultyStudentProfile() {
                   <div className="p-5 bg-red-50 border-t border-red-100 flex gap-3">
                     <AlertTriangle className="text-red-500 flex-shrink-0" size={20} />
                     <p className="text-sm font-medium text-red-900">
-                      2 missing assignment submissions detected. This is affecting Arman's consistency score in SPI.
+                      2 missing assignment submissions detected. This is affecting Mahesh's consistency score in SPI.
                     </p>
                   </div>
                 </div>
@@ -546,7 +570,7 @@ export default function FacultyStudentProfile() {
                               <PolarGrid stroke="#e5e7eb" />
                               <PolarAngleAxis dataKey="subject" tick={{ fill: '#4b5563', fontSize: 12, fontWeight: 'bold' }} />
                               <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
-                              <Radar name="Arman Singh" dataKey="A" stroke="#3B82F6" strokeWidth={2} fill="#3B82F6" fillOpacity={0.6} />
+                              <Radar name="Mahesh Singh" dataKey="A" stroke="#3B82F6" strokeWidth={2} fill="#3B82F6" fillOpacity={0.6} />
                               <Tooltip />
                             </RadarChart>
                           </ResponsiveContainer>
@@ -556,11 +580,11 @@ export default function FacultyStudentProfile() {
                     
                     <div className="bg-blue-50 rounded-2xl border border-blue-200 overflow-hidden">
                       <div className="p-4 border-b border-blue-200 bg-blue-100">
-                        <h4 className="font-bold text-blue-900 text-sm">Faculty Perspective — Arman Singh</h4>
+                        <h4 className="font-bold text-blue-900 text-sm">Faculty Perspective — Mahesh Singh</h4>
                       </div>
                       <div className="p-5">
                         <p className="text-sm text-blue-900 leading-relaxed font-medium">
-                          Arman's Kinesthetic and Technical scores (84 and 78) indicate a strong hands-on learner. His declining theory exam scores are inconsistent with his practical performance — suggesting exam anxiety or theory study gap rather than actual knowledge gap. Recommend practical-theory bridging exercises.
+                          Mahesh's Kinesthetic and Technical scores (84 and 78) indicate a strong hands-on learner. His declining theory exam scores are inconsistent with his practical performance — suggesting exam anxiety or a theory study gap rather than an actual knowledge gap. Recommend practical-theory bridging exercises.
                         </p>
                       </div>
                     </div>
@@ -677,7 +701,7 @@ export default function FacultyStudentProfile() {
                         <span className="px-2 py-0.5 bg-teal-100 text-teal-800 text-[10px] font-bold rounded uppercase tracking-wider">Shared with Dean</span>
                       </div>
                       <p className="text-sm text-gray-700 leading-relaxed mb-4">
-                        Arman shows excellent understanding in lab sessions but needs to focus more on theoretical concepts. His DBMS practical work is outstanding — best in class for the CNN lab. Theory exam preparation needs work.
+                        Mahesh shows excellent understanding in lab sessions but needs to focus more on theoretical concepts. His DBMS practical work is outstanding — best in class for the CNN lab. Theory exam preparation needs work.
                       </p>
                       <div className="flex gap-4 text-xs font-medium text-gray-500">
                         <button className="hover:text-blue-600 transition">Edit</button>
@@ -695,7 +719,7 @@ export default function FacultyStudentProfile() {
                         <span className="px-2 py-0.5 bg-gray-100 text-gray-600 text-[10px] font-bold rounded uppercase tracking-wider">Private</span>
                       </div>
                       <p className="text-sm text-gray-700 leading-relaxed mb-4">
-                        Noticed Arman helping classmates with React code during lab session unprompted. Good interpersonal skills. Consider recommending for TA role next semester.
+                        Noticed Mahesh helping classmates with React code during lab session unprompted. Good interpersonal skills. Consider recommending for TA role next semester.
                       </p>
                       <div className="flex gap-4 text-xs font-medium text-gray-500">
                         <button className="hover:text-blue-600 transition">Edit</button>
@@ -855,7 +879,7 @@ export default function FacultyStudentProfile() {
             
             <form onSubmit={handleAddNote} className="p-6">
               <div className="mb-6">
-                <label className="block text-sm font-bold text-gray-700 mb-2">Note for Arman Singh</label>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Note for Mahesh Singh</label>
                 <textarea 
                   className="w-full border border-gray-300 rounded-xl p-4 text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition min-h-[120px] resize-none"
                   placeholder="Type your observation here..."
