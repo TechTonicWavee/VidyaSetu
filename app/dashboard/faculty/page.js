@@ -10,14 +10,14 @@ import {
 } from 'lucide-react'
 
 const navLinks = [
-  { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null, active: true },
-  { id: 'classes', label: 'My Classes', icon: BookOpen, badge: null, active: false },
-  { id: 'alerts', label: 'Student Alerts', icon: Bell, badge: '5', active: false },
-  { id: 'analytics', label: 'Subject Analytics', icon: BarChart2, badge: null, active: false },
-  { id: 'profiles', label: 'Student Profiles', icon: Users, badge: null, active: false },
-  { id: 'co', label: 'CO Attainment', icon: CheckCircle, badge: null, active: false },
-  { id: 'parent', label: 'Parent Communication', icon: MessageCircle, badge: null, active: false },
-  { id: 'reports', label: 'Reports', icon: FileText, badge: null, active: false },
+  { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null, path: '/dashboard/faculty' },
+  { id: 'classes', label: 'My Classes', icon: BookOpen, badge: null, path: '/dashboard/faculty/my-classes' },
+  { id: 'alerts', label: 'Student Alerts', icon: Bell, badge: '5', path: '/dashboard/faculty/alerts' },
+  { id: 'analytics', label: 'Subject Analytics', icon: BarChart2, badge: null, path: '/dashboard/faculty/analytics' },
+  { id: 'profiles', label: 'Student Profiles', icon: Users, badge: null, path: '/dashboard/faculty/student/profile' },
+  { id: 'co', label: 'CO Attainment', icon: CheckCircle, badge: null, path: '/dashboard/faculty/co-attainment' },
+  { id: 'parent', label: 'Parent Communication', icon: MessageCircle, badge: null, path: '/dashboard/faculty/parent-communication' },
+  { id: 'reports', label: 'Reports', icon: FileText, badge: null, path: '/dashboard/faculty/reports' },
 ]
 
 const statCards = [
@@ -105,7 +105,14 @@ export default function FacultyDashboard() {
 
         <nav className="flex-1 p-3 overflow-y-auto">
           {navLinks.map(link => (
-            <button key={link.id} onClick={() => setActiveNav(link.id)} className={`nav-link w-full text-left mb-0.5 ${activeNav === link.id ? 'bg-teal-50 text-teal-700 font-semibold' : ''}`}>
+            <button
+              key={link.id}
+              onClick={() => {
+                setActiveNav(link.id)
+                if (link.path) router.push(link.path)
+              }}
+              className={`nav-link w-full text-left mb-0.5 ${activeNav === link.id ? 'bg-teal-50 text-teal-700 font-semibold' : ''}`}
+            >
               <link.icon size={17} />
               <span className="flex-1">{link.label}</span>
               {link.badge && <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{link.badge}</span>}
