@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import {
   Home, BookOpen, Bell, BarChart2, Users, CheckCircle,
   MessageCircle, FileText, Settings, LogOut, Search, ChevronDown,
-  AlertTriangle, TrendingUp, Target, ExternalLink, Star, ChevronLeft, ChevronRight, AlertOctagon
+  AlertTriangle, TrendingUp, Target, ExternalLink, Star, ChevronLeft, ChevronRight, AlertOctagon, Brain
 } from 'lucide-react'
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell,
@@ -15,6 +15,7 @@ import {
 const navLinks = [
   { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null, path: '/dashboard/faculty' },
   { id: 'classes', label: 'My Classes', icon: BookOpen, badge: null, path: '/dashboard/faculty/my-classes' },
+  { id: 'intelligence', label: 'Student Intelligence', icon: Brain, badge: null, path: '/dashboard/faculty/student-intelligence' },
   { id: 'alerts', label: 'Student Alerts', icon: Bell, badge: '5', path: '/dashboard/faculty/alerts' },
   { id: 'analytics', label: 'Subject Analytics', icon: BarChart2, badge: null, path: '/dashboard/faculty/analytics' },
   { id: 'profiles', label: 'Student Profiles', icon: Users, badge: null, path: '/dashboard/faculty/student/profile' },
