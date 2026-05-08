@@ -543,7 +543,10 @@ export default function FacultyDashboard() {
                       Today's classes: 2 marked, 1 pending
                     </li>
                   </ul>
-                  <button className="mt-4 text-[10px] font-black text-teal-600 uppercase tracking-widest flex items-center gap-1 hover:gap-2 transition-all">
+                  <button 
+                    onClick={() => router.push('/dashboard/faculty/attendance')}
+                    className="mt-4 text-[10px] font-black text-teal-600 uppercase tracking-widest flex items-center gap-1 hover:gap-2 transition-all"
+                  >
                     View Attendance <ChevronRight size={12} />
                   </button>
                 </div>

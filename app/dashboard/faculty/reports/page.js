@@ -3,20 +3,20 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Home, BookOpen, Bell, BarChart2, Users, Target, MessageCircle, FileText, Settings, LogOut, Search, ChevronDown, Download, ExternalLink, Calendar, User, Activity, TrendingUp, Award, Grid, CheckCircle, Zap, AlertCircle, Plug } from 'lucide-react'
+import { Home, BookOpen, Bell, BarChart2, Users, Target, MessageSquare, FileText, Settings, LogOut, Search, ChevronDown, Download, ExternalLink, Calendar, User, Activity, TrendingUp, Award, Grid, CheckCircle, Zap, AlertCircle, Plug } from 'lucide-react'
 
 const navLinks = [
-  { id: 'dashboard',  label: 'Dashboard',        icon: Home,       badge: null,  active: false, path: '/dashboard/faculty' },
-  { id: 'classes',    label: 'My Classes',       icon: BookOpen,   badge: null,  active: false, path: '/dashboard/faculty/my-classes' },
-  { id: 'intelligence',label: 'Student Intelligence',icon: Grid,     badge: null,  active: false, path: '/dashboard/faculty/student-intelligence' },
-  { id: 'alerts',     label: 'Student Alerts',   icon: AlertCircle,badge: '5',   active: false, path: '/dashboard/faculty/alerts' },
-  { id: 'analytics',  label: 'Subject Analytics',icon: Activity,   badge: null,  active: false, path: '/dashboard/faculty/analytics' },
-  { id: 'profiles',   label: 'Student Profiles', icon: Users,      badge: null,  active: false, path: '/dashboard/faculty/student/profile' },
-  { id: 'co',         label: 'CO Attainment',    icon: CheckCircle,badge: null,  active: false, path: '/dashboard/faculty/co-attainment' },
-  { id: 'parent',     label: 'Parent Communication', icon: MessageSquare, badge: null, active: false, path: '/dashboard/faculty/parent-communication' },
-  { id: 'reports',    label: 'Reports',          icon: FileText,   badge: null,  active: true,  path: '/dashboard/faculty/reports' },
-  { id: 'assignments',label: 'Assignments (Moodle)', icon: BookOpen, badge: null, active: false, path: '/dashboard/faculty/my-classes' },
-  { id: 'attendance', label: 'Attendance (Vidya)',   icon: CheckCircle,badge: null, active: false, path: '/faculty/attendance' },
+  { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null, active: false, path: '/dashboard/faculty' },
+  { id: 'classes', label: 'My Classes', icon: BookOpen, badge: null, active: false, path: '/dashboard/faculty/my-classes' },
+  { id: 'intelligence', label: 'Student Intelligence', icon: Grid, badge: null, active: false, path: '/dashboard/faculty/student-intelligence' },
+  { id: 'alerts', label: 'Student Alerts', icon: AlertCircle, badge: '5', active: false, path: '/dashboard/faculty/alerts' },
+  { id: 'analytics', label: 'Subject Analytics', icon: Activity, badge: null, active: false, path: '/dashboard/faculty/analytics' },
+  { id: 'profiles', label: 'Student Profiles', icon: Users, badge: null, active: false, path: '/dashboard/faculty/student/profile' },
+  { id: 'co', label: 'CO Attainment', icon: CheckCircle, badge: null, active: false, path: '/dashboard/faculty/co-attainment' },
+  { id: 'parent', label: 'Parent Communication', icon: MessageSquare, badge: null, active: false, path: '/dashboard/faculty/parent-communication' },
+  { id: 'reports', label: 'Reports', icon: FileText, badge: null, active: true, path: '/dashboard/faculty/reports' },
+  { id: 'assignments', label: 'Assignments (Moodle)', icon: BookOpen, badge: null, active: false, path: '/dashboard/faculty/my-classes' },
+  { id: 'attendance', label: 'Attendance (Vidya)', icon: CheckCircle, badge: null, active: false, path: '/dashboard/faculty/attendance' },
 ]
 
 const mockReports = [

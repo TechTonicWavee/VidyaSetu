@@ -134,7 +134,7 @@ const navLinks = [
     icon: CheckCircle,
     badge: null,
     active: false,
-    path: "/faculty/attendance",
+    path: "/dashboard/faculty/attendance",
   },
 ];
 

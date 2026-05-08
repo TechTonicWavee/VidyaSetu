@@ -18,7 +18,7 @@ const navLinks = [
   { id: 'parent-vis', label: 'Parent Visit Mode',icon: Users,      badge: null,  active: true,  path: '/dashboard/faculty/parent-visit' },
   { id: 'reports',    label: 'Reports',          icon: FileText,   badge: null,  active: false, path: '/dashboard/faculty/reports' },
   { id: 'assignments',label: 'Assignments (Moodle)', icon: BookOpen, badge: null, active: false, path: '/dashboard/faculty/my-classes' },
-  { id: 'attendance', label: 'Attendance (Vidya)',   icon: CheckCircle,badge: null, active: false, path: '/faculty/attendance' },
+  { id: 'attendance', label: 'Attendance (Vidya)',   icon: CheckCircle,badge: null, active: false, path: '/dashboard/faculty/attendance' },
 ]
 
 const statCards = [
