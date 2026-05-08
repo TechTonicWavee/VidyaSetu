@@ -2,23 +2,27 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import {
-  Home, User, Activity, TrendingUp, Users, Bell, Award,
-  Grid, FileText, Settings, LogOut, Search, ChevronDown,
-  Download, Edit2, CheckCircle2, GripVertical, AlertTriangle, Send, Link as LinkIcon, Target
-} from 'lucide-react'
+import { Home, User, Activity, TrendingUp, Users, Bell, Award, Grid, FileText, Settings, LogOut, Search, ChevronDown, Download, Edit2, CheckCircle2, GripVertical, AlertTriangle, Send, Link as LinkIcon, Target, CheckCircle, Zap, BookOpen, AlertCircle, Plug } from 'lucide-react'
 
 const navLinks = [
-  { id: 'dashboard',  label: 'Dashboard',       icon: Home,       badge: null,  path: '/dashboard/student' },
-  { id: 'profile',    label: 'My Profile',      icon: User,       badge: null,  path: '/dashboard/student/profile' },
-  { id: 'skill',      label: 'Skill Radar',     icon: Activity,   badge: null,  path: '/dashboard/student/skill-radar' },
-  { id: 'placement',  label: 'Placement Readiness', icon: Target, badge: null,  path: '/dashboard/student/placement' },
-  { id: 'career',     label: 'Career Path',     icon: TrendingUp, badge: null,  path: '/dashboard/student/career' },
-  { id: 'team',       label: 'My Team',         icon: Users,      badge: null,  path: '/dashboard/student/team' },
-  { id: 'notifs',     label: 'Notifications',   icon: Bell,       badge: '3',   path: '/dashboard/student/notifications' },
-  { id: 'rankings',   label: 'Rankings',        icon: Award,      badge: null,  path: '/dashboard/student/rankings' },
-  { id: 'directory',  label: 'Domain Directory',icon: Grid,       badge: null,  path: '/dashboard/student/directory' },
-  { id: 'resume',     label: 'Resume Builder',  icon: FileText,   badge: null,  path: '/dashboard/student/resume' },
+  { id: 'dashboard',  label: 'Dashboard',       icon: Home,       badge: null,  active: true, path: '/dashboard/student' },
+  { id: 'profile',    label: 'My Profile',       icon: User,       badge: null,  active: false, path: '/dashboard/student/profile' },
+  { id: 'skill',      label: 'Skill Radar',      icon: Activity,   badge: null,  active: false, path: '/dashboard/student/skill-radar' },
+  { id: 'spi',        label: 'SPI Score',        icon: TrendingUp, badge: null,  active: false, path: '/dashboard/student/spi' },
+  { id: 'career',     label: 'Career Path',      icon: TrendingUp, badge: null,  active: false, path: '/dashboard/student/career' },
+  { id: 'team',       label: 'My Team',          icon: Users,      badge: null,  active: false, path: '/dashboard/student/my-team' },
+  { id: 'notifs',     label: 'Notifications',    icon: Bell,       badge: '3',   active: false, path: '/dashboard/student/notifications' },
+  { id: 'rankings',   label: 'Rankings',         icon: Award,      badge: null,  active: false, path: '/dashboard/student/rankings' },
+  { id: 'directory',  label: 'Domain Directory', icon: Grid,       badge: null,  active: false, path: '/dashboard/student/directory' },
+  { id: 'resume',     label: 'Resume Builder',   icon: FileText,   badge: null,  active: false, path: '/dashboard/student/resume' },
+  { id: 'placement',  label: 'Placement Readiness', icon: Target, badge: null,  active: false, path: '/dashboard/student/placement' },
+  { id: 'action',     label: 'Action Plan',      icon: CheckCircle, badge: null,  active: false, path: '/dashboard/student/action-plan' },
+  { id: 'potential',  label: 'Potential Gap',    icon: Zap,        badge: null,  active: false, path: '/dashboard/student/potential-gap' },
+  { id: 'extra',      label: 'Extracurriculars', icon: Award,      badge: null,  active: false, path: '/dashboard/student/extracurricular' },
+  { id: 'integrations', label: 'Integrations',   icon: Plug,       badge: null,  active: false, path: '/integrations' },
+  { id: 'assignments',  label: 'Assignments',    icon: BookOpen,   badge: null,  active: false, path: '/student/assignments' },
+  { id: 'attendance',   label: 'Attendance',     icon: CheckCircle,badge: null,  active: false, path: '/student/attendance' },
+  { id: 'advisor',    label: 'AI Advisor',       icon: Search,     badge: null,  active: false, path: '/ai-advisor' },
 ]
 
 const initialSections = [
@@ -87,9 +91,9 @@ export default function ResumeBuilderPage() {
       <aside className={`${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'} flex-shrink-0 bg-white border-r border-gray-100 flex flex-col transition-all duration-300 shadow-sm z-20`}>
         <div className="p-5 border-b border-gray-50">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}>AS</div>
+            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}>PR</div>
             <div className="overflow-hidden">
-              <p className="font-semibold text-sm text-navy truncate">Arman Singh</p>
+              <p className="font-semibold text-sm text-navy truncate">Priyanshu Raj</p>
               <p className="text-xs text-gray-500 truncate">CSE — 2nd Year</p>
             </div>
           </div>
@@ -136,7 +140,7 @@ export default function ResumeBuilderPage() {
             <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
           </button>
           <div className="flex items-center gap-2 cursor-pointer group">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs" style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}>AS</div>
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs" style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}>PR</div>
             <ChevronDown size={14} className="text-gray-400 group-hover:text-gray-600 transition" />
           </div>
         </header>
@@ -307,7 +311,7 @@ export default function ResumeBuilderPage() {
                       <div className="w-[30%] p-8 text-white h-full" style={{ backgroundColor: accentColor }}>
                         {isEnabled('personal') && (
                           <div className="mb-10">
-                            <h1 className="text-3xl font-bold mb-2 break-words leading-tight">ARMAN SINGH</h1>
+                            <h1 className="text-3xl font-bold mb-2 break-words leading-tight">PRIYANSHU RAJ</h1>
                             <div className="space-y-3 mt-6 text-sm text-white/90">
                               <p className="flex items-center gap-2"><Send size={14} className="opacity-70"/> arman.singh@college.edu</p>
                               <p className="flex items-center gap-2"><Send size={14} className="opacity-70"/> +91 98765 43210</p>
@@ -443,7 +447,7 @@ export default function ResumeBuilderPage() {
                       
                       {isEnabled('personal') && (
                         <div className={`${template === 'classic' ? 'text-white p-8 text-center' : 'p-8 pb-4 text-center border-b border-gray-200'}`} style={{ backgroundColor: template === 'classic' ? accentColor : 'transparent' }}>
-                          <h1 className={`text-4xl font-bold mb-3 tracking-wide ${template === 'minimal' ? 'text-gray-900' : ''}`}>ARMAN SINGH</h1>
+                          <h1 className={`text-4xl font-bold mb-3 tracking-wide ${template === 'minimal' ? 'text-gray-900' : ''}`}>PRIYANSHU RAJ</h1>
                           <div className={`flex flex-wrap justify-center gap-x-6 gap-y-2 text-sm ${template === 'minimal' ? 'text-gray-600' : 'text-white/90'}`}>
                             <span>arman.singh@college.edu</span>
                             <span>+91 98765 43210</span>

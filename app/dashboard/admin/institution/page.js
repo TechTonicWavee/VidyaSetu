@@ -2,17 +2,14 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import {
-  LayoutDashboard, Settings, Activity, BookOpen, Upload, Building, Building2,
-  Database, BarChart, CheckCircle2, ChevronDown, Search, Plus, Edit2, Trash2,
-  Calendar, Check, X, Bell
-} from 'lucide-react'
+import { LayoutDashboard, Settings, Activity, BookOpen, Upload, Building, Building2, Database, BarChart, CheckCircle2, ChevronDown, Search, Plus, Edit2, Trash2, Calendar, Check, X, Bell, Home, User, TrendingUp, Users, Award, Grid, FileText, LogOut, Target, CheckCircle, Zap, AlertCircle, Plug } from 'lucide-react'
 
 const navLinks = [
-  { id: 'overview', label: 'System Overview', icon: LayoutDashboard, path: '/dashboard/admin' },
-  { id: 'config', label: 'Configuration Panel', icon: Settings, path: '/dashboard/admin/configuration' },
-  { id: 'spi', label: 'SPI Config', icon: Activity, path: '/dashboard/admin/spi-config' },
-  { id: 'institution', label: 'Institution Settings', icon: BookOpen, path: '/dashboard/admin/institution' },
+  { id: 'dashboard',  label: 'Dashboard',        icon: Home,       badge: null,  active: true, path: '/dashboard/admin' },
+  { id: 'config',     label: 'Configuration',    icon: Settings,   badge: null,  active: false, path: '/dashboard/admin/configuration' },
+  { id: 'spi-config', label: 'SPI Weight Config',icon: Target,     badge: null,  active: false, path: '/dashboard/admin/spi-config' },
+  { id: 'institution',label: 'Institution Settings',icon: Grid,    badge: null,  active: false, path: '/dashboard/admin/institution' },
+  { id: 'logs',       label: 'System Logs',      icon: Activity,   badge: null,  active: false, path: '/dashboard/admin/configuration' },
 ]
 
 const initialDates = [

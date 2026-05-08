@@ -2,26 +2,22 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import {
-  Home, BookOpen, Bell, BarChart2, Users, CheckCircle,
-  MessageCircle, FileText, Settings, LogOut, Search, ChevronDown,
-  TrendingUp, TrendingDown, MinusCircle, PieChart as PieIcon, Lightbulb, Users2, Building,
-  AlertOctagon, Cpu, Download, ArrowUpRight, Zap, Target, Brain
-} from 'lucide-react'
+import { Home, BookOpen, Bell, BarChart2, Users, CheckCircle, MessageCircle, FileText, Settings, LogOut, Search, ChevronDown, TrendingUp, TrendingDown, MinusCircle, PieChart as PieIcon, Lightbulb, Users2, Building, AlertOctagon, Cpu, Download, ArrowUpRight, Zap, Target, User, Activity, Award, Grid, AlertCircle, Plug } from 'lucide-react'
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, Cell,
   PieChart, Pie, Legend, CartesianGrid
 } from 'recharts'
 
 const navLinks = [
-  { id: 'department',  label: 'Department Overview',  icon: Building, path: '/dashboard/dean/department' },
-  { id: 'forecasting', label: 'Cohort Forecasting',   icon: PieIcon,  path: '/dashboard/dean/forecasting' },
-  { id: 'cross-branch',label: 'Cross-Branch Insights',icon: FileText, path: '/dashboard/dean/cross-branch' },
-  { id: 'faculty',     label: 'Faculty Analytics',    icon: Users2,   path: '/dashboard/dean/faculty-performance' },
-  { id: 'curriculum',  label: 'Curriculum Gaps',      icon: Lightbulb,path: '/dashboard/dean/curriculum' },
-  { id: 'student-intelligence', label: 'Student Intelligence', icon: Brain,    path: '/dashboard/dean/student-intelligence' },
-  { id: 'policy-simulation', label: 'Policy Simulation', icon: Cpu,      path: '/dashboard/dean/policy-simulation' },
-  { id: 'reports',     label: 'Reports',              icon: FileText, path: '/dashboard/dean/reports' },
+  { id: 'dashboard',  label: 'Dashboard',        icon: Home,       badge: null,  active: false, path: '/dashboard/dean' },
+  { id: 'department', label: 'Department Overview', icon: Grid,    badge: null,  active: false, path: '/dashboard/dean/department' },
+  { id: 'faculty',    label: 'Faculty Performance', icon: Users,   badge: null,  active: false, path: '/dashboard/dean/faculty-performance' },
+  { id: 'forecast',   label: 'Cohort Forecasting',  icon: TrendingUp,badge: null,active: true,  path: '/dashboard/dean/forecasting' },
+  { id: 'curriculum', label: 'Curriculum Analysis', icon: BookOpen,badge: null,  active: false, path: '/dashboard/dean/curriculum' },
+  { id: 'policy',     label: 'Policy Simulation',   icon: Activity,badge: null,  active: false, path: '/dashboard/dean/policy-simulation' },
+  { id: 'accredit',   label: 'Accreditation Reports',icon: FileText,badge: null, active: false, path: '/dashboard/dean/accreditation' },
+  { id: 'cross',      label: 'Cross-Branch Insights', icon: Target, badge: null, active: false, path: '/dashboard/dean/cross-branch' },
+  { id: 'advisor',    label: 'AI Advisor',       icon: Search,     badge: null,  active: false, path: '/ai-advisor' },
 ]
 
 const pieData = [

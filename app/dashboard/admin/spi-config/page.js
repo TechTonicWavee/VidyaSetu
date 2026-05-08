@@ -2,19 +2,17 @@
 
 import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
-import {
-  LayoutDashboard, Settings, Activity, BookOpen, Info, Book,
-  Code, TrendingUp, Award, CheckCircle2, Search, ChevronDown
-} from 'lucide-react'
+import { LayoutDashboard, Settings, Activity, BookOpen, Info, Book, Code, TrendingUp, Award, CheckCircle2, Search, ChevronDown, Home, User, Users, Bell, Grid, FileText, LogOut, Target, CheckCircle, Zap, AlertCircle, Plug } from 'lucide-react'
 
 const navLinks = [
-  { id: 'overview', label: 'System Overview', icon: LayoutDashboard, path: '/dashboard/admin' },
-  { id: 'config', label: 'Configuration Panel', icon: Settings, path: '/dashboard/admin/configuration' },
-  { id: 'spi', label: 'SPI Config', icon: Activity, path: '/dashboard/admin/spi-config' },
-  { id: 'institution', label: 'Institution Settings', icon: BookOpen, path: '/dashboard/admin/institution' },
+  { id: 'dashboard',  label: 'Dashboard',        icon: Home,       badge: null,  active: true, path: '/dashboard/admin' },
+  { id: 'config',     label: 'Configuration',    icon: Settings,   badge: null,  active: false, path: '/dashboard/admin/configuration' },
+  { id: 'spi-config', label: 'SPI Weight Config',icon: Target,     badge: null,  active: false, path: '/dashboard/admin/spi-config' },
+  { id: 'institution',label: 'Institution Settings',icon: Grid,    badge: null,  active: false, path: '/dashboard/admin/institution' },
+  { id: 'logs',       label: 'System Logs',      icon: Activity,   badge: null,  active: false, path: '/dashboard/admin/configuration' },
 ]
 
-// Dummy raw scores for Arman Singh
+// Dummy raw scores for Priyanshu Raj
 const rawScores = {
   academic: 68,
   skill: 71,
@@ -286,10 +284,10 @@ export default function SPIConfigPanel() {
                   <div className="mb-6 flex items-start justify-between">
                     <div>
                       <h2 className="text-xl font-bold text-navy mb-1">Live SPI Preview</h2>
-                      <p className="text-sm text-gray-500">See how current weights affect Arman Singh's SPI score</p>
+                      <p className="text-sm text-gray-500">See how current weights affect Priyanshu Raj's SPI score</p>
                     </div>
                     <div className="px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-xs font-bold text-gray-600 flex items-center gap-1 cursor-pointer hover:bg-gray-100">
-                      Previewing: Arman Singh
+                      Previewing: Priyanshu Raj
                     </div>
                   </div>
 
@@ -364,11 +362,11 @@ export default function SPIConfigPanel() {
                   <div className="space-y-3 pt-4 border-t border-gray-100">
                     <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
                       <p className="text-xs font-bold text-navy mb-1">What if you used Academic Focus preset?</p>
-                      <p className="text-sm text-gray-600">Arman's SPI would be <span className="font-bold">{academicSpi.toFixed(1)}</span> <span className={`text-xs font-bold ${academicSpi > currentSpi ? 'text-green-600' : 'text-red-600'}`}>({academicSpi > currentSpi ? '+' : ''}{(academicSpi - currentSpi).toFixed(1)} from current)</span></p>
+                      <p className="text-sm text-gray-600">Priyanshu's SPI would be <span className="font-bold">{academicSpi.toFixed(1)}</span> <span className={`text-xs font-bold ${academicSpi > currentSpi ? 'text-green-600' : 'text-red-600'}`}>({academicSpi > currentSpi ? '+' : ''}{(academicSpi - currentSpi).toFixed(1)} from current)</span></p>
                     </div>
                     <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
                       <p className="text-xs font-bold text-navy mb-1">What if you used Project Focus preset?</p>
-                      <p className="text-sm text-gray-600">Arman's SPI would be <span className="font-bold">{projectSpi.toFixed(1)}</span> <span className={`text-xs font-bold ${projectSpi > currentSpi ? 'text-green-600' : 'text-red-600'}`}>({projectSpi > currentSpi ? '+' : ''}{(projectSpi - currentSpi).toFixed(1)} from current)</span></p>
+                      <p className="text-sm text-gray-600">Priyanshu's SPI would be <span className="font-bold">{projectSpi.toFixed(1)}</span> <span className={`text-xs font-bold ${projectSpi > currentSpi ? 'text-green-600' : 'text-red-600'}`}>({projectSpi > currentSpi ? '+' : ''}{(projectSpi - currentSpi).toFixed(1)} from current)</span></p>
                     </div>
                   </div>
                 </div>

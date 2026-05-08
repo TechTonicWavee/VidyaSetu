@@ -2,21 +2,14 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import {
-  Home, Users, Settings, Sliders, Calendar, Terminal, Building,
-  LogOut, Search, ChevronDown, Bell, CheckCircle, Clock, AlertCircle,
-  Play, Settings2, ShieldCheck, Database
-} from 'lucide-react'
+import { Home, Users, Settings, Sliders, Calendar, Terminal, Building, LogOut, Search, ChevronDown, Bell, CheckCircle, Clock, AlertCircle, Play, Settings2, ShieldCheck, Database, User, Activity, TrendingUp, Award, Grid, FileText, Target, Zap, BookOpen, Plug } from 'lucide-react'
 
 const navLinks = [
-  { id: 'dashboard', label: 'Dashboard', icon: Home, active: true },
-  { id: 'faculty', label: 'Manage Faculty', icon: Users, active: false },
-  { id: 'students', label: 'Manage Students', icon: Users, active: false },
-  { id: 'branch', label: 'Branch Configuration', icon: Settings, active: false },
-  { id: 'spi', label: 'SPI Weight Config', icon: Sliders, active: false },
-  { id: 'calendar', label: 'Academic Calendar', icon: Calendar, active: false },
-  { id: 'logs', label: 'System Logs', icon: Terminal, active: false },
-  { id: 'institution', label: 'Institution Settings', icon: Building, active: false },
+  { id: 'dashboard',  label: 'Dashboard',        icon: Home,       badge: null,  active: true, path: '/dashboard/admin' },
+  { id: 'config',     label: 'Configuration',    icon: Settings,   badge: null,  active: false, path: '/dashboard/admin/configuration' },
+  { id: 'spi-config', label: 'SPI Weight Config',icon: Target,     badge: null,  active: false, path: '/dashboard/admin/spi-config' },
+  { id: 'institution',label: 'Institution Settings',icon: Grid,    badge: null,  active: false, path: '/dashboard/admin/institution' },
+  { id: 'logs',       label: 'System Logs',      icon: Activity,   badge: null,  active: false, path: '/dashboard/admin/configuration' },
 ]
 
 const statCards = [

@@ -2,26 +2,25 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import {
-  Home, BookOpen, Bell, BarChart2, Users, CheckCircle,
-  MessageCircle, FileText, Settings, LogOut, Search, ChevronDown,
-  AlertTriangle, TrendingUp, Target, ExternalLink, Star, ChevronLeft, ChevronRight, AlertOctagon, Brain
-} from 'lucide-react'
+import { Home, BookOpen, Bell, BarChart2, Users, CheckCircle, MessageCircle, FileText, Settings, LogOut, Search, ChevronDown, AlertTriangle, TrendingUp, Target, ExternalLink, Star, ChevronLeft, ChevronRight, AlertOctagon, User, Activity, Award, Grid, Zap, AlertCircle, Plug } from 'lucide-react'
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell,
   LineChart, Line, CartesianGrid, Dot
 } from 'recharts'
 
 const navLinks = [
-  { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null, path: '/dashboard/faculty' },
-  { id: 'classes', label: 'My Classes', icon: BookOpen, badge: null, path: '/dashboard/faculty/my-classes' },
-  { id: 'intelligence', label: 'Student Intelligence', icon: Brain, badge: null, path: '/dashboard/faculty/student-intelligence' },
-  { id: 'alerts', label: 'Student Alerts', icon: Bell, badge: '5', path: '/dashboard/faculty/alerts' },
-  { id: 'analytics', label: 'Subject Analytics', icon: BarChart2, badge: null, path: '/dashboard/faculty/analytics' },
-  { id: 'profiles', label: 'Student Profiles', icon: Users, badge: null, path: '/dashboard/faculty/student/profile' },
-  { id: 'co', label: 'CO Attainment', icon: CheckCircle, badge: null, path: '/dashboard/faculty/co-attainment' },
-  { id: 'parent', label: 'Parent Communication', icon: MessageCircle, badge: null, path: '/dashboard/faculty/parent-communication' },
-  { id: 'reports', label: 'Reports', icon: FileText, badge: null, path: '/dashboard/faculty/reports' },
+  { id: 'dashboard',  label: 'Dashboard',        icon: Home,       badge: null,  active: false, path: '/dashboard/faculty' },
+  { id: 'classes',    label: 'My Classes',       icon: BookOpen,   badge: null,  active: false, path: '/dashboard/faculty/my-classes' },
+  { id: 'intelligence',label: 'Student Intelligence',icon: Grid,     badge: null,  active: false, path: '/dashboard/faculty/student-intelligence' },
+  { id: 'alerts',     label: 'Student Alerts',   icon: AlertCircle,badge: '5',   active: false, path: '/dashboard/faculty/alerts' },
+  { id: 'analytics',  label: 'Subject Analytics',icon: Activity,   badge: null,  active: true,  path: '/dashboard/faculty/analytics' },
+  { id: 'profiles',   label: 'Student Profiles', icon: Users,      badge: null,  active: false, path: '/dashboard/faculty/student/profile' },
+  { id: 'co',         label: 'CO Attainment',    icon: CheckCircle,badge: null,  active: false, path: '/dashboard/faculty/co-attainment' },
+  { id: 'parent',     label: 'Parent Communication', icon: MessageCircle, badge: null, active: false, path: '/dashboard/faculty/parent-communication' },
+  { id: 'reports',    label: 'Reports',          icon: FileText,   badge: null,  active: false, path: '/dashboard/faculty/reports' },
+  { id: 'assignments',label: 'Assignments (Moodle)', icon: BookOpen, badge: null, active: false, path: '/faculty/assignments' },
+  { id: 'attendance', label: 'Attendance (Vidya)',   icon: CheckCircle,badge: null, active: false, path: '/faculty/attendance' },
+  { id: 'advisor',    label: 'AI Advisor',       icon: Search,     badge: null,  active: false, path: '/ai-advisor' },
 ]
 
 const scoreDistData = [
@@ -63,7 +62,7 @@ const studentTableData = [
   { rank: 2, name: 'Ananya Verma', roll: '2CS07', internal: '27/30', external: '62/70', total: '89/100', att: '88%', status: 'Strong', sColor: 'green' },
   { rank: 3, name: 'Aryan Mehta', roll: '2CS41', internal: '26/30', external: '60/70', total: '86/100', att: '90%', status: 'Strong', sColor: 'green' },
   { rank: 4, name: 'Priya Sharma', roll: '2CS18', internal: '25/30', external: '58/70', total: '83/100', att: '85%', status: 'On Track', sColor: 'blue' },
-  { rank: 5, name: 'Arman Singh', roll: '2CS04', internal: '24/30', external: '47/70', total: '71/100', att: '86%', status: 'On Track', sColor: 'blue' },
+  { rank: 5, name: 'Priyanshu Raj', roll: '2CS04', internal: '24/30', external: '47/70', total: '71/100', att: '86%', status: 'On Track', sColor: 'blue' },
   { rank: 6, name: 'Neha Joshi', roll: '2CS33', internal: '22/30', external: '44/70', total: '66/100', att: '80%', status: 'Watch', sColor: 'amber' },
   { rank: 7, name: 'Divya Patel', roll: '2CS14', internal: '20/30', external: '43/70', total: '63/100', att: '78%', status: 'Watch', sColor: 'amber' },
   { rank: 8, name: 'Karan Joshi', roll: '2CS15', internal: '18/30', external: '41/70', total: '59/100', att: '74%', status: 'At Risk', sColor: 'red', alert: true },
@@ -201,7 +200,7 @@ export default function SubjectAnalyticsPage() {
 
             {/* SECTION A - CLASS PERFORMANCE */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              
+
               {/* Score Distribution */}
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col">
                 <h3 className="text-lg font-bold text-navy mb-6">Unit 3 Score Distribution — DBMS</h3>
@@ -228,7 +227,7 @@ export default function SubjectAnalyticsPage() {
               {/* Unit-wise Trend */}
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col relative">
                 <h3 className="text-lg font-bold text-navy mb-6">Average Score Per Unit — DBMS</h3>
-                
+
                 {/* Custom annotation overlay */}
                 <div className="absolute top-[35%] right-[10%] bg-amber-50 border border-amber-200 text-amber-800 text-[10px] font-bold p-2 rounded-lg max-w-[150px] shadow-sm z-10 hidden sm:block">
                   Declining trend — Unit 3 was normalization and transactions
@@ -394,7 +393,7 @@ export default function SubjectAnalyticsPage() {
               </div>
               <div className="p-6 bg-gray-50 border-t border-gray-100 flex flex-col sm:flex-row justify-between items-center gap-4">
                 <p className="text-sm font-medium text-gray-700">
-                  <span className="font-bold text-navy">1 of 5 COs achieved. 3 COs below target.</span><br className="hidden sm:block"/>
+                  <span className="font-bold text-navy">1 of 5 COs achieved. 3 COs below target.</span><br className="hidden sm:block" />
                   Overall CO attainment: <span className="font-bold">68.6%</span> — need 6.4% improvement to meet NBA requirements.
                 </p>
                 <button className="px-5 py-2.5 bg-blue-600 text-white font-bold text-sm rounded-xl hover:bg-blue-700 transition shadow-sm whitespace-nowrap">
@@ -419,7 +418,7 @@ export default function SubjectAnalyticsPage() {
                   </select>
                 </div>
               </div>
-              
+
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse whitespace-nowrap">
                   <thead>

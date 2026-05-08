@@ -3,26 +3,25 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import {
-  Home, User, Activity, BookOpen, Bell, FileText, Settings, LogOut, Search,
-  ChevronDown, AlertTriangle, MessageSquare, ArrowLeft, Plus, Target,
-  CheckCircle2, XCircle, TrendingDown, TrendingUp, Filter, Star, Brain
-} from 'lucide-react'
+import { Home, User, Activity, BookOpen, Bell, FileText, Settings, LogOut, Search, ChevronDown, AlertTriangle, MessageSquare, ArrowLeft, Plus, Target, CheckCircle2, XCircle, TrendingDown, TrendingUp, Filter, Star, Users, Award, Grid, CheckCircle, Zap, AlertCircle, Plug } from 'lucide-react'
 import {
   LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid,
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis
 } from 'recharts'
 
 const navLinks = [
-  { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null, path: '/dashboard/faculty' },
-  { id: 'classes', label: 'My Classes', icon: BookOpen, badge: null, path: '/dashboard/faculty/my-classes' },
-  { id: 'intelligence', label: 'Student Intelligence', icon: Brain, badge: null, path: '/dashboard/faculty/student-intelligence' },
-  { id: 'alerts', label: 'Student Alerts', icon: Bell, badge: '5', path: '/dashboard/faculty/alerts' },
-  { id: 'analytics', label: 'Subject Analytics', icon: Activity, badge: null, path: '/dashboard/faculty/analytics' },
-  { id: 'profiles', label: 'Student Profiles', icon: User, badge: null, path: '/dashboard/faculty/student/profile' },
-  { id: 'co', label: 'CO Attainment', icon: Target, badge: null, path: '/dashboard/faculty/co-attainment' },
-  { id: 'parent', label: 'Parent Communication', icon: MessageSquare, badge: null, path: '/dashboard/faculty/parent-communication' },
-  { id: 'reports', label: 'Reports', icon: FileText, badge: null, path: '/dashboard/faculty/reports' },
+  { id: 'dashboard',  label: 'Dashboard',        icon: Home,       badge: null,  active: false, path: '/dashboard/faculty' },
+  { id: 'classes',    label: 'My Classes',       icon: BookOpen,   badge: null,  active: false, path: '/dashboard/faculty/my-classes' },
+  { id: 'intelligence',label: 'Student Intelligence',icon: Grid,     badge: null,  active: false, path: '/dashboard/faculty/student-intelligence' },
+  { id: 'alerts',     label: 'Student Alerts',   icon: AlertCircle,badge: '5',   active: false, path: '/dashboard/faculty/alerts' },
+  { id: 'analytics',  label: 'Subject Analytics',icon: Activity,   badge: null,  active: false, path: '/dashboard/faculty/analytics' },
+  { id: 'profiles',   label: 'Student Profiles', icon: Users,      badge: null,  active: true,  path: '/dashboard/faculty/student/profile' },
+  { id: 'co',         label: 'CO Attainment',    icon: CheckCircle,badge: null,  active: false, path: '/dashboard/faculty/co-attainment' },
+  { id: 'parent',     label: 'Parent Communication', icon: MessageSquare, badge: null, active: false, path: '/dashboard/faculty/parent-communication' },
+  { id: 'reports',    label: 'Reports',          icon: FileText,   badge: null,  active: false, path: '/dashboard/faculty/reports' },
+  { id: 'assignments',label: 'Assignments (Moodle)', icon: BookOpen, badge: null, active: false, path: '/faculty/assignments' },
+  { id: 'attendance', label: 'Attendance (Vidya)',   icon: CheckCircle,badge: null, active: false, path: '/faculty/attendance' },
+  { id: 'advisor',    label: 'AI Advisor',       icon: Search,     badge: null,  active: false, path: '/ai-advisor' },
 ]
 
 const dbmsTrend = [
@@ -103,8 +102,11 @@ export default function FacultyStudentProfile() {
             <button
               key={link.id}
               onClick={() => {
-                setActiveNav(link.id)
-                if (link.path) router.push(link.path)
+                if (link.path) {
+                  router.push(link.path)
+                } else {
+                  if (typeof setActiveNav === 'function') setActiveNav(link.id)
+                }
               }}
               className={`nav-link w-full text-left mb-0.5 ${activeNav === link.id ? 'bg-teal-50 text-teal-700 font-semibold' : ''}`}
             >
@@ -804,7 +806,7 @@ export default function FacultyStudentProfile() {
 
                   {/* Resolved Alerts */}
                   <div className="pt-6 border-t border-gray-200">
-                    <h3 className="text-lg font-bold mb-4 flex items-center gap-2 text-gray-400">
+                    <h3 className="text-lg font-bold text-navy mb-4 flex items-center gap-2 text-gray-400">
                       <CheckCircle2 size={18} />
                       Resolved Alerts
                     </h3>
@@ -820,7 +822,7 @@ export default function FacultyStudentProfile() {
                             <span className="text-xs text-gray-500 font-bold">Generated: 1 Mar 2026</span>
                             <span className="text-xs font-bold text-green-600">Resolved: 5 Mar</span>
                           </div>
-                          <h4 className="font-bold text-sm mb-3 line-through text-gray-500">DBMS Assignment 2 Submitted Late</h4>
+                          <h4 className="font-bold text-navy text-sm mb-3 line-through text-gray-500">DBMS Assignment 2 Submitted Late</h4>
                           
                           <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 mb-2">
                             <p className="text-xs font-bold text-gray-500 mb-1">Action taken:</p>
@@ -842,7 +844,7 @@ export default function FacultyStudentProfile() {
                             <span className="text-xs text-gray-500 font-bold">Generated: 15 Feb 2026</span>
                             <span className="text-xs font-bold text-green-600">Resolved: 28 Feb</span>
                           </div>
-                          <h4 className="font-bold text-sm mb-3 line-through text-gray-500">Attendance Warning — OS 73%</h4>
+                          <h4 className="font-bold text-navy text-sm mb-3 line-through text-gray-500">Attendance Warning — OS 73%</h4>
                           
                           <div className="bg-gray-50 p-3 rounded-lg border border-gray-100 mb-2">
                             <p className="text-xs font-bold text-gray-500 mb-1">Action taken:</p>

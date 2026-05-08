@@ -22,7 +22,7 @@ const subjects = [
 
 const recommendations = [
   { icon: AlertTriangle, iconColor: 'text-amber-500', text: 'Encourage focused study on Theory of Computation — exam in 3 weeks, attendance is borderline' },
-  { icon: Star, iconColor: 'text-blue-500', text: 'Arman excels in project work — support him in applying for the upcoming hackathon' },
+  { icon: Star, iconColor: 'text-blue-500', text: 'Priyanshu excels in project work — support him in applying for the upcoming hackathon' },
   { icon: CalendarDays, iconColor: 'text-teal-500', text: 'Schedule a meeting with Prof. Priya Kapoor to discuss OS performance improvement plan' },
 ]
 
@@ -55,7 +55,7 @@ export default function ParentDashboard() {
               AS
             </div>
             <div className="mt-2 md:mt-0">
-              <h1 className="text-3xl font-bold text-navy mb-1">Arman Singh</h1>
+              <h1 className="text-3xl font-bold text-navy mb-1">Priyanshu Raj</h1>
               <p className="text-gray-600 font-medium">CSE · 2nd Year · Section B</p>
               <p className="text-gray-500 text-sm mt-1">Roll No: 2CS04</p>
             </div>
@@ -124,7 +124,7 @@ export default function ParentDashboard() {
 
         {/* Bottom actions */}
         <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 animate-fade-in" style={{ animationDelay: '0.6s' }}>
-          <h2 className="text-lg font-bold text-navy mb-4 text-center md:text-left">Arman's Strongest Qualities</h2>
+          <h2 className="text-lg font-bold text-navy mb-4 text-center md:text-left">Priyanshu's Strongest Qualities</h2>
           <div className="flex flex-wrap justify-center md:justify-start gap-3 mb-8">
             <span className="px-4 py-2 bg-blue-50 text-blue-700 rounded-full text-sm font-semibold border border-blue-100">Project Builder</span>
             <span className="px-4 py-2 bg-teal-50 text-teal-700 rounded-full text-sm font-semibold border border-teal-100">Team Player</span>

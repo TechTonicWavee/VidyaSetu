@@ -2,23 +2,27 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import {
-  Home, User, Activity, TrendingUp, Users, Bell, Award,
-  Grid, FileText, Settings, LogOut, Search, ChevronDown,
-  Cpu, Sparkles, CheckCircle, AlertTriangle, ArrowRight, X, Circle,
-  Linkedin, Target, Check
-} from 'lucide-react'
+import { Home, User, Activity, TrendingUp, Users, Bell, Award, Grid, FileText, Settings, LogOut, Search, ChevronDown, Cpu, Sparkles, CheckCircle, AlertTriangle, ArrowRight, X, Circle, Linkedin, Target, Check, Zap, BookOpen, AlertCircle, Plug } from 'lucide-react'
 
 const navLinks = [
-  { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null, path: '/dashboard/student' },
-  { id: 'profile', label: 'My Profile', icon: User, badge: null, path: '/dashboard/student/profile' },
-  { id: 'skill', label: 'Skill Radar', icon: Activity, badge: null, path: '/dashboard/student/skill-radar' },
-  { id: 'career', label: 'Career Path', icon: TrendingUp, badge: null, path: '/dashboard/student/career' },
-  { id: 'team', label: 'My Team', icon: Users, badge: null, path: '/dashboard/student/my-team' },
-  { id: 'notifs', label: 'Notifications', icon: Bell, badge: '3', path: '/dashboard/student/notifications' },
-  { id: 'rankings', label: 'Rankings', icon: Award, badge: null, path: '/dashboard/student/rankings' },
-  { id: 'directory', label: 'Domain Directory', icon: Grid, badge: null, path: '/dashboard/student/directory' },
-  { id: 'resume', label: 'Resume Builder', icon: FileText, badge: null, path: '/dashboard/student' },
+  { id: 'dashboard',  label: 'Dashboard',       icon: Home,       badge: null,  active: true, path: '/dashboard/student' },
+  { id: 'profile',    label: 'My Profile',       icon: User,       badge: null,  active: false, path: '/dashboard/student/profile' },
+  { id: 'skill',      label: 'Skill Radar',      icon: Activity,   badge: null,  active: false, path: '/dashboard/student/skill-radar' },
+  { id: 'spi',        label: 'SPI Score',        icon: TrendingUp, badge: null,  active: false, path: '/dashboard/student/spi' },
+  { id: 'career',     label: 'Career Path',      icon: TrendingUp, badge: null,  active: false, path: '/dashboard/student/career' },
+  { id: 'team',       label: 'My Team',          icon: Users,      badge: null,  active: false, path: '/dashboard/student/my-team' },
+  { id: 'notifs',     label: 'Notifications',    icon: Bell,       badge: '3',   active: false, path: '/dashboard/student/notifications' },
+  { id: 'rankings',   label: 'Rankings',         icon: Award,      badge: null,  active: false, path: '/dashboard/student/rankings' },
+  { id: 'directory',  label: 'Domain Directory', icon: Grid,       badge: null,  active: false, path: '/dashboard/student/directory' },
+  { id: 'resume',     label: 'Resume Builder',   icon: FileText,   badge: null,  active: false, path: '/dashboard/student/resume' },
+  { id: 'placement',  label: 'Placement Readiness', icon: Target, badge: null,  active: false, path: '/dashboard/student/placement' },
+  { id: 'action',     label: 'Action Plan',      icon: CheckCircle, badge: null,  active: false, path: '/dashboard/student/action-plan' },
+  { id: 'potential',  label: 'Potential Gap',    icon: Zap,        badge: null,  active: false, path: '/dashboard/student/potential-gap' },
+  { id: 'extra',      label: 'Extracurriculars', icon: Award,      badge: null,  active: false, path: '/dashboard/student/extracurricular' },
+  { id: 'integrations', label: 'Integrations',   icon: Plug,       badge: null,  active: false, path: '/integrations' },
+  { id: 'assignments',  label: 'Assignments',    icon: BookOpen,   badge: null,  active: false, path: '/student/assignments' },
+  { id: 'attendance',   label: 'Attendance',     icon: CheckCircle,badge: null,  active: false, path: '/student/attendance' },
+  { id: 'advisor',    label: 'AI Advisor',       icon: Search,     badge: null,  active: false, path: '/ai-advisor' },
 ]
 
 function SPIArcSidebar({ score, onClick }) {
@@ -126,9 +130,9 @@ export default function CareerPathPage() {
       <aside className={`${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'} flex-shrink-0 bg-white border-r border-gray-100 flex flex-col transition-all duration-300 shadow-sm z-20`}>
         <div className="p-5 border-b border-gray-50">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}>AS</div>
+            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}>PR</div>
             <div className="overflow-hidden">
-              <p className="font-semibold text-sm text-navy truncate">Arman Singh</p>
+              <p className="font-semibold text-sm text-navy truncate">Priyanshu Raj</p>
               <p className="text-xs text-gray-500 truncate">CSE — 2nd Year, Section B</p>
             </div>
           </div>
@@ -169,7 +173,7 @@ export default function CareerPathPage() {
             <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">3</span>
           </button>
           <div className="flex items-center gap-2 cursor-pointer group">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs" style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}>AS</div>
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs" style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}>PR</div>
             <ChevronDown size={14} className="text-gray-400 group-hover:text-gray-600 transition" />
           </div>
         </header>
@@ -198,7 +202,7 @@ export default function CareerPathPage() {
                 <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-purple-500" />
                 <div className="text-purple-600 mt-0.5"><Sparkles size={20} /></div>
                 <p className="text-purple-900 text-sm font-bold leading-relaxed">
-                  Based on Arman Singh's complete profile — 7-dimension skill analysis, 3 completed projects, 4 hackathon participations, and 4 semesters of academic data — the AI Career Advisor has generated the following recommendations with high confidence.
+                  Based on Priyanshu Raj's complete profile — 7-dimension skill analysis, 3 completed projects, 4 hackathon participations, and 4 semesters of academic data — the AI Career Advisor has generated the following recommendations with high confidence.
                 </p>
               </div>
             </div>
@@ -512,7 +516,7 @@ export default function CareerPathPage() {
               <div className="bg-teal-50 border border-teal-100 rounded-xl p-4 flex gap-4 mb-6 shadow-sm">
                 <div className="text-teal-600 mt-0.5"><Users size={20} /></div>
                 <p className="text-teal-900 text-sm font-medium leading-relaxed">
-                  These alumni had similar SPI scores, skill profiles, project types and extracurricular patterns to Arman's current profile when they were in 2nd year. Their outcomes are the most realistic preview of your possible future.
+                  These alumni had similar SPI scores, skill profiles, project types and extracurricular patterns to Priyanshu's current profile when they were in 2nd year. Their outcomes are the most realistic preview of your possible future.
                 </p>
               </div>
 
@@ -520,7 +524,7 @@ export default function CareerPathPage() {
                 
                 {[
                   { name: 'Rahul Gupta', batch: 'CSE 2023', match: 91, oldProf: 'SPI 74, Web Dev focus, 2 projects', role: 'Full Stack Developer', co: 'Razorpay', pkg: '14 LPA', connected: true, tag: 'Path A follower → upgraded to Path B in final year', ava: 'RG', col: 'blue' },
-                  { name: 'Anjali Sharma', batch: 'CSE 2022', match: 87, oldProf: 'SPI 71, ML interest, 1 TensorFlow project', role: 'ML Engineer', co: 'Mu Sigma', pkg: '16 LPA', connected: false, tag: 'Chose Career Pivot path in 3rd year — paid off', ava: 'AS', col: 'teal' },
+                  { name: 'Anjali Sharma', batch: 'CSE 2022', match: 87, oldProf: 'SPI 71, ML interest, 1 TensorFlow project', role: 'ML Engineer', co: 'Mu Sigma', pkg: '16 LPA', connected: false, tag: 'Chose Career Pivot path in 3rd year — paid off', ava: 'PR', col: 'teal' },
                   { name: 'Vikram Nair', batch: 'CSE 2023', match: 83, oldProf: 'SPI 69, mixed skills, good communication score', role: 'Product Manager', co: 'Freshworks', pkg: '18 LPA', connected: false, tag: 'Followed Path C — Product pivot from development', ava: 'VN', col: 'purple' },
                   { name: 'Sneha Patil', batch: 'CSE 2022', match: 79, oldProf: 'SPI 76, strong projects, cricket state level', role: 'SDE-1', co: 'Zoho', pkg: '12 LPA', connected: false, tag: 'Maintained Path A — solid consistent outcome', ava: 'SP', col: 'green' },
                   { name: 'Arjun Malhotra', batch: 'CSE 2021', match: 76, oldProf: 'SPI 68, hackathon finalist', role: 'Co-Founder', co: 'EdTech Startup', pkg: 'Variable — equity based', connected: false, tag: 'Took entrepreneurship path — early stage traction', ava: 'AM', col: 'amber' },

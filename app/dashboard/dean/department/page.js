@@ -2,25 +2,22 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import {
-  Home, BookOpen, Bell, BarChart2, Users, CheckCircle,
-  MessageCircle, FileText, Settings, LogOut, Search, ChevronDown,
-  TrendingUp, Download, PieChart, Lightbulb, Users2, Building, Cpu, Brain
-} from 'lucide-react'
+import { Home, BookOpen, Bell, BarChart2, Users, CheckCircle, MessageCircle, FileText, Settings, LogOut, Search, ChevronDown, TrendingUp, Download, PieChart, Lightbulb, Users2, Building, Cpu, User, Activity, Award, Grid, Target, Zap, AlertCircle, Plug, X } from 'lucide-react'
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, Cell,
   LineChart, Line, CartesianGrid, Legend
 } from 'recharts'
 
 const navLinks = [
-  { id: 'department',  label: 'Department Overview',  icon: Building,  path: '/dashboard/dean/department' },
-  { id: 'forecasting', label: 'Cohort Forecasting',   icon: PieChart,  path: '/dashboard/dean/forecasting' },
-  { id: 'cross-branch',label: 'Cross-Branch Insights',icon: FileText,  path: '/dashboard/dean/cross-branch' },
-  { id: 'faculty',     label: 'Faculty Analytics',    icon: Users2,    path: '/dashboard/dean/faculty-performance' },
-  { id: 'curriculum',  label: 'Curriculum Gaps',      icon: Lightbulb, path: '/dashboard/dean/curriculum' },
-  { id: 'student-intelligence', label: 'Student Intelligence', icon: Brain,    path: '/dashboard/dean/student-intelligence' },
-  { id: 'policy-simulation', label: 'Policy Simulation', icon: Cpu,      path: '/dashboard/dean/policy-simulation' },
-  { id: 'reports',     label: 'Reports',              icon: FileText,  path: '/dashboard/dean/reports' },
+  { id: 'dashboard',  label: 'Dashboard',        icon: Home,       badge: null,  active: true, path: '/dashboard/dean' },
+  { id: 'department', label: 'Department Overview', icon: Grid,    badge: null,  active: false, path: '/dashboard/dean/department' },
+  { id: 'faculty',    label: 'Faculty Performance', icon: Users,   badge: null,  active: false, path: '/dashboard/dean/faculty-performance' },
+  { id: 'forecast',   label: 'Cohort Forecasting',  icon: TrendingUp,badge: null,active: false, path: '/dashboard/dean/forecasting' },
+  { id: 'curriculum', label: 'Curriculum Analysis', icon: BookOpen,badge: null,  active: false, path: '/dashboard/dean/curriculum' },
+  { id: 'policy',     label: 'Policy Simulation',   icon: Activity,badge: null,  active: false, path: '/dashboard/dean/policy-simulation' },
+  { id: 'accredit',   label: 'Accreditation Reports',icon: FileText,badge: null, active: false, path: '/dashboard/dean/accreditation' },
+  { id: 'cross',      label: 'Cross-Branch Insights', icon: Target, badge: null, active: false, path: '/dashboard/dean/cross-branch' },
+  { id: 'advisor',    label: 'AI Advisor',       icon: Search,     badge: null,  active: false, path: '/ai-advisor' },
 ]
 
 const spiDistData = [
@@ -99,6 +96,7 @@ export default function DeanDepartmentPage() {
   const [activeTab, setActiveTab] = useState('CSE')
   const [reportModalOpen, setReportModalOpen] = useState(false)
   const [reportReady, setReportReady] = useState(false)
+  const [syncModalData, setSyncModalData] = useState(null)
 
   const handleGenerateReport = () => {
     setReportModalOpen(true)
@@ -178,6 +176,18 @@ export default function DeanDepartmentPage() {
               <div>
                 <h1 className="text-3xl font-bold text-navy mb-1">Department Overview</h1>
                 <p className="text-gray-500 text-sm max-w-xl">Complete health snapshot of all branches, batches and faculty — updated in real time</p>
+                <div className="mt-4 flex flex-wrap items-center gap-3">
+                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mr-1">External Systems Status</p>
+                  <button onClick={() => setSyncModalData({ name: 'Moodle LMS', since: 'Aug 2024', records: '14,230', last: '2 mins ago' })} className="flex items-center gap-2 px-3 py-1 bg-white border border-orange-100 rounded-full hover:bg-orange-50 transition shadow-sm group">
+                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                    <span className="text-[10px] font-bold text-orange-600 uppercase tracking-tight group-hover:text-orange-700 transition">Moodle LMS — Syncing</span>
+                  </button>
+                  <button onClick={() => setSyncModalData({ name: 'Cyber Vidya', since: 'July 2024', records: '198,421', last: '5 mins ago' })} className="flex items-center gap-2 px-3 py-1 bg-white border border-teal-100 rounded-full hover:bg-teal-50 transition shadow-sm group">
+                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                    <span className="text-[10px] font-bold text-teal-600 uppercase tracking-tight group-hover:text-teal-700 transition">Cyber Vidya — Syncing</span>
+                  </button>
+                  <span className="text-[10px] text-gray-400 font-medium ml-1">1,240 students · Data flowing in real-time</span>
+                </div>
               </div>
               <div className="flex gap-3 w-full sm:w-auto">
                 <button className="flex-1 sm:flex-none px-4 py-2.5 border border-gray-300 text-gray-700 font-bold text-sm rounded-xl hover:bg-gray-50 transition whitespace-nowrap flex items-center justify-center gap-2">
@@ -519,6 +529,43 @@ export default function DeanDepartmentPage() {
                 <p className="text-sm text-gray-500">This may take a moment. Gathering real-time data across all 3 branches.</p>
               </>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* SYNC MODAL */}
+      {syncModalData && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden animate-fade-in">
+             <div className="bg-navy p-5 flex justify-between items-center">
+                <h2 className="text-white font-bold text-base">{syncModalData.name} Integration</h2>
+                <button onClick={() => setSyncModalData(null)} className="text-gray-400 hover:text-white transition"><X size={18} /></button>
+             </div>
+             <div className="p-6">
+                <div className="flex items-center gap-3 mb-6 bg-green-50 p-3 rounded-xl border border-green-100">
+                   <div className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse" />
+                   <p className="text-xs font-bold text-green-700 uppercase tracking-widest">Connection Healthy</p>
+                </div>
+                <div className="space-y-4 mb-8">
+                   <div className="flex justify-between items-center">
+                      <span className="text-xs text-gray-500 font-medium">Connected Since</span>
+                      <span className="text-xs text-navy font-bold">{syncModalData.since}</span>
+                   </div>
+                   <div className="flex justify-between items-center">
+                      <span className="text-xs text-gray-500 font-medium">Records Synced Today</span>
+                      <span className="text-xs text-navy font-bold">{syncModalData.records}</span>
+                   </div>
+                   <div className="flex justify-between items-center">
+                      <span className="text-xs text-gray-500 font-medium">Last Sync</span>
+                      <span className="text-xs text-navy font-bold">{syncModalData.last}</span>
+                   </div>
+                </div>
+                <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 mb-6">
+                   <p className="text-[10px] font-bold text-gray-400 uppercase mb-2">Live Status</p>
+                   <p className="text-xs text-navy leading-relaxed font-medium">The data pipeline between Educator Analytics and {syncModalData.name} is fully operational. All student records are being updated in real-time.</p>
+                </div>
+                <button onClick={() => setSyncModalData(null)} className="w-full py-3 bg-indigo-600 text-white font-bold text-sm rounded-xl hover:bg-indigo-700 transition shadow-lg">Close Details</button>
+             </div>
           </div>
         </div>
       )}

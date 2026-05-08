@@ -2,21 +2,18 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import {
-  LayoutDashboard, Users, BookOpen, Settings, Bell, Search, 
-  ChevronDown, Upload, UserPlus, X, Check, CheckCircle2,
-  Clock, Database, Activity, UserCheck, AlertTriangle, ChevronRight
-} from 'lucide-react'
+import { LayoutDashboard, Users, BookOpen, Settings, Bell, Search, ChevronDown, Upload, UserPlus, X, Check, CheckCircle2, Clock, Database, Activity, UserCheck, AlertTriangle, ChevronRight, Home, User, TrendingUp, Award, Grid, FileText, LogOut, Target, CheckCircle, Zap, AlertCircle, Plug } from 'lucide-react'
 
 const navLinks = [
-  { id: 'overview', label: 'System Overview', icon: LayoutDashboard, path: '/dashboard/admin' },
-  { id: 'config', label: 'Configuration Panel', icon: Settings, path: '/dashboard/admin/configuration' },
-  { id: 'spi', label: 'SPI Config', icon: Activity, path: '/dashboard/admin/spi-config' },
-  { id: 'institution', label: 'Institution Settings', icon: BookOpen, path: '/dashboard/admin/institution' },
+  { id: 'dashboard',  label: 'Dashboard',        icon: Home,       badge: null,  active: true, path: '/dashboard/admin' },
+  { id: 'config',     label: 'Configuration',    icon: Settings,   badge: null,  active: false, path: '/dashboard/admin/configuration' },
+  { id: 'spi-config', label: 'SPI Weight Config',icon: Target,     badge: null,  active: false, path: '/dashboard/admin/spi-config' },
+  { id: 'institution',label: 'Institution Settings',icon: Grid,    badge: null,  active: false, path: '/dashboard/admin/institution' },
+  { id: 'logs',       label: 'System Logs',      icon: Activity,   badge: null,  active: false, path: '/dashboard/admin/configuration' },
 ]
 
 const initialFaculty = [
-  { id: 1, name: 'Dr. Anita Sharma', empId: 'EMP001', dept: 'CSE', subjects: ['Algorithms', 'DSA'], students: 120, status: 'Active', login: 'Today 9:41 AM', avatar: 'AS', color: 'bg-green-700' },
+  { id: 1, name: 'Dr. Anita Sharma', empId: 'EMP001', dept: 'CSE', subjects: ['Algorithms', 'DSA'], students: 120, status: 'Active', login: 'Today 9:41 AM', avatar: 'PR', color: 'bg-green-700' },
   { id: 2, name: 'Prof. Priya Kapoor', empId: 'EMP002', dept: 'CSE', subjects: ['DBMS', 'OS'], students: 243, status: 'Active', login: 'Today 8:52 AM', avatar: 'PK', color: 'bg-blue-600' },
   { id: 3, name: 'Dr. Suresh Iyer', empId: 'EMP003', dept: 'CSE', subjects: ['TOC', 'Networks'], students: 198, status: 'Active', login: 'Yesterday', avatar: 'SI', color: 'bg-teal-600' },
   { id: 4, name: 'Prof. Meena Rao', empId: 'EMP004', dept: 'IT', subjects: ['Web Tech', 'Soft Engg'], students: 210, status: 'Active', login: 'Today 10:15 AM', avatar: 'MR', color: 'bg-purple-600' },
@@ -29,7 +26,7 @@ const initialFaculty = [
 ]
 
 const students = [
-  { id: 1, name: 'Arman Singh', roll: '2CS04', branch: 'CSE', year: '2nd', section: 'B', spi: 72, cgpa: 7.4, status: 'Active' },
+  { id: 1, name: 'Priyanshu Raj', roll: '2CS04', branch: 'CSE', year: '2nd', section: 'B', spi: 72, cgpa: 7.4, status: 'Active' },
   { id: 2, name: 'Siddharth Rao', roll: '2CS38', branch: 'CSE', year: '2nd', section: 'A', spi: 88, cgpa: 8.7, status: 'Active' },
   { id: 3, name: 'Priya Sharma', roll: '2CS18', branch: 'CSE', year: '2nd', section: 'B', spi: 78, cgpa: 7.9, status: 'Active' },
   { id: 4, name: 'Harsh Chaudhary', roll: '3CS12', branch: 'CSE', year: '3rd', section: 'A', spi: 81, cgpa: 8.1, status: 'Active' },
@@ -55,7 +52,7 @@ const subjectsData = [
 const systemLogs = [
   { time: '15 Apr 2026 11:42 AM', user: 'Admin', type: 'Admin Action', desc: 'Faculty account created — Dr. Suresh Iyer', status: 'Success' },
   { time: '15 Apr 2026 11:08 AM', user: 'AI System', type: 'AI Agent', desc: 'Alert Agent generated 5 new alerts — at-risk students detected', status: 'Success' },
-  { time: '15 Apr 2026 10:34 AM', user: 'Prof. Priya Kapoor', type: 'Data Change', desc: 'Parent Visit QR generated for Arman Singh — 30 min session', status: 'Success' },
+  { time: '15 Apr 2026 10:34 AM', user: 'Prof. Priya Kapoor', type: 'Data Change', desc: 'Parent Visit QR generated for Priyanshu Raj — 30 min session', status: 'Success' },
   { time: '15 Apr 2026 10:15 AM', user: 'Prof. Meena Rao', type: 'Login', desc: 'Faculty login — IT Department', status: 'Success' },
   { time: '15 Apr 2026 9:52 AM', user: 'AI System', type: 'AI Agent', desc: 'SPI recalculation completed — CSE 2nd year — 180 students updated', status: 'Success' },
   { time: '15 Apr 2026 9:31 AM', user: 'Dr. Rajesh Verma', type: 'Admin Action', desc: 'Accreditation report generated — NBA OBE Even Sem 2026', status: 'Success' },
@@ -63,7 +60,7 @@ const systemLogs = [
   { time: '14 Apr 2026 6:43 PM', user: 'AI System', type: 'AI Agent', desc: 'Career Advisor Agent ran for 480 CSE students — batch analysis', status: 'Success' },
   { time: '14 Apr 2026 4:22 PM', user: 'Admin', type: 'Admin Action', desc: 'SPI weight configuration updated — Project Quality weight changed from 15% to 20%', status: 'Success' },
   { time: '14 Apr 2026 2:18 PM', user: 'Unknown', type: 'Login', desc: 'Failed login attempt — incorrect password — IP: 192.168.1.104', status: 'Failed' },
-  { time: '14 Apr 2026 11:35 AM', user: 'Prof. Priya Kapoor', type: 'Data Change', desc: 'Faculty note added for Arman Singh — DBMS', status: 'Success' },
+  { time: '14 Apr 2026 11:35 AM', user: 'Prof. Priya Kapoor', type: 'Data Change', desc: 'Faculty note added for Priyanshu Raj — DBMS', status: 'Success' },
   { time: '14 Apr 2026 9:07 AM', user: 'AI System', type: 'AI Agent', desc: 'WhatsApp digest sent to 243 parents — weekly summary', status: 'Success' },
 ]
 

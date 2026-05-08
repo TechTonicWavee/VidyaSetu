@@ -2,22 +2,27 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import {
-  Home, User, Activity, TrendingUp, Users, Bell, Award,
-  Grid, FileText, Settings, LogOut, Search, ChevronDown,
-  AlertTriangle, CheckCircle, Book, Star, ArrowUpRight, Filter
-} from 'lucide-react'
+import { Home, User, Activity, TrendingUp, Users, Bell, Award, Grid, FileText, Settings, LogOut, Search, ChevronDown, AlertTriangle, CheckCircle, Book, Star, ArrowUpRight, Filter, Target, Zap, BookOpen, AlertCircle, Plug } from 'lucide-react'
 
 const navLinks = [
-  { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null, path: '/dashboard/student' },
-  { id: 'profile', label: 'My Profile', icon: User, badge: null, path: '/dashboard/student/profile' },
-  { id: 'skill', label: 'Skill Radar', icon: Activity, badge: null, path: '/dashboard/student/skill-radar' },
-  { id: 'career', label: 'Career Path', icon: TrendingUp, badge: null, path: '/dashboard/student' },
-  { id: 'team', label: 'My Team', icon: Users, badge: null, path: '/dashboard/student' },
-  { id: 'notifs', label: 'Notifications', icon: Bell, badge: '3', path: '/dashboard/student/notifications' },
-  { id: 'rankings', label: 'Rankings', icon: Award, badge: null, path: '/dashboard/student/rankings' },
-  { id: 'directory', label: 'Domain Directory', icon: Grid, badge: null, path: '/dashboard/student' },
-  { id: 'resume', label: 'Resume Builder', icon: FileText, badge: null, path: '/dashboard/student' },
+  { id: 'dashboard',  label: 'Dashboard',       icon: Home,       badge: null,  active: true, path: '/dashboard/student' },
+  { id: 'profile',    label: 'My Profile',       icon: User,       badge: null,  active: false, path: '/dashboard/student/profile' },
+  { id: 'skill',      label: 'Skill Radar',      icon: Activity,   badge: null,  active: false, path: '/dashboard/student/skill-radar' },
+  { id: 'spi',        label: 'SPI Score',        icon: TrendingUp, badge: null,  active: false, path: '/dashboard/student/spi' },
+  { id: 'career',     label: 'Career Path',      icon: TrendingUp, badge: null,  active: false, path: '/dashboard/student/career' },
+  { id: 'team',       label: 'My Team',          icon: Users,      badge: null,  active: false, path: '/dashboard/student/my-team' },
+  { id: 'notifs',     label: 'Notifications',    icon: Bell,       badge: '3',   active: false, path: '/dashboard/student/notifications' },
+  { id: 'rankings',   label: 'Rankings',         icon: Award,      badge: null,  active: false, path: '/dashboard/student/rankings' },
+  { id: 'directory',  label: 'Domain Directory', icon: Grid,       badge: null,  active: false, path: '/dashboard/student/directory' },
+  { id: 'resume',     label: 'Resume Builder',   icon: FileText,   badge: null,  active: false, path: '/dashboard/student/resume' },
+  { id: 'placement',  label: 'Placement Readiness', icon: Target, badge: null,  active: false, path: '/dashboard/student/placement' },
+  { id: 'action',     label: 'Action Plan',      icon: CheckCircle, badge: null,  active: false, path: '/dashboard/student/action-plan' },
+  { id: 'potential',  label: 'Potential Gap',    icon: Zap,        badge: null,  active: false, path: '/dashboard/student/potential-gap' },
+  { id: 'extra',      label: 'Extracurriculars', icon: Award,      badge: null,  active: false, path: '/dashboard/student/extracurricular' },
+  { id: 'integrations', label: 'Integrations',   icon: Plug,       badge: null,  active: false, path: '/integrations' },
+  { id: 'assignments',  label: 'Assignments',    icon: BookOpen,   badge: null,  active: false, path: '/student/assignments' },
+  { id: 'attendance',   label: 'Attendance',     icon: CheckCircle,badge: null,  active: false, path: '/student/attendance' },
+  { id: 'advisor',    label: 'AI Advisor',       icon: Search,     badge: null,  active: false, path: '/ai-advisor' },
 ]
 
 const notificationsData = [
@@ -137,9 +142,9 @@ export default function NotificationsPage() {
       <aside className={`${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'} flex-shrink-0 bg-white border-r border-gray-100 flex flex-col transition-all duration-300 shadow-sm`}>
         <div className="p-5 border-b border-gray-50">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}>AS</div>
+            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}>PR</div>
             <div className="overflow-hidden">
-              <p className="font-semibold text-sm text-navy truncate">Arman Singh</p>
+              <p className="font-semibold text-sm text-navy truncate">Priyanshu Raj</p>
               <p className="text-xs text-gray-500 truncate">CSE — 2nd Year, Section B</p>
             </div>
           </div>
@@ -180,7 +185,7 @@ export default function NotificationsPage() {
             <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">3</span>
           </button>
           <div className="flex items-center gap-2 cursor-pointer group">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs" style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}>AS</div>
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs" style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}>PR</div>
             <ChevronDown size={14} className="text-gray-400 group-hover:text-gray-600 transition" />
           </div>
         </header>

@@ -2,23 +2,27 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import {
-  Home, User, Activity, TrendingUp, Users, Bell, Award,
-  Grid, FileText, Settings, LogOut, Search, ChevronDown,
-  Target, ArrowUpRight, Clock, AlertCircle, BookOpen,
-  CheckCircle, Zap, MoreHorizontal, ExternalLink
-} from 'lucide-react'
+import { Home, User, Activity, TrendingUp, Users, Bell, Award, Grid, FileText, Settings, LogOut, Search, ChevronDown, Target, ArrowUpRight, Clock, AlertCircle, BookOpen, CheckCircle, Zap, MoreHorizontal, ExternalLink, Plug } from 'lucide-react'
 
 const navLinks = [
-  { id: 'dashboard',  label: 'Dashboard',       icon: Home,       badge: null,  active: true },
-  { id: 'profile',    label: 'My Profile',       icon: User,       badge: null,  active: false },
-  { id: 'skill',      label: 'Skill Radar',      icon: Activity,   badge: null,  active: false },
-  { id: 'career',     label: 'Career Path',      icon: TrendingUp, badge: null,  active: false },
-  { id: 'team',       label: 'My Team',          icon: Users,      badge: null,  active: false },
-  { id: 'notifs',     label: 'Notifications',    icon: Bell,       badge: '3',   active: false },
-  { id: 'rankings',   label: 'Rankings',         icon: Award,      badge: null,  active: false },
-  { id: 'directory',  label: 'Domain Directory', icon: Grid,       badge: null,  active: false },
-  { id: 'resume',     label: 'Resume Builder',   icon: FileText,   badge: null,  active: false },
+  { id: 'dashboard',  label: 'Dashboard',       icon: Home,       badge: null,  active: true, path: '/dashboard/student' },
+  { id: 'profile',    label: 'My Profile',       icon: User,       badge: null,  active: false, path: '/dashboard/student/profile' },
+  { id: 'skill',      label: 'Skill Radar',      icon: Activity,   badge: null,  active: false, path: '/dashboard/student/skill-radar' },
+  { id: 'spi',        label: 'SPI Score',        icon: TrendingUp, badge: null,  active: false, path: '/dashboard/student/spi' },
+  { id: 'career',     label: 'Career Path',      icon: TrendingUp, badge: null,  active: false, path: '/dashboard/student/career' },
+  { id: 'team',       label: 'My Team',          icon: Users,      badge: null,  active: false, path: '/dashboard/student/my-team' },
+  { id: 'notifs',     label: 'Notifications',    icon: Bell,       badge: '3',   active: false, path: '/dashboard/student/notifications' },
+  { id: 'rankings',   label: 'Rankings',         icon: Award,      badge: null,  active: false, path: '/dashboard/student/rankings' },
+  { id: 'directory',  label: 'Domain Directory', icon: Grid,       badge: null,  active: false, path: '/dashboard/student/directory' },
+  { id: 'resume',     label: 'Resume Builder',   icon: FileText,   badge: null,  active: false, path: '/dashboard/student/resume' },
+  { id: 'placement',  label: 'Placement Readiness', icon: Target, badge: null,  active: false, path: '/dashboard/student/placement' },
+  { id: 'action',     label: 'Action Plan',      icon: CheckCircle, badge: null,  active: false, path: '/dashboard/student/action-plan' },
+  { id: 'potential',  label: 'Potential Gap',    icon: Zap,        badge: null,  active: false, path: '/dashboard/student/potential-gap' },
+  { id: 'extra',      label: 'Extracurriculars', icon: Award,      badge: null,  active: false, path: '/dashboard/student/extracurricular' },
+  { id: 'integrations', label: 'Integrations',   icon: Plug,       badge: null,  active: false, path: '/integrations' },
+  { id: 'assignments',  label: 'Assignments',    icon: BookOpen,   badge: null,  active: false, path: '/student/assignments' },
+  { id: 'attendance',   label: 'Attendance',     icon: CheckCircle,badge: null,  active: false, path: '/student/attendance' },
+  { id: 'advisor',    label: 'AI Advisor',       icon: Search,     badge: null,  active: false, path: '/ai-advisor' },
 ]
 
 const statCards = [
@@ -167,7 +171,7 @@ export default function StudentDashboard() {
               AS
             </div>
             <div className="overflow-hidden">
-              <p className="font-semibold text-sm text-navy truncate">Arman Singh</p>
+              <p className="font-semibold text-sm text-navy truncate">Priyanshu Raj</p>
               <p className="text-xs text-gray-500 truncate">CSE — 2nd Year, Section B</p>
             </div>
           </div>
@@ -181,22 +185,10 @@ export default function StudentDashboard() {
               key={link.id}
               id={`nav-${link.id}`}
               onClick={() => {
-                if (link.id === 'profile') {
-                  router.push('/dashboard/student/profile')
-                } else if (link.id === 'skill') {
-                  router.push('/dashboard/student/skill-radar')
-                } else if (link.id === 'notifs') {
-                  router.push('/dashboard/student/notifications')
-                } else if (link.id === 'rankings') {
-                  router.push('/dashboard/student/rankings')
-                } else if (link.id === 'directory') {
-                  router.push('/dashboard/student/directory')
-                } else if (link.id === 'team') {
-                  router.push('/dashboard/student/my-team')
-                } else if (link.id === 'career') {
-                  router.push('/dashboard/student/career')
+                if (link.path) {
+                  router.push(link.path)
                 } else {
-                  setActiveNav(link.id)
+                  if (typeof setActiveNav === 'function') setActiveNav(link.id)
                 }
               }}
               className={`nav-link w-full text-left mb-0.5 ${activeNav === link.id ? 'active' : ''}`}
@@ -324,7 +316,7 @@ export default function StudentDashboard() {
         <main className="flex-1 overflow-y-auto p-6">
           {/* Greeting */}
           <div className="mb-6 animate-fade-in">
-            <h1 className="text-2xl font-bold text-navy">Good morning, Arman 👋</h1>
+            <h1 className="text-2xl font-bold text-navy">Good morning, Priyanshu 👋</h1>
             <p className="text-gray-500 text-sm mt-1">
               Here is your overview for today — Tuesday, 15 April 2026
             </p>

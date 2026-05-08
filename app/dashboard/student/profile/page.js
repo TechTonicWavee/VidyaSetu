@@ -2,27 +2,31 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import {
-  Home, User, Activity, TrendingUp, Users, Bell, Award,
-  Grid, FileText, Settings, LogOut, Search, ChevronDown,
-  ArrowUpRight, Clock, AlertCircle, BookOpen, CheckCircle,
-  Folder, ThumbsUp, Star, CalendarDays, Cpu, Briefcase, ChevronRight
-} from 'lucide-react'
+import { Home, User, Activity, TrendingUp, Users, Bell, Award, Grid, FileText, Settings, LogOut, Search, ChevronDown, ArrowUpRight, Clock, AlertCircle, BookOpen, CheckCircle, Folder, ThumbsUp, Star, CalendarDays, Cpu, Briefcase, ChevronRight, Target, Zap, Plug } from 'lucide-react'
 import {
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts'
 
 const navLinks = [
-  { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null, path: '/dashboard/student' },
-  { id: 'profile', label: 'My Profile', icon: User, badge: null, path: '/dashboard/student/profile' },
-  { id: 'skill', label: 'Skill Radar', icon: Activity, badge: null, path: '/dashboard/student/skill-radar' },
-  { id: 'career', label: 'Career Path', icon: TrendingUp, badge: null, path: '/dashboard/student' },
-  { id: 'team', label: 'My Team', icon: Users, badge: null, path: '/dashboard/student' },
-  { id: 'notifs', label: 'Notifications', icon: Bell, badge: '3', path: '/dashboard/student' },
-  { id: 'rankings', label: 'Rankings', icon: Award, badge: null, path: '/dashboard/student' },
-  { id: 'directory', label: 'Domain Directory', icon: Grid, badge: null, path: '/dashboard/student' },
-  { id: 'resume', label: 'Resume Builder', icon: FileText, badge: null, path: '/dashboard/student' },
+  { id: 'dashboard',  label: 'Dashboard',       icon: Home,       badge: null,  active: true, path: '/dashboard/student' },
+  { id: 'profile',    label: 'My Profile',       icon: User,       badge: null,  active: false, path: '/dashboard/student/profile' },
+  { id: 'skill',      label: 'Skill Radar',      icon: Activity,   badge: null,  active: false, path: '/dashboard/student/skill-radar' },
+  { id: 'spi',        label: 'SPI Score',        icon: TrendingUp, badge: null,  active: false, path: '/dashboard/student/spi' },
+  { id: 'career',     label: 'Career Path',      icon: TrendingUp, badge: null,  active: false, path: '/dashboard/student/career' },
+  { id: 'team',       label: 'My Team',          icon: Users,      badge: null,  active: false, path: '/dashboard/student/my-team' },
+  { id: 'notifs',     label: 'Notifications',    icon: Bell,       badge: '3',   active: false, path: '/dashboard/student/notifications' },
+  { id: 'rankings',   label: 'Rankings',         icon: Award,      badge: null,  active: false, path: '/dashboard/student/rankings' },
+  { id: 'directory',  label: 'Domain Directory', icon: Grid,       badge: null,  active: false, path: '/dashboard/student/directory' },
+  { id: 'resume',     label: 'Resume Builder',   icon: FileText,   badge: null,  active: false, path: '/dashboard/student/resume' },
+  { id: 'placement',  label: 'Placement Readiness', icon: Target, badge: null,  active: false, path: '/dashboard/student/placement' },
+  { id: 'action',     label: 'Action Plan',      icon: CheckCircle, badge: null,  active: false, path: '/dashboard/student/action-plan' },
+  { id: 'potential',  label: 'Potential Gap',    icon: Zap,        badge: null,  active: false, path: '/dashboard/student/potential-gap' },
+  { id: 'extra',      label: 'Extracurriculars', icon: Award,      badge: null,  active: false, path: '/dashboard/student/extracurricular' },
+  { id: 'integrations', label: 'Integrations',   icon: Plug,       badge: null,  active: false, path: '/integrations' },
+  { id: 'assignments',  label: 'Assignments',    icon: BookOpen,   badge: null,  active: false, path: '/student/assignments' },
+  { id: 'attendance',   label: 'Attendance',     icon: CheckCircle,badge: null,  active: false, path: '/student/attendance' },
+  { id: 'advisor',    label: 'AI Advisor',       icon: Search,     badge: null,  active: false, path: '/ai-advisor' },
 ]
 
 const radarData = [
@@ -58,9 +62,9 @@ export default function StudentProfile() {
       <aside className={`${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'} flex-shrink-0 bg-white border-r border-gray-100 flex flex-col transition-all duration-300 shadow-sm`}>
         <div className="p-5 border-b border-gray-50">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}>AS</div>
+            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}>PR</div>
             <div className="overflow-hidden">
-              <p className="font-semibold text-sm text-navy truncate">Arman Singh</p>
+              <p className="font-semibold text-sm text-navy truncate">Priyanshu Raj</p>
               <p className="text-xs text-gray-500 truncate">CSE — 2nd Year, Section B</p>
             </div>
           </div>
@@ -115,7 +119,7 @@ export default function StudentProfile() {
             <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">3</span>
           </button>
           <div className="flex items-center gap-2 cursor-pointer group">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs" style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}>AS</div>
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs" style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}>PR</div>
             <ChevronDown size={14} className="text-gray-400 group-hover:text-gray-600 transition" />
           </div>
         </header>
@@ -133,7 +137,7 @@ export default function StudentProfile() {
                   AS
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold text-white mb-1">Arman Singh</h1>
+                  <h1 className="text-3xl font-bold text-white mb-1">Priyanshu Raj</h1>
                   <p className="text-gray-300 text-sm mb-4">CSE — 2nd Year · Section B · Roll No: 2CS04</p>
                   <div className="flex flex-wrap justify-center md:justify-start gap-2">
                     <span className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-xs font-semibold border border-blue-500/30">CSE 2nd Year</span>
@@ -238,7 +242,7 @@ export default function StudentProfile() {
                     <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 flex gap-3">
                       <div className="text-blue-500 mt-0.5"><Activity size={18} /></div>
                       <p className="text-sm text-blue-800 leading-relaxed">
-                        Arman performs significantly better in practicals and project work than in theory exams. This pattern suggests a hands-on learner profile.
+                        Priyanshu performs significantly better in practicals and project work than in theory exams. This pattern suggests a hands-on learner profile.
                       </p>
                     </div>
                   </div>
@@ -254,7 +258,7 @@ export default function StudentProfile() {
                         <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
                           <PolarGrid stroke="#e5e7eb" />
                           <PolarAngleAxis dataKey="subject" tick={{ fill: '#6b7280', fontSize: 11 }} />
-                          <Radar name="Arman" dataKey="A" stroke="#1A56DB" fill="#1A56DB" fillOpacity={0.3} />
+                          <Radar name="Priyanshu" dataKey="A" stroke="#1A56DB" fill="#1A56DB" fillOpacity={0.3} />
                         </RadarChart>
                       </ResponsiveContainer>
                     </div>
@@ -413,7 +417,7 @@ export default function StudentProfile() {
                         <RadarChart cx="50%" cy="50%" outerRadius="75%" data={radarData}>
                           <PolarGrid stroke="#e5e7eb" />
                           <PolarAngleAxis dataKey="subject" tick={{ fill: '#374151', fontSize: 12, fontWeight: 500 }} />
-                          <Radar name="Arman" dataKey="A" stroke="#1A56DB" strokeWidth={2} fill="#1A56DB" fillOpacity={0.4} />
+                          <Radar name="Priyanshu" dataKey="A" stroke="#1A56DB" strokeWidth={2} fill="#1A56DB" fillOpacity={0.4} />
                           <Tooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
                         </RadarChart>
                       </ResponsiveContainer>
@@ -602,7 +606,7 @@ export default function StudentProfile() {
                   <div>
                     <h2 className="font-bold text-purple-900 mb-1">AI Career Recommendation</h2>
                     <p className="text-sm text-purple-800/80 leading-relaxed max-w-4xl">
-                      Based on Arman's skill profile, project quality, academic pattern and extracurricular record, our AI recommends the following career paths with high confidence.
+                      Based on Priyanshu's skill profile, project quality, academic pattern and extracurricular record, our AI recommends the following career paths with high confidence.
                     </p>
                   </div>
                 </div>
@@ -734,7 +738,7 @@ export default function StudentProfile() {
                 <div className="space-y-4">
                   <h2 className="text-lg font-bold text-navy mb-2">Faculty Notes</h2>
                   {[
-                    { from: 'Prof. Priya Kapoor', msg: 'Arman shows excellent understanding in lab sessions but needs to focus more on theoretical concepts for exams.', date: '5 April 2026' },
+                    { from: 'Prof. Priya Kapoor', msg: 'Priyanshu shows excellent understanding in lab sessions but needs to focus more on theoretical concepts for exams.', date: '5 April 2026' },
                     { from: 'Prof. Suresh Iyer', msg: 'Good participation in TOC class discussions. Attendance needs improvement.', date: '28 March 2026' },
                     { from: 'Prof. Priya Kapoor', msg: 'Outstanding project submission for DBMS mini project. Best in class.', date: '15 March 2026' },
                   ].map((note, i) => (

@@ -2,26 +2,31 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import {
-  Home, User, Activity, TrendingUp, Users, Bell, Award,
-  Grid, FileText, Settings, LogOut, Search, ChevronDown,
-  ArrowUpRight, Book, Code, MessageCircle, ArrowDownRight, Lightbulb
-} from 'lucide-react'
+import { Home, User, Activity, TrendingUp, Users, Bell, Award, Grid, FileText, Settings, LogOut, Search, ChevronDown, ArrowUpRight, Book, Code, MessageCircle, ArrowDownRight, Lightbulb, Target, CheckCircle, Zap, BookOpen, AlertCircle, Plug } from 'lucide-react'
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   BarChart, Bar, Legend
 } from 'recharts'
 
 const navLinks = [
-  { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null, path: '/dashboard/student' },
-  { id: 'profile', label: 'My Profile', icon: User, badge: null, path: '/dashboard/student/profile' },
-  { id: 'skill', label: 'Skill Radar', icon: Activity, badge: null, path: '/dashboard/student/skill-radar' },
-  { id: 'career', label: 'Career Path', icon: TrendingUp, badge: null, path: '/dashboard/student' },
-  { id: 'team', label: 'My Team', icon: Users, badge: null, path: '/dashboard/student' },
-  { id: 'notifs', label: 'Notifications', icon: Bell, badge: '3', path: '/dashboard/student/notifications' },
-  { id: 'rankings', label: 'Rankings', icon: Award, badge: null, path: '/dashboard/student/rankings' },
-  { id: 'directory', label: 'Domain Directory', icon: Grid, badge: null, path: '/dashboard/student' },
-  { id: 'resume', label: 'Resume Builder', icon: FileText, badge: null, path: '/dashboard/student' },
+  { id: 'dashboard',  label: 'Dashboard',       icon: Home,       badge: null,  active: true, path: '/dashboard/student' },
+  { id: 'profile',    label: 'My Profile',       icon: User,       badge: null,  active: false, path: '/dashboard/student/profile' },
+  { id: 'skill',      label: 'Skill Radar',      icon: Activity,   badge: null,  active: false, path: '/dashboard/student/skill-radar' },
+  { id: 'spi',        label: 'SPI Score',        icon: TrendingUp, badge: null,  active: false, path: '/dashboard/student/spi' },
+  { id: 'career',     label: 'Career Path',      icon: TrendingUp, badge: null,  active: false, path: '/dashboard/student/career' },
+  { id: 'team',       label: 'My Team',          icon: Users,      badge: null,  active: false, path: '/dashboard/student/my-team' },
+  { id: 'notifs',     label: 'Notifications',    icon: Bell,       badge: '3',   active: false, path: '/dashboard/student/notifications' },
+  { id: 'rankings',   label: 'Rankings',         icon: Award,      badge: null,  active: false, path: '/dashboard/student/rankings' },
+  { id: 'directory',  label: 'Domain Directory', icon: Grid,       badge: null,  active: false, path: '/dashboard/student/directory' },
+  { id: 'resume',     label: 'Resume Builder',   icon: FileText,   badge: null,  active: false, path: '/dashboard/student/resume' },
+  { id: 'placement',  label: 'Placement Readiness', icon: Target, badge: null,  active: false, path: '/dashboard/student/placement' },
+  { id: 'action',     label: 'Action Plan',      icon: CheckCircle, badge: null,  active: false, path: '/dashboard/student/action-plan' },
+  { id: 'potential',  label: 'Potential Gap',    icon: Zap,        badge: null,  active: false, path: '/dashboard/student/potential-gap' },
+  { id: 'extra',      label: 'Extracurriculars', icon: Award,      badge: null,  active: false, path: '/dashboard/student/extracurricular' },
+  { id: 'integrations', label: 'Integrations',   icon: Plug,       badge: null,  active: false, path: '/integrations' },
+  { id: 'assignments',  label: 'Assignments',    icon: BookOpen,   badge: null,  active: false, path: '/student/assignments' },
+  { id: 'attendance',   label: 'Attendance',     icon: CheckCircle,badge: null,  active: false, path: '/student/attendance' },
+  { id: 'advisor',    label: 'AI Advisor',       icon: Search,     badge: null,  active: false, path: '/ai-advisor' },
 ]
 
 const rankingData = {
@@ -41,11 +46,11 @@ const rankingData = {
       { month: 'Jan', rank: 52 }, { month: 'Feb', rank: 48 }, { month: 'Mar', rank: 41 }, { month: 'Apr', rank: 34 }
     ],
     barChart: [
-      { domain: 'Academic', Arman: 68, Avg: 64 },
-      { domain: 'Projects', Arman: 88, Avg: 67 },
-      { domain: 'Communication', Arman: 71, Avg: 69 },
-      { domain: 'Sports', Arman: 74, Avg: 61 },
-      { domain: 'Extracurricular', Arman: 71, Avg: 65 },
+      { domain: 'Academic', Priyanshu: 68, Avg: 64 },
+      { domain: 'Projects', Priyanshu: 88, Avg: 67 },
+      { domain: 'Communication', Priyanshu: 71, Avg: 69 },
+      { domain: 'Sports', Priyanshu: 74, Avg: 61 },
+      { domain: 'Extracurricular', Priyanshu: 71, Avg: 65 },
     ]
   },
   branch: {
@@ -64,11 +69,11 @@ const rankingData = {
       { month: 'Jan', rank: 142 }, { month: 'Feb', rank: 121 }, { month: 'Mar', rank: 104 }, { month: 'Apr', rank: 89 }
     ],
     barChart: [
-      { domain: 'Academic', Arman: 68, Avg: 63 },
-      { domain: 'Projects', Arman: 88, Avg: 65 },
-      { domain: 'Communication', Arman: 71, Avg: 68 },
-      { domain: 'Sports', Arman: 74, Avg: 58 },
-      { domain: 'Extracurricular', Arman: 71, Avg: 62 },
+      { domain: 'Academic', Priyanshu: 68, Avg: 63 },
+      { domain: 'Projects', Priyanshu: 88, Avg: 65 },
+      { domain: 'Communication', Priyanshu: 71, Avg: 68 },
+      { domain: 'Sports', Priyanshu: 74, Avg: 58 },
+      { domain: 'Extracurricular', Priyanshu: 71, Avg: 62 },
     ]
   }
 }
@@ -114,9 +119,9 @@ export default function RankingsPage() {
       <aside className={`${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'} flex-shrink-0 bg-white border-r border-gray-100 flex flex-col transition-all duration-300 shadow-sm`}>
         <div className="p-5 border-b border-gray-50">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}>AS</div>
+            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}>PR</div>
             <div className="overflow-hidden">
-              <p className="font-semibold text-sm text-navy truncate">Arman Singh</p>
+              <p className="font-semibold text-sm text-navy truncate">Priyanshu Raj</p>
               <p className="text-xs text-gray-500 truncate">CSE — 2nd Year, Section B</p>
             </div>
           </div>
@@ -157,7 +162,7 @@ export default function RankingsPage() {
             <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">3</span>
           </button>
           <div className="flex items-center gap-2 cursor-pointer group">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs" style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}>AS</div>
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs" style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}>PR</div>
             <ChevronDown size={14} className="text-gray-400 group-hover:text-gray-600 transition" />
           </div>
         </header>
@@ -309,7 +314,7 @@ export default function RankingsPage() {
                       <YAxis dataKey="domain" type="category" axisLine={false} tickLine={false} tick={{ fill: '#4b5563', fontSize: 11, fontWeight: 600 }} width={90} />
                       <Tooltip cursor={{ fill: '#f9fafb' }} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
                       <Legend iconType="circle" wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
-                      <Bar dataKey="Arman" fill="#3b82f6" radius={[0, 4, 4, 0]} barSize={12} />
+                      <Bar dataKey="Priyanshu" fill="#3b82f6" radius={[0, 4, 4, 0]} barSize={12} />
                       <Bar dataKey="Avg" fill="#d1d5db" radius={[0, 4, 4, 0]} barSize={12} />
                     </BarChart>
                   </ResponsiveContainer>

@@ -2,25 +2,24 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import {
-  Home, User, Activity, BookOpen, Bell, Settings, LogOut, Search,
-  ChevronDown, AlertTriangle, MessageSquare, Target, CheckCircle2,
-  Calendar, Clock, BookMarked, Download, XCircle, ChevronRight, Brain
-} from 'lucide-react'
+import { Home, User, Activity, BookOpen, Bell, Settings, LogOut, Search, ChevronDown, AlertTriangle, MessageSquare, Target, CheckCircle2, Calendar, Clock, BookMarked, Download, XCircle, ChevronRight, TrendingUp, Users, Award, Grid, FileText, CheckCircle, Zap, AlertCircle, Plug } from 'lucide-react'
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend, ReferenceLine
 } from 'recharts'
 
 const navLinks = [
-  { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null, path: '/dashboard/faculty' },
-  { id: 'classes', label: 'My Classes', icon: BookOpen, badge: null, path: '/dashboard/faculty/my-classes' },
-  { id: 'intelligence', label: 'Student Intelligence', icon: Brain, badge: null, path: '/dashboard/faculty/student-intelligence' },
-  { id: 'alerts', label: 'Student Alerts', icon: Bell, badge: '5', path: '/dashboard/faculty/alerts' },
-  { id: 'analytics', label: 'Subject Analytics', icon: Activity, badge: null, path: '/dashboard/faculty/analytics' },
-  { id: 'profiles', label: 'Student Profiles', icon: User, badge: null, path: '/dashboard/faculty/student/profile' },
-  { id: 'co', label: 'CO Attainment', icon: Target, badge: null, path: '/dashboard/faculty/co-attainment' },
-  { id: 'parent', label: 'Parent Communication', icon: MessageSquare, badge: null, path: '/dashboard/faculty/parent-communication' },
-  { id: 'reports', label: 'Reports', icon: BookMarked, badge: null, path: '/dashboard/faculty/reports' },
+  { id: 'dashboard',  label: 'Dashboard',        icon: Home,       badge: null,  active: false, path: '/dashboard/faculty' },
+  { id: 'classes',    label: 'My Classes',       icon: BookOpen,   badge: null,  active: false, path: '/dashboard/faculty/my-classes' },
+  { id: 'intelligence',label: 'Student Intelligence',icon: Grid,     badge: null,  active: false, path: '/dashboard/faculty/student-intelligence' },
+  { id: 'alerts',     label: 'Student Alerts',   icon: AlertCircle,badge: '5',   active: false, path: '/dashboard/faculty/alerts' },
+  { id: 'analytics',  label: 'Subject Analytics',icon: Activity,   badge: null,  active: false, path: '/dashboard/faculty/analytics' },
+  { id: 'profiles',   label: 'Student Profiles', icon: Users,      badge: null,  active: false, path: '/dashboard/faculty/student/profile' },
+  { id: 'co',         label: 'CO Attainment',    icon: CheckCircle,badge: null,  active: true,  path: '/dashboard/faculty/co-attainment' },
+  { id: 'parent',     label: 'Parent Communication', icon: MessageSquare, badge: null, active: false, path: '/dashboard/faculty/parent-communication' },
+  { id: 'reports',    label: 'Reports',          icon: FileText,   badge: null,  active: false, path: '/dashboard/faculty/reports' },
+  { id: 'assignments',label: 'Assignments (Moodle)', icon: BookOpen, badge: null, active: false, path: '/faculty/assignments' },
+  { id: 'attendance', label: 'Attendance (Vidya)',   icon: CheckCircle,badge: null, active: false, path: '/faculty/attendance' },
+  { id: 'advisor',    label: 'AI Advisor',       icon: Search,     badge: null,  active: false, path: '/ai-advisor' },
 ]
 
 const subjectData = {
@@ -143,8 +142,11 @@ export default function FacultyCOAttainment() {
             <button
               key={link.id}
               onClick={() => {
-                setActiveNav(link.id)
-                if (link.path) router.push(link.path)
+                if (link.path) {
+                  router.push(link.path)
+                } else {
+                  if (typeof setActiveNav === 'function') setActiveNav(link.id)
+                }
               }}
               className={`nav-link w-full text-left mb-0.5 ${activeNav === link.id ? 'bg-teal-50 text-teal-700 font-semibold' : ''}`}
             >
@@ -508,12 +510,12 @@ export default function FacultyCOAttainment() {
               </div>
 
               <div className="mb-5">
-                <label className="text-sm font-bold text-gray-700 mb-2 flex items-center gap-2"><Calendar size={16} /> Session Date</label>
+                <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2"><Calendar size={16} /> Session Date</label>
                 <input type="date" className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-gray-700" required defaultValue="2026-04-18" />
               </div>
 
               <div className="mb-8">
-                <label className="text-sm font-bold text-gray-700 mb-2 flex items-center gap-2"><Clock size={16} /> Duration</label>
+                <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2"><Clock size={16} /> Duration</label>
                 <div className="grid grid-cols-2 gap-3">
                   <label className="flex items-center justify-center p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50 has-[:checked]:text-blue-700 font-medium text-sm transition">
                     <input type="radio" name="duration" className="hidden" defaultChecked />

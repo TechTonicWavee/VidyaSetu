@@ -1,4 +1,9 @@
 import './globals.css'
+import { ToastProvider } from '@/components/ToastContext'
+import { KeyboardShortcutProvider } from '@/components/KeyboardShortcuts'
+import { DemoProvider } from '@/components/DemoContext'
+import { GlobalBreadcrumbs } from '@/components/GlobalBreadcrumbs'
+import { DemoFloatingButton } from '@/components/DemoFloatingButton'
 
 export const metadata = {
   title: 'Educator Analytics OS — AI-Powered Student Intelligence Platform',
@@ -16,8 +21,20 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
       </head>
-      <body style={{ fontFamily: "'Inter', sans-serif" }}>
-        {children}
+      <body style={{ fontFamily: "'Inter', sans-serif" }} className="page-fade-in">
+        <ToastProvider>
+          <KeyboardShortcutProvider>
+            <DemoProvider>
+              <div className="flex flex-col min-h-screen">
+                <GlobalBreadcrumbs />
+                <div className="flex-1 overflow-hidden">
+                  {children}
+                </div>
+              </div>
+              <DemoFloatingButton />
+            </DemoProvider>
+          </KeyboardShortcutProvider>
+        </ToastProvider>
       </body>
     </html>
   )

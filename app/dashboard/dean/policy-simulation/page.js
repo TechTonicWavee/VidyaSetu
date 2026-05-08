@@ -2,13 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import {
-  LayoutDashboard, LineChart as LineIcon, BarChart2, Users, BookOpen, FileText,
-  Settings, Bell, Search, ChevronDown, LogOut, Cpu, Brain,
-  Play, RotateCcw, TrendingUp, TrendingDown, Zap, AlertTriangle,
-  CheckCircle2, Save, Trash2, ChevronRight, Info, Sparkles,
-  GraduationCap, Target, Users2, BookMarked, PlusCircle, Minus
-} from 'lucide-react'
+import { LayoutDashboard, LineChart as LineIcon, BarChart2, Users, BookOpen, FileText, Settings, Bell, Search, ChevronDown, LogOut, Cpu, Play, RotateCcw, TrendingUp, TrendingDown, Zap, AlertTriangle, CheckCircle2, Save, Trash2, ChevronRight, Info, Sparkles, GraduationCap, Target, Users2, BookMarked, PlusCircle, Minus, Home, User, Activity, Award, Grid, CheckCircle, AlertCircle, Plug } from 'lucide-react'
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend,
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
@@ -17,14 +11,15 @@ import {
 
 // ─── NAV ──────────────────────────────────────────────────────────────────────
 const navLinks = [
-  { id: 'department',        label: 'Department Overview',   icon: LayoutDashboard, path: '/dashboard/dean/department' },
-  { id: 'forecasting',       label: 'Cohort Forecasting',    icon: LineIcon,        path: '/dashboard/dean/forecasting' },
-  { id: 'cross-branch',      label: 'Cross-Branch Insights', icon: BarChart2,       path: '/dashboard/dean/cross-branch' },
-  { id: 'faculty',           label: 'Faculty Analytics',     icon: Users,           path: '/dashboard/dean/faculty-performance' },
-  { id: 'curriculum',        label: 'Curriculum Gaps',       icon: BookOpen,        path: '/dashboard/dean/curriculum' },
-  { id: 'student-intelligence', label: 'Student Intelligence',   icon: Brain,           path: '/dashboard/dean/student-intelligence' },
-  { id: 'policy-simulation', label: 'Policy Simulation',     icon: Cpu,             path: '/dashboard/dean/policy-simulation' },
-  { id: 'reports',           label: 'Reports',               icon: FileText,        path: '/dashboard/dean/reports' },
+  { id: 'dashboard',  label: 'Dashboard',        icon: Home,       badge: null,  active: false, path: '/dashboard/dean' },
+  { id: 'department', label: 'Department Overview', icon: Grid,    badge: null,  active: false, path: '/dashboard/dean/department' },
+  { id: 'faculty',    label: 'Faculty Performance', icon: Users,   badge: null,  active: false, path: '/dashboard/dean/faculty-performance' },
+  { id: 'forecast',   label: 'Cohort Forecasting',  icon: TrendingUp,badge: null,active: false, path: '/dashboard/dean/forecasting' },
+  { id: 'curriculum', label: 'Curriculum Analysis', icon: BookOpen,badge: null,  active: false, path: '/dashboard/dean/curriculum' },
+  { id: 'policy',     label: 'Policy Simulation',   icon: Activity,badge: null,  active: true,  path: '/dashboard/dean/policy-simulation' },
+  { id: 'accredit',   label: 'Accreditation Reports',icon: FileText,badge: null, active: false, path: '/dashboard/dean/accreditation' },
+  { id: 'cross',      label: 'Cross-Branch Insights', icon: Target, badge: null, active: false, path: '/dashboard/dean/cross-branch' },
+  { id: 'advisor',    label: 'AI Advisor',       icon: Search,     badge: null,  active: false, path: '/ai-advisor' },
 ]
 
 // ─── SIMULATION ENGINE ────────────────────────────────────────────────────────
@@ -204,7 +199,7 @@ function AnimatedNumber({ value, decimals = 1, duration = 900 }) {
       if (progress < 1) requestAnimationFrame(step)
     }
     requestAnimationFrame(step)
-  }, [value, decimals, duration])
+  }, [value])
   return <>{display}</>
 }
 
