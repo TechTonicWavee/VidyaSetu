@@ -6,14 +6,17 @@ import { useRouter } from 'next/navigation'
 import { Home, BookOpen, Bell, BarChart2, Users, Target, MessageCircle, FileText, Settings, LogOut, Search, ChevronDown, AlertTriangle, Calendar, Clock, ExternalLink, User, Activity, TrendingUp, Award, Grid, CheckCircle, Zap, AlertCircle, Plug } from 'lucide-react'
 
 const navLinks = [
-  { id: 'dashboard',  label: 'Dashboard',        icon: Home,       badge: null,  active: true, path: '/dashboard/faculty' },
+  { id: 'dashboard',  label: 'Dashboard',        icon: Home,       badge: null,  active: false, path: '/dashboard/faculty' },
+  { id: 'classes',    label: 'My Classes',       icon: BookOpen,   badge: null,  active: true,  path: '/dashboard/faculty/my-classes' },
+  { id: 'intelligence',label: 'Student Intelligence',icon: Grid,     badge: null,  active: false, path: '/dashboard/faculty/student-intelligence' },
+  { id: 'alerts',     label: 'Student Alerts',   icon: AlertCircle,badge: '5',   active: false, path: '/dashboard/faculty/alerts' },
   { id: 'analytics',  label: 'Subject Analytics',icon: Activity,   badge: null,  active: false, path: '/dashboard/faculty/analytics' },
-  { id: 'alerts',     label: 'Student Alerts',   icon: AlertCircle,badge: '2',   active: false, path: '/dashboard/faculty/alerts' },
   { id: 'profiles',   label: 'Student Profiles', icon: Users,      badge: null,  active: false, path: '/dashboard/faculty/student/profile' },
-  { id: 'co-attain',  label: 'CO Attainment',    icon: Target,     badge: null,  active: false, path: '/dashboard/faculty/co-attainment' },
-  { id: 'parent-com', label: 'Parent Communication', icon: Bell,   badge: null,  active: false, path: '/dashboard/faculty/parent-communication' },
-  { id: 'parent-vis', label: 'Parent Visit Mode',icon: Users,      badge: null,  active: false, path: '/dashboard/faculty/parent-visit' },
+  { id: 'co',         label: 'CO Attainment',    icon: CheckCircle,badge: null,  active: false, path: '/dashboard/faculty/co-attainment' },
+  { id: 'parent',     label: 'Parent Communication', icon: MessageCircle, badge: null, active: false, path: '/dashboard/faculty/parent-communication' },
   { id: 'reports',    label: 'Reports',          icon: FileText,   badge: null,  active: false, path: '/dashboard/faculty/reports' },
+  { id: 'assignments',label: 'Assignments (Moodle)', icon: BookOpen, badge: null, active: false, path: '/faculty/assignments' },
+  { id: 'attendance', label: 'Attendance (Vidya)',   icon: CheckCircle,badge: null, active: false, path: '/faculty/attendance' },
   { id: 'advisor',    label: 'AI Advisor',       icon: Search,     badge: null,  active: false, path: '/ai-advisor' },
 ]
 

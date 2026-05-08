@@ -9,10 +9,10 @@ import {
 } from 'recharts'
 
 const navLinks = [
-  { id: 'dashboard',  label: 'Dashboard',        icon: Home,       badge: null,  active: true, path: '/dashboard/dean' },
+  { id: 'dashboard',  label: 'Dashboard',        icon: Home,       badge: null,  active: false, path: '/dashboard/dean' },
   { id: 'department', label: 'Department Overview', icon: Grid,    badge: null,  active: false, path: '/dashboard/dean/department' },
   { id: 'faculty',    label: 'Faculty Performance', icon: Users,   badge: null,  active: false, path: '/dashboard/dean/faculty-performance' },
-  { id: 'forecast',   label: 'Cohort Forecasting',  icon: TrendingUp,badge: null,active: false, path: '/dashboard/dean/forecasting' },
+  { id: 'forecast',   label: 'Cohort Forecasting',  icon: TrendingUp,badge: null,active: true,  path: '/dashboard/dean/forecasting' },
   { id: 'curriculum', label: 'Curriculum Analysis', icon: BookOpen,badge: null,  active: false, path: '/dashboard/dean/curriculum' },
   { id: 'policy',     label: 'Policy Simulation',   icon: Activity,badge: null,  active: false, path: '/dashboard/dean/policy-simulation' },
   { id: 'accredit',   label: 'Accreditation Reports',icon: FileText,badge: null, active: false, path: '/dashboard/dean/accreditation' },
