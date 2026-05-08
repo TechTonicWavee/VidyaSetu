@@ -1,216 +1,201 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
-  User, BookOpen, Building2, Heart, Settings,
-  Eye, EyeOff, ChevronRight, Lock, Mail, Sparkles
-} from 'lucide-react'
+  User,
+  BookOpen,
+  Building2,
+  Heart,
+  Settings,
+  Eye,
+  EyeOff,
+  ChevronRight,
+} from "lucide-react";
 
 const roles = [
   {
-    id: 'student',
-    label: 'Student',
-    sub: 'Access your grades and insights',
+    id: "student",
+    label: "Student",
+    sub: "Enter as Student",
     icon: User,
-    color: '#1A56DB',
-    border: 'border-blue-500',
-    bg: 'hover:bg-blue-50',
-    path: '/dashboard/student',
+    color: "#1A56DB",
+    border: "border-blue-500",
+    bg: "hover:bg-blue-50",
+    path: "/dashboard/student",
   },
   {
-    id: 'faculty',
-    label: 'Faculty',
-    sub: 'Manage classes and analytics',
+    id: "faculty",
+    label: "Faculty",
+    sub: "Enter as Faculty",
     icon: BookOpen,
-    color: '#0F766E',
-    border: 'border-teal-600',
-    bg: 'hover:bg-teal-50',
-    path: '/dashboard/faculty',
+    color: "#0F766E",
+    border: "border-teal-600",
+    bg: "hover:bg-teal-50",
+    path: "/dashboard/faculty",
   },
   {
-    id: 'dean',
-    label: 'Dean',
-    sub: 'Institutional oversight',
+    id: "dean",
+    label: "Dean",
+    sub: "Enter as Dean",
     icon: Building2,
-    color: '#5B21B6',
-    border: 'border-purple-700',
-    bg: 'hover:bg-purple-50',
-    path: '/dashboard/dean',
+    color: "#5B21B6",
+    border: "border-purple-700",
+    bg: "hover:bg-purple-50",
+    path: "/dashboard/dean",
   },
   {
-    id: 'parent',
-    label: 'Parent',
-    sub: 'Track ward progress',
+    id: "parent",
+    label: "Parent",
+    sub: "Enter as Parent",
     icon: Heart,
-    color: '#D97706',
-    border: 'border-amber-500',
-    bg: 'hover:bg-amber-50',
-    path: '/dashboard/parent',
+    color: "#D97706",
+    border: "border-amber-500",
+    bg: "hover:bg-amber-50",
+    path: "/dashboard/parent",
   },
   {
-    id: 'admin',
-    label: 'Admin',
-    sub: 'System configuration',
+    id: "admin",
+    label: "Admin",
+    sub: "Enter as Admin",
     icon: Settings,
-    color: '#6B7280',
-    border: 'border-gray-400',
-    bg: 'hover:bg-gray-50',
-    path: '/dashboard/admin',
+    color: "#6B7280",
+    border: "border-gray-400",
+    bg: "hover:bg-gray-50",
+    path: "/dashboard/admin",
   },
-]
+];
 
 export default function LoginPage() {
-  const router = useRouter()
-  const [showPass, setShowPass] = useState(false)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [hoveredRole, setHoveredRole] = useState(null)
+  const router = useRouter();
+  const [showPass, setShowPass] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [hoveredRole, setHoveredRole] = useState(null);
 
   return (
-    <div className="min-h-screen flex items-center justify-center font-sans p-4 relative overflow-hidden" 
-      style={{ background: 'linear-gradient(135deg, #F8FAFC 0%, #E2E8F0 100%)' }}>
-      
-      {/* Background Decoration */}
-      <div className="absolute top-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full opacity-20 blur-[120px]" style={{ background: '#1A56DB' }}></div>
-      <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full opacity-10 blur-[120px]" style={{ background: '#0F766E' }}></div>
-
-      <div className="w-full max-w-[580px] bg-white rounded-[32px] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] px-10 py-12 animate-fade-in relative overflow-hidden border border-gray-100">
-        {/* Top decorative bar */}
-        <div className="absolute top-0 left-0 w-full h-2" style={{ background: 'linear-gradient(90deg, #1A56DB, #1447C0)' }}></div>
-
-        {/* Header section */}
-        <div className="flex justify-between items-start mb-10">
-          <div>
-            <div className="flex items-center gap-3 mb-4">
-              <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-blue-500/20"
-                style={{ background: 'linear-gradient(135deg, #1A56DB 0%, #1447C0 100%)' }}
-              >
-                EA
-              </div>
-              <span className="font-extrabold text-2xl tracking-tight" style={{ color: '#0f2744' }}>Educator OS</span>
-            </div>
-            <h1 className="text-3xl font-bold tracking-tight mb-2" style={{ color: '#0f2744' }}>Welcome back</h1>
-            <p className="text-gray-500 font-medium">Sign in to your intelligent academic dashboard</p>
-          </div>
-          <div className="hidden sm:flex flex-col items-end">
-            <span
-              className="text-xs font-bold px-4 py-1.5 rounded-full shadow-sm border border-blue-100 flex items-center gap-2"
-              style={{ background: '#EFF6FF', color: '#1A56DB' }}
-            >
-              <Sparkles size={12} />
-              2026–27 Session
-            </span>
-          </div>
-        </div>
-
-        <div className="w-full space-y-6">
-          {/* Email Input Group */}
-          <div className="space-y-2">
-            <label className="text-sm font-bold text-gray-700 ml-1">Email address</label>
-            <div className="relative group">
-              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-600 transition-colors">
-                <Mail size={18} />
-              </div>
-              <input
-                id="email-input"
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder="name@college.edu.in"
-                className="w-full pl-12 pr-4 py-4 rounded-2xl border border-gray-200 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 transition-all shadow-sm"
-              />
-            </div>
-          </div>
-
-          {/* Password Input Group */}
-          <div className="space-y-2">
-            <div className="flex justify-between items-center px-1">
-              <label className="text-sm font-bold text-gray-700">Password</label>
-              <button className="text-xs font-bold text-blue-600 hover:text-blue-800 transition-colors">Forgot password?</button>
-            </div>
-            <div className="relative group">
-              <div className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-600 transition-colors">
-                <Lock size={18} />
-              </div>
-              <input
-                id="password-input"
-                type={showPass ? 'text' : 'password'}
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="w-full pl-12 pr-12 py-4 rounded-2xl border border-gray-200 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-blue-500/10 focus:border-blue-600 transition-all shadow-sm"
-              />
-              <button
-                id="toggle-password"
-                type="button"
-                onClick={() => setShowPass(v => !v)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                {showPass ? <EyeOff size={20} /> : <Eye size={20} />}
-              </button>
-            </div>
-          </div>
-
-          {/* Sign In Button */}
-          <button
-            id="sign-in-btn"
-            className="w-full py-4 rounded-2xl text-white font-bold text-base transition-all duration-300 flex items-center justify-center gap-2 shadow-xl shadow-blue-600/20 hover:shadow-2xl hover:shadow-blue-600/30 active:scale-[0.98]"
-            style={{ background: 'linear-gradient(135deg, #1A56DB 0%, #1447C0 100%)' }}
-            onMouseEnter={e => (e.currentTarget.style.filter = 'brightness(1.1)')}
-            onMouseLeave={e => (e.currentTarget.style.filter = 'brightness(1)')}
+    <div className="min-h-screen flex items-center justify-center bg-[#F3F4F6] font-sans px-4 py-10">
+      {/* ─── CENTER PANEL ─── */}
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-card p-8 animate-fade-in">
+        {/* Logo */}
+        <div className="flex items-center gap-3 mb-8">
+          <div
+            className="w-9 h-9 rounded-lg flex items-center justify-center text-white font-bold text-xs flex-shrink-0"
+            style={{ background: "linear-gradient(135deg, #1A56DB, #1447C0)" }}
           >
-            Sign In to Dashboard
-            <ChevronRight size={20} />
-          </button>
-
-          {/* Divider */}
-          <div className="flex items-center gap-4 py-2">
-            <div className="flex-1 h-px bg-gray-100" />
-            <p className="text-[10px] text-gray-400 uppercase tracking-[0.2em] font-black">
-              Instant Access
-            </p>
-            <div className="flex-1 h-px bg-gray-100" />
+            EA
           </div>
-
-          {/* Role Buttons Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {roles.map(role => (
-              <button
-                key={role.id}
-                id={`role-btn-${role.id}`}
-                onClick={() => router.push(role.path)}
-                onMouseEnter={() => setHoveredRole(role.id)}
-                onMouseLeave={() => setHoveredRole(null)}
-                className={`role-btn border-2 text-left p-4 rounded-[20px] transition-all duration-200 relative group overflow-hidden ${role.border} ${role.bg} bg-white`}
-                style={{
-                  transform: hoveredRole === role.id ? 'translateY(-4px)' : 'none',
-                  boxShadow: hoveredRole === role.id ? '0 12px 24px rgba(0,0,0,0.06)' : 'none',
-                }}
-              >
-                <div className="flex items-center gap-4 relative z-10">
-                  <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-white shadow-sm border border-gray-100 group-hover:scale-110 transition-transform">
-                    <role.icon size={20} color={role.color} strokeWidth={2.5} />
-                  </div>
-                  <div>
-                    <p className="font-bold text-sm" style={{ color: '#0f2744' }}>{role.label}</p>
-                    <p className="text-[10px] text-gray-500 font-medium line-clamp-1">{role.sub}</p>
-                  </div>
-                </div>
-                {/* Subtle hover effect */}
-                <div className="absolute top-0 right-0 p-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <ChevronRight size={14} color={role.color} />
-                </div>
-              </button>
-            ))}
-          </div>
-
-          <p className="text-center text-xs text-gray-400 mt-10 font-medium">
-            © 2026 Educator Analytics OS · CSE Department · <span className="text-blue-600/60">AICTE Certified Platform</span>
-          </p>
+          <span className="font-bold text-navy text-base">
+            Educator Analytics OS
+          </span>
         </div>
+
+        <h1 className="text-3xl font-bold text-navy mb-1">Welcome back</h1>
+        <p className="text-gray-500 text-sm mb-8">Sign in to your dashboard</p>
+
+        {/* Email */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            Email address
+          </label>
+          <input
+            id="email-input"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="arman.singh@college.edu.in"
+            className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent transition"
+            style={{ "--tw-ring-color": "#1A56DB" }}
+          />
+        </div>
+
+        {/* Password */}
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-gray-700 mb-1.5">
+            Password
+          </label>
+          <div className="relative">
+            <input
+              id="password-input"
+              type={showPass ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="••••••••"
+              className="w-full px-4 py-3 rounded-lg border border-gray-200 text-sm text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent pr-12 transition"
+            />
+            <button
+              id="toggle-password"
+              type="button"
+              onClick={() => setShowPass((v) => !v)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
+            >
+              {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
+        </div>
+
+        {/* Sign In Button */}
+        <button
+          id="sign-in-btn"
+          className="w-full py-3 rounded-xl text-white font-semibold text-sm transition-all duration-150 mb-6 flex items-center justify-center gap-2"
+          style={{ background: "linear-gradient(90deg, #1A56DB, #1447C0)" }}
+          onMouseEnter={(e) =>
+            (e.currentTarget.style.background =
+              "linear-gradient(90deg, #1447C0, #0f3aa8)")
+          }
+          onMouseLeave={(e) =>
+            (e.currentTarget.style.background =
+              "linear-gradient(90deg, #1A56DB, #1447C0)")
+          }
+        >
+          Sign In
+          <ChevronRight size={16} />
+        </button>
+
+        {/* Divider */}
+        <div className="flex items-center gap-3 mb-5">
+          <div className="flex-1 h-px bg-gray-100" />
+          <p className="text-xs text-gray-400 text-center whitespace-nowrap">
+            Demo Mode — Select your role below to preview
+          </p>
+          <div className="flex-1 h-px bg-gray-100" />
+        </div>
+
+        {/* Role Buttons */}
+        <div className="grid grid-cols-2 gap-3">
+          {roles.map((role) => (
+            <button
+              key={role.id}
+              id={`role-btn-${role.id}`}
+              onClick={() => router.push(role.path)}
+              onMouseEnter={() => setHoveredRole(role.id)}
+              onMouseLeave={() => setHoveredRole(null)}
+              className={`role-btn border-2 text-left ${role.border} ${role.bg} ${
+                role.id === "admin" ? "col-span-2 sm:col-span-1" : ""
+              }`}
+              style={{
+                transform:
+                  hoveredRole === role.id ? "translateY(-2px)" : "none",
+                boxShadow:
+                  hoveredRole === role.id
+                    ? "0 6px 20px rgba(0,0,0,0.1)"
+                    : "none",
+                transition: "all 0.15s ease",
+              }}
+            >
+              <role.icon size={20} color={role.color} strokeWidth={2} />
+              <p className="font-semibold text-sm text-navy mt-1">
+                {role.label}
+              </p>
+              <p className="text-xs text-gray-400">{role.sub}</p>
+            </button>
+          ))}
+        </div>
+
+        <p className="text-center text-xs text-gray-400 mt-8">
+          © 2026 Educator Analytics OS · CSE Department
+        </p>
       </div>
     </div>
-  )
+  );
 }
