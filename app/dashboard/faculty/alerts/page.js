@@ -3,20 +3,21 @@
 
 import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Home, BookOpen, Bell, BarChart2, Users, CheckCircle, MessageCircle, FileText, Settings, LogOut, Search, ChevronDown, AlertTriangle, Clock, User, Activity, TrendingUp, Award, Grid, Target, Zap, AlertCircle, Plug } from 'lucide-react'
+import { FACULTY_PROFILE } from '../../../../lib/faculty/mock-data'
+import { Home, BookOpen, Bell, BarChart2, Brain, Users, CheckCircle, MessageCircle, FileText, Settings, LogOut, Search, ChevronDown, AlertTriangle, Clock, User, Activity, TrendingUp, Award, Grid, Target, Zap, AlertCircle, Plug, ExternalLink } from 'lucide-react'
 
 const navLinks = [
-  { id: 'dashboard',  label: 'Dashboard',        icon: Home,       badge: null,  active: false, path: '/dashboard/faculty' },
-  { id: 'classes',    label: 'My Classes',       icon: BookOpen,   badge: null,  active: false, path: '/dashboard/faculty/my-classes' },
-  { id: 'intelligence',label: 'Student Intelligence',icon: Grid,     badge: null,  active: false, path: '/dashboard/faculty/student-intelligence' },
-  { id: 'alerts',     label: 'Student Alerts',   icon: AlertCircle,badge: '5',   active: true,  path: '/dashboard/faculty/alerts' },
-  { id: 'analytics',  label: 'Subject Analytics',icon: Activity,   badge: null,  active: false, path: '/dashboard/faculty/analytics' },
-  { id: 'profiles',   label: 'Student Profiles', icon: Users,      badge: null,  active: false, path: '/dashboard/faculty/student/profile' },
-  { id: 'co',         label: 'CO Attainment',    icon: CheckCircle,badge: null,  active: false, path: '/dashboard/faculty/co-attainment' },
-  { id: 'parent',     label: 'Parent Communication', icon: MessageCircle, badge: null, active: false, path: '/dashboard/faculty/parent-communication' },
-  { id: 'reports',    label: 'Reports',          icon: FileText,   badge: null,  active: false, path: '/dashboard/faculty/reports' },
-  { id: 'assignments',label: 'Assignments (Moodle)', icon: BookOpen, badge: null, active: false, path: null, external: 'http://lms.kiet.edu/moodle/' },
-  { id: 'attendance', label: 'Attendance (Vidya)',   icon: CheckCircle,badge: null, active: false, path: null, external: 'https://kiet.cybervidya.net' },
+  { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null, path: '/dashboard/faculty' },
+  { id: 'classes', label: 'My Classes', icon: BookOpen, badge: null, path: '/dashboard/faculty/my-classes' },
+  { id: 'intelligence', label: 'Student Intelligence', icon: Brain, badge: 'New', path: '/dashboard/faculty/student-intelligence' },
+  { id: 'alerts', label: 'Student Alerts', icon: AlertCircle, badge: '5', path: '/dashboard/faculty/alerts' },
+  { id: 'analytics', label: 'Subject Analytics', icon: Activity, badge: null, path: '/dashboard/faculty/analytics' },
+  { id: 'profiles', label: 'Student Profiles', icon: Users, badge: null, path: '/dashboard/faculty/student/profile' },
+  { id: 'co', label: 'CO Attainment', icon: CheckCircle, badge: null, path: '/dashboard/faculty/co-attainment' },
+  { id: 'parent', label: 'Parent Communication', icon: MessageCircle, badge: null, path: '/dashboard/faculty/parent-communication' },
+  { id: 'reports', label: 'Reports', icon: FileText, badge: null, path: '/dashboard/faculty/reports' },
+  { id: 'assignments', label: 'Assignments (Moodle)', icon: ExternalLink, badge: null, path: null, external: 'http://lms.kiet.edu/moodle/' },
+  { id: 'attendance', label: 'Attendance (Vidya)', icon: ExternalLink, badge: null, path: null, external: 'https://kiet.cybervidya.net' },
 ]
 
 const mockAlerts = [
@@ -134,17 +135,17 @@ export default function AlertsPage() {
   }
 
   return (
-    <div className="flex h-screen bg-bg-base overflow-hidden font-sans">
+    <div className="flex h-screen bg-[#F3F4F6] overflow-hidden font-sans">
       {/* SIDEBAR */}
       <aside className={`${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'} flex-shrink-0 bg-white border-r border-gray-100 flex flex-col transition-all duration-300 shadow-sm`}>
         <div className="p-5 border-b border-gray-50">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style={{ background: 'linear-gradient(135deg, #0F766E, #047857)' }}>
-              PK
+            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style={{ background: 'linear-gradient(135deg, #4338CA, #7C3AED)' }}>
+              {FACULTY_PROFILE.initials}
             </div>
             <div className="overflow-hidden">
-              <p className="font-semibold text-sm text-navy truncate">Prof. Pushpendra Kumar</p>
-              <p className="text-xs text-gray-500 truncate">CSE Department · 4 Subjects</p>
+              <p className="font-semibold text-sm text-navy truncate">{FACULTY_PROFILE.name}</p>
+              <p className="text-xs text-gray-500 truncate">{FACULTY_PROFILE.department} · {FACULTY_PROFILE.subtitle}</p>
             </div>
           </div>
         </div>
@@ -154,17 +155,23 @@ export default function AlertsPage() {
             <button
               key={link.id}
               onClick={() => {
-                if (link.external) { window.open(link.external, '_blank'); return; }; if (link.path) {
+                if (link.external) { window.open(link.external, '_blank'); return; }
+                if (link.path) {
                   router.push(link.path)
                 } else {
                   if (typeof setActiveNav === 'function') setActiveNav(link.id)
                 }
               }}
-              className={`nav-link w-full text-left mb-0.5 ${activeNav === link.id ? 'bg-teal-50 text-teal-700 font-semibold' : ''}`}
+              className="nav-link w-full text-left mb-0.5"
+              style={activeNav === link.id && !link.external ? { background: '#EEF2FF', color: '#3730A3', fontWeight: 600 } : {}}
             >
               <link.icon size={17} />
               <span className="flex-1">{link.label}</span>
-              {link.badge && <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{link.badge}</span>}
+              {link.badge && (
+                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${link.badge === 'New' ? 'bg-indigo-100 text-indigo-700' : 'bg-red-500 text-white'}`}>
+                  {link.badge}
+                </span>
+              )}
             </button>
           ))}
         </nav>
@@ -184,12 +191,12 @@ export default function AlertsPage() {
             <Settings size={20} />
           </button>
           <div className="flex items-center gap-2 mr-4">
-            <div className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs" style={{ background: '#0F766E' }}>EA</div>
+            <div className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs" style={{ background: '#4338CA' }}>EA</div>
             <span className="font-bold text-navy text-sm hidden sm:block">Educator Analytics OS</span>
           </div>
           <div className="flex-1 max-w-md relative">
             <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input type="text" placeholder="Search students, subjects, features..." className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-100 focus:border-teal-300 transition" />
+            <input type="text" placeholder="Search students, subjects, features..." className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-300 transition" />
           </div>
           <div className="flex-1" />
           <div className="relative">
@@ -199,7 +206,7 @@ export default function AlertsPage() {
             </button>
           </div>
           <div className="flex items-center gap-2 cursor-pointer group" aria-label="Profile menu">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs" style={{ background: 'linear-gradient(135deg, #0F766E, #047857)' }}>PK</div>
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs" style={{ background: 'linear-gradient(135deg, #4338CA, #7C3AED)' }}>{FACULTY_PROFILE.initials}</div>
             <ChevronDown size={14} className="text-gray-400 group-hover:text-gray-600 transition" />
           </div>
         </header>
@@ -210,7 +217,7 @@ export default function AlertsPage() {
             <p className="text-gray-500 text-sm mt-1">Monitor and act on student risk indicators</p>
           </div>
 
-          <div className="card mb-6 animate-fade-in" style={{ animationDelay: '0.08s' }}>
+          <div className="card rounded-2xl shadow-sm border border-gray-100 mb-6 animate-fade-in" style={{ animationDelay: '0.08s' }}>
             <div className="flex flex-col lg:flex-row lg:items-center gap-4">
               <div className="flex items-center gap-2 text-sm font-semibold text-navy">
                 <AlertTriangle size={16} className="text-red-500" />
@@ -226,7 +233,7 @@ export default function AlertsPage() {
                   <select
                     value={severity}
                     onChange={(e) => setSeverity(e.target.value)}
-                    className="w-full appearance-none bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-4 py-2 pr-9 focus:outline-none focus:ring-2 focus:ring-teal-100 focus:border-teal-300"
+                    className="w-full appearance-none bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-4 py-2 pr-9 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-300"
                     aria-label="Filter by severity"
                   >
                     <option value="All">Severity: All</option>
@@ -241,7 +248,7 @@ export default function AlertsPage() {
                   <select
                     value={subject}
                     onChange={(e) => setSubject(e.target.value)}
-                    className="w-full appearance-none bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-4 py-2 pr-9 focus:outline-none focus:ring-2 focus:ring-teal-100 focus:border-teal-300"
+                    className="w-full appearance-none bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-4 py-2 pr-9 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-300"
                     aria-label="Filter by subject"
                   >
                     {subjects.map(s => (
@@ -256,7 +263,7 @@ export default function AlertsPage() {
 
           <div className="space-y-4">
             {filtered.length === 0 ? (
-              <div className="card animate-fade-in">
+              <div className="card rounded-2xl shadow-sm border border-gray-100 animate-fade-in">
                 <div className="py-10 text-center">
                   <p className="text-sm font-semibold text-navy">No alerts match your filters.</p>
                   <p className="text-xs text-gray-500 mt-1">Try switching severity or subject to see other alerts.</p>
@@ -264,7 +271,7 @@ export default function AlertsPage() {
               </div>
             ) : (
               filtered.map((a, idx) => (
-                <div key={a.id} className="card animate-fade-in p-0 overflow-hidden relative" style={{ animationDelay: `${0.12 + idx * 0.04}s` }}>
+                <div key={a.id} className="card rounded-2xl shadow-sm border border-gray-100 animate-fade-in p-0 overflow-hidden relative" style={{ animationDelay: `${0.12 + idx * 0.04}s` }}>
                   <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${severityBarClass(a.severity)}`} />
                   <div className="p-5 pl-6">
                     <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-3 mb-4">
@@ -297,7 +304,7 @@ export default function AlertsPage() {
                     <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
                       <button
                         onClick={() => router.push('/dashboard/faculty/student/profile')}
-                        className="text-sm font-semibold text-teal-600 hover:text-teal-800 hover:underline"
+                        className="text-sm font-semibold text-indigo-600 hover:text-indigo-800 hover:underline"
                       >
                         View Profile
                       </button>

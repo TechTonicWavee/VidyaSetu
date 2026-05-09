@@ -7,37 +7,40 @@ import {
   Home, BookOpen, Bell, Users, MessageSquare,
   FileText, LogOut, Search, ChevronDown, Download,
   Calendar, Activity, CheckCircle, AlertCircle,
-  Grid, Filter, RefreshCw, Clock, Eye, Menu
+  Grid, Filter, RefreshCw, Clock, Eye, Menu, ExternalLink, Brain
 } from 'lucide-react'
+import { FACULTY_PROFILE } from '../../../../lib/faculty/mock-data'
 
 const navLinks = [
-  { id: 'dashboard',    label: 'Dashboard',            icon: Home,          badge: null, path: '/dashboard/faculty' },
-  { id: 'classes',      label: 'My Classes',           icon: BookOpen,      badge: null, path: '/dashboard/faculty/my-classes' },
-  { id: 'intelligence', label: 'Student Intelligence', icon: Grid,          badge: null, path: '/dashboard/faculty/student-intelligence' },
-  { id: 'alerts',       label: 'Student Alerts',       icon: AlertCircle,   badge: '5',  path: '/dashboard/faculty/alerts' },
-  { id: 'analytics',    label: 'Subject Analytics',    icon: Activity,      badge: null, path: '/dashboard/faculty/analytics' },
-  { id: 'profiles',     label: 'Student Profiles',     icon: Users,         badge: null, path: '/dashboard/faculty/student/profile' },
-  { id: 'co',           label: 'CO Attainment',        icon: CheckCircle,   badge: null, path: '/dashboard/faculty/co-attainment' },
-  { id: 'parent',       label: 'Parent Communication', icon: MessageSquare, badge: null, path: '/dashboard/faculty/parent-communication' },
-  { id: 'reports',      label: 'Reports',              icon: FileText,      badge: null, path: '/dashboard/faculty/reports' },
+  { id: 'dashboard',    label: 'Dashboard',            icon: Home,          badge: null,  path: '/dashboard/faculty' },
+  { id: 'classes',      label: 'My Classes',           icon: BookOpen,      badge: null,  path: '/dashboard/faculty/my-classes' },
+  { id: 'intelligence', label: 'Student Intelligence', icon: Brain,         badge: 'New', path: '/dashboard/faculty/student-intelligence' },
+  { id: 'alerts',       label: 'Student Alerts',       icon: AlertCircle,   badge: '5',   path: '/dashboard/faculty/alerts' },
+  { id: 'analytics',    label: 'Subject Analytics',    icon: Activity,      badge: null,  path: '/dashboard/faculty/analytics' },
+  { id: 'profiles',     label: 'Student Profiles',     icon: Users,         badge: null,  path: '/dashboard/faculty/student/profile' },
+  { id: 'co',           label: 'CO Attainment',        icon: CheckCircle,   badge: null,  path: '/dashboard/faculty/co-attainment' },
+  { id: 'parent',       label: 'Parent Communication', icon: MessageSquare, badge: null,  path: '/dashboard/faculty/parent-communication' },
+  { id: 'reports',      label: 'Reports',              icon: FileText,      badge: null,  path: '/dashboard/faculty/reports' },
+  { id: 'assignments',  label: 'Assignments (Moodle)', icon: ExternalLink,  badge: null,  path: null, external: 'http://lms.kiet.edu/moodle/' },
+  { id: 'attendance',   label: 'Attendance (Vidya)',   icon: ExternalLink,  badge: null,  path: null, external: 'https://kiet.cybervidya.net' },
 ]
 
 const FILTER_TABS = ['All', 'NAAC/NBA', 'Intervention', 'Compliance', 'Academic']
 
 const mockReports = [
-  { id: 'rep_01', name: 'CO Attainment Summary',      desc: 'Subject-wise CO1–CO3 attainment with status and overall % across all sections.', type: 'NAAC/NBA',     updated: 'May 04, 2026', status: 'ready',      size: '2.4 MB', pages: 12 },
-  { id: 'rep_02', name: 'At-Risk Students List',       desc: 'Students flagged by attendance or score decline across subjects this semester.',  type: 'Intervention', updated: 'May 03, 2026', status: 'ready',      size: '1.1 MB', pages: 6  },
-  { id: 'rep_03', name: 'Attendance Compliance',       desc: 'Attendance distribution and shortage warnings by section for current term.',      type: 'Compliance',   updated: 'May 02, 2026', status: 'ready',      size: '0.8 MB', pages: 4  },
-  { id: 'rep_04', name: 'End-Term Performance Report', desc: 'Aggregated marks, grade distribution and pass/fail analysis per subject.',        type: 'Academic',     updated: 'Apr 30, 2026', status: 'generating', size: null,     pages: null },
-  { id: 'rep_05', name: 'PO/PSO Mapping Audit',        desc: 'CO-PO-PSO mapping coverage and attainment gaps for accreditation review.',        type: 'NAAC/NBA',     updated: 'Apr 28, 2026', status: 'ready',      size: '3.2 MB', pages: 18 },
-  { id: 'rep_06', name: 'Parent Communication Log',    desc: 'Summary of all parent notifications, escalations and resolved interventions.',    type: 'Compliance',   updated: 'Apr 25, 2026', status: 'ready',      size: '0.5 MB', pages: 3  },
+  { id: 'rep_01', name: 'CO Attainment Summary', desc: 'Subject-wise CO1–CO3 attainment with status and overall % across all sections.', type: 'NAAC/NBA', updated: 'May 04, 2026', status: 'ready', size: '2.4 MB', pages: 12 },
+  { id: 'rep_02', name: 'At-Risk Students List', desc: 'Students flagged by attendance or score decline across subjects this semester.', type: 'Intervention', updated: 'May 03, 2026', status: 'ready', size: '1.1 MB', pages: 6 },
+  { id: 'rep_03', name: 'Attendance Compliance', desc: 'Attendance distribution and shortage warnings by section for current term.', type: 'Compliance', updated: 'May 02, 2026', status: 'ready', size: '0.8 MB', pages: 4 },
+  { id: 'rep_04', name: 'End-Term Performance Report', desc: 'Aggregated marks, grade distribution and pass/fail analysis per subject.', type: 'Academic', updated: 'Apr 30, 2026', status: 'generating', size: null, pages: null },
+  { id: 'rep_05', name: 'PO/PSO Mapping Audit', desc: 'CO-PO-PSO mapping coverage and attainment gaps for accreditation review.', type: 'NAAC/NBA', updated: 'Apr 28, 2026', status: 'ready', size: '3.2 MB', pages: 18 },
+  { id: 'rep_06', name: 'Parent Communication Log', desc: 'Summary of all parent notifications, escalations and resolved interventions.', type: 'Compliance', updated: 'Apr 25, 2026', status: 'ready', size: '0.5 MB', pages: 3 },
 ]
 
 const TYPE_COLOR = {
-  'NAAC/NBA':     { bg: 'bg-purple-50', text: 'text-purple-700', dot: 'bg-purple-500' },
-  'Intervention': { bg: 'bg-amber-50',  text: 'text-amber-700',  dot: 'bg-amber-500'  },
-  'Compliance':   { bg: 'bg-blue-50',   text: 'text-blue-700',   dot: 'bg-blue-500'   },
-  'Academic':     { bg: 'bg-teal-50',   text: 'text-teal-700',   dot: 'bg-teal-500'   },
+  'NAAC/NBA': { bg: 'bg-purple-50', text: 'text-purple-700', dot: 'bg-purple-500' },
+  'Intervention': { bg: 'bg-amber-50', text: 'text-amber-700', dot: 'bg-amber-500' },
+  'Compliance': { bg: 'bg-blue-50', text: 'text-blue-700', dot: 'bg-blue-500' },
+  'Academic': { bg: 'bg-indigo-50', text: 'text-indigo-700', dot: 'bg-indigo-500' },
 }
 
 export default function FacultyReportsPage() {
@@ -48,7 +51,7 @@ export default function FacultyReportsPage() {
   const [downloaded, setDownloaded] = useState({})
 
   const filtered = activeFilter === 'All' ? mockReports : mockReports.filter(r => r.type === activeFilter)
-  const readyCount   = mockReports.filter(r => r.status === 'ready').length
+  const readyCount = mockReports.filter(r => r.status === 'ready').length
   const pendingCount = mockReports.filter(r => r.status === 'generating').length
 
   const handleDownload = (id) => {
@@ -61,26 +64,31 @@ export default function FacultyReportsPage() {
   }
 
   return (
-    <div className="flex h-screen bg-bg-base overflow-hidden font-sans">
+    <div className="flex h-screen bg-[#F3F4F6] overflow-hidden font-sans">
       {/* SIDEBAR */}
       <aside className={`${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'} flex-shrink-0 bg-white border-r border-gray-100 flex flex-col transition-all duration-300 shadow-sm`}>
         <div className="p-5 border-b border-gray-50">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
-              style={{ background: 'linear-gradient(135deg, #0F766E, #047857)' }}>PK</div>
+              style={{ background: 'linear-gradient(135deg, #4338CA, #7C3AED)' }}>{FACULTY_PROFILE.initials}</div>
             <div className="overflow-hidden">
-              <p className="font-semibold text-sm text-navy truncate">Prof. Pushpendra Kumar</p>
-              <p className="text-xs text-gray-500 truncate">CSE Department · 4 Subjects</p>
+              <p className="font-semibold text-sm text-navy truncate">{FACULTY_PROFILE.name}</p>
+              <p className="text-xs text-gray-500 truncate">{FACULTY_PROFILE.department} · {FACULTY_PROFILE.subtitle}</p>
             </div>
           </div>
         </div>
         <nav className="flex-1 p-3 overflow-y-auto">
           {navLinks.map(link => (
             <button key={link.id} onClick={() => { if (link.external) { window.open(link.external, '_blank'); return; } if (link.path) router.push(link.path); }}
-              className={`nav-link w-full text-left mb-0.5 ${link.id === 'reports' ? 'bg-teal-50 text-teal-700 font-semibold' : ''}`}>
+              className="nav-link w-full text-left mb-0.5"
+              style={link.id === 'reports' && !link.external ? { background: '#EEF2FF', color: '#3730A3', fontWeight: 600 } : {}}>
               <link.icon size={17} />
               <span className="flex-1">{link.label}</span>
-              {link.badge && <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{link.badge}</span>}
+              {link.badge && (
+                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${link.badge === 'New' ? 'bg-indigo-100 text-indigo-700' : 'bg-red-500 text-white'}`}>
+                  {link.badge}
+                </span>
+              )}
             </button>
           ))}
         </nav>
@@ -99,19 +107,19 @@ export default function FacultyReportsPage() {
             <Menu size={20} />
           </button>
           <div className="flex items-center gap-2 mr-4">
-            <div className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs" style={{ background: '#0F766E' }}>EA</div>
+            <div className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs" style={{ background: '#4338CA' }}>EA</div>
             <span className="font-bold text-navy text-sm hidden sm:block">Educator Analytics OS</span>
           </div>
           <div className="flex-1 max-w-md relative">
             <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
             <input type="text" placeholder="Search students, subjects, features..."
-              className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-100 focus:border-teal-300 transition" />
+              className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-300 transition" />
           </div>
           <div className="flex-1" />
           <button className="p-2 rounded-lg hover:bg-gray-100 transition text-gray-500"><Bell size={19} /></button>
           <div className="flex items-center gap-2 cursor-pointer">
             <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs"
-              style={{ background: 'linear-gradient(135deg, #0F766E, #047857)' }}>PK</div>
+              style={{ background: 'linear-gradient(135deg, #4338CA, #7C3AED)' }}>{FACULTY_PROFILE.initials}</div>
             <ChevronDown size={14} className="text-gray-400" />
           </div>
         </header>
@@ -126,12 +134,12 @@ export default function FacultyReportsPage() {
           {/* STAT PILLS */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
             {[
-              { label: 'Total Reports',      value: mockReports.length, icon: FileText,   color: 'text-teal-600',  bg: 'bg-teal-50'  },
-              { label: 'Ready to Download',  value: readyCount,         icon: CheckCircle,color: 'text-green-600', bg: 'bg-green-50' },
-              { label: 'Generating',         value: pendingCount,       icon: RefreshCw,  color: 'text-amber-600', bg: 'bg-amber-50' },
-              { label: 'Last Updated',       value: 'May 04',           icon: Clock,      color: 'text-blue-600',  bg: 'bg-blue-50'  },
+              { label: 'Total Reports', value: mockReports.length, icon: FileText, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+              { label: 'Ready to Download', value: readyCount, icon: CheckCircle, color: 'text-green-600', bg: 'bg-green-50' },
+              { label: 'Generating', value: pendingCount, icon: RefreshCw, color: 'text-amber-600', bg: 'bg-amber-50' },
+              { label: 'Last Updated', value: 'May 04', icon: Clock, color: 'text-blue-600', bg: 'bg-blue-50' },
             ].map((s, i) => (
-              <div key={i} className="card animate-fade-in flex items-center gap-4 py-4" style={{ animationDelay: `${i * 0.05}s` }}>
+              <div key={i} className="card rounded-2xl shadow-sm border border-gray-100 animate-fade-in flex items-center gap-4 py-4" style={{ animationDelay: `${i * 0.05}s` }}>
                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${s.bg}`}>
                   <s.icon size={18} className={s.color} />
                 </div>
@@ -144,16 +152,16 @@ export default function FacultyReportsPage() {
           </div>
 
           {/* QUICK EXPORTS */}
-          <div className="card mb-5 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+          <div className="card rounded-2xl shadow-sm border border-gray-100 mb-5 animate-fade-in" style={{ animationDelay: '0.1s' }}>
             <div className="flex flex-col sm:flex-row sm:items-center gap-4">
               <div className="flex items-center gap-2 text-sm font-semibold text-navy">
-                <Download size={16} className="text-teal-600" />
+                <Download size={16} className="text-indigo-600" />
                 <span>Quick Exports</span>
               </div>
               <p className="text-xs text-gray-500 flex-1">Download pre-packaged report bundles for accreditation bodies.</p>
               <div className="flex flex-col sm:flex-row gap-2">
                 <button onClick={() => handleDownload('naac')}
-                  className="px-4 py-2 bg-teal-600 text-white font-bold text-sm rounded-xl hover:bg-teal-700 transition shadow-sm flex items-center justify-center gap-2">
+                  className="px-4 py-2 bg-indigo-600 text-white font-bold text-sm rounded-xl hover:bg-indigo-700 transition shadow-sm flex items-center justify-center gap-2">
                   {downloaded['naac'] ? <><CheckCircle size={16} /> Downloaded!</> : <><Download size={16} /> Download NAAC Pack</>}
                 </button>
                 <button onClick={() => handleDownload('nba')}
@@ -169,20 +177,19 @@ export default function FacultyReportsPage() {
             <Filter size={14} className="text-gray-400" />
             {FILTER_TABS.map(tab => (
               <button key={tab} onClick={() => setActiveFilter(tab)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${
-                  activeFilter === tab ? 'bg-teal-600 text-white shadow-sm' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
-                }`}>{tab}</button>
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${activeFilter === tab ? 'bg-indigo-600 text-white shadow-sm' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
+                  }`}>{tab}</button>
             ))}
           </div>
 
           {/* CARDS GRID */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
             {filtered.map((r, idx) => {
-              const tc  = TYPE_COLOR[r.type] || TYPE_COLOR['Academic']
+              const tc = TYPE_COLOR[r.type] || TYPE_COLOR['Academic']
               const isGen = generating[r.id]
-              const isDl  = downloaded[r.id]
+              const isDl = downloaded[r.id]
               return (
-                <div key={r.id} className="card animate-fade-in flex flex-col" style={{ animationDelay: `${0.14 + idx * 0.04}s` }}>
+                <div key={r.id} className="card rounded-2xl shadow-sm border border-gray-100 animate-fade-in flex flex-col" style={{ animationDelay: `${0.14 + idx * 0.04}s` }}>
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex-1">
                       <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold mb-2 ${tc.bg} ${tc.text}`}>
@@ -202,7 +209,7 @@ export default function FacultyReportsPage() {
                     <span className="flex items-center gap-1"><Calendar size={11} /> Updated {r.updated}</span>
                     <div className="flex items-center gap-3">
                       {r.pages && <span>{r.pages} pages</span>}
-                      {r.size  && <span>{r.size}</span>}
+                      {r.size && <span>{r.size}</span>}
                       {r.status === 'generating' && (
                         <span className="flex items-center gap-1 text-amber-500 font-semibold">
                           <RefreshCw size={10} className="animate-spin" /> Generating
@@ -212,7 +219,7 @@ export default function FacultyReportsPage() {
                   </div>
 
                   <div className="mt-2 flex justify-end">
-                    <button className="text-[11px] font-bold text-teal-600 hover:text-teal-800 hover:underline flex items-center gap-1">
+                    <button className="text-[11px] font-bold text-indigo-600 hover:text-indigo-800 hover:underline flex items-center gap-1">
                       <Eye size={11} /> Preview
                     </button>
                   </div>
@@ -224,9 +231,8 @@ export default function FacultyReportsPage() {
                     </button>
                     {r.status === 'ready' ? (
                       <button onClick={() => handleDownload(r.id)}
-                        className={`flex-1 px-3 py-2 font-bold text-xs rounded-xl transition shadow-sm flex items-center justify-center gap-1.5 ${
-                          isDl ? 'bg-green-500 text-white' : 'bg-teal-600 text-white hover:bg-teal-700'
-                        }`}>
+                        className={`flex-1 px-3 py-2 font-bold text-xs rounded-xl transition shadow-sm flex items-center justify-center gap-1.5 ${isDl ? 'bg-green-500 text-white' : 'bg-indigo-600 text-white hover:bg-indigo-700'
+                          }`}>
                         {isDl ? <><CheckCircle size={13} /> Done!</> : <><Download size={13} /> Download</>}
                       </button>
                     ) : (

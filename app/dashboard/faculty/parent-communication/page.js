@@ -3,20 +3,21 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Home, User, Activity, BookOpen, Bell, Settings, LogOut, Search, ChevronDown, AlertTriangle, MessageSquare, Target, Calendar, QrCode, FileText, Send, Check, CheckCheck, Phone, Video, MoreVertical, Clock, CheckCircle2, ChevronUp, ChevronRight, TrendingUp, Users, Award, Grid, CheckCircle, Zap, AlertCircle, Plug } from 'lucide-react'
+import { FACULTY_PROFILE } from '../../../../lib/faculty/mock-data'
+import { Home, User, Activity, BookOpen, Bell, Settings, LogOut, Search, ChevronDown, AlertTriangle, MessageSquare, Target, Calendar, QrCode, FileText, Send, Check, CheckCheck, Phone, Video, MoreVertical, Clock, CheckCircle2, ChevronUp, ChevronRight, TrendingUp, Users, Award, Grid, CheckCircle, Zap, AlertCircle, Plug, ExternalLink, Brain } from 'lucide-react'
 
 const navLinks = [
-  { id: 'dashboard',  label: 'Dashboard',        icon: Home,       badge: null,  active: false, path: '/dashboard/faculty' },
-  { id: 'classes',    label: 'My Classes',       icon: BookOpen,   badge: null,  active: false, path: '/dashboard/faculty/my-classes' },
-  { id: 'intelligence',label: 'Student Intelligence',icon: Grid,     badge: null,  active: false, path: '/dashboard/faculty/student-intelligence' },
-  { id: 'alerts',     label: 'Student Alerts',   icon: AlertCircle,badge: '5',   active: false, path: '/dashboard/faculty/alerts' },
-  { id: 'analytics',  label: 'Subject Analytics',icon: Activity,   badge: null,  active: false, path: '/dashboard/faculty/analytics' },
-  { id: 'profiles',   label: 'Student Profiles', icon: Users,      badge: null,  active: false, path: '/dashboard/faculty/student/profile' },
-  { id: 'co',         label: 'CO Attainment',    icon: CheckCircle,badge: null,  active: false, path: '/dashboard/faculty/co-attainment' },
-  { id: 'parent',     label: 'Parent Communication', icon: MessageSquare, badge: null, active: true,  path: '/dashboard/faculty/parent-communication' },
-  { id: 'reports',    label: 'Reports',          icon: FileText,   badge: null,  active: false, path: '/dashboard/faculty/reports' },
-  { id: 'assignments',label: 'Assignments (Moodle)', icon: BookOpen, badge: null, active: false, path: null, external: 'http://lms.kiet.edu/moodle/' },
-  { id: 'attendance', label: 'Attendance (Vidya)',   icon: CheckCircle,badge: null, active: false, path: null, external: 'https://kiet.cybervidya.net' },
+  { id: 'dashboard',    label: 'Dashboard',            icon: Home,          badge: null,  path: '/dashboard/faculty' },
+  { id: 'classes',      label: 'My Classes',           icon: BookOpen,      badge: null,  path: '/dashboard/faculty/my-classes' },
+  { id: 'intelligence', label: 'Student Intelligence', icon: Brain,         badge: 'New', path: '/dashboard/faculty/student-intelligence' },
+  { id: 'alerts',       label: 'Student Alerts',       icon: AlertCircle,   badge: '5',   path: '/dashboard/faculty/alerts' },
+  { id: 'analytics',    label: 'Subject Analytics',    icon: Activity,      badge: null,  path: '/dashboard/faculty/analytics' },
+  { id: 'profiles',     label: 'Student Profiles',     icon: Users,         badge: null,  path: '/dashboard/faculty/student/profile' },
+  { id: 'co',           label: 'CO Attainment',        icon: CheckCircle,   badge: null,  path: '/dashboard/faculty/co-attainment' },
+  { id: 'parent',       label: 'Parent Communication', icon: MessageSquare, badge: null,  path: '/dashboard/faculty/parent-communication' },
+  { id: 'reports',      label: 'Reports',              icon: FileText,      badge: null,  path: '/dashboard/faculty/reports' },
+  { id: 'assignments',  label: 'Assignments (Moodle)', icon: ExternalLink,  badge: null,  path: null, external: 'http://lms.kiet.edu/moodle/' },
+  { id: 'attendance',   label: 'Attendance (Vidya)',   icon: ExternalLink,  badge: null,  path: null, external: 'https://kiet.cybervidya.net' },
 ]
 
 export default function FacultyParentCommunication() {
@@ -51,19 +52,19 @@ export default function FacultyParentCommunication() {
   }
 
   return (
-    <div className="flex h-screen bg-bg-base overflow-hidden font-sans">
+    <div className="flex h-screen bg-[#F3F4F6] overflow-hidden font-sans">
       {/* A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•
           SIDEBAR
       A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A• */}
       <aside className={`${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'} flex-shrink-0 bg-white border-r border-gray-100 flex flex-col transition-all duration-300 shadow-sm`}>
         <div className="p-5 border-b border-gray-50">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style={{ background: 'linear-gradient(135deg, #0F766E, #047857)' }}>
-              PK
+            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style={{ background: 'linear-gradient(135deg, #4338CA, #7C3AED)' }}>
+              {FACULTY_PROFILE.initials}
             </div>
             <div className="overflow-hidden">
-              <p className="font-semibold text-sm text-navy truncate">Prof. Pushpendra Kumar</p>
-              <p className="text-xs text-gray-500 truncate">CSE Department · 4 Subjects</p>
+              <p className="font-semibold text-sm text-navy truncate">{FACULTY_PROFILE.name}</p>
+              <p className="text-xs text-gray-500 truncate">{FACULTY_PROFILE.department} · {FACULTY_PROFILE.subtitle}</p>
             </div>
           </div>
         </div>
@@ -73,17 +74,23 @@ export default function FacultyParentCommunication() {
             <button
               key={link.id}
               onClick={() => {
-                if (link.external) { window.open(link.external, '_blank'); return; }; if (link.path) {
+                if (link.external) { window.open(link.external, '_blank'); return; }
+                if (link.path) {
                   router.push(link.path)
                 } else {
                   if (typeof setActiveNav === 'function') setActiveNav(link.id)
                 }
               }}
-              className={`nav-link w-full text-left mb-0.5 ${activeNav === link.id ? 'bg-teal-50 text-teal-700 font-semibold' : ''}`}
+              className="nav-link w-full text-left mb-0.5"
+              style={activeNav === link.id && !link.external ? { background: '#EEF2FF', color: '#3730A3', fontWeight: 600 } : {}}
             >
               <link.icon size={17} />
               <span className="flex-1">{link.label}</span>
-              {link.badge && <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{link.badge}</span>}
+              {link.badge && (
+                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${link.badge === 'New' ? 'bg-indigo-100 text-indigo-700' : 'bg-red-500 text-white'}`}>
+                  {link.badge}
+                </span>
+              )}
             </button>
           ))}
         </nav>
@@ -106,7 +113,7 @@ export default function FacultyParentCommunication() {
             <Settings size={20} />
           </button>
           <div className="flex items-center gap-2 mr-4">
-            <div className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs" style={{ background: '#4F46E5' }}>EA</div>
+            <div className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs" style={{ background: '#4338CA' }}>EA</div>
             <span className="font-bold text-navy text-sm hidden sm:block">Educator Analytics OS</span>
           </div>
           <div className="flex-1 max-w-md relative">
@@ -118,13 +125,13 @@ export default function FacultyParentCommunication() {
             <Bell size={19} />
           </button>
           <div className="flex items-center gap-2 cursor-pointer group">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-navy font-bold text-xs bg-gray-200">PK</div>
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs" style={{ background: 'linear-gradient(135deg, #4338CA, #7C3AED)' }}>{FACULTY_PROFILE.initials}</div>
             <ChevronDown size={14} className="text-gray-400 group-hover:text-gray-600 transition" />
           </div>
         </header>
 
         {/* PAGE BODY */}
-        <main className="flex-1 overflow-y-auto bg-gray-50/50">
+        <main className="flex-1 overflow-y-auto bg-[#F3F4F6]">
           <div className="max-w-[1400px] mx-auto p-6 md:p-8 animate-fade-in space-y-6 pb-20">
             
             {/* Header */}
@@ -133,14 +140,14 @@ export default function FacultyParentCommunication() {
                 <h1 className="text-3xl font-bold text-navy mb-1">Parent Communication</h1>
                 <p className="text-gray-500 text-sm max-w-2xl">Direct messaging with parents, meeting scheduling and automated WhatsApp digest management</p>
               </div>
-              <button onClick={() => showToast('New message dialog opened')} className="px-5 py-2.5 bg-blue-600 text-white font-bold text-sm rounded-xl hover:bg-blue-700 transition shadow-sm flex items-center gap-2">
+              <button onClick={() => showToast('New message dialog opened')} className="px-5 py-2.5 bg-indigo-600 text-white font-bold text-sm rounded-xl hover:bg-indigo-700 transition shadow-sm flex items-center gap-2">
                 <MessageSquare size={16} /> New Message
               </button>
             </div>
 
             {/* TOP STATS STRIP */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 flex items-start gap-4">
+              <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex items-start gap-4">
                 <div className="w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
                   <MessageSquare size={24} />
                 </div>
@@ -151,7 +158,7 @@ export default function FacultyParentCommunication() {
                 </div>
               </div>
               
-              <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 flex items-start gap-4">
+              <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex items-start gap-4">
                 <div className="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center shrink-0">
                   <Bell size={24} />
                 </div>
@@ -162,18 +169,18 @@ export default function FacultyParentCommunication() {
                 </div>
               </div>
 
-              <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-teal-100 text-teal-600 flex items-center justify-center shrink-0">
+              <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex items-start gap-4">
+                <div className="w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0">
                   <Calendar size={24} />
                 </div>
                 <div>
-                  <h3 className="text-3xl font-black text-teal-500 leading-none mb-1">3</h3>
+                  <h3 className="text-3xl font-black text-indigo-500 leading-none mb-1">3</h3>
                   <p className="font-bold text-navy text-sm mb-0.5">Meetings This Week</p>
                   <p className="text-xs text-gray-500">Scheduled parent meetings</p>
                 </div>
               </div>
 
-              <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 flex items-start gap-4">
+              <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex items-start gap-4">
                 <div className="w-12 h-12 rounded-full bg-green-100 text-green-600 flex items-center justify-center shrink-0">
                   <Send size={24} />
                 </div>
@@ -189,7 +196,7 @@ export default function FacultyParentCommunication() {
             <div className="flex flex-col lg:flex-row gap-6 h-[700px]">
               
               {/* LEFT COLUMN: Conversation List */}
-              <div className="w-full lg:w-[35%] flex flex-col bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+              <div className="w-full lg:w-[35%] flex flex-col bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="p-4 border-b border-gray-100">
                   <div className="relative mb-3">
                     <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -266,7 +273,7 @@ export default function FacultyParentCommunication() {
                     <p className="text-xs text-gray-500 mb-2">Arjun Mehta A· 2CS09</p>
                     <div className="flex justify-between items-end gap-4">
                       <p className="text-sm text-gray-500 truncate flex-1">"Can we schedule a meeting next week to discuss..."</p>
-                      <Calendar size={16} className="text-teal-500 shrink-0" />
+                      <Calendar size={16} className="text-indigo-500 shrink-0" />
                     </div>
                   </div>
 
@@ -303,7 +310,7 @@ export default function FacultyParentCommunication() {
               </div>
 
               {/* RIGHT COLUMN: Active Conversation */}
-              <div className="flex-1 flex flex-col bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+              <div className="flex-1 flex flex-col bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 
                 {/* Header */}
                 <div className="p-5 border-b border-gray-100 flex flex-wrap justify-between items-center gap-4 bg-white z-10 shadow-sm relative">
@@ -318,7 +325,7 @@ export default function FacultyParentCommunication() {
                     <button className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 text-blue-600 flex items-center justify-center hover:bg-blue-100 transition" title="Generate Visit QR">
                       <QrCode size={18} />
                     </button>
-                    <button className="w-10 h-10 rounded-xl bg-teal-50 border border-teal-200 text-teal-600 flex items-center justify-center hover:bg-teal-100 transition" title="Schedule Meeting">
+                    <button className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-600 flex items-center justify-center hover:bg-indigo-100 transition" title="Schedule Meeting">
                       <Calendar size={18} />
                     </button>
                   </div>
@@ -419,7 +426,7 @@ export default function FacultyParentCommunication() {
                     <span className="text-xs text-gray-500 font-bold self-center mr-2 uppercase tracking-wider">Templates:</span>
                     <button onClick={() => handleTemplateClick('Attendance Warning')} className="px-3 py-1.5 bg-red-50 text-red-700 hover:bg-red-100 text-xs font-medium rounded-full whitespace-nowrap transition border border-red-100">Attendance Warning</button>
                     <button onClick={() => handleTemplateClick('Score Update')} className="px-3 py-1.5 bg-amber-50 text-amber-700 hover:bg-amber-100 text-xs font-medium rounded-full whitespace-nowrap transition border border-amber-100">Score Update</button>
-                    <button onClick={() => handleTemplateClick('Meeting Request')} className="px-3 py-1.5 bg-teal-50 text-teal-700 hover:bg-teal-100 text-xs font-medium rounded-full whitespace-nowrap transition border border-teal-100">Meeting Request</button>
+                    <button onClick={() => handleTemplateClick('Meeting Request')} className="px-3 py-1.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 text-xs font-medium rounded-full whitespace-nowrap transition border border-indigo-100">Meeting Request</button>
                     <button onClick={() => handleTemplateClick('Positive Feedback')} className="px-3 py-1.5 bg-green-50 text-green-700 hover:bg-green-100 text-xs font-medium rounded-full whitespace-nowrap transition border border-green-100">Positive Feedback</button>
                   </div>
                   
@@ -441,7 +448,7 @@ export default function FacultyParentCommunication() {
 
                   {/* Actions */}
                   <div className="flex gap-2 mt-3 overflow-x-auto hide-scrollbar">
-                    <button onClick={() => showToast('WhatsApp digest dispatched to parent')} className="px-4 py-2 border border-teal-200 text-teal-700 hover:bg-teal-50 text-xs font-bold rounded-lg whitespace-nowrap transition">Send WhatsApp Digest Now</button>
+                    <button onClick={() => showToast('WhatsApp digest dispatched to parent')} className="px-4 py-2 border border-indigo-200 text-indigo-700 hover:bg-indigo-50 text-xs font-bold rounded-lg whitespace-nowrap transition">Send WhatsApp Digest Now</button>
                     <button onClick={() => showToast('Meeting scheduler opened')} className="px-4 py-2 border border-blue-200 text-blue-700 hover:bg-blue-50 text-xs font-bold rounded-lg whitespace-nowrap transition">Schedule Parent-Teacher Meeting</button>
                     <button onClick={() => showToast('Summary PDF generated')} className="px-4 py-2 border border-gray-200 text-gray-700 hover:bg-gray-50 text-xs font-bold rounded-lg whitespace-nowrap transition">Generate Student Summary PDF</button>
                   </div>
@@ -451,13 +458,13 @@ export default function FacultyParentCommunication() {
             </div>
 
             {/* MEETINGS SECTION */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
               <button 
                 onClick={() => setMeetingsExpanded(!meetingsExpanded)}
                 className="w-full p-5 flex justify-between items-center bg-gray-50 hover:bg-gray-100 transition text-left"
               >
                 <div className="flex items-center gap-3">
-                  <Calendar size={20} className="text-teal-600" />
+                  <Calendar size={20} className="text-indigo-600" />
                   <h3 className="font-bold text-navy text-lg">Upcoming Parent-Teacher Meetings (3)</h3>
                 </div>
                 {meetingsExpanded ? <ChevronUp size={20} className="text-gray-500" /> : <ChevronDown size={20} className="text-gray-500" />}
@@ -471,7 +478,7 @@ export default function FacultyParentCommunication() {
                     <div className="border border-gray-200 rounded-xl p-5 hover:shadow-md transition bg-white">
                       <div className="flex justify-between items-start mb-3">
                         <span className="px-2.5 py-1 bg-green-100 text-green-700 font-bold text-[10px] uppercase rounded border border-green-200">Confirmed</span>
-                        <div className="w-8 h-8 rounded-full bg-teal-50 text-teal-600 flex items-center justify-center"><User size={14} /></div>
+                        <div className="w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center"><User size={14} /></div>
                       </div>
                       <h4 className="font-bold text-navy text-base">Mr. Sunil Mehta</h4>
                       <p className="text-xs text-gray-500 mb-4 font-medium">(Parent of Arjun Mehta)</p>
@@ -503,7 +510,7 @@ export default function FacultyParentCommunication() {
                     <div className="border border-gray-200 rounded-xl p-5 hover:shadow-md transition bg-white">
                       <div className="flex justify-between items-start mb-3">
                         <span className="px-2.5 py-1 bg-amber-100 text-amber-700 font-bold text-[10px] uppercase rounded border border-amber-200">Pending Confirmation</span>
-                        <div className="w-8 h-8 rounded-full bg-teal-50 text-teal-600 flex items-center justify-center"><User size={14} /></div>
+                        <div className="w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center"><User size={14} /></div>
                       </div>
                       <h4 className="font-bold text-navy text-base">Mrs. Kavya Sharma</h4>
                       <p className="text-xs text-gray-500 mb-4 font-medium">(Parent of Rohit Sharma)</p>
@@ -532,7 +539,7 @@ export default function FacultyParentCommunication() {
                     </div>
 
                     {/* Meeting 3 */}
-                    <div className="border border-teal-200 border-2 rounded-xl p-5 shadow-md bg-white">
+                    <div className="border border-indigo-200 border-2 rounded-xl p-5 shadow-md bg-white">
                       <div className="flex justify-between items-start mb-3">
                         <span className="px-2.5 py-1 bg-green-100 text-green-700 font-bold text-[10px] uppercase rounded border border-green-200">Confirmed</span>
                         <div className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center"><Video size={14} /></div>
@@ -558,7 +565,7 @@ export default function FacultyParentCommunication() {
                       </div>
                       
                       <div className="flex gap-2">
-                        <button className="flex-[2] py-2 bg-teal-600 text-white font-bold text-xs rounded-lg hover:bg-teal-700 transition flex items-center justify-center gap-2">
+                        <button className="flex-[2] py-2 bg-indigo-600 text-white font-bold text-xs rounded-lg hover:bg-indigo-700 transition flex items-center justify-center gap-2">
                           <Video size={14} /> Join Meet
                         </button>
                         <button className="flex-1 py-2 bg-white border border-gray-200 text-gray-600 font-bold text-xs rounded-lg hover:bg-gray-50 transition">Cancel</button>

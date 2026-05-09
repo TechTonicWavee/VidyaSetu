@@ -32,7 +32,10 @@ import {
   Zap,
   AlertCircle,
   Plug,
+  ExternalLink,
+  Brain,
 } from "lucide-react";
+import { FACULTY_PROFILE } from '../../../../../lib/faculty/mock-data'
 import {
   LineChart,
   Line,
@@ -49,96 +52,17 @@ import {
 } from "recharts";
 
 const navLinks = [
-  {
-    id: "dashboard",
-    label: "Dashboard",
-    icon: Home,
-    badge: null,
-    active: false,
-    path: "/dashboard/faculty",
-  },
-  {
-    id: "classes",
-    label: "My Classes",
-    icon: BookOpen,
-    badge: null,
-    active: false,
-    path: "/dashboard/faculty/my-classes",
-  },
-  {
-    id: "intelligence",
-    label: "Student Intelligence",
-    icon: Grid,
-    badge: null,
-    active: false,
-    path: "/dashboard/faculty/student-intelligence",
-  },
-  {
-    id: "alerts",
-    label: "Student Alerts",
-    icon: AlertCircle,
-    badge: "5",
-    active: false,
-    path: "/dashboard/faculty/alerts",
-  },
-  {
-    id: "analytics",
-    label: "Subject Analytics",
-    icon: Activity,
-    badge: null,
-    active: false,
-    path: "/dashboard/faculty/analytics",
-  },
-  {
-    id: "profiles",
-    label: "Student Profiles",
-    icon: Users,
-    badge: null,
-    active: true,
-    path: "/dashboard/faculty/student/profile",
-  },
-  {
-    id: "co",
-    label: "CO Attainment",
-    icon: CheckCircle,
-    badge: null,
-    active: false,
-    path: "/dashboard/faculty/co-attainment",
-  },
-  {
-    id: "parent",
-    label: "Parent Communication",
-    icon: MessageSquare,
-    badge: null,
-    active: false,
-    path: "/dashboard/faculty/parent-communication",
-  },
-  {
-    id: "reports",
-    label: "Reports",
-    icon: FileText,
-    badge: null,
-    active: false,
-    path: "/dashboard/faculty/reports",
-  },
-  {
-    id: "assignments",
-    label: "Assignments (Moodle)",
-    icon: BookOpen,
-    badge: null,
-    active: false,
-    path: null,
-    external: "http://lms.kiet.edu/moodle/",
-  },
-  {
-    id: "attendance",
-    label: "Attendance (Vidya)",
-    icon: CheckCircle,
-    badge: null,
-    active: false,
-    path: null,
-    external: "https://kiet.cybervidya.net",
-  },
+  { id: 'dashboard',    label: 'Dashboard',            icon: Home,          badge: null,  path: '/dashboard/faculty' },
+  { id: 'classes',      label: 'My Classes',           icon: BookOpen,      badge: null,  path: '/dashboard/faculty/my-classes' },
+  { id: 'intelligence', label: 'Student Intelligence', icon: Brain,         badge: 'New', path: '/dashboard/faculty/student-intelligence' },
+  { id: 'alerts',       label: 'Student Alerts',       icon: AlertCircle,   badge: '5',   path: '/dashboard/faculty/alerts' },
+  { id: 'analytics',    label: 'Subject Analytics',    icon: Activity,      badge: null,  path: '/dashboard/faculty/analytics' },
+  { id: 'profiles',     label: 'Student Profiles',     icon: Users,         badge: null,  path: '/dashboard/faculty/student/profile' },
+  { id: 'co',           label: 'CO Attainment',        icon: CheckCircle,   badge: null,  path: '/dashboard/faculty/co-attainment' },
+  { id: 'parent',       label: 'Parent Communication', icon: MessageSquare, badge: null,  path: '/dashboard/faculty/parent-communication' },
+  { id: 'reports',      label: 'Reports',              icon: FileText,      badge: null,  path: '/dashboard/faculty/reports' },
+  { id: 'assignments',  label: 'Assignments (Moodle)', icon: ExternalLink,  badge: null,  path: null, external: 'http://lms.kiet.edu/moodle/' },
+  { id: 'attendance',   label: 'Attendance (Vidya)',   icon: ExternalLink,  badge: null,  path: null, external: 'https://kiet.cybervidya.net' },
 ];
 
 const dbmsTrend = [
@@ -226,7 +150,7 @@ export default function FacultyStudentProfile() {
   };
 
   return (
-    <div className="flex h-screen bg-bg-base overflow-hidden font-sans">
+    <div className="flex h-screen bg-[#F3F4F6] overflow-hidden font-sans">
       {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
           SIDEBAR
       Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
@@ -238,17 +162,17 @@ export default function FacultyStudentProfile() {
             <div
               className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
               style={{
-                background: "linear-gradient(135deg, #0F766E, #047857)",
+                background: "linear-gradient(135deg, #4338CA, #7C3AED)",
               }}
             >
-              PK
+              {FACULTY_PROFILE.initials}
             </div>
             <div className="overflow-hidden">
               <p className="font-semibold text-sm text-navy truncate">
-                Prof. Pushpendra Kumar
+                {FACULTY_PROFILE.name}
               </p>
               <p className="text-xs text-gray-500 truncate">
-                CSE Department · 4 Subjects
+                {FACULTY_PROFILE.department} · {FACULTY_PROFILE.subtitle}
               </p>
             </div>
           </div>
@@ -266,12 +190,12 @@ export default function FacultyStudentProfile() {
                   if (typeof setActiveNav === "function") setActiveNav(link.id);
                 }
               }}
-              className={`nav-link w-full text-left mb-0.5 ${activeNav === link.id ? "bg-teal-50 text-teal-700 font-semibold" : ""}`}
+              className={`nav-link w-full text-left mb-0.5 ${activeNav === link.id && !link.external ? "bg-indigo-50 text-indigo-700 font-semibold" : ""}`}
             >
               <link.icon size={17} />
               <span className="flex-1">{link.label}</span>
               {link.badge && (
-                <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${link.badge === 'New' ? 'bg-indigo-100 text-indigo-700' : 'bg-red-500 text-white'}`}>
                   {link.badge}
                 </span>
               )}
@@ -306,7 +230,7 @@ export default function FacultyStudentProfile() {
           <div className="flex items-center gap-2 mr-4">
             <div
               className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs"
-              style={{ background: "#0F766E" }}
+              style={{ background: "#4338CA" }}
             >
               EA
             </div>
@@ -322,7 +246,7 @@ export default function FacultyStudentProfile() {
             <input
               type="text"
               placeholder="Search students, subjects, features..."
-              className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-100 focus:border-teal-300 transition"
+              className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-300 transition"
             />
           </div>
           <div className="flex-1" />
@@ -342,10 +266,10 @@ export default function FacultyStudentProfile() {
             <div
               className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs"
               style={{
-                background: "linear-gradient(135deg, #0F766E, #047857)",
+                background: "linear-gradient(135deg, #4338CA, #7C3AED)",
               }}
             >
-              PK
+              {FACULTY_PROFILE.initials}
             </div>
             <ChevronDown
               size={14}
@@ -355,7 +279,7 @@ export default function FacultyStudentProfile() {
         </header>
 
         {/* PAGE BODY */}
-        <main className="flex-1 overflow-y-auto bg-gray-50/50">
+        <main className="flex-1 overflow-y-auto bg-[#F3F4F6]">
           {!selectedStudent ? (
             <div className="max-w-5xl mx-auto p-6 md:p-8 animate-fade-in pb-20">
               <div className="mb-6">
@@ -365,13 +289,13 @@ export default function FacultyStudentProfile() {
               <div className="flex flex-col gap-2">
                 {STUDENT_LIST.map((st, idx) => (
                   <button key={idx} onClick={() => setSelectedStudent(st)}
-                    className="bg-white border border-gray-100 rounded-xl px-5 py-3.5 text-left hover:border-teal-200 hover:shadow-sm transition-all group animate-fade-in flex items-center gap-4"
+                    className="bg-white border border-gray-100 rounded-xl px-5 py-3.5 text-left hover:border-indigo-200 hover:shadow-sm transition-all group animate-fade-in flex items-center gap-4"
                     style={{ animationDelay: `${idx * 0.02}s` }}>
                     {/* Rank */}
                     <span className="text-xs font-bold text-gray-400 w-6 text-center flex-shrink-0">#{st.rank}</span>
                     {/* Avatar */}
                     <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-bold text-xs flex-shrink-0"
-                      style={{ background: 'linear-gradient(135deg, #0F766E, #047857)' }}>
+                      style={{ background: 'linear-gradient(135deg, #4338CA, #7C3AED)' }}>
                       {st.initials}
                     </div>
                     {/* Name + meta */}
@@ -400,7 +324,7 @@ export default function FacultyStudentProfile() {
                     </div>
                     {/* Status badge */}
                     <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full flex-shrink-0 ${st.statusColor}`}>{st.status}</span>
-                    <span className="text-xs font-bold text-teal-600 group-hover:underline whitespace-nowrap">View →</span>
+                    <span className="text-xs font-bold text-indigo-600 group-hover:underline whitespace-nowrap">View →</span>
                   </button>
                 ))}
               </div>
@@ -432,13 +356,13 @@ export default function FacultyStudentProfile() {
             </div>
 
             {/* HERO CARD */}
-            <div className="card animate-fade-in">
+            <div className="card rounded-2xl shadow-sm border border-gray-100 animate-fade-in">
               <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
                 <div className="flex items-center gap-4 min-w-0">
                   <div
                     className="w-[64px] h-[64px] rounded-full flex items-center justify-center text-white font-bold text-xl flex-shrink-0"
                     style={{
-                      background: "linear-gradient(135deg, #0F766E, #047857)",
+                      background: "linear-gradient(135deg, #4338CA, #7C3AED)",
                     }}
                   >
                     AS
@@ -451,7 +375,7 @@ export default function FacultyStudentProfile() {
                       CSE · 2nd Year · Section B · Roll No: 2CS04
                     </p>
                     <div className="flex flex-wrap gap-2 mt-3">
-                      <span className="px-2 py-1 bg-teal-50 text-teal-700 text-[10px] font-bold rounded uppercase tracking-wider border border-teal-100">
+                      <span className="px-2 py-1 bg-indigo-50 text-indigo-700 text-[10px] font-bold rounded uppercase tracking-wider border border-indigo-100">
                         CSE 2nd Year
                       </span>
                       <span className="px-2 py-1 bg-blue-50 text-blue-700 text-[10px] font-bold rounded uppercase tracking-wider border border-blue-100">
@@ -472,8 +396,8 @@ export default function FacultyStudentProfile() {
                     <div className="flex items-center justify-center gap-1 mb-1">
                       <span className="text-2xl font-black text-navy">72</span>
                     </div>
-                    <p className="text-[10px] text-teal-700 flex items-center justify-center gap-0.5 font-semibold">
-                      <TrendingUp size={12} className="text-teal-600" /> +3 this
+                    <p className="text-[10px] text-indigo-700 flex items-center justify-center gap-0.5 font-semibold">
+                      <TrendingUp size={12} className="text-indigo-600" /> +3 this
                       month
                     </p>
                   </div>
@@ -485,7 +409,7 @@ export default function FacultyStudentProfile() {
                       <span className="text-2xl font-black text-navy">79%</span>
                     </div>
                     <p className="text-[10px] text-gray-600 flex items-center justify-center gap-0.5 font-semibold">
-                      <CheckCircle2 size={12} className="text-teal-600" /> Above
+                      <CheckCircle2 size={12} className="text-indigo-600" /> Above
                       threshold
                     </p>
                   </div>
@@ -581,12 +505,12 @@ export default function FacultyStudentProfile() {
                   <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
                     <div className="p-5 border-b border-gray-100">
                       <h3 className="font-bold text-navy">
-                        {(selectedStudent?.name ?? 'Mahesh').split(' ')[0]}'s Performance in Prof. Pushpendra Kumar's Subjects
+                        {(selectedStudent?.name ?? 'Mahesh').split(' ')[0]}'s Performance in {FACULTY_PROFILE.name}'s Subjects
                       </h3>
                     </div>
                     <div className="p-5 space-y-4">
                       {/* Subject 1 */}
-                      <div className="border border-gray-100 rounded-xl p-4 pl-3 border-l-4 border-l-teal-500 bg-white">
+                      <div className="border border-gray-100 rounded-xl p-4 pl-3 border-l-4 border-l-indigo-500 bg-white">
                         <div className="flex justify-between items-start mb-2">
                           <div>
                             <h4 className="font-bold text-navy text-sm">
@@ -657,7 +581,7 @@ export default function FacultyStudentProfile() {
                           </span>
                           <span className="inline-flex items-center gap-1">
                             CO1:{" "}
-                            <CheckCircle2 size={14} className="text-teal-600" />
+                            <CheckCircle2 size={14} className="text-indigo-600" />
                           </span>
                           <span className="inline-flex items-center gap-1">
                             CO2:{" "}
@@ -744,7 +668,7 @@ export default function FacultyStudentProfile() {
                           </span>
                           <span className="inline-flex items-center gap-1">
                             CO1:{" "}
-                            <CheckCircle2 size={14} className="text-teal-600" />
+                            <CheckCircle2 size={14} className="text-indigo-600" />
                           </span>
                           <span className="inline-flex items-center gap-1">
                             CO2:{" "}
@@ -1368,7 +1292,7 @@ export default function FacultyStudentProfile() {
                   {/* Existing Notes */}
                   <div className="space-y-4">
                     {/* Note 1 */}
-                    <div className="bg-blue-50/50 rounded-2xl border border-gray-200 border-l-4 border-l-teal-500 p-5">
+                    <div className="bg-blue-50/50 rounded-2xl border border-gray-200 border-l-4 border-l-indigo-500 p-5">
                       <div className="flex justify-between items-start mb-2">
                         <div className="flex items-center gap-2">
                           <span className="font-bold text-navy text-sm">
@@ -1378,7 +1302,7 @@ export default function FacultyStudentProfile() {
                             · 5 Apr 2026
                           </span>
                         </div>
-                        <span className="px-2 py-0.5 bg-teal-100 text-teal-800 text-[10px] font-bold rounded uppercase tracking-wider">
+                        <span className="px-2 py-0.5 bg-indigo-100 text-indigo-800 text-[10px] font-bold rounded uppercase tracking-wider">
                           Shared with Dean
                         </span>
                       </div>
@@ -1439,7 +1363,7 @@ export default function FacultyStudentProfile() {
                             · 15 Mar 2026
                           </span>
                         </div>
-                        <span className="px-2 py-0.5 bg-teal-100 text-teal-800 text-[10px] font-bold rounded uppercase tracking-wider">
+                        <span className="px-2 py-0.5 bg-indigo-100 text-indigo-800 text-[10px] font-bold rounded uppercase tracking-wider">
                           Shared with Dean
                         </span>
                       </div>

@@ -3,20 +3,21 @@
 
 import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Home, BookOpen, Bell, BarChart2, Users, Target, MessageCircle, FileText, Settings, LogOut, Search, ChevronDown, AlertTriangle, Calendar, Clock, ExternalLink, User, Activity, TrendingUp, Award, Grid, CheckCircle, Zap, AlertCircle, Plug } from 'lucide-react'
+import { FACULTY_PROFILE } from '../../../../lib/faculty/mock-data'
+import { Home, BookOpen, Bell, BarChart2, Users, Target, MessageCircle, FileText, Settings, LogOut, Search, ChevronDown, AlertTriangle, Calendar, Clock, ExternalLink, User, Activity, TrendingUp, Award, Grid, CheckCircle, Zap, AlertCircle, Plug, Brain } from 'lucide-react'
 
 const navLinks = [
-  { id: 'dashboard',  label: 'Dashboard',        icon: Home,       badge: null,  active: false, path: '/dashboard/faculty' },
-  { id: 'classes',    label: 'My Classes',       icon: BookOpen,   badge: null,  active: true,  path: '/dashboard/faculty/my-classes' },
-  { id: 'intelligence',label: 'Student Intelligence',icon: Grid,     badge: null,  active: false, path: '/dashboard/faculty/student-intelligence' },
-  { id: 'alerts',     label: 'Student Alerts',   icon: AlertCircle,badge: '5',   active: false, path: '/dashboard/faculty/alerts' },
-  { id: 'analytics',  label: 'Subject Analytics',icon: Activity,   badge: null,  active: false, path: '/dashboard/faculty/analytics' },
-  { id: 'profiles',   label: 'Student Profiles', icon: Users,      badge: null,  active: false, path: '/dashboard/faculty/student/profile' },
-  { id: 'co',         label: 'CO Attainment',    icon: CheckCircle,badge: null,  active: false, path: '/dashboard/faculty/co-attainment' },
-  { id: 'parent',     label: 'Parent Communication', icon: MessageCircle, badge: null, active: false, path: '/dashboard/faculty/parent-communication' },
-  { id: 'reports',    label: 'Reports',          icon: FileText,   badge: null,  active: false, path: '/dashboard/faculty/reports' },
-  { id: 'assignments',label: 'Assignments (Moodle)', icon: BookOpen, badge: null, active: false, path: null, external: 'http://lms.kiet.edu/moodle/' },
-  { id: 'attendance', label: 'Attendance (Vidya)',   icon: CheckCircle,badge: null, active: false, path: null, external: 'https://kiet.cybervidya.net' },
+  { id: 'dashboard',    label: 'Dashboard',            icon: Home,          badge: null,  path: '/dashboard/faculty' },
+  { id: 'classes',      label: 'My Classes',           icon: BookOpen,      badge: null,  path: '/dashboard/faculty/my-classes' },
+  { id: 'intelligence', label: 'Student Intelligence', icon: Brain,         badge: 'New', path: '/dashboard/faculty/student-intelligence' },
+  { id: 'alerts',       label: 'Student Alerts',       icon: AlertCircle,   badge: '5',   path: '/dashboard/faculty/alerts' },
+  { id: 'analytics',    label: 'Subject Analytics',    icon: Activity,      badge: null,  path: '/dashboard/faculty/analytics' },
+  { id: 'profiles',     label: 'Student Profiles',     icon: Users,         badge: null,  path: '/dashboard/faculty/student/profile' },
+  { id: 'co',           label: 'CO Attainment',        icon: CheckCircle,   badge: null,  path: '/dashboard/faculty/co-attainment' },
+  { id: 'parent',       label: 'Parent Communication', icon: MessageCircle, badge: null,  path: '/dashboard/faculty/parent-communication' },
+  { id: 'reports',      label: 'Reports',              icon: FileText,      badge: null,  path: '/dashboard/faculty/reports' },
+  { id: 'assignments',  label: 'Assignments (Moodle)', icon: ExternalLink,  badge: null,  path: null, external: 'http://lms.kiet.edu/moodle/' },
+  { id: 'attendance',   label: 'Attendance (Vidya)',   icon: ExternalLink,  badge: null,  path: null, external: 'https://kiet.cybervidya.net' },
 ]
 
 const mockClasses = [
@@ -112,17 +113,17 @@ export default function MyClassesPage() {
   const avgAttendance = Math.round(mockClasses.reduce((sum, c) => sum + c.attendance, 0) / mockClasses.length)
 
   return (
-    <div className="flex h-screen bg-bg-base overflow-hidden font-sans">
+    <div className="flex h-screen bg-[#F3F4F6] overflow-hidden font-sans">
       {/* SIDEBAR */}
       <aside className={`${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'} flex-shrink-0 bg-white border-r border-gray-100 flex flex-col transition-all duration-300 shadow-sm`}>
         <div className="p-5 border-b border-gray-50">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style={{ background: 'linear-gradient(135deg, #0F766E, #047857)' }}>
-              PK
+            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style={{ background: 'linear-gradient(135deg, #4338CA, #7C3AED)' }}>
+              {FACULTY_PROFILE.initials}
             </div>
             <div className="overflow-hidden">
-              <p className="font-semibold text-sm text-navy truncate">Prof. Pushpendra Kumar</p>
-              <p className="text-xs text-gray-500 truncate">CSE Department · 4 Subjects</p>
+              <p className="font-semibold text-sm text-navy truncate">{FACULTY_PROFILE.name}</p>
+              <p className="text-xs text-gray-500 truncate">{FACULTY_PROFILE.department} · {FACULTY_PROFILE.subtitle}</p>
             </div>
           </div>
         </div>
@@ -132,19 +133,23 @@ export default function MyClassesPage() {
             <button
               key={link.id}
               onClick={() => {
-                if (link.external) {
-                  window.open(link.external, '_blank')
-                } else if (link.path) {
+                if (link.external) { window.open(link.external, '_blank'); return; }
+                if (link.path) {
                   router.push(link.path)
                 } else {
                   if (typeof setActiveNav === 'function') setActiveNav(link.id)
                 }
               }}
-              className={`nav-link w-full text-left mb-0.5 ${activeNav === link.id ? 'bg-teal-50 text-teal-700 font-semibold' : ''}`}
+              className="nav-link w-full text-left mb-0.5"
+              style={activeNav === link.id && !link.external ? { background: '#EEF2FF', color: '#3730A3', fontWeight: 600 } : {}}
             >
               <link.icon size={17} />
               <span className="flex-1">{link.label}</span>
-              {link.badge && <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{link.badge}</span>}
+              {link.badge && (
+                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${link.badge === 'New' ? 'bg-indigo-100 text-indigo-700' : 'bg-red-500 text-white'}`}>
+                  {link.badge}
+                </span>
+              )}
             </button>
           ))}
         </nav>
@@ -164,12 +169,12 @@ export default function MyClassesPage() {
             <Settings size={20} />
           </button>
           <div className="flex items-center gap-2 mr-4">
-            <div className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs" style={{ background: '#0F766E' }}>EA</div>
+            <div className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs" style={{ background: '#4338CA' }}>EA</div>
             <span className="font-bold text-navy text-sm hidden sm:block">Educator Analytics OS</span>
           </div>
           <div className="flex-1 max-w-md relative">
             <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input type="text" placeholder="Search students, subjects, features..." className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-teal-100 focus:border-teal-300 transition" />
+            <input type="text" placeholder="Search students, subjects, features..." className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-300 transition" />
           </div>
           <div className="flex-1" />
           <button className="relative p-2 rounded-lg hover:bg-gray-100 transition text-gray-500" aria-label="Notifications">
@@ -177,7 +182,7 @@ export default function MyClassesPage() {
             <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">{Math.min(totalAtRisk, 9)}</span>
           </button>
           <div className="flex items-center gap-2 cursor-pointer group" aria-label="Profile menu">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs" style={{ background: 'linear-gradient(135deg, #0F766E, #047857)' }}>PK</div>
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs" style={{ background: 'linear-gradient(135deg, #4338CA, #7C3AED)' }}>{FACULTY_PROFILE.initials}</div>
             <ChevronDown size={14} className="text-gray-400 group-hover:text-gray-600 transition" />
           </div>
         </header>
@@ -190,12 +195,12 @@ export default function MyClassesPage() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
             {[
-              { label: 'Active Classes', value: `${mockClasses.length}`, sub: 'This semester', icon: BookOpen, iconBg: 'bg-teal-100', iconColor: '#0F766E' },
+              { label: 'Active Classes', value: `${mockClasses.length}`, sub: 'This semester', icon: BookOpen, iconBg: 'bg-indigo-100', iconColor: '#4338CA' },
               { label: 'Total Students', value: `${totalStudents}`, sub: 'Across all sections', icon: Users, iconBg: 'bg-blue-100', iconColor: '#1A56DB' },
               { label: 'Avg Attendance', value: `${avgAttendance}%`, sub: 'Rolling 2 weeks', icon: Calendar, iconBg: 'bg-amber-100', iconColor: '#D97706' },
               { label: 'At-Risk', value: `${totalAtRisk}`, sub: 'Needs attention', icon: AlertTriangle, iconBg: 'bg-red-100', iconColor: '#DC2626' },
             ].map((card, idx) => (
-              <div key={card.label} className="card animate-fade-in" style={{ animationDelay: `${0.06 + idx * 0.04}s` }}>
+              <div key={card.label} className="card rounded-2xl shadow-sm border border-gray-100 animate-fade-in" style={{ animationDelay: `${0.06 + idx * 0.04}s` }}>
                 <div className="flex items-start justify-between mb-3">
                   <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">{card.label}</p>
                   <div className={`w-8 h-8 rounded-lg ${card.iconBg} flex items-center justify-center`}>
@@ -208,10 +213,10 @@ export default function MyClassesPage() {
             ))}
           </div>
 
-          <div className="card mb-6 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+          <div className="card rounded-2xl shadow-sm border border-gray-100 mb-6 animate-fade-in" style={{ animationDelay: '0.1s' }}>
             <div className="flex flex-col lg:flex-row lg:items-center gap-4">
               <div className="flex items-center gap-2 text-sm font-semibold text-navy">
-                <BookOpen size={16} className="text-teal-600" />
+                <BookOpen size={16} className="text-indigo-600" />
                 <span>{filtered.length} classes</span>
                 <span className="text-gray-300">·</span>
                 <span className="text-red-600">{totalAtRisk} at-risk</span>
@@ -224,7 +229,7 @@ export default function MyClassesPage() {
                   <select
                     value={semester}
                     onChange={(e) => setSemester(e.target.value)}
-                    className="w-full appearance-none bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-4 py-2 pr-9 focus:outline-none focus:ring-2 focus:ring-teal-100 focus:border-teal-300"
+                    className="w-full appearance-none bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-4 py-2 pr-9 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-300"
                     aria-label="Filter by semester"
                   >
                     {semesters.map(s => (
@@ -241,7 +246,7 @@ export default function MyClassesPage() {
                     onChange={(e) => setQuery(e.target.value)}
                     type="text"
                     placeholder="Search subject, code, room..."
-                    className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-teal-100 focus:border-teal-300"
+                    className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-300"
                     aria-label="Search classes"
                   />
                 </div>
@@ -249,7 +254,7 @@ export default function MyClassesPage() {
             </div>
           </div>
 
-          <div className="card animate-fade-in p-0 overflow-hidden" style={{ animationDelay: '0.14s' }}>
+          <div className="card rounded-2xl shadow-sm border border-gray-100 animate-fade-in p-0 overflow-hidden" style={{ animationDelay: '0.14s' }}>
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse whitespace-nowrap">
                 <thead>
@@ -290,7 +295,7 @@ export default function MyClassesPage() {
                         </div>
                       </td>
                       <td className="px-4 py-4 text-center">
-                        <span className={`inline-block px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${c.atRisk >= 10 ? 'bg-red-100 text-red-700' : c.atRisk >= 5 ? 'bg-amber-100 text-amber-700' : 'bg-teal-100 text-teal-700'}`}>
+                        <span className={`inline-block px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${c.atRisk >= 10 ? 'bg-red-100 text-red-700' : c.atRisk >= 5 ? 'bg-amber-100 text-amber-700' : 'bg-indigo-100 text-indigo-700'}`}>
                           {c.atRisk}
                         </span>
                       </td>
@@ -298,7 +303,7 @@ export default function MyClassesPage() {
                         <div className="flex items-center justify-end gap-3">
                           <button
                             onClick={() => router.push(`/dashboard/faculty/analytics?subject=${c.id}`)}
-                            className="text-xs font-bold text-teal-600 hover:text-teal-800 hover:underline flex items-center gap-1"
+                            className="text-xs font-bold text-indigo-600 hover:text-indigo-800 hover:underline flex items-center gap-1"
                           >
                             View Analytics <ExternalLink size={12} />
                           </button>

@@ -9,7 +9,8 @@ import {
   Phone, Mail, UserCheck, UserX, Filter, SlidersHorizontal,
   ChevronRight, ChevronUp, ArrowUpDown, Target, Zap, Info,
   Star, CheckCircle2, Clock, CalendarDays, BookMarked, Award,
-  BarChart, Activity, Eye, EyeOff, Send, RotateCcw, Shield
+  BarChart, Activity, Eye, EyeOff, Send, RotateCcw, Shield,
+  AlertCircle, ExternalLink
 } from 'lucide-react'
 import {
   BarChart as ReBarChart, Bar, XAxis, YAxis, CartesianGrid,
@@ -22,15 +23,17 @@ import {
 
 // ─── Nav ─────────────────────────────────────────────────────────────────────
 const navLinks = [
-  { id: 'dashboard',    label: 'Dashboard',           icon: Home,          badge: null, path: '/dashboard/faculty' },
-  { id: 'classes',      label: 'My Classes',           icon: BookOpen,      badge: null, path: '/dashboard/faculty/my-classes' },
-  { id: 'intelligence', label: 'Student Intelligence', icon: Brain,         badge: null, path: '/dashboard/faculty/student-intelligence' },
-  { id: 'alerts',       label: 'Student Alerts',       icon: Bell,          badge: '5',  path: '/dashboard/faculty/alerts' },
-  { id: 'analytics',    label: 'Subject Analytics',    icon: BarChart2,     badge: null, path: '/dashboard/faculty/analytics' },
-  { id: 'profiles',     label: 'Student Profiles',     icon: Users,         badge: null, path: '/dashboard/faculty/student/profile' },
-  { id: 'co',           label: 'CO Attainment',        icon: CheckCircle,   badge: null, path: '/dashboard/faculty/co-attainment' },
-  { id: 'parent',       label: 'Parent Communication', icon: MessageCircle, badge: null, path: '/dashboard/faculty/parent-communication' },
-  { id: 'reports',      label: 'Reports',              icon: FileText,      badge: null, path: '/dashboard/faculty/reports' },
+  { id: 'dashboard',    label: 'Dashboard',            icon: Home,          badge: null,  path: '/dashboard/faculty' },
+  { id: 'classes',      label: 'My Classes',           icon: BookOpen,      badge: null,  path: '/dashboard/faculty/my-classes' },
+  { id: 'intelligence', label: 'Student Intelligence', icon: Brain,         badge: 'New', path: '/dashboard/faculty/student-intelligence' },
+  { id: 'alerts',       label: 'Student Alerts',       icon: AlertCircle,   badge: '5',   path: '/dashboard/faculty/alerts' },
+  { id: 'analytics',    label: 'Subject Analytics',    icon: Activity,      badge: null,  path: '/dashboard/faculty/analytics' },
+  { id: 'profiles',     label: 'Student Profiles',     icon: Users,         badge: null,  path: '/dashboard/faculty/student/profile' },
+  { id: 'co',           label: 'CO Attainment',        icon: CheckCircle,   badge: null,  path: '/dashboard/faculty/co-attainment' },
+  { id: 'parent',       label: 'Parent Communication', icon: MessageCircle, badge: null,  path: '/dashboard/faculty/parent-communication' },
+  { id: 'reports',      label: 'Reports',              icon: FileText,      badge: null,  path: '/dashboard/faculty/reports' },
+  { id: 'assignments',  label: 'Assignments (Moodle)', icon: ExternalLink,  badge: null,  path: null, external: 'http://lms.kiet.edu/moodle/' },
+  { id: 'attendance',   label: 'Attendance (Vidya)',   icon: ExternalLink,  badge: null,  path: null, external: 'https://kiet.cybervidya.net' },
 ]
 
 // ─── Risk classifier ─────────────────────────────────────────────────────────
@@ -416,21 +419,32 @@ export default function FacultyStudentIntelligence() {
               <p className="text-xs text-gray-500 truncate">{FACULTY_PROFILE.designation} · {FACULTY_PROFILE.department}</p>
             </div>
           </div>
-          <div className="mt-3 px-3 py-2 bg-indigo-50 rounded-xl border border-indigo-100 text-xs">
-            <p className="font-bold text-indigo-700 flex items-center gap-1.5">
-              <Shield size={11} /> {FACULTY_PROFILE.section.code}
-            </p>
-            <p className="text-indigo-500 mt-0.5">{FACULTY_PROFILE.section.label} · {FACULTY_PROFILE.section.strength} students · {FACULTY_PROFILE.section.room}</p>
-          </div>
         </div>
         <nav className="flex-1 p-3 overflow-y-auto">
-          {navLinks.map(link => (
-            <button key={link.id} onClick={() => router.push(link.path)}
+          {navLinks.map((link) => (
+            <button
+              key={link.id}
+              onClick={() => {
+                if (link.external) {
+                  window.open(link.external, "_blank");
+                  return;
+                }
+                if (link.path) {
+                  router.push(link.path);
+                } else {
+                  if (typeof setActiveNav === "function") setActiveNav(link.id);
+                }
+              }}
               className="nav-link w-full text-left mb-0.5"
-              style={link.id === 'intelligence' ? { background: '#EEF2FF', color: '#3730A3', fontWeight: 600 } : {}}>
+              style={link.id === 'intelligence' && !link.external ? { background: '#EEF2FF', color: '#3730A3', fontWeight: 600 } : {}}
+            >
               <link.icon size={17} />
               <span className="flex-1">{link.label}</span>
-              {link.badge && <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{link.badge}</span>}
+              {link.badge && (
+                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${link.badge === 'New' ? 'bg-indigo-100 text-indigo-700' : 'bg-red-500 text-white'}`}>
+                  {link.badge}
+                </span>
+              )}
             </button>
           ))}
         </nav>
