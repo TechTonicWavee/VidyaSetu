@@ -63,8 +63,15 @@ export default function LandingPage() {
       {/* Floating Pill Navbar */}
       <nav className="fixed w-full top-0 z-50 pt-4 px-4 pointer-events-none">
         <div className="max-w-4xl mx-auto h-14 bg-white/80 backdrop-blur-xl border border-gray-200/80 rounded-full shadow-[0_8px_30px_rgb(0,0,0,0.04)] flex items-center justify-between px-2 pr-2 pointer-events-auto animate-fade-in">
-          <div className="flex items-center gap-3 pl-4">
-            <div className="w-7 h-7 rounded-full flex items-center justify-center text-white font-bold text-[11px] shadow-sm"
+          <div className="flex items-center gap-3 pl-3">
+            <img
+              src="/kiet_logo.png"
+              alt="KIET"
+              className="h-8 max-w-[96px] object-contain flex-shrink-0"
+              onError={(e) => { e.currentTarget.style.display = 'none'; }}
+            />
+            <div className="h-6 w-px bg-gray-200 flex-shrink-0 hidden sm:block" />
+            <div className="w-7 h-7 rounded-full flex items-center justify-center text-white font-bold text-[11px] shadow-sm hidden sm:flex"
               style={{ background: '#1A56DB' }}>EA</div>
             <span className="font-bold text-[14px] text-slate-800 tracking-tight hidden sm:block">Educator Analytics</span>
           </div>

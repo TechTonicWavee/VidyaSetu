@@ -141,84 +141,11 @@ const subjectHealth = [
 
 export default function FacultyDashboard() {
   const router = useRouter();
-  const [activeNav, setActiveNav] = useState("dashboard");
-  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   return (
-    <div className="flex h-screen bg-[#F3F4F6] overflow-hidden font-sans">
-      {/* SIDEBAR */}
-      <aside
-        className={`${sidebarOpen ? "w-64" : "w-0 overflow-hidden"} flex-shrink-0 bg-white border-r border-gray-100 flex flex-col transition-all duration-300 shadow-sm`}
-      >
-        <div className="p-5 border-b border-gray-50">
-          <div className="flex items-center gap-3">
-            <div
-              className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
-              style={{
-                background: "linear-gradient(135deg, #4338CA, #7C3AED)",
-              }}
-            >
-              {FACULTY_PROFILE.initials}
-            </div>
-            <div className="overflow-hidden">
-              <p className="font-semibold text-sm text-navy truncate">
-                {FACULTY_PROFILE.name}
-              </p>
-              <p className="text-xs text-gray-500 truncate">
-                {FACULTY_PROFILE.department} · {FACULTY_PROFILE.subtitle}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <nav className="flex-1 p-3 overflow-y-auto">
-          {navLinks.map((link) => (
-            <button
-              key={link.id}
-              onClick={() => {
-                if (link.external) {
-                  window.open(link.external, "_blank");
-                  return;
-                }
-                if (link.path) {
-                  router.push(link.path);
-                } else {
-                  if (typeof setActiveNav === "function") setActiveNav(link.id);
-                }
-              }}
-              className={`nav-link w-full text-left mb-0.5 ${activeNav === link.id && !link.external ? "bg-indigo-50 text-indigo-700 font-semibold" : ""}`}
-            >
-              <link.icon size={17} />
-              <span className="flex-1">{link.label}</span>
-              {link.badge && (
-                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${link.badge === 'New' ? 'bg-indigo-100 text-indigo-700' : 'bg-red-500 text-white'}`}>
-                  {link.badge}
-                </span>
-              )}
-            </button>
-          ))}
-        </nav>
-
-        <div className="p-3 border-t border-gray-50">
-          <button
-            onClick={() => router.push("/login")}
-            className="nav-link w-full text-left text-red-500 hover:bg-red-50 hover:text-red-600"
-          >
-            <LogOut size={17} />
-            <span>Switch Role</span>
-          </button>
-        </div>
-      </aside>
-
+    <div className="flex flex-col h-screen bg-[#F3F4F6] overflow-hidden font-sans">
       {/* MAIN CONTENT */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="bg-white border-b border-gray-100 px-6 py-3 flex items-center gap-4 flex-shrink-0 shadow-sm">
-          <button
-            onClick={() => setSidebarOpen((v) => !v)}
-            className="text-gray-400 hover:text-gray-700 transition"
-          >
-            <Menu size={20} />
-          </button>
+      <header className="bg-white border-b border-gray-100 px-6 py-3 flex items-center gap-4 flex-shrink-0 shadow-sm">
           <div className="flex items-center gap-2 mr-4">
             <div
               className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs"
@@ -495,7 +422,6 @@ export default function FacultyDashboard() {
             </div>
           </div>
         </main>
-      </div>
     </div>
   );
 }

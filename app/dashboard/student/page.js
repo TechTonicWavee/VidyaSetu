@@ -145,100 +145,12 @@ function SPIArc({ score, onClick }) {
 
 export default function StudentDashboard() {
   const router = useRouter()
-  const [activeNav, setActiveNav] = useState('dashboard')
-  const [sidebarOpen, setSidebarOpen] = useState(true)
   const [notifOpen, setNotifOpen] = useState(false)
 
   return (
-    <div className="flex h-screen bg-bg-base overflow-hidden font-sans">
-
-      {/* ══════════════════════════════════
-          SIDEBAR
-      ══════════════════════════════════ */}
-      <aside
-        className={`${
-          sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'
-        } flex-shrink-0 bg-white border-r border-gray-100 flex flex-col transition-all duration-300 shadow-sm`}
-      >
-        {/* User info */}
-        <div className="p-5 border-b border-gray-50">
-          <div className="flex items-center gap-3 mb-4">
-            <div
-              className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
-              style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}
-            >
-              AS
-            </div>
-            <div className="overflow-hidden">
-              <p className="font-semibold text-sm text-navy truncate">Priyanshu Raj</p>
-              <p className="text-xs text-gray-500 truncate">CSE — 2nd Year, Section B</p>
-            </div>
-          </div>
-          <SPIArc score={72} onClick={() => router.push('/dashboard/student/spi')} />
-        </div>
-
-        {/* Nav links */}
-        <nav className="flex-1 p-3 overflow-y-auto">
-          {navLinks.map(link => (
-            <button
-              key={link.id}
-              id={`nav-${link.id}`}
-              onClick={() => {
-                if (link.path) {
-                  router.push(link.path)
-                } else {
-                  if (typeof setActiveNav === 'function') setActiveNav(link.id)
-                }
-              }}
-              className={`nav-link w-full text-left mb-0.5 ${activeNav === link.id ? 'active' : ''}`}
-            >
-              <link.icon size={17} />
-              <span className="flex-1">{link.label}</span>
-              {link.badge && (
-                <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
-                  {link.badge}
-                </span>
-              )}
-            </button>
-          ))}
-        </nav>
-
-        {/* Bottom */}
-        <div className="p-3 border-t border-gray-50">
-          <button
-            id="nav-settings"
-            className="nav-link w-full text-left mb-1"
-          >
-            <Settings size={17} />
-            <span>Settings</span>
-          </button>
-          <button
-            id="switch-role-btn"
-            onClick={() => router.push('/login')}
-            className="nav-link w-full text-left text-red-500 hover:bg-red-50 hover:text-red-600"
-          >
-            <LogOut size={17} />
-            <span>Switch Role</span>
-          </button>
-        </div>
-      </aside>
-
-      {/* ══════════════════════════════════
-          MAIN CONTENT
-      ══════════════════════════════════ */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-
-        {/* TOP NAV */}
-        <header className="bg-white border-b border-gray-100 px-6 py-3 flex items-center gap-4 flex-shrink-0 shadow-sm">
-          {/* Hamburger */}
-          <button
-            id="sidebar-toggle"
-            onClick={() => setSidebarOpen(v => !v)}
-            className="text-gray-400 hover:text-gray-700 transition"
-          >
-            <Grid size={20} />
-          </button>
-
+    <div className="flex flex-col h-screen bg-bg-base overflow-hidden font-sans">
+      {/* TOP NAV */}
+      <header className="bg-white border-b border-gray-100 px-6 py-3 flex items-center gap-4 flex-shrink-0 shadow-sm">
           {/* Logo */}
           <div className="flex items-center gap-2 mr-4">
             <div
@@ -456,7 +368,6 @@ export default function StudentDashboard() {
             </button>
           </div>
         </main>
-      </div>
     </div>
   )
 }

@@ -46,48 +46,11 @@ function FileTextIcon(props) {
 
 export default function AdminDashboard() {
   const router = useRouter()
-  const [activeNav, setActiveNav] = useState('dashboard')
-  const [sidebarOpen, setSidebarOpen] = useState(true)
 
   return (
-    <div className="flex h-screen bg-bg-base overflow-hidden font-sans">
-      {/* SIDEBAR */}
-      <aside className={`${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'} flex-shrink-0 bg-gray-900 text-gray-300 flex flex-col transition-all duration-300 shadow-xl z-20`}>
-        <div className="p-5 border-b border-gray-800">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center text-white font-bold text-sm flex-shrink-0 border border-gray-700">
-              AD
-            </div>
-            <div className="overflow-hidden">
-              <p className="font-semibold text-sm text-white truncate">Admin · System</p>
-              <p className="text-xs text-gray-500 truncate">Educator Analytics OS</p>
-            </div>
-          </div>
-        </div>
-
-        <nav className="flex-1 p-3 overflow-y-auto">
-          {navLinks.map(link => (
-            <button key={link.id} onClick={() => setActiveNav(link.id)} className={`nav-link w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all cursor-pointer mb-0.5 ${activeNav === link.id ? 'bg-gray-800 text-white' : 'hover:bg-gray-800/50 hover:text-white'}`}>
-              <link.icon size={17} />
-              <span className="flex-1 text-left">{link.label}</span>
-            </button>
-          ))}
-        </nav>
-
-        <div className="p-3 border-t border-gray-800">
-          <button onClick={() => router.push('/login')} className="nav-link w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all cursor-pointer text-red-400 hover:bg-red-900/30 hover:text-red-300">
-            <LogOut size={17} />
-            <span className="flex-1 text-left">Switch Role</span>
-          </button>
-        </div>
-      </aside>
-
+    <div className="flex flex-col h-screen bg-bg-base overflow-hidden font-sans">
       {/* MAIN CONTENT */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="bg-white border-b border-gray-100 px-6 py-3 flex items-center gap-4 flex-shrink-0 shadow-sm z-10">
-          <button onClick={() => setSidebarOpen(v => !v)} className="text-gray-400 hover:text-gray-700 transition">
-            <Settings2 size={20} />
-          </button>
+      <header className="bg-white border-b border-gray-100 px-6 py-3 flex items-center gap-4 flex-shrink-0 shadow-sm z-10">
           <div className="flex items-center gap-2 mr-4">
             <div className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs bg-gray-800">EA</div>
             <span className="font-bold text-navy text-sm hidden sm:block">Educator Analytics OS</span>
@@ -180,7 +143,6 @@ export default function AdminDashboard() {
             </div>
           </div>
         </main>
-      </div>
     </div>
   )
 }
