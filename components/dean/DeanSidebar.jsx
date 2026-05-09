@@ -3,17 +3,18 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useDeanContext } from '@/app/dashboard/dean/_context/DeanContext';
+import { LayoutDashboard, Users, Calendar, Bell, Bot } from 'lucide-react';
 
 export default function DeanSidebar() {
   const pathname = usePathname();
   const { unreadCount } = useDeanContext();
 
   const links = [
-    { id: 'overview', label: 'Overview', href: '/dashboard/dean', icon: '📊' },
-    { id: 'meetings', label: 'Meetings', href: '/dashboard/dean/meetings', icon: '📅' },
-    { id: 'schedule', label: 'Schedule', href: '/dashboard/dean/schedule', icon: '🗓️' },
-    { id: 'notifications', label: 'Notifications', href: '/dashboard/dean/notifications', icon: '🔔', badge: unreadCount > 0 ? unreadCount : null },
-    { id: 'agent', label: 'AI Agent', href: '/dashboard/dean/agent', icon: '🤖' },
+    { id: 'overview', label: 'Overview', href: '/dashboard/dean', icon: <LayoutDashboard className="w-5 h-5" /> },
+    { id: 'meetings', label: 'Meetings', href: '/dashboard/dean/meetings', icon: <Users className="w-5 h-5" /> },
+    { id: 'schedule', label: 'Schedule', href: '/dashboard/dean/schedule', icon: <Calendar className="w-5 h-5" /> },
+    { id: 'notifications', label: 'Notifications', href: '/dashboard/dean/notifications', icon: <Bell className="w-5 h-5" />, badge: unreadCount > 0 ? unreadCount : null },
+    { id: 'agent', label: 'AI Agent', href: '/dashboard/dean/agent', icon: <Bot className="w-5 h-5" /> },
   ];
 
   return (
@@ -37,7 +38,7 @@ export default function DeanSidebar() {
               }`}
             >
               <div className="flex items-center gap-3">
-                <span className="text-lg">{link.icon}</span>
+                <span className="flex items-center justify-center">{link.icon}</span>
                 <span>{link.label}</span>
               </div>
               {link.badge && (

@@ -151,7 +151,7 @@ const BASE = {
   industryReadiness: 54,
 };
 
-const BRANCH_SENSITIVITY = { CSE: 1.1, ALL: 1.0 };
+const BRANCH_SENSITIVITY = { CSE: 1.1 };
 
 const IMPACT_MULTIPLIER = { Low: 0.5, Medium: 1.0, High: 1.6 };
 
@@ -293,9 +293,9 @@ function runSimulation(config) {
   // branch impact
   const branchImpact = ["CSE"].map((b) => ({
     branch: b,
-    before: b === "CSE" ? 64 : b === "IT" ? 59 : 57,
+    before: 64,
     after: +(
-      (b === "CSE" ? 64 : b === "IT" ? 59 : 57) +
+      64 +
       delta.placementDelta * BRANCH_SENSITIVITY[b]
     ).toFixed(1),
   }));
@@ -416,7 +416,7 @@ export default function PolicySimulation() {
   const [policyType, setPolicyType] = useState("Add Course");
   const [courseName, setCourseName] = useState("Communication Skills");
   const [targetYear, setTargetYear] = useState("2nd");
-  const [targetBranch, setTargetBranch] = useState("ALL");
+  const [targetBranch, setTargetBranch] = useState("CSE");
   const [impactLevel, setImpactLevel] = useState("Medium");
   const [attendanceThreshold, setAttendanceThreshold] = useState(80);
 
@@ -542,7 +542,7 @@ export default function PolicySimulation() {
     : [];
 
   return (
-    <main className="px-8 py-8">
+    <main className="dean-page px-8 py-8">
           <div className="max-w-7xl mx-auto space-y-6 pb-10">
             {/* Page Title */}
             <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 animate-fade-in">
@@ -709,8 +709,8 @@ export default function PolicySimulation() {
                       <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">
                         Target Branch
                       </label>
-                      <div className="grid grid-cols-4 gap-2">
-                        {["ALL", "CSE", "IT", "ECE"].map((b) => (
+                      <div className="grid grid-cols-1 gap-2">
+                        {["CSE"].map((b) => (
                           <button
                             key={b}
                             onClick={() => setTargetBranch(b)}

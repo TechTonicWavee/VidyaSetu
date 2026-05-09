@@ -68,7 +68,7 @@ export default function YearwiseInsights() {
 
   return (
     <>
-    <main className="px-8 py-8">
+    <main className="dean-page px-8 py-8">
           <div className="max-w-[1400px] mx-auto p-6 md:p-8 animate-fade-in space-y-8 pb-20">
 
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">

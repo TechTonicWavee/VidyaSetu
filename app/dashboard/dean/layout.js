@@ -32,25 +32,25 @@ export default function DeanLayout({ children }) {
           <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
             <p className="px-3 pb-3 text-xs font-bold uppercase tracking-wider text-gray-400">Dean Portal</p>
             <div className="space-y-1">
-              <a href="/dashboard/dean" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition group">
-                <LayoutDashboard size={18} className="text-gray-400 group-hover:text-blue-500 transition flex-shrink-0" />
+              <a href="/dashboard/dean" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition group">
+                <LayoutDashboard size={18} className="text-gray-400 group-hover:text-purple-600 transition flex-shrink-0" />
                 <span className="font-medium">Overview</span>
               </a>
-              <a href="/dashboard/dean/meetings" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition group">
-                <CalendarDays size={18} className="text-gray-400 group-hover:text-blue-500 transition flex-shrink-0" />
+              <a href="/dashboard/dean/meetings" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition group">
+                <CalendarDays size={18} className="text-gray-400 group-hover:text-purple-600 transition flex-shrink-0" />
                 <span className="font-medium">Meetings</span>
               </a>
-              <a href="/dashboard/dean/schedule" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition group">
-                <Calendar size={18} className="text-gray-400 group-hover:text-blue-500 transition flex-shrink-0" />
+              <a href="/dashboard/dean/schedule" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition group">
+                <Calendar size={18} className="text-gray-400 group-hover:text-purple-600 transition flex-shrink-0" />
                 <span className="font-medium">Schedule</span>
               </a>
-              <a href="/dashboard/dean/notifications" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition group relative">
-                <Bell size={18} className="text-gray-400 group-hover:text-blue-500 transition flex-shrink-0" />
+              <a href="/dashboard/dean/notifications" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition group relative">
+                <Bell size={18} className="text-gray-400 group-hover:text-purple-600 transition flex-shrink-0" />
                 <span className="font-medium">Notifications</span>
                 <span className="ml-auto bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">2</span>
               </a>
-              <a href="/dashboard/dean/agent" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition group">
-                <Bot size={18} className="text-gray-400 group-hover:text-blue-500 transition flex-shrink-0" />
+              <a href="/dashboard/dean/agent" className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition group">
+                <Bot size={18} className="text-gray-400 group-hover:text-purple-600 transition flex-shrink-0" />
                 <span className="font-medium">AI Agent</span>
               </a>
             </div>

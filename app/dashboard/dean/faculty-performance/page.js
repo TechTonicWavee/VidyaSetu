@@ -246,17 +246,14 @@ export default function FacultyPerformanceDeepDive() {
   const router = useRouter();
   const [activeNav] = useState("faculty");
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [selectedBranchFilter, setSelectedBranchFilter] = useState("All");
+  const [selectedBranchFilter, setSelectedBranchFilter] = useState("CSE");
   const [selectedFaculty, setSelectedFaculty] = useState(null);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
   const [activeTab, setActiveTab] = useState("Overview");
 
-  const filteredFaculty =
-    selectedBranchFilter === "All"
-      ? facultyData
-      : facultyData.filter((f) => f.branch === selectedBranchFilter);
+  const filteredFaculty = facultyData.filter((f) => f.branch === "CSE");
 
   const showToast = (msg) => {
     setToastMessage(msg);
@@ -310,7 +307,7 @@ export default function FacultyPerformanceDeepDive() {
 
   return (
     <>
-    <main className="px-8 py-8">
+    <main className="dean-page px-8 py-8">
           <div className="max-w-[1400px] mx-auto p-6 md:p-8 animate-fade-in space-y-8 pb-20">
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
@@ -413,13 +410,10 @@ export default function FacultyPerformanceDeepDive() {
                     value={selectedBranchFilter}
                     onChange={(e) => setSelectedBranchFilter(e.target.value)}
                   >
-                    <option value="All">Branch: All</option>
                     <option value="CSE">CSE Only</option>
-                    <option value="IT">IT Only</option>
-                    <option value="ECE">ECE Only</option>
                   </select>
                   <select className="text-sm border border-gray-300 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 font-medium text-gray-700 cursor-pointer">
-                    <option>Dept: All</option>
+                    <option>Dept: CSE</option>
                     <option>Core CS</option>
                     <option>Mathematics</option>
                     <option>Humanities</option>
@@ -972,8 +966,8 @@ export default function FacultyPerformanceDeepDive() {
                     required
                   >
                     <option value="">Select Audience...</option>
-                    <option value="all_cs">All CS Faculty</option>
-                    <option value="all_faculty">All Department Faculty</option>
+                    <option value="all_cs">All CSE Faculty</option>
+                    <option value="all_faculty">All CSE Department Faculty</option>
                     <option value="dsa_faculty">
                       DSA & Algorithms Faculty
                     </option>

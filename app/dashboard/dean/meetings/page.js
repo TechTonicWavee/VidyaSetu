@@ -54,7 +54,7 @@ export default function MeetingsPage() {
   const inputCls = "w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-gray-50 placeholder-gray-400";
 
   return (
-    <main className="px-8 py-8 min-h-screen">
+    <main className="dean-page px-8 py-8 min-h-screen">
 
       {/* Header */}
       <div className="flex items-start justify-between mb-8">
