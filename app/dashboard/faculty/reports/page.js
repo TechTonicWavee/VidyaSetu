@@ -4,39 +4,66 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import {
-  Home, BookOpen, Bell, BarChart2, Users, Target,
-  MessageCircle, FileText, Settings, LogOut, Search, ChevronDown,
-  Download, ExternalLink, Calendar
+  Home, BookOpen, Bell, Users, MessageSquare,
+  FileText, LogOut, Search, ChevronDown, Download,
+  Calendar, Activity, CheckCircle, AlertCircle,
+  Grid, Filter, RefreshCw, Clock, Eye, Menu
 } from 'lucide-react'
 
 const navLinks = [
-  { id: 'dashboard',    label: 'Dashboard',            icon: Home,          badge: null, path: '/dashboard/faculty' },
-  { id: 'classes',      label: 'My Classes',           icon: BookOpen,      badge: null, path: '/dashboard/faculty/my-classes' },
-  { id: 'intelligence', label: 'Student Intelligence', icon: Grid,          badge: null, path: '/dashboard/faculty/student-intelligence' },
-  { id: 'alerts',       label: 'Student Alerts',       icon: AlertCircle,   badge: '5',  path: '/dashboard/faculty/alerts' },
-  { id: 'analytics',    label: 'Subject Analytics',    icon: Activity,      badge: null, path: '/dashboard/faculty/analytics' },
-  { id: 'profiles',     label: 'Student Profiles',     icon: Users,         badge: null, path: '/dashboard/faculty/student/profile' },
-  { id: 'co',           label: 'CO Attainment',        icon: CheckCircle,   badge: null, path: '/dashboard/faculty/co-attainment' },
-  { id: 'parent',       label: 'Parent Communication', icon: MessageSquare, badge: null, path: '/dashboard/faculty/parent-communication' },
-  { id: 'reports',      label: 'Reports',              icon: FileText,      badge: null, path: '/dashboard/faculty/reports' },
+  { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null, path: '/dashboard/faculty' },
+  { id: 'classes', label: 'My Classes', icon: BookOpen, badge: null, path: '/dashboard/faculty/my-classes' },
+  { id: 'intelligence', label: 'Student Intelligence', icon: Grid, badge: null, path: '/dashboard/faculty/student-intelligence' },
+  { id: 'alerts', label: 'Student Alerts', icon: AlertCircle, badge: '5', path: '/dashboard/faculty/alerts' },
+  { id: 'analytics', label: 'Subject Analytics', icon: Activity, badge: null, path: '/dashboard/faculty/analytics' },
+  { id: 'profiles', label: 'Student Profiles', icon: Users, badge: null, path: '/dashboard/faculty/student/profile' },
+  { id: 'co', label: 'CO Attainment', icon: CheckCircle, badge: null, path: '/dashboard/faculty/co-attainment' },
+  { id: 'parent', label: 'Parent Communication', icon: MessageSquare, badge: null, path: '/dashboard/faculty/parent-communication' },
+  { id: 'reports', label: 'Reports', icon: FileText, badge: null, path: '/dashboard/faculty/reports' },
 ]
 
 const FILTER_TABS = ['All', 'NAAC/NBA', 'Intervention', 'Compliance', 'Academic']
 
 const mockReports = [
-  { id: 'rep_01', name: 'CO Attainment Summary', desc: 'Subject-wise CO1–CO3 attainment with status and overall %.', type: 'NAAC/NBA', updated: 'May 04, 2026' },
-  { id: 'rep_02', name: 'At-Risk Students List', desc: 'Students flagged by attendance/score decline across subjects.', type: 'Intervention', updated: 'May 03, 2026' },
-  { id: 'rep_03', name: 'Attendance Compliance', desc: 'Attendance distribution and shortage warnings by section.', type: 'Compliance', updated: 'May 02, 2026' },
+  { id: 'rep_01', name: 'CO Attainment Summary', desc: 'Subject-wise CO1–CO3 attainment with status and overall % across all sections.', type: 'NAAC/NBA', updated: 'May 04, 2026', status: 'ready', size: '2.4 MB', pages: 12 },
+  { id: 'rep_02', name: 'At-Risk Students List', desc: 'Students flagged by attendance or score decline across subjects this semester.', type: 'Intervention', updated: 'May 03, 2026', status: 'ready', size: '1.1 MB', pages: 6 },
+  { id: 'rep_03', name: 'Attendance Compliance', desc: 'Attendance distribution and shortage warnings by section for current term.', type: 'Compliance', updated: 'May 02, 2026', status: 'ready', size: '0.8 MB', pages: 4 },
+  { id: 'rep_04', name: 'End-Term Performance Report', desc: 'Aggregated marks, grade distribution and pass/fail analysis per subject.', type: 'Academic', updated: 'Apr 30, 2026', status: 'generating', size: null, pages: null },
+  { id: 'rep_05', name: 'PO/PSO Mapping Audit', desc: 'CO-PO-PSO mapping coverage and attainment gaps for accreditation review.', type: 'NAAC/NBA', updated: 'Apr 28, 2026', status: 'ready', size: '3.2 MB', pages: 18 },
+  { id: 'rep_06', name: 'Parent Communication Log', desc: 'Summary of all parent notifications, escalations and resolved interventions.', type: 'Compliance', updated: 'Apr 25, 2026', status: 'ready', size: '0.5 MB', pages: 3 },
 ]
+
+const TYPE_COLOR = {
+  'NAAC/NBA': { bg: 'bg-purple-50', text: 'text-purple-700', dot: 'bg-purple-500' },
+  'Intervention': { bg: 'bg-amber-50', text: 'text-amber-700', dot: 'bg-amber-500' },
+  'Compliance': { bg: 'bg-blue-50', text: 'text-blue-700', dot: 'bg-blue-500' },
+  'Academic': { bg: 'bg-teal-50', text: 'text-teal-700', dot: 'bg-teal-500' },
+}
 
 export default function FacultyReportsPage() {
   const router = useRouter()
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [activeFilter, setActiveFilter] = useState('All')
+  const [generating, setGenerating] = useState({})
+  const [downloaded, setDownloaded] = useState({})
+
+  const filtered = activeFilter === 'All' ? mockReports : mockReports.filter(r => r.type === activeFilter)
+  const readyCount = mockReports.filter(r => r.status === 'ready').length
+  const pendingCount = mockReports.filter(r => r.status === 'generating').length
+
+  const handleDownload = (id) => {
+    setDownloaded(prev => ({ ...prev, [id]: true }))
+    setTimeout(() => setDownloaded(prev => ({ ...prev, [id]: false })), 2500)
+  }
+  const handleGenerate = (id) => {
+    setGenerating(prev => ({ ...prev, [id]: true }))
+    setTimeout(() => setGenerating(prev => ({ ...prev, [id]: false })), 3000)
+  }
 
   return (
     <div className="flex h-screen bg-bg-base overflow-hidden font-sans">
       {/* SIDEBAR */}
-      <aside className={`${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'} flex-shrink-0 bg-white border-r border-gray-100 flex flex-col transition-all duration-300 shadow-sm z-20`}>
+      <aside className={`${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'} flex-shrink-0 bg-white border-r border-gray-100 flex flex-col transition-all duration-300 shadow-sm`}>
         <div className="p-5 border-b border-gray-50">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
@@ -64,8 +91,9 @@ export default function FacultyReportsPage() {
         </div>
       </aside>
 
-      {/* MAIN CONTENT */}
+      {/* MAIN */}
       <div className="flex-1 flex flex-col overflow-hidden">
+        {/* HEADER */}
         <header className="bg-white border-b border-gray-100 px-6 py-3 flex items-center gap-4 flex-shrink-0 shadow-sm">
           <button onClick={() => setSidebarOpen(v => !v)} className="text-gray-400 hover:text-gray-700 transition">
             <Menu size={20} />
@@ -95,53 +123,32 @@ export default function FacultyReportsPage() {
             <p className="text-gray-500 text-sm mt-1">Generate and download audit-ready reports for accreditation and review</p>
           </div>
 
-          {/* REPORT STATS BAR */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
-            <div className="card border-l-4 border-l-blue-500 animate-fade-in" style={{ animationDelay: '0.01s' }}>
-              <div className="flex items-center justify-between mb-3">
-                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Total Reports Available</p>
-                <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
-                  <FileText size={16} color="#1A56DB" />
+          {/* STAT PILLS */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-5">
+            {[
+              { label: 'Total Reports', value: mockReports.length, icon: FileText, color: 'text-teal-600', bg: 'bg-teal-50' },
+              { label: 'Ready to Download', value: readyCount, icon: CheckCircle, color: 'text-green-600', bg: 'bg-green-50' },
+              { label: 'Generating', value: pendingCount, icon: RefreshCw, color: 'text-amber-600', bg: 'bg-amber-50' },
+              { label: 'Last Updated', value: 'May 04', icon: Clock, color: 'text-blue-600', bg: 'bg-blue-50' },
+            ].map((s, i) => (
+              <div key={i} className="card animate-fade-in flex items-center gap-4 py-4" style={{ animationDelay: `${i * 0.05}s` }}>
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${s.bg}`}>
+                  <s.icon size={18} className={s.color} />
+                </div>
+                <div>
+                  <p className="text-xl font-bold text-navy leading-none">{s.value}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">{s.label}</p>
                 </div>
               </div>
-              <p className="text-2xl font-bold text-navy mb-1">7</p>
-            </div>
-            <div className="card border-l-4 border-l-teal-500 animate-fade-in" style={{ animationDelay: '0.02s' }}>
-              <div className="flex items-center justify-between mb-3">
-                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Reports Generated This Month</p>
-                <div className="w-8 h-8 rounded-lg bg-teal-100 flex items-center justify-center">
-                  <BarChart2 size={16} color="#0F766E" />
-                </div>
-              </div>
-              <p className="text-2xl font-bold text-navy mb-1">12</p>
-            </div>
-            <div className="card border-l-4 border-l-amber-500 animate-fade-in" style={{ animationDelay: '0.03s' }}>
-              <div className="flex items-center justify-between mb-3">
-                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Pending Accreditation Items</p>
-                <div className="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center">
-                  <AlertTriangle size={16} color="#D97706" />
-                </div>
-              </div>
-              <p className="text-2xl font-bold text-navy mb-1 flex items-center gap-2">
-                3 <span className="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
-              </p>
-            </div>
-            <div className="card border-l-4 border-l-purple-500 animate-fade-in" style={{ animationDelay: '0.04s' }}>
-              <div className="flex items-center justify-between mb-3">
-                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Last Generated</p>
-                <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center">
-                  <Clock size={16} color="#7E22CE" />
-                </div>
-              </div>
-              <p className="text-sm font-bold text-navy mt-3">Today, 10:42 AM</p>
-            </div>
+            ))}
           </div>
 
-          <div className="card mb-6 animate-fade-in" style={{ animationDelay: '0.08s' }}>
-            <div className="flex flex-col lg:flex-row lg:items-center gap-4">
+          {/* QUICK EXPORTS */}
+          <div className="card mb-5 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
               <div className="flex items-center gap-2 text-sm font-semibold text-navy">
-                <FileText size={16} className="text-teal-600" />
-                <span>Quick exports</span>
+                <Download size={16} className="text-teal-600" />
+                <span>Quick Exports</span>
               </div>
               <p className="text-xs text-gray-500 flex-1">Download pre-packaged report bundles for accreditation bodies.</p>
               <div className="flex flex-col sm:flex-row gap-2">
@@ -157,96 +164,82 @@ export default function FacultyReportsPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {mockReports.map((r, idx) => (
-              <div key={r.id} className="card animate-fade-in" style={{ animationDelay: `${0.12 + idx * 0.04}s` }}>
-                <div className="flex items-start justify-between mb-3">
-                  <div>
-                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">{r.type}</p>
-                    <h2 className="font-semibold text-navy text-sm">{r.name}</h2>
-                  </div>
-                  <div className="w-9 h-9 rounded-xl bg-gray-100 text-gray-600 flex items-center justify-center">
-                    <FileText size={18} />
-                  </div>
-                </div>
-                <p className="text-sm text-gray-700">{r.desc}</p>
-                <div className="mt-4 flex items-center justify-between text-xs text-gray-500">
-                  <span className="flex items-center gap-1"><Calendar size={12} className="text-gray-400" /> Updated {r.updated}</span>
-                  <button className="text-xs font-bold text-teal-600 hover:text-teal-800 hover:underline flex items-center gap-1">
-                    Preview <ExternalLink size={12} />
-                  </button>
-                </div>
-                <div className="mt-5 flex gap-3">
-                  <button className="flex-1 px-4 py-2 bg-white border border-gray-200 text-gray-700 font-bold text-sm rounded-xl hover:bg-gray-50 transition shadow-sm">
-                    Configure
-                  </button>
-                  <button className="flex-1 px-4 py-2 bg-teal-600 text-white font-bold text-sm rounded-xl hover:bg-teal-700 transition shadow-sm flex items-center justify-center gap-2">
-                    <Download size={16} /> Download
-                  </button>
-                </div>
-              </div>
+          {/* FILTER TABS */}
+          <div className="flex items-center gap-2 mb-5 flex-wrap animate-fade-in" style={{ animationDelay: '0.12s' }}>
+            <Filter size={14} className="text-gray-400" />
+            {FILTER_TABS.map(tab => (
+              <button key={tab} onClick={() => setActiveFilter(tab)}
+                className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition ${activeFilter === tab ? 'bg-teal-600 text-white shadow-sm' : 'bg-white border border-gray-200 text-gray-600 hover:bg-gray-50'
+                  }`}>{tab}</button>
             ))}
+          </div>
+
+          {/* CARDS GRID */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+            {filtered.map((r, idx) => {
+              const tc = TYPE_COLOR[r.type] || TYPE_COLOR['Academic']
+              const isGen = generating[r.id]
+              const isDl = downloaded[r.id]
+              return (
+                <div key={r.id} className="card animate-fade-in flex flex-col" style={{ animationDelay: `${0.14 + idx * 0.04}s` }}>
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <span className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold mb-2 ${tc.bg} ${tc.text}`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${tc.dot}`} />
+                        {r.type}
+                      </span>
+                      <h2 className="font-semibold text-navy text-sm leading-tight">{r.name}</h2>
+                    </div>
+                    <div className="w-9 h-9 rounded-xl bg-gray-100 text-gray-500 flex items-center justify-center flex-shrink-0 ml-3">
+                      <FileText size={17} />
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-gray-600 leading-relaxed flex-1">{r.desc}</p>
+
+                  <div className="mt-3 flex items-center justify-between text-[11px] text-gray-400">
+                    <span className="flex items-center gap-1"><Calendar size={11} /> Updated {r.updated}</span>
+                    <div className="flex items-center gap-3">
+                      {r.pages && <span>{r.pages} pages</span>}
+                      {r.size && <span>{r.size}</span>}
+                      {r.status === 'generating' && (
+                        <span className="flex items-center gap-1 text-amber-500 font-semibold">
+                          <RefreshCw size={10} className="animate-spin" /> Generating
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="mt-2 flex justify-end">
+                    <button className="text-[11px] font-bold text-teal-600 hover:text-teal-800 hover:underline flex items-center gap-1">
+                      <Eye size={11} /> Preview
+                    </button>
+                  </div>
+
+                  <div className="mt-4 flex gap-2 pt-3 border-t border-gray-50">
+                    <button onClick={() => handleGenerate(r.id)}
+                      className="flex-1 px-3 py-2 bg-white border border-gray-200 text-gray-700 font-bold text-xs rounded-xl hover:bg-gray-50 transition shadow-sm">
+                      {isGen ? 'Configuring…' : 'Configure'}
+                    </button>
+                    {r.status === 'ready' ? (
+                      <button onClick={() => handleDownload(r.id)}
+                        className={`flex-1 px-3 py-2 font-bold text-xs rounded-xl transition shadow-sm flex items-center justify-center gap-1.5 ${isDl ? 'bg-green-500 text-white' : 'bg-teal-600 text-white hover:bg-teal-700'
+                          }`}>
+                        {isDl ? <><CheckCircle size={13} /> Done!</> : <><Download size={13} /> Download</>}
+                      </button>
+                    ) : (
+                      <button onClick={() => handleGenerate(r.id)} disabled={isGen}
+                        className="flex-1 px-3 py-2 bg-amber-500 text-white font-bold text-xs rounded-xl hover:bg-amber-600 transition shadow-sm flex items-center justify-center gap-1.5 disabled:opacity-60">
+                        {isGen ? <><RefreshCw size={13} className="animate-spin" /> Generating…</> : <><RefreshCw size={13} /> Generate</>}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              )
+            })}
           </div>
         </main>
       </div>
-
-      {/* GENERATE REPORT MODAL */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-navy/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
-          <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl p-6 relative">
-            <h2 className="text-xl font-bold text-navy mb-5">Generate New Report</h2>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-1.5">Report Type</label>
-                <select className="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-700 bg-white">
-                  <option>Class Progress Report</option>
-                  <option>Individual Student Narrative</option>
-                  <option>Assignment Submission Tracker</option>
-                  <option>Parent Communication Log</option>
-                  <option>CO Attainment Summary</option>
-                  <option>At-Risk Students List</option>
-                  <option>Pending Accreditation Items</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-1.5">Subject</label>
-                <select className="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-700 bg-white">
-                  <option>Data Structures</option>
-                  <option>DBMS</option>
-                  <option>Operating Systems</option>
-                  <option>Computer Networks</option>
-                </select>
-              </div>
-              <div>
-                <label className="block text-sm font-bold text-gray-700 mb-1.5">Section</label>
-                <select className="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-700 bg-white">
-                  <option>CE-A</option>
-                  <option>CE-B</option>
-                  <option>CE-C</option>
-                </select>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1.5">From</label>
-                  <input type="date" className="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-700 bg-white" />
-                </div>
-                <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1.5">To</label>
-                  <input type="date" className="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-700 bg-white" />
-                </div>
-              </div>
-            </div>
-            <div className="flex gap-3 justify-end mt-8 pt-4 border-t border-gray-100">
-              <button onClick={() => setIsModalOpen(false)} className="px-5 py-2.5 text-gray-700 font-bold text-sm rounded-xl border border-gray-300 hover:bg-gray-50 transition">
-                Cancel
-              </button>
-              <button onClick={() => setIsModalOpen(false)} className="px-6 py-2.5 bg-teal-600 text-white font-bold text-sm rounded-xl hover:bg-teal-700 transition shadow-sm">
-                Generate
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
