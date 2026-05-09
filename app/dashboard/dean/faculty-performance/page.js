@@ -140,6 +140,17 @@ const facultyData = [
     alerts: 4,
     score: 91,
     category: "Exceptional",
+    avgSubjectScore: 84,
+    avgAttendance: 92,
+    teachingStyle: "Practical & Visualization-oriented",
+    studentReviews: [
+      { text: "Her visualizations make complex trees and graphs so easy to understand.", rating: 4.8 },
+      { text: "Great energy, encourages asking questions. Assignments are tough but fair.", rating: 4.7 }
+    ],
+    aiInsights: [
+      "Consistent 15% increase in practical lab scores compared to previous semesters.",
+      "High engagement in classes. No immediate interventions required."
+    ]
   },
   {
     id: 2,
@@ -153,6 +164,17 @@ const facultyData = [
     alerts: 9,
     score: 87,
     category: "High Performer",
+    avgSubjectScore: 78,
+    avgAttendance: 88,
+    teachingStyle: "Project-based Learning",
+    studentReviews: [
+      { text: "Database projects were very close to real-world scenarios.", rating: 4.5 },
+      { text: "Explains OS concepts well but classes can be a bit fast-paced.", rating: 4.2 }
+    ],
+    aiInsights: [
+      "Project completion rates are up by 12%.",
+      "Minor drop in attendance during the mid-semester weeks."
+    ]
   },
   {
     id: 3,
@@ -166,6 +188,17 @@ const facultyData = [
     alerts: 7,
     score: 84,
     category: "High Performer",
+    avgSubjectScore: 75,
+    avgAttendance: 85,
+    teachingStyle: "Theoretical Deep-dive",
+    studentReviews: [
+      { text: "Extremely knowledgeable. Makes automata theory interesting.", rating: 4.6 },
+      { text: "Strict grading, but you learn a lot.", rating: 4.4 }
+    ],
+    aiInsights: [
+      "Strong theoretical foundation built, but practical networking labs need more focus.",
+      "Alerts mostly related to assignment submission delays."
+    ]
   },
   {
     id: 4,
@@ -179,6 +212,17 @@ const facultyData = [
     alerts: 13,
     score: 73,
     category: "Average",
+    avgSubjectScore: 68,
+    avgAttendance: 76,
+    teachingStyle: "Interactive & Collaborative",
+    studentReviews: [
+      { text: "AI concepts are fun, but coding sessions are a bit unorganized.", rating: 3.8 },
+      { text: "Friendly and approachable, but we need more structured materials.", rating: 3.9 }
+    ],
+    aiInsights: [
+      "Students struggle with advanced Python implementation in AI algorithms.",
+      "Recommend standardizing the lab curriculum for better structure."
+    ]
   },
   {
     id: 5,
@@ -192,6 +236,17 @@ const facultyData = [
     alerts: 22,
     score: 51,
     category: "Critical Attention",
+    avgSubjectScore: 54,
+    avgAttendance: 62,
+    teachingStyle: "Traditional Lecture-heavy",
+    studentReviews: [
+      { text: "Classes are monotonous. Hard to keep track of the architecture diagrams.", rating: 2.5 },
+      { text: "Needs to use more modern tools or simulators instead of just slides.", rating: 2.8 }
+    ],
+    aiInsights: [
+      "Significant drop in attendance observed in the last 4 weeks.",
+      "High number of academic alerts triggered for mid-term failures. Immediate intervention needed."
+    ]
   },
   {
     id: 6,
@@ -205,6 +260,17 @@ const facultyData = [
     alerts: 14,
     score: 67,
     category: "Average",
+    avgSubjectScore: 65,
+    avgAttendance: 72,
+    teachingStyle: "Case-study Oriented",
+    studentReviews: [
+      { text: "Good industry examples, but lacks hands-on cloud deployment practice.", rating: 3.5 },
+      { text: "Software engineering lectures are informative but too theoretical.", rating: 3.7 }
+    ],
+    aiInsights: [
+      "Need to integrate AWS/Azure labs to improve the Cloud curriculum engagement.",
+      "Student feedback indicates a desire for more practical assignments."
+    ]
   },
   {
     id: 7,
@@ -218,6 +284,17 @@ const facultyData = [
     alerts: 10,
     score: 80,
     category: "High Performer",
+    avgSubjectScore: 72,
+    avgAttendance: 89,
+    teachingStyle: "Fundamentals-focused",
+    studentReviews: [
+      { text: "Really clears up the basics of pointers and memory allocation.", rating: 4.4 },
+      { text: "Lots of coding practice. Good for placements.", rating: 4.5 }
+    ],
+    aiInsights: [
+      "Solid improvement in base programming skills among first-year students.",
+      "High attendance maintained throughout the semester."
+    ]
   },
 ];
 
@@ -720,8 +797,8 @@ export default function FacultyPerformanceDeepDive() {
             <div className="flex-1 overflow-y-auto p-6 space-y-6">
               {activeTab === "Overview" && (
                 <div className="animate-fade-in space-y-6">
-                  {/* 4 Mini Stat Cards */}
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                  {/* 6 Mini Stat Cards */}
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                     <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm text-center">
                       <p className="text-xs font-bold text-gray-400 uppercase mb-1">
                         Students
@@ -740,19 +817,88 @@ export default function FacultyPerformanceDeepDive() {
                     </div>
                     <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm text-center">
                       <p className="text-xs font-bold text-gray-400 uppercase mb-1">
+                        Avg Attendance
+                      </p>
+                      <p className={`font-black text-xl ${selectedFaculty.avgAttendance >= 75 ? 'text-navy' : 'text-red-500'}`}>
+                        {selectedFaculty.avgAttendance}%
+                      </p>
+                    </div>
+                    <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm text-center">
+                      <p className="text-xs font-bold text-gray-400 uppercase mb-1">
+                        Avg Subject Score
+                      </p>
+                      <p className={`font-black text-xl ${selectedFaculty.avgSubjectScore >= 60 ? 'text-navy' : 'text-amber-500'}`}>
+                        {selectedFaculty.avgSubjectScore}/100
+                      </p>
+                    </div>
+                    <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm text-center">
+                      <p className="text-xs font-bold text-gray-400 uppercase mb-1">
                         CO Avg
                       </p>
                       <p className="font-black text-xl text-navy">
                         {selectedFaculty.co}%
                       </p>
                     </div>
-                    <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm text-center">
+                    <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm text-center relative">
                       <p className="text-xs font-bold text-gray-400 uppercase mb-1">
                         Alerts
                       </p>
-                      <p className="font-black text-xl text-navy">
+                      <p className={`font-black text-xl ${selectedFaculty.alerts > 15 ? 'text-red-500' : 'text-navy'}`}>
                         {selectedFaculty.alerts}
                       </p>
+                    </div>
+                  </div>
+
+                  {/* AI Insights & Dean Notices */}
+                  <div className="bg-indigo-50 border border-indigo-100 p-6 rounded-xl shadow-sm">
+                    <div className="flex items-center gap-2 mb-4">
+                      <Brain size={18} className="text-indigo-600" />
+                      <h3 className="font-bold text-indigo-900 text-base">
+                        AI Insights for Dean
+                      </h3>
+                    </div>
+                    <ul className="space-y-3">
+                      {selectedFaculty.aiInsights?.map((insight, idx) => (
+                        <li key={idx} className="flex items-start gap-3">
+                          <span className="text-indigo-500 mt-0.5">
+                            <Zap size={16} />
+                          </span>
+                          <span className="text-sm text-indigo-900 font-medium leading-relaxed">
+                            {insight}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Student Reviews & Voice */}
+                  <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="font-bold text-navy text-base flex items-center gap-2">
+                        <UserCheck size={18} className="text-blue-500" /> Student Voice
+                      </h3>
+                      <span className="text-xs font-bold bg-blue-50 text-blue-700 px-2.5 py-1 rounded-lg border border-blue-100">
+                        Style: {selectedFaculty.teachingStyle}
+                      </span>
+                    </div>
+                    
+                    <div className="space-y-4">
+                      {selectedFaculty.studentReviews?.map((review, idx) => (
+                        <div key={idx} className="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                          <div className="flex justify-between items-center mb-2">
+                            <div className="flex text-amber-400">
+                              {[...Array(5)].map((_, i) => (
+                                <svg key={i} className={`w-4 h-4 ${i < Math.floor(review.rating) ? 'fill-current' : 'text-gray-300'}`} viewBox="0 0 20 20" fill="currentColor">
+                                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                </svg>
+                              ))}
+                              <span className="text-xs text-gray-500 ml-2 font-bold">{review.rating}</span>
+                            </div>
+                            <span className="text-[10px] text-gray-400 font-bold uppercase">Anonymous</span>
+                          </div>
+                          <p className="text-sm text-gray-700 italic">"{review.text}"</p>
+                        </div>
+                      ))}
                     </div>
                   </div>
 

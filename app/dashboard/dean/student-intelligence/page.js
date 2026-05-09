@@ -655,7 +655,7 @@ export default function StudentIntelligence() {
             )}
           </div>
 
-          {/* ── Student Profile Panel ─────────────────────────────────────── */}
+          {/* ── Student Profile Sidebar ─────────────────────────────────────── */}
           {selectedStudent && (() => {
             const s = selectedStudent
             const cat = CATEGORIES[s.category.toUpperCase()] || Object.values(CATEGORIES).find(c => c.id === s.category)
@@ -669,83 +669,129 @@ export default function StudentIntelligence() {
             ]
             const radarData = scores.map(sc => ({ skill: sc.label, value: sc.val }))
             return (
-              <div className="bg-white rounded-2xl border-2 shadow-lg overflow-hidden animate-fade-in" style={{ borderColor: cat?.color || '#4338CA' }}>
-                {/* Header */}
-                <div className="px-6 py-5 flex items-start justify-between" style={{ background: cat?.bg || '#EEF2FF' }}>
-                  <div className="flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-lg font-black flex-shrink-0 shadow-sm"
-                      style={{ background: cat?.color || '#4338CA' }}>
-                      {s.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+              <div className="fixed inset-0 z-50 flex justify-end bg-black/40 backdrop-blur-sm transition-opacity" onClick={() => setSelectedStudent(null)}>
+                <div 
+                  className="w-full max-w-md bg-white h-full shadow-2xl flex flex-col transform transition-transform duration-300 ease-in-out translate-x-0" 
+                  onClick={e => e.stopPropagation()}
+                  style={{ borderLeft: `4px solid ${cat?.color || '#4338CA'}` }}
+                >
+                  {/* Header */}
+                  <div className="px-6 py-6 flex items-start justify-between shrink-0 border-b border-gray-100" style={{ background: cat?.bg || '#EEF2FF' }}>
+                    <div className="flex items-center gap-4">
+                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-lg font-black flex-shrink-0 shadow-sm"
+                        style={{ background: cat?.color || '#4338CA' }}>
+                        {s.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                      </div>
+                      <div>
+                        <h2 className="text-xl font-black text-[#0D1B2A]">{s.name}</h2>
+                        <p className="text-sm text-gray-500">{s.roll} · {s.branch} · Year {s.year}</p>
+                        <span className="inline-flex mt-1.5 text-[11px] font-bold px-2.5 py-1 rounded-full border" style={{ background: cat?.bg, color: cat?.color, borderColor: cat?.border }}>
+                          {cat?.label}
+                        </span>
+                      </div>
                     </div>
-                    <div>
-                      <h2 className="text-xl font-black text-[#0D1B2A]">{s.name}</h2>
-                      <p className="text-sm text-gray-500">{s.roll} · {s.branch} · Year {s.year}</p>
-                      <span className="inline-flex mt-1.5 text-[11px] font-bold px-2.5 py-1 rounded-full border" style={{ background: cat?.bg, color: cat?.color, borderColor: cat?.border }}>
-                        {cat?.label}
-                      </span>
-                    </div>
+                    <button onClick={() => setSelectedStudent(null)} className="p-2 rounded-xl hover:bg-white/60 text-gray-400 hover:text-gray-700 transition">
+                      <X size={18} />
+                    </button>
                   </div>
-                  <button onClick={() => setSelectedStudent(null)} className="p-2 rounded-xl hover:bg-white/60 text-gray-400 hover:text-gray-700 transition">
-                    <X size={18} />
-                  </button>
-                </div>
 
-                <div className="p-6 grid grid-cols-1 xl:grid-cols-3 gap-6">
-                  {/* Score bars */}
-                  <div className="xl:col-span-2 space-y-4">
+                  {/* Body */}
+                  <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-gray-50/50">
+                    
+                    {/* Key Metrics */}
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-bold text-sm text-[#0D1B2A]">Performance Breakdown</h3>
+                      <h3 className="font-bold text-sm text-[#0D1B2A] flex items-center gap-2">
+                        <Target size={16} className="text-indigo-600" /> Overall Performance
+                      </h3>
                       <div className="flex items-center gap-1.5">
                         <span className="text-xs text-gray-400">Composite: </span>
                         <span className="text-lg font-black" style={{ color: s.composite < 50 ? '#DC2626' : s.composite > 75 ? '#16A34A' : '#D97706' }}>{s.composite}/100</span>
                       </div>
                     </div>
-                    {scores.map(sc => (
-                      <div key={sc.label}>
-                        <div className="flex justify-between text-xs mb-1.5">
-                          <span className="font-semibold text-gray-600">{sc.label}</span>
-                          <span className="font-black" style={{ color: sc.color }}>{sc.val}{sc.label === 'Attendance' ? '%' : '/100'}</span>
-                        </div>
-                        <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
-                          <div className="h-full rounded-full transition-all duration-700" style={{ width: `${sc.val}%`, background: sc.color }} />
-                        </div>
-                      </div>
-                    ))}
 
-                    {/* Strength / Weakness / Recommendation */}
-                    <div className="grid grid-cols-3 gap-3 mt-2">
-                      <div className="bg-green-50 border border-green-100 rounded-xl p-3">
-                        <p className="text-[10px] font-bold text-green-600 uppercase tracking-wider mb-1">Strength</p>
+                    {/* Skill Radar */}
+                    <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm flex flex-col items-center justify-center">
+                      <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Skill Radar</p>
+                      <ResponsiveContainer width="100%" height={220}>
+                        <RadarChart data={radarData} outerRadius="70%">
+                          <PolarGrid stroke="#e5e7eb" />
+                          <PolarAngleAxis dataKey="skill" tick={{ fontSize: 10, fill: '#6b7280' }} />
+                          <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
+                          <Radar dataKey="value" stroke={cat?.color || '#4338CA'} fill={cat?.color || '#4338CA'} fillOpacity={0.25} />
+                          <Tooltip contentStyle={{ borderRadius: 10, fontSize: 12 }} />
+                        </RadarChart>
+                      </ResponsiveContainer>
+                    </div>
+
+                    {/* Score Bars */}
+                    <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm space-y-4">
+                      <h3 className="font-bold text-sm text-[#0D1B2A] mb-3">Detailed Scores</h3>
+                      {scores.map(sc => (
+                        <div key={sc.label}>
+                          <div className="flex justify-between text-xs mb-1.5">
+                            <span className="font-semibold text-gray-600">{sc.label}</span>
+                            <span className="font-black" style={{ color: sc.color }}>{sc.val}{sc.label === 'Attendance' ? '%' : '/100'}</span>
+                          </div>
+                          <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
+                            <div className="h-full rounded-full transition-all duration-700" style={{ width: `${sc.val}%`, background: sc.color }} />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Strengths & Weaknesses */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="bg-green-50 border border-green-100 rounded-xl p-4 shadow-sm">
+                        <div className="flex items-center gap-1.5 mb-2">
+                          <TrendingUp size={14} className="text-green-600" />
+                          <p className="text-[10px] font-bold text-green-600 uppercase tracking-wider">Top Strength</p>
+                        </div>
                         <p className="text-sm font-bold text-green-700">{s.strength}</p>
                       </div>
-                      <div className="bg-red-50 border border-red-100 rounded-xl p-3">
-                        <p className="text-[10px] font-bold text-red-500 uppercase tracking-wider mb-1">Weakness</p>
+                      <div className="bg-red-50 border border-red-100 rounded-xl p-4 shadow-sm">
+                        <div className="flex items-center gap-1.5 mb-2">
+                          <TrendingDown size={14} className="text-red-500" />
+                          <p className="text-[10px] font-bold text-red-500 uppercase tracking-wider">Lagging Area</p>
+                        </div>
                         <p className="text-sm font-bold text-red-600">{s.weakness}</p>
                       </div>
-                      <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-3">
-                        <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-wider mb-1">Risk Level</p>
-                        <p className="text-sm font-bold text-indigo-700">{s.composite < 40 ? 'Critical' : s.composite < 55 ? 'High' : s.composite < 70 ? 'Moderate' : 'Low'}</p>
+                    </div>
+
+                    {/* Extracurriculars & Beyond Studies */}
+                    <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
+                      <h3 className="font-bold text-sm text-[#0D1B2A] mb-4 flex items-center gap-2">
+                        <Award size={16} className="text-amber-500" /> Beyond Studies
+                      </h3>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Hackathons</p>
+                          <p className="text-lg font-black text-gray-800">{s.hackathonParticipation} <span className="text-xs font-medium text-gray-400 ml-1">events</span></p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Internships</p>
+                          <p className="text-lg font-black text-gray-800">{s.internshipCount} <span className="text-xs font-medium text-gray-400 ml-1">completed</span></p>
+                        </div>
+                        <div className="col-span-2 mt-2">
+                          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Extracurricular Rating</p>
+                          <div className="flex items-center gap-2">
+                            <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden flex-1">
+                              <div className="h-full rounded-full bg-amber-400" style={{ width: `${s.extracurricularScore}%` }} />
+                            </div>
+                            <span className="text-sm font-black text-amber-600">{s.extracurricularScore}/100</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
 
-                    <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">AI Recommendation</p>
-                      <p className="text-sm text-gray-700 leading-relaxed">{s.recommendation}</p>
+                    {/* AI Recommendation */}
+                    <div className="bg-indigo-50 rounded-xl p-5 border border-indigo-100 shadow-sm">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Sparkles size={14} className="text-indigo-600" />
+                        <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider">AI Recommendation</p>
+                      </div>
+                      <p className="text-sm text-indigo-900 leading-relaxed font-medium">{s.recommendation}</p>
                     </div>
-                  </div>
 
-                  {/* Radar chart */}
-                  <div className="flex flex-col items-center justify-center">
-                    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Skill Radar</p>
-                    <ResponsiveContainer width="100%" height={220}>
-                      <RadarChart data={radarData} outerRadius="70%">
-                        <PolarGrid stroke="#e5e7eb" />
-                        <PolarAngleAxis dataKey="skill" tick={{ fontSize: 10, fill: '#6b7280' }} />
-                        <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
-                        <Radar dataKey="value" stroke={cat?.color || '#4338CA'} fill={cat?.color || '#4338CA'} fillOpacity={0.25} />
-                        <Tooltip contentStyle={{ borderRadius: 10, fontSize: 12 }} />
-                      </RadarChart>
-                    </ResponsiveContainer>
                   </div>
                 </div>
               </div>
