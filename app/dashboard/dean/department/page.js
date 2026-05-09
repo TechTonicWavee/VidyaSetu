@@ -17,13 +17,13 @@ const spiDistData = [
 ]
 
 const trendData = [
-  { semester: 'S1 2023', CSE: 68, IT: 64, ECE: 62 },
-  { semester: 'S2 2023', CSE: 69, IT: 65, ECE: 63 },
-  { semester: 'S1 2024', CSE: 71, IT: 67, ECE: 64 },
-  { semester: 'S2 2024', CSE: 72, IT: 68, ECE: 65 },
-  { semester: 'S1 2025', CSE: 73, IT: 69, ECE: 66 },
-  { semester: 'S2 2025', CSE: 74, IT: 70, ECE: 67 },
-  { semester: 'S1 2026', CSE: 76, IT: 71, ECE: 69 },
+  { semester: 'S1 2023', CSE: 68 },
+  { semester: 'S2 2023', CSE: 69 },
+  { semester: 'S1 2024', CSE: 71 },
+  { semester: 'S2 2024', CSE: 72 },
+  { semester: 'S1 2025', CSE: 73 },
+  { semester: 'S2 2025', CSE: 74 },
+  { semester: 'S1 2026', CSE: 76 },
 ]
 
 const branchDataMap = {
@@ -60,24 +60,24 @@ const facultyData = [
   { rank: 1, name: 'Dr. Anita Sharma', dept: 'CSE', students: 120, imp: '+14.2%', co: '82%', score: '91/100', color: 'green' },
   { rank: 2, name: 'Prof. Priya Kapoor', dept: 'CSE', students: 243, imp: '+11.8%', co: '74%', score: '87/100', color: 'green' },
   { rank: 3, name: 'Dr. Suresh Iyer', dept: 'CSE', students: 198, imp: '+10.3%', co: '79%', score: '84/100', color: 'green' },
-  { rank: 4, name: 'Prof. Meena Rao', dept: 'IT', students: 210, imp: '+9.7%', co: '77%', score: '81/100', color: 'green' },
-  { rank: 5, name: 'Dr. Ramesh Pillai', dept: 'ECE', students: 186, imp: '+8.4%', co: '71%', score: '76/100', color: 'teal' },
+  { rank: 4, name: 'Prof. Meena Rao', dept: 'CSE', students: 210, imp: '+9.7%', co: '77%', score: '81/100', color: 'green' },
+  { rank: 5, name: 'Dr. Ramesh Pillai', dept: 'CSE', students: 186, imp: '+8.4%', co: '71%', score: '76/100', color: 'teal' },
   { rank: 6, name: 'Prof. Kavya Nair', dept: 'CSE', students: 175, imp: '+7.9%', co: '69%', score: '73/100', color: 'amber' },
-  { rank: 7, name: 'Dr. Prakash Joshi', dept: 'IT', students: 162, imp: '+6.2%', co: '66%', score: '68/100', color: 'amber' },
-  { rank: 8, name: 'Prof. Dinesh Kumar', dept: 'ECE', students: 144, imp: '+4.1%', co: '61%', score: '59/100', color: 'red' },
+  { rank: 7, name: 'Dr. Prakash Joshi', dept: 'CSE', students: 162, imp: '+6.2%', co: '66%', score: '68/100', color: 'amber' },
+  { rank: 8, name: 'Prof. Dinesh Kumar', dept: 'CSE', students: 144, imp: '+4.1%', co: '61%', score: '59/100', color: 'red' },
 ]
 
 const curriculumGaps = [
-  { topic: 'Normalization (1NF-3NF)', sub: 'DBMS', fail: '47%', batches: 'CSE + IT batches', yrs: '3 years', sev: 'CRITICAL', color: 'red' },
-  { topic: 'Process Scheduling Algorithms', sub: 'OS', fail: '41%', batches: 'All branches', yrs: '2 years', sev: 'HIGH', color: 'orange' },
+  { topic: 'Normalization (1NF-3NF)', sub: 'DBMS', fail: '47%', batches: 'CSE batches', yrs: '3 years', sev: 'CRITICAL', color: 'red' },
+  { topic: 'Process Scheduling Algorithms', sub: 'OS', fail: '41%', batches: 'CSE batches', yrs: '2 years', sev: 'HIGH', color: 'orange' },
   { topic: 'Regular Expressions and Automata', sub: 'TOC', fail: '52%', batches: 'CSE batches', yrs: '3 years', sev: 'CRITICAL', color: 'red' },
-  { topic: 'Dynamic Programming', sub: 'DSA', fail: '38%', batches: 'CSE + IT', yrs: '2 years', sev: 'HIGH', color: 'orange' },
-  { topic: 'Pipelining and Cache Memory', sub: 'Computer Architecture', fail: '44%', batches: 'ECE + CSE', yrs: '2 years', sev: 'HIGH', color: 'orange' },
-  { topic: 'Probability in ML', sub: 'Mathematics', fail: '36%', batches: 'All branches', yrs: '1 year', sev: 'MEDIUM', color: 'amber' },
+  { topic: 'Dynamic Programming', sub: 'DSA', fail: '38%', batches: 'CSE batches', yrs: '2 years', sev: 'HIGH', color: 'orange' },
+  { topic: 'Pipelining and Cache Memory', sub: 'Computer Architecture', fail: '44%', batches: 'CSE batches', yrs: '2 years', sev: 'HIGH', color: 'orange' },
+  { topic: 'Probability in ML', sub: 'Mathematics', fail: '36%', batches: 'CSE batches', yrs: '1 year', sev: 'MEDIUM', color: 'amber' },
 ]
 
 export default function DeanDepartmentPage() {
-  const [activeTab, setActiveTab] = useState('CSE')
+  const [activeTab] = useState('CSE')
   const [reportModalOpen, setReportModalOpen] = useState(false)
   const [reportReady, setReportReady] = useState(false)
   const [syncModalData, setSyncModalData] = useState(null)
@@ -91,14 +91,14 @@ export default function DeanDepartmentPage() {
   }
 
   return (
-    <main className="px-8 py-8">
+    <main className="dean-page px-8 py-8">
       <div className="max-w-7xl mx-auto space-y-8 animate-fade-in pb-10">
 
             {/* HEADER */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-2">
               <div>
                 <h1 className="text-3xl font-bold text-navy mb-1">Department Overview</h1>
-                <p className="text-gray-500 text-sm max-w-xl">Complete health snapshot of all branches, batches and faculty — updated in real time</p>
+                <p className="text-gray-500 text-sm max-w-xl">Complete CSE health snapshot across batches and faculty — updated in real time</p>
                 <div className="mt-4 flex flex-wrap items-center gap-3">
                   <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mr-1">External Systems Status</p>
                   <button onClick={() => setSyncModalData({ name: 'Moodle LMS', since: 'Aug 2024', records: '14,230', last: '2 mins ago' })} className="flex items-center gap-2 px-3 py-1 bg-white border border-orange-100 rounded-full hover:bg-orange-50 transition shadow-sm group">
@@ -199,20 +199,10 @@ export default function DeanDepartmentPage() {
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
               <div className="p-6 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                  <h2 className="text-lg font-bold text-navy mb-1">Branch Health Comparison</h2>
-                  <p className="text-gray-500 text-sm">Real-time health scores across all 3 branches</p>
+                  <h2 className="text-lg font-bold text-navy mb-1">CSE Health Overview</h2>
+                  <p className="text-gray-500 text-sm">Real-time health scores for CSE cohorts</p>
                 </div>
-                <div className="flex bg-gray-100 p-1 rounded-xl">
-                  {['CSE', 'IT', 'ECE'].map(tab => (
-                    <button 
-                      key={tab}
-                      onClick={() => setActiveTab(tab)}
-                      className={`px-6 py-2 rounded-lg text-sm font-bold transition ${activeTab === tab ? 'bg-white text-navy shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
-                    >
-                      {tab}
-                    </button>
-                  ))}
-                </div>
+                <div className="px-3 py-1.5 rounded-lg text-xs font-bold border border-purple-200 bg-purple-50 text-purple-700">CSE ONLY</div>
               </div>
 
               <div className="p-6 animate-fade-in" key={activeTab}>
@@ -277,7 +267,7 @@ export default function DeanDepartmentPage() {
               
               {/* SPI Dist */}
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col">
-                <h3 className="text-lg font-bold text-navy mb-6">SPI Distribution — All Students</h3>
+                <h3 className="text-lg font-bold text-navy mb-6">SPI Distribution — CSE Students</h3>
                 <div className="h-64 w-full">
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart data={spiDistData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
@@ -314,8 +304,6 @@ export default function DeanDepartmentPage() {
                       <RechartsTooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
                       <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
                       <Line type="monotone" dataKey="CSE" stroke="#3B82F6" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
-                      <Line type="monotone" dataKey="IT" stroke="#14B8A6" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
-                      <Line type="monotone" dataKey="ECE" stroke="#22C55E" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
@@ -447,7 +435,7 @@ export default function DeanDepartmentPage() {
                   </svg>
                 </div>
                 <h2 className="font-bold text-xl text-navy mb-2">Generating report...</h2>
-                <p className="text-sm text-gray-500">This may take a moment. Gathering real-time data across all 3 branches.</p>
+                <p className="text-sm text-gray-500">This may take a moment. Gathering real-time CSE cohort data.</p>
               </>
             )}
           </div>
@@ -483,7 +471,7 @@ export default function DeanDepartmentPage() {
                 </div>
                 <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 mb-6">
                    <p className="text-[10px] font-bold text-gray-400 uppercase mb-2">Live Status</p>
-                   <p className="text-xs text-navy leading-relaxed font-medium">The data pipeline between Educator Analytics and {syncModalData.name} is fully operational. All student records are being updated in real-time.</p>
+                   <p className="text-xs text-navy leading-relaxed font-medium">The data pipeline between Educator Analytics and {syncModalData.name} is fully operational. CSE student records are being updated in real-time.</p>
                 </div>
                 <button onClick={() => setSyncModalData(null)} className="w-full py-3 bg-indigo-600 text-white font-bold text-sm rounded-xl hover:bg-indigo-700 transition shadow-lg">Close Details</button>
              </div>

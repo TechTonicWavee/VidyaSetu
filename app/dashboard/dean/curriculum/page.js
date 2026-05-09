@@ -134,13 +134,13 @@ const gap2Data = [
 ]
 
 const initialPlan = [
-  { id: 1, priority: 'P1', change: 'Introduce real-world examples before Normalization theory', subject: 'DBMS', branches: 'All', effort: 'Low', impact: '-15%', status: 'Pending Approval', statusColor: 'bg-amber-100 text-amber-800 border-amber-200' },
+  { id: 1, priority: 'P1', change: 'Introduce real-world examples before Normalization theory', subject: 'DBMS', branches: 'CSE', effort: 'Low', impact: '-15%', status: 'Pending Approval', statusColor: 'bg-amber-100 text-amber-800 border-amber-200' },
   { id: 2, priority: 'P2', change: 'Add regex visualizer tools to TOC curriculum', subject: 'TOC', branches: 'CSE', effort: 'Low', impact: '-18%', status: 'In Review', statusColor: 'bg-blue-100 text-blue-800 border-blue-200' },
-  { id: 3, priority: 'P3', change: 'Scheduling algorithm simulator in OS lab', subject: 'OS', branches: 'All', effort: 'Medium', impact: '-17%', status: 'Pending Approval', statusColor: 'bg-amber-100 text-amber-800 border-amber-200' },
+  { id: 3, priority: 'P3', change: 'Scheduling algorithm simulator in OS lab', subject: 'OS', branches: 'CSE', effort: 'Medium', impact: '-17%', status: 'Pending Approval', statusColor: 'bg-amber-100 text-amber-800 border-amber-200' },
   { id: 4, priority: 'P4', change: 'DP problem sets with step-by-step worked examples', subject: 'DSA', branches: 'CSE', effort: 'Low', impact: '-12%', status: 'Not Started', statusColor: 'bg-gray-100 text-gray-800 border-gray-200' },
-  { id: 5, priority: 'P5', change: 'Discrete math prerequisite check before TOC', subject: 'TOC', branches: 'All', effort: 'High', impact: '-11%', status: 'Under Discussion', statusColor: 'bg-purple-100 text-purple-800 border-purple-200' },
-  { id: 6, priority: 'P6', change: 'Real-world pipelining demos using CPU-Z tool', subject: 'Computer Architecture', branches: 'All', effort: 'Medium', impact: '-9%', status: 'Not Started', statusColor: 'bg-gray-100 text-gray-800 border-gray-200' },
-  { id: 7, priority: 'P7', change: 'Statistics module refresher before ML courses', subject: 'Mathematics', branches: 'All', effort: 'Medium', impact: '-14%', status: 'Not Started', statusColor: 'bg-gray-100 text-gray-800 border-gray-200' },
+  { id: 5, priority: 'P5', change: 'Discrete math prerequisite check before TOC', subject: 'TOC', branches: 'CSE', effort: 'High', impact: '-11%', status: 'Under Discussion', statusColor: 'bg-purple-100 text-purple-800 border-purple-200' },
+  { id: 6, priority: 'P6', change: 'Real-world pipelining demos using CPU-Z tool', subject: 'Computer Architecture', branches: 'CSE', effort: 'Medium', impact: '-9%', status: 'Not Started', statusColor: 'bg-gray-100 text-gray-800 border-gray-200' },
+  { id: 7, priority: 'P7', change: 'Statistics module refresher before ML courses', subject: 'Mathematics', branches: 'CSE', effort: 'Medium', impact: '-14%', status: 'Not Started', statusColor: 'bg-gray-100 text-gray-800 border-gray-200' },
 ]
 
 export default function CurriculumGapAnalysis() {
@@ -167,7 +167,7 @@ export default function CurriculumGapAnalysis() {
 
   return (
     <>
-    <main className="px-8 py-8">
+    <main className="dean-page px-8 py-8">
           <div className="max-w-[1400px] mx-auto p-6 md:p-8 animate-fade-in space-y-8 pb-20">
             
             {/* Header */}
@@ -231,14 +231,14 @@ export default function CurriculumGapAnalysis() {
                     </tr>
                     <tr className="bg-white text-xs font-bold text-gray-500">
                       <th className="p-3 text-center border-b border-r border-gray-200">CSE</th>
-                      <th className="p-3 text-center border-b border-r border-gray-200">IT</th>
-                      <th className="p-3 text-center border-b border-r border-gray-200">ECE</th>
                       <th className="p-3 text-center border-b border-r border-gray-200">CSE</th>
-                      <th className="p-3 text-center border-b border-r border-gray-200">IT</th>
-                      <th className="p-3 text-center border-b border-r border-gray-200">ECE</th>
                       <th className="p-3 text-center border-b border-r border-gray-200">CSE</th>
-                      <th className="p-3 text-center border-b border-r border-gray-200">IT</th>
-                      <th className="p-3 text-center border-b border-gray-200">ECE</th>
+                      <th className="p-3 text-center border-b border-r border-gray-200">CSE</th>
+                      <th className="p-3 text-center border-b border-r border-gray-200">CSE</th>
+                      <th className="p-3 text-center border-b border-r border-gray-200">CSE</th>
+                      <th className="p-3 text-center border-b border-r border-gray-200">CSE</th>
+                      <th className="p-3 text-center border-b border-r border-gray-200">CSE</th>
+                      <th className="p-3 text-center border-b border-gray-200">CSE</th>
                     </tr>
                   </thead>
                   <tbody>

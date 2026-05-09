@@ -92,7 +92,7 @@ function SeverityBadge({ severity, label }) {
 export default function StudentIntelligence() {
   const router = useRouter()
   const [sidebarOpen, setSidebarOpen] = useState(true)
-  const [filterBranch,   setFilterBranch]   = useState('ALL')
+  const [filterBranch,   setFilterBranch]   = useState('CSE')
   const [filterYear,     setFilterYear]     = useState('ALL')
   const [filterCategory, setFilterCategory] = useState('ALL')
   const [search,         setSearch]         = useState('')
@@ -101,6 +101,7 @@ export default function StudentIntelligence() {
   const [selectedCategory, setSelectedCategory] = useState(null)
   const [tableExpanded,  setTableExpanded]  = useState(false)
   const [insightOpen,    setInsightOpen]    = useState(true)
+  const [selectedStudent, setSelectedStudent] = useState(null)
 
   // ── Enrich all students once ──────────────────────────────────────────────
   const allEnriched = useMemo(() => enrichStudents(ALL_STUDENTS), [])
@@ -108,14 +109,14 @@ export default function StudentIntelligence() {
   // ── Apply filters ─────────────────────────────────────────────────────────
   const filtered = useMemo(() => {
     return allEnriched.filter(s => {
-      if (filterBranch   !== 'ALL' && s.branch   !== filterBranch)   return false
+      if (s.branch !== 'CSE') return false
       if (filterYear     !== 'ALL' && String(s.year) !== filterYear) return false
       if (filterCategory !== 'ALL' && s.category  !== filterCategory) return false
       if (search && !s.name.toLowerCase().includes(search.toLowerCase()) &&
           !s.roll.toLowerCase().includes(search.toLowerCase())) return false
       return true
     })
-  }, [allEnriched, filterBranch, filterYear, filterCategory, search])
+  }, [allEnriched, filterYear, filterCategory, search])
 
   // ── Distribution (of filtered) ────────────────────────────────────────────
   const distribution = useMemo(() => getCategoryDistribution(filtered), [filtered])
@@ -145,8 +146,14 @@ export default function StudentIntelligence() {
     else { setSortKey(key); setSortAsc(false) }
   }
 
-  const hasFilters = filterBranch !== 'ALL' || filterYear !== 'ALL' || filterCategory !== 'ALL' || search
-  const clearFilters = () => { setFilterBranch('ALL'); setFilterYear('ALL'); setFilterCategory('ALL'); setSearch('') }
+  const hasFilters = filterYear !== 'ALL' || filterCategory !== 'ALL' || search
+  const clearFilters = () => { setFilterYear('ALL'); setFilterCategory('ALL'); setSearch(''); setSelectedStudent(null) }
+
+  // Auto-select when search narrows to 1 student
+  useEffect(() => {
+    if (filtered.length === 1 && search) setSelectedStudent(filtered[0])
+    else if (filtered.length !== 1) setSelectedStudent(null)
+  }, [filtered, search])
 
   // ── Radar data for selected student category ───────────────────────────────
   const categoryRadar = useMemo(() => {
@@ -165,10 +172,10 @@ export default function StudentIntelligence() {
   }, [filtered, selectedCategory])
 
   return (
-    <main className="px-8 py-8">
+    <main className="dean-page px-8 py-8">
 
           {/* ── Page Title ─────────────────────────────────────────────────── */}
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-2.5 mb-1">
                 <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#4338CA' }}>
@@ -183,7 +190,8 @@ export default function StudentIntelligence() {
                 {filtered.length} / {allEnriched.length} students
               </span>
               {hasFilters && (
-                <button onClick={clearFilters} className="text-xs flex items-center gap-1 px-3 py-1.5 rounded-full border border-red-200 bg-red-50 text-red-600 font-semibold hover:bg-red-100 transition">
+                <button onClick={clearFilters} className="text-xs flex items-center gap-1 px-3 py-1.5 rounded-full border font-semibold transition"
+                  style={{ borderColor: '#C7D2FE', background: '#EEF2FF', color: '#4338CA' }}>
                   <X size={11} />Clear filters
                 </button>
               )}
@@ -191,51 +199,70 @@ export default function StudentIntelligence() {
           </div>
 
           {/* ── Filters ────────────────────────────────────────────────────── */}
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-4">
+          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
             <div className="flex items-center gap-2 mb-3">
               <SlidersHorizontal size={14} className="text-gray-400" />
               <span className="text-xs font-bold text-gray-500 uppercase tracking-wide">Filters</span>
             </div>
-            <div className="flex flex-wrap gap-3">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-end">
               {/* Branch */}
-              <div>
+              <div className="lg:col-span-2 flex flex-col justify-end">
                 <p className="text-[10px] font-bold text-gray-400 uppercase mb-1.5">Branch</p>
                 <div className="flex gap-1.5">
-                  {['ALL', 'CSE'].map(b => (
+                  {['CSE'].map(b => (
                     <button key={b} onClick={() => setFilterBranch(b)}
                       style={filterBranch === b ? { background: '#4338CA', color: '#fff', borderColor: '#4338CA' } : {}}
-                      className="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-semibold text-gray-600 hover:border-indigo-300 transition">
+                      className="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-semibold text-gray-600 hover:border-purple-300 hover:bg-purple-50 transition">
                       {b}
                     </button>
                   ))}
                 </div>
               </div>
               {/* Year */}
-              <div>
+              <div className="lg:col-span-3 flex flex-col justify-end">
                 <p className="text-[10px] font-bold text-gray-400 uppercase mb-1.5">Year</p>
                 <div className="flex gap-1.5">
                   {['ALL', '1', '2', '3', '4'].map(y => (
                     <button key={y} onClick={() => setFilterYear(y)}
                       style={filterYear === y ? { background: '#4338CA', color: '#fff', borderColor: '#4338CA' } : {}}
-                      className="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-semibold text-gray-600 hover:border-indigo-300 transition">
+                      className="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-semibold text-gray-600 hover:border-purple-300 hover:bg-purple-50 transition">
                       {y === 'ALL' ? 'All' : `Y${y}`}
                     </button>
                   ))}
                 </div>
               </div>
+              {/* Search */}
+              <div className="lg:col-span-7 flex flex-col justify-end">
+                <p className="text-[10px] font-bold text-gray-400 uppercase mb-1.5">Search Student</p>
+                <div className="relative">
+                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Name or roll number…"
+                    value={search}
+                    onChange={e => { setSearch(e.target.value); setSelectedStudent(null) }}
+                    className="w-full h-10 pl-9 pr-8 text-sm border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-300 placeholder-gray-400"
+                  />
+                  {search && (
+                    <button onClick={() => { setSearch(''); setSelectedStudent(null) }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                      <X size={12} />
+                    </button>
+                  )}
+                </div>
+              </div>
               {/* Category */}
-              <div>
+              <div className="lg:col-span-12">
                 <p className="text-[10px] font-bold text-gray-400 uppercase mb-1.5">Category</p>
                 <div className="flex flex-wrap gap-1.5">
                   <button onClick={() => setFilterCategory('ALL')}
                     style={filterCategory === 'ALL' ? { background: '#4338CA', color: '#fff', borderColor: '#4338CA' } : {}}
-                    className="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-semibold text-gray-600 hover:border-indigo-300 transition">
+                    className="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-semibold text-gray-600 hover:border-purple-300 hover:bg-purple-50 transition">
                     All
                   </button>
                   {Object.values(CATEGORIES).map(cat => (
                     <button key={cat.id} onClick={() => setFilterCategory(cat.id)}
-                      style={filterCategory === cat.id ? { background: cat.color, color: '#fff', borderColor: cat.color } : { borderColor: cat.border }}
-                      className="px-3 py-1.5 rounded-lg border text-xs font-semibold transition"
+                      style={filterCategory === cat.id ? { background: '#4338CA', color: '#fff', borderColor: '#4338CA' } : {}}
+                      className="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-semibold text-gray-700 hover:border-purple-300 hover:bg-purple-50 transition"
                       >
                       {cat.label}
                     </button>
@@ -250,10 +277,10 @@ export default function StudentIntelligence() {
             {[
               { label: 'Total Students',  value: filtered.length,  icon: Users2,         color: '#4338CA', sub: 'in view' },
               { label: 'At-Risk',         value: filtered.filter(s => s.category === 'at_risk').length, icon: AlertTriangle, color: '#DC2626', sub: 'need urgent action' },
-              { label: 'Avg Composite',   value: filtered.length ? Math.round(filtered.reduce((s,x)=>s+x.composite,0)/filtered.length) : 0, icon: Target, color: '#16A34A', sub: '/ 100' },
-              { label: 'All-Rounders',    value: filtered.filter(s => s.category === 'all_rounder').length, icon: Star, color: '#D97706', sub: 'leadership pipeline' },
+              { label: 'Avg Composite',   value: filtered.length ? Math.round(filtered.reduce((s,x)=>s+x.composite,0)/filtered.length) : 0, icon: Target, color: '#4338CA', sub: '/ 100' },
+              { label: 'All-Rounders',    value: filtered.filter(s => s.category === 'all_rounder').length, icon: Star, color: '#4338CA', sub: 'leadership pipeline' },
             ].map((k, i) => (
-              <div key={i} className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 relative overflow-hidden">
+              <div key={i} className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 relative overflow-hidden min-h-[126px] flex flex-col">
                 <div className="absolute top-0 right-0 w-16 h-16 rounded-full -translate-y-4 translate-x-4 opacity-[0.07]" style={{ background: k.color }} />
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: k.color + '18' }}>
@@ -563,10 +590,12 @@ export default function StudentIntelligence() {
                   {sortedTable.map(s => {
                     const cat = CATEGORIES[s.category.toUpperCase()] || Object.values(CATEGORIES).find(c => c.id === s.category)
                     const isExtreme = s.composite < 40 || s.composite > 88
+                    const isSelected = selectedStudent?.id === s.id
                     return (
                       <tr key={s.id}
-                        className="border-b border-gray-50 hover:bg-gray-50 transition"
-                        style={isExtreme && s.composite < 40 ? { background: '#FFF5F5' } : isExtreme ? { background: '#F0FDF4' } : {}}>
+                        onClick={() => setSelectedStudent(isSelected ? null : s)}
+                        className="border-b border-gray-50 hover:bg-indigo-50/40 transition cursor-pointer"
+                        style={isSelected ? { background: '#EEF2FF', outline: '2px solid #4338CA' } : isExtreme && s.composite < 40 ? { background: '#FFF5F5' } : isExtreme ? { background: '#F0FDF4' } : {}}>
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-2.5">
                             <div className="w-7 h-7 rounded-full flex items-center justify-center text-white text-[10px] font-bold flex-shrink-0"
@@ -625,6 +654,103 @@ export default function StudentIntelligence() {
               </div>
             )}
           </div>
+
+          {/* ── Student Profile Panel ─────────────────────────────────────── */}
+          {selectedStudent && (() => {
+            const s = selectedStudent
+            const cat = CATEGORIES[s.category.toUpperCase()] || Object.values(CATEGORIES).find(c => c.id === s.category)
+            const scores = [
+              { label: 'Academic',   val: s.academicScore,  color: '#4338CA', max: 100 },
+              { label: 'DSA',        val: s.dsaScore,       color: '#7C3AED', max: 100 },
+              { label: 'Dev',        val: s.devScore,       color: '#0EA5E9', max: 100 },
+              { label: 'Aptitude',   val: s.aptitudeScore,  color: '#F59E0B', max: 100 },
+              { label: 'Soft Skills',val: s.softSkillScore, color: '#10B981', max: 100 },
+              { label: 'Attendance', val: s.attendance,     color: s.attendance < 75 ? '#EF4444' : '#22C55E', max: 100 },
+            ]
+            const radarData = scores.map(sc => ({ skill: sc.label, value: sc.val }))
+            return (
+              <div className="bg-white rounded-2xl border-2 shadow-lg overflow-hidden animate-fade-in" style={{ borderColor: cat?.color || '#4338CA' }}>
+                {/* Header */}
+                <div className="px-6 py-5 flex items-start justify-between" style={{ background: cat?.bg || '#EEF2FF' }}>
+                  <div className="flex items-center gap-4">
+                    <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-lg font-black flex-shrink-0 shadow-sm"
+                      style={{ background: cat?.color || '#4338CA' }}>
+                      {s.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                    </div>
+                    <div>
+                      <h2 className="text-xl font-black text-[#0D1B2A]">{s.name}</h2>
+                      <p className="text-sm text-gray-500">{s.roll} · {s.branch} · Year {s.year}</p>
+                      <span className="inline-flex mt-1.5 text-[11px] font-bold px-2.5 py-1 rounded-full border" style={{ background: cat?.bg, color: cat?.color, borderColor: cat?.border }}>
+                        {cat?.label}
+                      </span>
+                    </div>
+                  </div>
+                  <button onClick={() => setSelectedStudent(null)} className="p-2 rounded-xl hover:bg-white/60 text-gray-400 hover:text-gray-700 transition">
+                    <X size={18} />
+                  </button>
+                </div>
+
+                <div className="p-6 grid grid-cols-1 xl:grid-cols-3 gap-6">
+                  {/* Score bars */}
+                  <div className="xl:col-span-2 space-y-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <h3 className="font-bold text-sm text-[#0D1B2A]">Performance Breakdown</h3>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs text-gray-400">Composite: </span>
+                        <span className="text-lg font-black" style={{ color: s.composite < 50 ? '#DC2626' : s.composite > 75 ? '#16A34A' : '#D97706' }}>{s.composite}/100</span>
+                      </div>
+                    </div>
+                    {scores.map(sc => (
+                      <div key={sc.label}>
+                        <div className="flex justify-between text-xs mb-1.5">
+                          <span className="font-semibold text-gray-600">{sc.label}</span>
+                          <span className="font-black" style={{ color: sc.color }}>{sc.val}{sc.label === 'Attendance' ? '%' : '/100'}</span>
+                        </div>
+                        <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
+                          <div className="h-full rounded-full transition-all duration-700" style={{ width: `${sc.val}%`, background: sc.color }} />
+                        </div>
+                      </div>
+                    ))}
+
+                    {/* Strength / Weakness / Recommendation */}
+                    <div className="grid grid-cols-3 gap-3 mt-2">
+                      <div className="bg-green-50 border border-green-100 rounded-xl p-3">
+                        <p className="text-[10px] font-bold text-green-600 uppercase tracking-wider mb-1">Strength</p>
+                        <p className="text-sm font-bold text-green-700">{s.strength}</p>
+                      </div>
+                      <div className="bg-red-50 border border-red-100 rounded-xl p-3">
+                        <p className="text-[10px] font-bold text-red-500 uppercase tracking-wider mb-1">Weakness</p>
+                        <p className="text-sm font-bold text-red-600">{s.weakness}</p>
+                      </div>
+                      <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-3">
+                        <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-wider mb-1">Risk Level</p>
+                        <p className="text-sm font-bold text-indigo-700">{s.composite < 40 ? 'Critical' : s.composite < 55 ? 'High' : s.composite < 70 ? 'Moderate' : 'Low'}</p>
+                      </div>
+                    </div>
+
+                    <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">AI Recommendation</p>
+                      <p className="text-sm text-gray-700 leading-relaxed">{s.recommendation}</p>
+                    </div>
+                  </div>
+
+                  {/* Radar chart */}
+                  <div className="flex flex-col items-center justify-center">
+                    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Skill Radar</p>
+                    <ResponsiveContainer width="100%" height={220}>
+                      <RadarChart data={radarData} outerRadius="70%">
+                        <PolarGrid stroke="#e5e7eb" />
+                        <PolarAngleAxis dataKey="skill" tick={{ fontSize: 10, fill: '#6b7280' }} />
+                        <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
+                        <Radar dataKey="value" stroke={cat?.color || '#4338CA'} fill={cat?.color || '#4338CA'} fillOpacity={0.25} />
+                        <Tooltip contentStyle={{ borderRadius: 10, fontSize: 12 }} />
+                      </RadarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+              </div>
+            )
+          })()}
 
           {/* ── Bar Chart: Score distribution per category ──────────────────── */}
           <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">

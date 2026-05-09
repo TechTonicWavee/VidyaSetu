@@ -31,17 +31,18 @@ export default function NotificationsPage() {
   const unreadCount = notifications.filter(n => !n.read).length;
 
   return (
-    <div className="space-y-6">
+    <main className="dean-page px-8 py-8">
+      <div className="max-w-7xl mx-auto space-y-7">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Notifications</h1>
+          <h1 className="text-3xl font-bold text-[#0D1B2A] tracking-tight">Notifications</h1>
           <p className="text-gray-600 mt-1">
             {unreadCount} unread • {notifications.length} total
           </p>
         </div>
         <button
           onClick={markAllRead}
-          className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition font-medium"
+          className="px-4 py-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition font-semibold shadow-sm"
         >
           Mark All as Read
         </button>
@@ -54,7 +55,7 @@ export default function NotificationsPage() {
             key={f}
             onClick={() => setFilter(f)}
             className={`px-4 py-2 rounded-lg transition ${
-              filter === f ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              filter === f ? 'bg-purple-600 text-white font-semibold shadow-sm' : 'bg-gray-100 text-gray-700 hover:bg-purple-50 hover:text-purple-700'
             }`}
           >
             {f === 'all' ? 'All' : f === 'unread' ? 'Unread' : f === 'meetings' ? 'Meetings' : 'Deadlines'}
@@ -84,12 +85,13 @@ export default function NotificationsPage() {
                 </div>
               </div>
               {!notif.read && (
-                <div className="ml-4 w-3 h-3 rounded-full bg-blue-500 flex-shrink-0 mt-1" />
+                <div className="ml-4 w-3 h-3 rounded-full bg-purple-600 flex-shrink-0 mt-1" />
               )}
             </div>
           ))
         )}
       </div>
-    </div>
+      </div>
+    </main>
   );
 }

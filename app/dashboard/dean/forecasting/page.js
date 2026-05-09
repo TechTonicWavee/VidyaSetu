@@ -316,7 +316,7 @@ export default function DeanForecastingPage() {
 
   return (
     <>
-    <main className="px-8 py-8">
+    <main className="dean-page px-8 py-8">
           <div className="max-w-7xl mx-auto space-y-8 animate-fade-in pb-10">
             {/* HEADER */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-2">
@@ -359,7 +359,7 @@ export default function DeanForecastingPage() {
                   before end semester
                 </p>
                 <p className="text-[10px] text-gray-500 font-medium uppercase tracking-wider mt-3">
-                  Across all branches and years
+                  Across CSE cohorts and years
                 </p>
               </div>
               <div className="bg-white rounded-xl p-5 shadow-sm border border-gray-200">
@@ -742,7 +742,7 @@ export default function DeanForecastingPage() {
                     <input
                       type="text"
                       readOnly
-                      value="What would happen if we added a mandatory communication skills lab in 2nd semester for all branches?"
+                      value="What would happen if we added a mandatory communication skills lab in 2nd semester for CSE?"
                       className="w-full pl-10 pr-4 py-3 text-sm rounded-xl border border-purple-300 bg-white text-purple-900 font-medium shadow-sm focus:outline-none"
                     />
                     <Zap

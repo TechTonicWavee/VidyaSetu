@@ -298,7 +298,7 @@ const curriculumAlerts = [
   {
     subject: "Graph Algorithms (DSA)",
     failRate: "34%",
-    branches: "CSE, IT",
+    branches: "CSE",
     severity: "HIGH",
   },
   {
@@ -342,14 +342,14 @@ const insights = [
   },
 ];
 
-const COLORS_LINE = { CSE: "#1A56DB", IT: "#0F766E", ECE: "#9333EA" };
+const COLORS_LINE = { CSE: "#1A56DB" };
 
 // ─── MOCK JSON EXPORT ─────────────────────────────────────────────────────────
 function buildReportJSON(semester, branch) {
   return {
     generated_at: new Date().toISOString(),
     report_period: semester,
-    scope: branch === "All" ? "CSE" : branch,
+    scope: "CSE",
     kpis: kpiData.map((k) => ({
       metric: k.label,
       value: k.value,
@@ -386,7 +386,7 @@ export default function DeanReports() {
   const filteredFaculty = facultySummary.filter((f) => f.branch === "CSE");
 
   return (
-    <main className="px-8 py-8">
+    <main className="dean-page px-8 py-8">
           {/* Title + Filters + Download */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 animate-fade-in">
             <div>
@@ -410,10 +410,7 @@ export default function DeanReports() {
                   onChange={(e) => setBranch(e.target.value)}
                   className="appearance-none bg-white border border-gray-200 rounded-lg px-4 py-2 text-sm text-[#0D1B2A] pr-8 focus:outline-none focus:ring-2 focus:ring-purple-200 cursor-pointer"
                 >
-                  <option>All</option>
                   <option>CSE</option>
-                  <option>IT</option>
-                  <option>ECE</option>
                 </select>
                 <ChevronDown
                   size={13}
@@ -848,7 +845,7 @@ export default function DeanReports() {
           {/* Footer */}
           <div className="text-center text-xs text-gray-400 py-2 animate-fade-in">
             © 2026 Educator Analytics OS · Report generated for {semester} ·{" "}
-            {branch === "All" ? "CSE" : branch} · Dean: Dr. Vineet Sharma
+            CSE · Dean: Dr. Vineet Sharma
           </div>
         </main>
   );

@@ -193,6 +193,14 @@ html, body {
   animation: countUp 0.55s cubic-bezier(0.16,1,0.3,1) both;
 }
 
+/* ── Dean page rhythm ─────────────────────────────────── */
+.dean-page {
+  min-height: 100%;
+}
+.dean-page > * + * {
+  margin-top: 1.5rem;
+}
+
 /* ── Thin horizontal rule ──────────────────────────────── */
 .divider-h {
   height: 1px;

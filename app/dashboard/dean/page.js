@@ -93,7 +93,7 @@ export default function DeanDashboard() {
   const upcomingMeetings = meetings.filter(m => m.status !== 'completed').slice(0, 3)
 
   return (
-    <main className="flex-1 overflow-y-auto px-8 py-8">
+    <main className="dean-page flex-1 overflow-y-auto px-8 py-8">
 
       {/* Notification Banner */}
       <NotificationBanner />
