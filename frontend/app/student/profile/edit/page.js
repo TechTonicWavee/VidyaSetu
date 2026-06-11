@@ -24,7 +24,8 @@ const Github = (props) => (
 
 const navLinks = [
   { id: 'dashboard',  label: 'Dashboard',       icon: Home,       badge: null,  active: false, path: '/student' },
-  { id: 'profile',    label: 'My Profile',       icon: User,       badge: null,  active: true, path: '/student/profile' },
+  { id: 'profile',    label: 'My Profile',       icon: User,       badge: null,  active: false, path: '/student/profile' },
+  { id: 'edit-profile', label: 'Edit Profile',    icon: Edit2,      badge: null,  active: true,  path: '/student/profile/edit' },
   { id: 'skill',      label: 'Skill Radar',      icon: Activity,   badge: null,  active: false, path: '/student/skill-radar' },
   { id: 'spi',        label: 'SPI Score',        icon: TrendingUp, badge: null,  active: false, path: '/student/spi' },
   { id: 'career',     label: 'Career Path',      icon: TrendingUp, badge: null,  active: false, path: '/student/career' },
@@ -86,7 +87,14 @@ export default function ProfileEditPage() {
   const router = useRouter()
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [spiScore, setSpiScore] = useState(72)
-  const [expandedSections, setExpandedSections] = useState({ basic: true })
+  const [expandedSections, setExpandedSections] = useState({
+    basic: true,
+    projects: true,
+    certifications: true,
+    hackathons: true,
+    extracurriculars: true,
+    skills: true
+  })
   const [loadingSections, setLoadingSections] = useState({})
   const [toastMessage, setToastMessage] = useState(null)
 
@@ -789,9 +797,17 @@ export default function ProfileEditPage() {
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* TOP NAV */}
         <header className="h-16 bg-white border-b border-gray-100 flex items-center px-6 justify-between shadow-sm">
-          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-2 hover:bg-gray-100 rounded-lg transition-colors">
-            <Menu size={20} className="text-gray-600" />
-          </button>
+          <div className="flex items-center gap-3">
+            <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-2 hover:bg-gray-100 rounded-lg transition-colors mr-2">
+              <Menu size={20} className="text-gray-600" />
+            </button>
+            <button
+              onClick={() => router.push('/student/profile')}
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-700 rounded-lg text-sm font-medium border border-gray-200 transition shadow-sm"
+            >
+              ← Back to Profile
+            </button>
+          </div>
           <div className="flex items-center gap-4">
             <button className="p-2 hover:bg-gray-100 rounded-lg relative">
               <Bell size={20} className="text-gray-600" />

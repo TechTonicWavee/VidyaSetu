@@ -60,7 +60,7 @@ const DEMO_STEPS = [
   },
   {
     step: 8,
-    route: '/ai-advisor', // Not inside dashboard, maybe needs to exist or map
+    route: '/student/ai-advisor', // Not inside dashboard, maybe needs to exist or map
     position: 'left-center',
     title: 'The AI Advisor — Available to Everyone',
     body: 'Every role has an AI advisor that knows their context. A student asks what to study. A faculty asks which topic to re-teach. A dean asks which intervention will move the placement rate the most. Watch what happens when you switch the role from Student to Dean.',

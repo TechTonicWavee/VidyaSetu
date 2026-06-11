@@ -3,7 +3,7 @@
 import CollapsibleSidebar from '../../components/CollapsibleSidebar';
 import {
   Home, User, Activity, TrendingUp, Users, Bell, Award,
-  Grid, FileText, Target, CheckCircle, Zap, BookOpen, Plug,
+  Grid, FileText, Target, CheckCircle, Zap, BookOpen, Plug, Bot
 } from 'lucide-react';
 
 const STUDENT_NAV = [
@@ -20,6 +20,7 @@ const STUDENT_NAV = [
   { id: 'placement',  label: 'Placement Readiness', icon: Target,      path: '/student/placement' },
   { id: 'extra',      label: 'Extracurriculars',    icon: Award,       path: '/student/extracurricular' },
   { id: 'assignments',label: 'Assignments',         icon: BookOpen,    path: '/student/assignments' },
+  { id: 'ai-advisor', label: 'AI Advisor',          icon: Bot,         path: '/student/ai-advisor' },
 ];
 
 const STUDENT_THEME = {

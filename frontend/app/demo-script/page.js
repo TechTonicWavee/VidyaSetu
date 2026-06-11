@@ -83,7 +83,7 @@ export default function DemoScriptPage() {
           step="8"
           time="1 minute"
           title="AI Advisor"
-          show="/ai-advisor"
+          show="/student/ai-advisor"
           say="Every user has an AI advisor that knows their context. Watch — I am going to switch from the student view to your view.\n\n[Switch role to Dean in the toggle]\n\nThe same interface. But now when you ask a question — 'which intervention will have the biggest impact on placement?' — the AI answers with your data, your students, your department history. Not generic advice. Your specific situation."
           click="Switch role toggle, show dean's pre-loaded conversation"
         />

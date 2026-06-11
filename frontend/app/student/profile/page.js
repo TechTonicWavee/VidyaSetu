@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { Home, User, Activity, TrendingUp, Users, Bell, Award, Grid, FileText, Settings, LogOut, Search, ChevronDown, ArrowUpRight, Clock, AlertCircle, BookOpen, CheckCircle, Folder, ThumbsUp, Star, CalendarDays, Cpu, Briefcase, ChevronRight, Target, Zap, Plug } from 'lucide-react'
+import { Home, User, Activity, TrendingUp, Users, Bell, Award, Grid, FileText, Settings, LogOut, Search, ChevronDown, ArrowUpRight, Clock, AlertCircle, BookOpen, CheckCircle, Folder, ThumbsUp, Star, CalendarDays, Cpu, Briefcase, ChevronRight, Target, Zap, Plug, Edit2 } from 'lucide-react'
 import {
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
@@ -11,6 +11,7 @@ import {
 const navLinks = [
   { id: 'dashboard',  label: 'Dashboard',       icon: Home,       badge: null,  active: true, path: '/student' },
   { id: 'profile',    label: 'My Profile',       icon: User,       badge: null,  active: false, path: '/student/profile' },
+  { id: 'edit-profile', label: 'Edit Profile',    icon: Edit2,      badge: null,  active: false, path: '/student/profile/edit' },
   { id: 'skill',      label: 'Skill Radar',      icon: Activity,   badge: null,  active: false, path: '/student/skill-radar' },
   { id: 'spi',        label: 'SPI Score',        icon: TrendingUp, badge: null,  active: false, path: '/student/spi' },
   { id: 'career',     label: 'Career Path',      icon: TrendingUp, badge: null,  active: false, path: '/student/career' },
@@ -136,7 +137,15 @@ export default function StudentProfile() {
                   AS
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold text-white mb-1">Priyanshu Raj</h1>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-1.5">
+                    <h1 className="text-3xl font-bold text-white">Priyanshu Raj</h1>
+                    <button
+                      onClick={() => router.push('/student/profile/edit')}
+                      className="inline-flex items-center gap-1.5 px-3 py-1 bg-white/10 hover:bg-white/20 text-white rounded-lg text-xs font-semibold border border-white/20 hover:border-white/40 transition shadow-sm"
+                    >
+                      <Edit2 size={13} /> Edit Profile
+                    </button>
+                  </div>
                   <p className="text-gray-300 text-sm mb-4">CSE — 2nd Year · Section B · Roll No: 2CS04</p>
                   <div className="flex flex-wrap justify-center md:justify-start gap-2">
                     <span className="px-3 py-1 bg-blue-500/20 text-blue-300 rounded-full text-xs font-semibold border border-blue-500/30">CSE 2nd Year</span>
