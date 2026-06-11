@@ -1,0 +1,373 @@
+'use client'
+
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { Home, User, Activity, TrendingUp, Users, Bell, Award, Grid, FileText, Settings, LogOut, Search, ChevronDown, Target, ArrowUpRight, Clock, AlertCircle, BookOpen, CheckCircle, Zap, MoreHorizontal, ExternalLink, Plug } from 'lucide-react'
+
+const navLinks = [
+  { id: 'dashboard',  label: 'Dashboard',       icon: Home,       badge: null,  active: true, path: '/dashboard/student' },
+  { id: 'profile',    label: 'My Profile',       icon: User,       badge: null,  active: false, path: '/dashboard/student/profile' },
+  { id: 'skill',      label: 'Skill Radar',      icon: Activity,   badge: null,  active: false, path: '/dashboard/student/skill-radar' },
+  { id: 'spi',        label: 'SPI Score',        icon: TrendingUp, badge: null,  active: false, path: '/dashboard/student/spi' },
+  { id: 'career',     label: 'Career Path',      icon: TrendingUp, badge: null,  active: false, path: '/dashboard/student/career' },
+  { id: 'team',       label: 'My Team',          icon: Users,      badge: null,  active: false, path: '/dashboard/student/my-team' },
+  { id: 'notifs',     label: 'Notifications',    icon: Bell,       badge: '3',   active: false, path: '/dashboard/student/notifications' },
+  { id: 'rankings',   label: 'Rankings',         icon: Award,      badge: null,  active: false, path: '/dashboard/student/rankings' },
+  { id: 'directory',  label: 'Domain Directory', icon: Grid,       badge: null,  active: false, path: '/dashboard/student/directory' },
+  { id: 'resume',     label: 'Resume Builder',   icon: FileText,   badge: null,  active: false, path: '/dashboard/student/resume' },
+  { id: 'placement',  label: 'Placement Readiness', icon: Target, badge: null,  active: false, path: '/dashboard/student/placement' },
+  { id: 'action',     label: 'Action Plan',      icon: CheckCircle, badge: null,  active: false, path: '/dashboard/student/action-plan' },
+  { id: 'potential',  label: 'Potential Gap',    icon: Zap,        badge: null,  active: false, path: '/dashboard/student/potential-gap' },
+  { id: 'extra',      label: 'Extracurriculars', icon: Award,      badge: null,  active: false, path: '/dashboard/student/extracurricular' },
+  { id: 'integrations', label: 'Integrations',   icon: Plug,       badge: null,  active: false, path: '/integrations' },
+  { id: 'assignments',  label: 'Assignments',    icon: BookOpen,   badge: null,  active: false, path: '/student/assignments' },
+  { id: 'attendance',   label: 'Attendance',     icon: CheckCircle,badge: null,  active: false, path: '/student/attendance' },
+]
+
+const statCards = [
+  {
+    label: 'SPI Score',
+    value: '72',
+    sub: '+3 this month',
+    subColor: 'text-green-600',
+    icon: TrendingUp,
+    iconBg: 'bg-blue-100',
+    iconColor: '#1A56DB',
+    accent: 'stat-blue',
+    border: 'border-l-4 border-l-blue-500',
+  },
+  {
+    label: 'Placement Readiness',
+    value: '68%',
+    sub: '12% to go for Tier 2 target',
+    subColor: 'text-teal-600',
+    icon: Target,
+    iconBg: 'bg-teal-100',
+    iconColor: '#0F766E',
+    accent: 'stat-teal',
+    border: 'border-l-4 border-l-teal-500',
+  },
+  {
+    label: 'Active Alerts',
+    value: '2',
+    sub: '1 assignment due today',
+    subColor: 'text-amber-600',
+    icon: Bell,
+    iconBg: 'bg-amber-100',
+    iconColor: '#D97706',
+    accent: 'stat-amber',
+    border: 'border-l-4 border-l-amber-500',
+  },
+  {
+    label: 'Team Projects',
+    value: '1 Active',
+    sub: 'Deadline in 5 days',
+    subColor: 'text-purple-600',
+    icon: Users,
+    iconBg: 'bg-purple-100',
+    iconColor: '#5B21B6',
+    accent: 'stat-purple',
+    border: 'border-l-4 border-l-purple-600',
+  },
+]
+
+const activities = [
+  {
+    dot: 'bg-blue-500',
+    text: 'DBMS Unit 3 marks uploaded — Score: 71/100',
+    time: '2 hours ago',
+    icon: BookOpen,
+    type: 'info',
+  },
+  {
+    dot: 'bg-amber-500',
+    text: 'Assignment 4 due tomorrow — Operating Systems',
+    time: 'Reminder',
+    icon: AlertCircle,
+    type: 'warning',
+  },
+  {
+    dot: 'bg-green-500',
+    text: 'Your SPI increased by 3 points this month',
+    time: 'Yesterday',
+    icon: TrendingUp,
+    type: 'success',
+  },
+  {
+    dot: 'bg-red-500',
+    text: 'Attendance warning — Theory of Computation 74%',
+    time: '2 days ago',
+    icon: AlertCircle,
+    type: 'danger',
+  },
+]
+
+const quickActions = [
+  { label: 'View My Full Profile', icon: User,       color: '#1A56DB', bg: 'bg-blue-50',   path: '/dashboard/student/profile' },
+  { label: 'Check Career Path',    icon: TrendingUp, color: '#0F766E', bg: 'bg-teal-50',   path: '/dashboard/student/career' },
+  { label: 'Find Teammates',       icon: Users,      color: '#5B21B6', bg: 'bg-purple-50', path: '/dashboard/student/team' },
+  { label: 'Download Resume',      icon: FileText,   color: '#D97706', bg: 'bg-amber-50',  path: '/dashboard/student/resume' },
+]
+
+function SPIArc({ score, onClick }) {
+  const pct = score / 100
+  const r = 28
+  const circ = 2 * Math.PI * r
+  const dash = pct * circ
+
+  return (
+    <div className="flex items-center gap-2 cursor-pointer group" onClick={onClick}>
+      <div className="relative w-16 h-16 transition-transform group-hover:scale-105">
+        <svg viewBox="0 0 72 72" className="w-16 h-16 -rotate-90">
+          <circle cx="36" cy="36" r={r} fill="none" stroke="#E5E7EB" strokeWidth="6" />
+          <circle
+            cx="36" cy="36" r={r}
+            fill="none"
+            stroke="#1A56DB"
+            strokeWidth="6"
+            strokeDasharray={`${dash} ${circ}`}
+            strokeLinecap="round"
+          />
+        </svg>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <span className="text-sm font-bold text-navy">{score}</span>
+        </div>
+      </div>
+      <div>
+        <p className="text-xs font-semibold text-navy group-hover:text-blue-600 transition">SPI Score</p>
+        <p className="text-xs text-green-600 flex items-center gap-0.5 mt-0.5">
+          <ArrowUpRight size={11} /> +3 this month
+        </p>
+      </div>
+    </div>
+  )
+}
+
+export default function StudentDashboard() {
+  const router = useRouter()
+  const [notifOpen, setNotifOpen] = useState(false)
+
+  return (
+    <div className="flex flex-col h-screen bg-bg-base overflow-hidden font-sans">
+      {/* TOP NAV */}
+      <header className="bg-white border-b border-gray-100 px-6 py-3 flex items-center gap-4 flex-shrink-0 shadow-sm">
+          {/* Logo */}
+          <div className="flex items-center gap-2 mr-4">
+            <div
+              className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs"
+              style={{ background: '#1A56DB' }}
+            >
+              EA
+            </div>
+            <span className="font-bold text-navy text-sm hidden sm:block">
+              Educator Analytics OS
+            </span>
+          </div>
+
+          {/* Search */}
+          <div className="flex-1 max-w-md relative">
+            <Search
+              size={15}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+            />
+            <input
+              id="global-search"
+              type="text"
+              placeholder="Search students, subjects, features..."
+              className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-300 transition"
+            />
+          </div>
+
+          <div className="flex-1" />
+
+          {/* Notification */}
+          <div className="relative">
+            <button
+              id="notif-btn"
+              onClick={() => setNotifOpen(v => !v)}
+              className="relative p-2 rounded-lg hover:bg-gray-100 transition text-gray-500"
+            >
+              <Bell size={19} />
+              <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
+                3
+              </span>
+            </button>
+            {notifOpen && (
+              <div className="absolute right-0 top-11 w-72 bg-white rounded-xl shadow-lg border border-gray-100 z-50 animate-fade-in overflow-hidden">
+                <div className="px-4 py-3 border-b border-gray-50 flex items-center justify-between">
+                  <p className="font-semibold text-sm text-navy">Notifications</p>
+                  <span className="text-xs text-blue-600 cursor-pointer">Mark all read</span>
+                </div>
+                {activities.slice(0, 3).map((a, i) => (
+                  <div key={i} className="px-4 py-3 hover:bg-gray-50 transition flex gap-3 items-start border-b border-gray-50 last:border-0">
+                    <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${a.dot}`} />
+                    <div>
+                      <p className="text-xs text-gray-700 leading-snug">{a.text}</p>
+                      <p className="text-[10px] text-gray-400 mt-1">{a.time}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Avatar */}
+          <div className="flex items-center gap-2 cursor-pointer group">
+            <div
+              className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs"
+              style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}
+            >
+              AS
+            </div>
+            <ChevronDown size={14} className="text-gray-400 group-hover:text-gray-600 transition" />
+          </div>
+        </header>
+
+        {/* PAGE BODY */}
+        <main className="flex-1 overflow-y-auto p-6">
+          {/* Greeting */}
+          <div className="mb-6 animate-fade-in">
+            <h1 className="text-2xl font-bold text-navy">Good morning, Priyanshu</h1>
+            <p className="text-gray-500 text-sm mt-1">
+              Here is your overview for today — Tuesday, 15 April 2026
+            </p>
+          </div>
+
+          {/* Stat Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+            {statCards.map((card, i) => (
+              <div
+                key={i}
+                className={`card ${card.accent} ${card.border} animate-fade-in`}
+                style={{ animationDelay: `${i * 0.07}s` }}
+              >
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                    {card.label}
+                  </p>
+                  <div className={`w-8 h-8 rounded-lg ${card.iconBg} flex items-center justify-center`}>
+                    <card.icon size={16} color={card.iconColor} />
+                  </div>
+                </div>
+                <p className="text-2xl font-bold text-navy mb-1">{card.value}</p>
+                <p className={`text-xs font-medium ${card.subColor}`}>{card.sub}</p>
+              </div>
+            ))}
+          </div>
+
+          {/* Two column */}
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+
+            {/* Recent Activity */}
+            <div className="lg:col-span-3 card animate-fade-in" style={{ animationDelay: '0.3s' }}>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="font-semibold text-navy text-sm">Recent Activity</h2>
+                <button className="text-xs text-blue-600 hover:underline flex items-center gap-1">
+                  View all <ExternalLink size={12} />
+                </button>
+              </div>
+              <div className="space-y-1">
+                {activities.map((a, i) => (
+                  <div
+                    key={i}
+                    className="flex items-start gap-3 py-3 px-3 rounded-lg hover:bg-gray-50 transition group cursor-pointer"
+                  >
+                    <div
+                      className={`w-2.5 h-2.5 rounded-full mt-1.5 flex-shrink-0 ${a.dot}`}
+                    />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm text-gray-700 leading-snug">{a.text}</p>
+                      <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-1">
+                        <Clock size={11} /> {a.time}
+                      </p>
+                    </div>
+                    <MoreHorizontal
+                      size={16}
+                      className="text-gray-300 group-hover:text-gray-500 flex-shrink-0 mt-0.5 transition"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="lg:col-span-2 card animate-fade-in" style={{ animationDelay: '0.38s' }}>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="font-semibold text-navy text-sm">Quick Actions</h2>
+                <Zap size={15} className="text-amber-400" />
+              </div>
+              <div className="space-y-2">
+                {quickActions.map((a, i) => (
+                  <button
+                    key={i}
+                    id={`quick-action-${i}`}
+                    onClick={() => router.push(a.path)}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl ${a.bg} hover:opacity-90 transition-all group`}
+                  >
+                    <div
+                      className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+                      style={{ background: `${a.color}18` }}
+                    >
+                      <a.icon size={16} color={a.color} />
+                    </div>
+                    <span className="text-sm font-medium text-gray-700 text-left">{a.label}</span>
+                    <ArrowUpRight
+                      size={14}
+                      className="ml-auto text-gray-400 group-hover:text-gray-600 transition"
+                    />
+                  </button>
+                ))}
+              </div>
+
+              {/* Mini SPI card */}
+              <div
+                className="mt-4 rounded-xl p-4"
+                style={{ background: 'linear-gradient(135deg, #0D1B2A, #0f2744)' }}
+              >
+                <p className="text-xs text-gray-400 mb-1">Your SPI this semester</p>
+                <p className="text-2xl font-bold text-white mb-2">72 / 100</p>
+                <div className="w-full bg-white bg-opacity-10 rounded-full h-2">
+                  <div
+                    className="h-2 rounded-full"
+                    style={{
+                      width: '72%',
+                      background: 'linear-gradient(90deg, #1A56DB, #60a5fa)',
+                    }}
+                  />
+                </div>
+                <div className="flex justify-between mt-1.5">
+                  <p className="text-[10px] text-gray-500">Needs Improvement (0)</p>
+                  <p className="text-[10px] text-green-400">Excellent (100)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Upcoming Tasks Banner */}
+          <div
+            className="mt-4 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4 animate-fade-in"
+            style={{
+              background: 'linear-gradient(135deg, #EFF6FF, #DBEAFE)',
+              animationDelay: '0.45s',
+              border: '1px solid #BFDBFE',
+            }}
+          >
+            <div className="flex items-center gap-3 flex-1">
+              <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                <CheckCircle size={20} color="#1A56DB" />
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-navy">
+                  Operating Systems — Assignment 4
+                </p>
+                <p className="text-xs text-blue-600">Due tomorrow · 40 marks · Unit 5 coverage</p>
+              </div>
+            </div>
+            <button className="text-xs font-semibold px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition flex-shrink-0">
+              View Assignment
+            </button>
+          </div>
+        </main>
+    </div>
+  )
+}

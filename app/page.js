@@ -48,10 +48,10 @@ const stats = [
 ]
 
 const roles = [
-  { label: 'Dean', sub: 'Institutional Overview', color: '#5B21B6', icon: Building, path: '/dashboard/dean' },
-  { label: 'Faculty', sub: 'Classroom Analytics', color: '#0F766E', icon: BookOpen, path: '/dashboard/faculty' },
-  { label: 'Student', sub: 'Progress Tracking', color: '#1A56DB', icon: User, path: '/dashboard/student' },
-  { label: 'Parent', sub: 'Real-time Updates', color: '#D97706', icon: Heart, path: '/dashboard/parent' },
+  { label: 'Dean', sub: 'Institutional Overview', color: '#5B21B6', icon: Building, path: '/dean' },
+  { label: 'Faculty', sub: 'Classroom Analytics', color: '#0F766E', icon: BookOpen, path: '/faculty' },
+  { label: 'Student', sub: 'Progress Tracking', color: '#1A56DB', icon: User, path: '/student' },
+  { label: 'Parent', sub: 'Real-time Updates', color: '#D97706', icon: Heart, path: '/parent' },
 ]
 
 export default function LandingPage() {
