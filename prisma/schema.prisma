@@ -1,0 +1,137 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Student {
+  id               String    @id @default(uuid())
+  universityId     String    @unique
+  fullName         String
+  dob              DateTime
+  branch           String?
+  year             Int?
+  section          String?
+  email            String?
+  phone            String?
+  password         String?
+  isFirstLogin     Boolean   @default(true)
+  formStatus       String    @default("not_registered")
+  formProgress     Json?
+  formSubmittedAt  DateTime?
+  resumeUrl        String?
+  spiScore         Float?    @default(0)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  codingProfile    CodingProfile?
+  projects         Project[]
+  certifications   Certification[]
+  hackathons       Hackathon[]
+  extracurriculars Extracurricular[]
+  internships      Internship[]
+
+  @@map("students")
+}
+
+model CodingProfile {
+  id             String    @id @default(uuid())
+  universityId   String    @unique
+  github         String?
+  leetcode       String?
+  codechef       String?
+  hackerrank     String?
+  codeforces     String?
+  gfg            String?
+  linkedinUrl    String?
+  githubRepos    Int?
+  leetcodeSolved Int?
+  codechefRating Int?
+  lastFetched    DateTime?
+
+  student        Student   @relation(fields: [universityId], references: [universityId])
+
+  @@map("coding_profiles")
+}
+
+model Project {
+  id           String   @id @default(uuid())
+  universityId String
+  title        String
+  description  String?
+  techStack    String[]
+  type         String?
+  teamSize     String?
+  githubLink   String?
+  liveLink     String?
+  status       String?
+  role         String?
+  createdAt    DateTime @default(now())
+
+  student      Student  @relation(fields: [universityId], references: [universityId])
+
+  @@map("projects")
+}
+
+model Certification {
+  id             String    @id @default(uuid())
+  universityId   String
+  name           String
+  platform       String?
+  completionDate DateTime?
+  certificateUrl String?
+  skills         String[]
+  createdAt      DateTime  @default(now())
+
+  student        Student   @relation(fields: [universityId], references: [universityId])
+
+  @@map("certifications")
+}
+
+model Hackathon {
+  id               String    @id @default(uuid())
+  universityId     String
+  name             String
+  organizer        String?
+  date             DateTime?
+  teamSize         Int?
+  position         String?
+  problemStatement String?
+  solution         String?
+  createdAt        DateTime  @default(now())
+
+  student          Student   @relation(fields: [universityId], references: [universityId])
+
+  @@map("hackathons")
+}
+
+model Extracurricular {
+  id           String  @id @default(uuid())
+  universityId String
+  society      String?
+  role         String?
+  year         String?
+  achievement  String?
+
+  student      Student @relation(fields: [universityId], references: [universityId])
+
+  @@map("extracurriculars")
+}
+
+model Internship {
+  id           String    @id @default(uuid())
+  universityId String
+  company      String?
+  role         String?
+  startDate    DateTime?
+  endDate      DateTime?
+  techStack    String[]
+  description  String?
+
+  student      Student   @relation(fields: [universityId], references: [universityId])
+
+  @@map("internships")
+}

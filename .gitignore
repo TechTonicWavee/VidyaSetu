@@ -44,3 +44,5 @@ next-env.d.ts
 
 # archive (tracked for reference)
 # archive/
+
+/generated/prisma
