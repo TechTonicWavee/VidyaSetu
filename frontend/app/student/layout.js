@@ -1,5 +1,7 @@
 'use client';
 
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import CollapsibleSidebar from '../../components/CollapsibleSidebar';
 import {
   Home, User, Activity, TrendingUp, Users, Bell, Award,
@@ -36,11 +38,56 @@ const STUDENT_THEME = {
 };
 
 export default function StudentLayout({ children }) {
+  const router = useRouter();
+  const [student, setStudent] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const rawSession = localStorage.getItem('vs_student');
+    if (!rawSession) {
+      router.push('/login');
+      return;
+    }
+    try {
+      const session = JSON.parse(rawSession);
+      const isExpired = Date.now() - session.loginTime > 24 * 60 * 60 * 1000;
+      if (isExpired) {
+        localStorage.removeItem('vs_student');
+        router.push('/login');
+        return;
+      }
+      setStudent(session);
+      setLoading(false);
+    } catch (e) {
+      localStorage.removeItem('vs_student');
+      router.push('/login');
+    }
+  }, [router]);
+
+  if (loading) {
+    return (
+      <div className="flex h-screen w-screen items-center justify-center bg-gray-50">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-10 h-10 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-sm text-gray-500 font-medium">Verifying session...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Calculate initials from name
+  const initials = student.name
+    ? student.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+    : 'ST';
+
+  // Build role string
+  const role = `${student.branch || 'CSE'} · ${student.year || 2} Year, Sec ${student.section || 'A'}`;
+
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
       <CollapsibleSidebar
         navLinks={STUDENT_NAV}
-        userInfo={{ initials: 'PR', name: 'Priyanshu Raj', role: 'CSE · 2nd Year, Sec B' }}
+        userInfo={{ initials, name: student.name, role }}
         theme={STUDENT_THEME}
       />
       <main className="flex-1 overflow-y-auto bg-gray-50">

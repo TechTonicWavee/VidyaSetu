@@ -241,7 +241,13 @@ export default function CollapsibleSidebar({ navLinks, userInfo, theme }) {
         }}
       >
         <button
-          onClick={() => router.push('/login')}
+          onClick={() => {
+            if (typeof window !== 'undefined') {
+              localStorage.removeItem('vs_student');
+              localStorage.removeItem('vs_session');
+            }
+            router.push('/login');
+          }}
           title={!expanded ? 'Switch Role' : undefined}
           style={{
             display: 'flex',

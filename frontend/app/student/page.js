@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Home, User, Activity, TrendingUp, Users, Bell, Award, Grid, FileText, Settings, LogOut, Search, ChevronDown, Target, ArrowUpRight, Clock, AlertCircle, BookOpen, CheckCircle, Zap, MoreHorizontal, ExternalLink, Plug } from 'lucide-react'
 
@@ -146,6 +146,19 @@ function SPIArc({ score, onClick }) {
 export default function StudentDashboard() {
   const router = useRouter()
   const [notifOpen, setNotifOpen] = useState(false)
+  const [studentName, setStudentName] = useState('Student')
+
+  useEffect(() => {
+    const rawSession = localStorage.getItem('vs_student')
+    if (rawSession) {
+      try {
+        const session = JSON.parse(rawSession)
+        if (session.name) {
+          setStudentName(session.name.split(' ')[0])
+        }
+      } catch (e) {}
+    }
+  }, [])
 
   return (
     <div className="flex flex-col h-screen bg-bg-base overflow-hidden font-sans">
@@ -227,7 +240,7 @@ export default function StudentDashboard() {
         <main className="flex-1 overflow-y-auto p-6">
           {/* Greeting */}
           <div className="mb-6 animate-fade-in">
-            <h1 className="text-2xl font-bold text-navy">Good morning, Priyanshu</h1>
+            <h1 className="text-2xl font-bold text-navy">Good morning, {studentName}</h1>
             <p className="text-gray-500 text-sm mt-1">
               Here is your overview for today — Tuesday, 15 April 2026
             </p>
