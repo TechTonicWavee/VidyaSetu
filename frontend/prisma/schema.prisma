@@ -51,6 +51,8 @@ model CodingProfile {
   leetcodeSolved Int?
   codechefRating Int?
   lastFetched    DateTime?
+  githubStats    Json?
+  leetcodeStats  Json?
 
   student        Student   @relation(fields: [universityId], references: [universityId])
 
@@ -130,6 +132,7 @@ model Internship {
   endDate      DateTime?
   techStack    String[]
   description  String?
+  offerLetterUrl String?
 
   student      Student   @relation(fields: [universityId], references: [universityId])
 
