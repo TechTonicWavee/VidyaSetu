@@ -130,6 +130,7 @@ model Internship {
   endDate      DateTime?
   techStack    String[]
   description  String?
+  offerLetterUrl String?
 
   student      Student   @relation(fields: [universityId], references: [universityId])
 
