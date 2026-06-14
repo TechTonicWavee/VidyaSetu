@@ -3,9 +3,9 @@
 import { useEffect, useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import {
-  GitBranch, Link, CheckCircle2, ChevronRight, ChevronLeft,
+  GitBranch, Link, CheckCircle2, CheckCircle, ChevronRight, ChevronLeft,
   Upload, FileText, Trash2, Plus, X, Award, Briefcase,
-  Users, Loader2, PartyPopper, AlertCircle, Tag
+  Users, Loader2, PartyPopper, AlertCircle, Tag, ExternalLink, RefreshCw
 } from 'lucide-react'
 
 // ─── Constants ───────────────────────────────────────────────────────────────
@@ -25,24 +25,25 @@ const CERT_PLATFORMS = [
 const ACADEMIC_YEARS = ['2022-23', '2023-24', '2024-25', '2025-26']
 
 const PLATFORM_FIELDS = [
-  { key: 'github',    label: 'GitHub',       placeholder: 'e.g. john-doe',         required: true,  icon: <GitBranch size={18} /> },
-  { key: 'leetcode',  label: 'LeetCode',     placeholder: 'e.g. john_doe',          required: false, icon: '🧩' },
-  { key: 'codechef',  label: 'CodeChef',     placeholder: 'e.g. johndoe123',        required: false, icon: '👨‍🍳' },
-  { key: 'hackerrank',label: 'HackerRank',   placeholder: 'e.g. john_doe',          required: false, icon: '💻' },
-  { key: 'codeforces',label: 'Codeforces',   placeholder: 'e.g. john.doe',          required: false, icon: '⚡' },
-  { key: 'gfg',       label: 'GeeksForGeeks',placeholder: 'e.g. johndoe',           required: false, icon: '🌐' },
-  { key: 'linkedin',  label: 'LinkedIn URL', placeholder: 'e.g. linkedin.com/in/johndoe', required: false, icon: <Link size={18} /> },
+  { key: 'github', label: 'GitHub', placeholder: 'e.g. john-doe', required: true, icon: <GitBranch size={18} /> },
+  { key: 'leetcode', label: 'LeetCode', placeholder: 'e.g. john_doe', required: false, icon: '🧩' },
+  { key: 'codechef', label: 'CodeChef', placeholder: 'e.g. johndoe123', required: false, icon: '👨‍🍳' },
+  { key: 'hackerrank', label: 'HackerRank', placeholder: 'e.g. john_doe', required: false, icon: '💻' },
+  { key: 'codeforces', label: 'Codeforces', placeholder: 'e.g. john.doe', required: false, icon: '⚡' },
+  { key: 'gfg', label: 'GeeksForGeeks', placeholder: 'e.g. johndoe', required: false, icon: '🌐' },
+  { key: 'linkedin', label: 'LinkedIn URL', placeholder: 'e.g. linkedin.com/in/johndoe', required: false, icon: <Link size={18} /> },
 ]
 
 // ─── Helper: empty data shapes ────────────────────────────────────────────────
 
-const emptyCert    = () => ({ name: '', platform: 'Coursera', date: '', skills: [] })
-const emptyExtra   = () => ({ society: '', role: '', year: '2024-25', achievement: '' })
-const emptyIntern  = () => ({ company: '', role: '', startDate: '', endDate: '', techStack: [], description: '' })
+const emptyCert = () => ({ name: '', platform: 'Coursera', date: '', skills: [], certificateUrl: null, certificateFileName: null })
+const emptyExtra = () => ({ society: '', role: '', year: '2024-25', achievement: '' })
+const emptyIntern = () => ({ company: '', role: '', startDate: '', endDate: '', techStack: [], description: '', offerLetterUrl: null, offerLetterFileName: null })
 
 const defaultFormData = () => ({
   coding_profiles: { github: '', leetcode: '', codechef: '', hackerrank: '', codeforces: '', gfg: '', linkedin: '' },
   resume_filename: null,
+  resumeUrl: null,
   certifications: [emptyCert()],
   extracurriculars: [emptyExtra()],
   internships: [emptyIntern()],
@@ -56,7 +57,7 @@ function ProgressBar({ currentStep, completedSteps, onStepClick }) {
       <div className="flex items-center justify-between mb-3">
         {STEPS.map((step, idx) => {
           const isCompleted = completedSteps.includes(step.id)
-          const isCurrent   = currentStep === step.id
+          const isCurrent = currentStep === step.id
           const isClickable = isCompleted
 
           return (
@@ -68,15 +69,14 @@ function ProgressBar({ currentStep, completedSteps, onStepClick }) {
                     ${isCompleted
                       ? 'bg-green-500 border-green-500 text-white cursor-pointer hover:bg-green-600'
                       : isCurrent
-                      ? 'bg-blue-600 border-blue-600 text-white cursor-default'
-                      : 'bg-white border-gray-200 text-gray-400 cursor-default'
+                        ? 'bg-blue-600 border-blue-600 text-white cursor-default'
+                        : 'bg-white border-gray-200 text-gray-400 cursor-default'
                     }`}
                 >
                   {isCompleted ? <CheckCircle2 size={18} /> : step.id}
                 </button>
-                <span className={`text-xs mt-1 font-medium ${
-                  isCurrent ? 'text-blue-600' : isCompleted ? 'text-green-600' : 'text-gray-400'
-                }`}>
+                <span className={`text-xs mt-1 font-medium ${isCurrent ? 'text-blue-600' : isCompleted ? 'text-green-600' : 'text-gray-400'
+                  }`}>
                   {step.label}
                 </span>
               </div>
@@ -127,6 +127,184 @@ function TagInput({ tags, onAdd, onRemove, placeholder }) {
         placeholder={tags.length === 0 ? placeholder : 'Add more...'}
         className="outline-none flex-1 min-w-[120px] text-sm text-gray-700 bg-transparent"
       />
+    </div>
+  )
+}
+
+function FileUploadZone({
+  universityId,
+  folder,
+  fileNamePrefix,
+  useUniqueName = false,
+  index = 0,
+  allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'],
+  allowedTypesLabel = 'PDF, JPG, PNG',
+  value,
+  fileNameValue,
+  successMessage,
+  onUploadSuccess,
+  onClear,
+}) {
+  const inputRef = useRef(null)
+  const [uploading, setUploading] = useState(false)
+  const [error, setError] = useState(null)
+  const [dragOver, setDragOver] = useState(false)
+  const [selectedFile, setSelectedFile] = useState(null)
+
+  const handleUpload = async (file) => {
+    if (!file) return
+    setError(null)
+    setSelectedFile(file)
+
+    if (!allowedTypes.includes(file.type)) {
+      setError(`Only ${allowedTypesLabel} files allowed`)
+      return
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setError('File size must be under 5MB')
+      return
+    }
+
+    setUploading(true)
+
+    const extension = file.name.split('.').pop() || 'pdf'
+    let fileName = `${fileNamePrefix}.${extension}`
+    if (useUniqueName) {
+      fileName = `${fileNamePrefix}-${index}-${Date.now()}.${extension}`
+    }
+
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('universityId', universityId || 'unknown')
+    formData.append('folder', folder)
+    formData.append('fileName', fileName)
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      })
+      const json = await res.json()
+      if (json.success) {
+        onUploadSuccess(json.url, file.name)
+        setError(null)
+      } else {
+        setError(json.error || 'Upload failed')
+      }
+    } catch (err) {
+      setError(err.message || 'Upload failed')
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  const handleDrop = (e) => {
+    e.preventDefault()
+    setDragOver(false)
+    if (uploading) return
+    const file = e.dataTransfer.files[0]
+    handleUpload(file)
+  }
+
+  const handleDragOver = (e) => {
+    e.preventDefault()
+    if (!uploading) setDragOver(true)
+  }
+
+  const handleDragLeave = () => {
+    setDragOver(false)
+  }
+
+  const handleRetry = (e) => {
+    e.stopPropagation()
+    if (selectedFile) {
+      handleUpload(selectedFile)
+    } else {
+      inputRef.current?.click()
+    }
+  }
+
+  if (uploading) {
+    return (
+      <div className="border border-blue-200 rounded-2xl p-6 bg-blue-50/50 flex flex-col items-center justify-center min-h-[120px] transition-all">
+        <Loader2 className="w-8 h-8 text-blue-600 animate-spin mb-2" />
+        <p className="text-sm font-medium text-blue-700">Uploading...</p>
+      </div>
+    )
+  }
+
+  if (value) {
+    return (
+      <div className="border border-green-200 rounded-2xl p-5 bg-green-50/50 flex items-center justify-between transition-all">
+        <div className="flex items-center gap-3 min-w-0 flex-1">
+          <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center flex-shrink-0">
+            <CheckCircle className="w-5 h-5 text-green-600" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="font-semibold text-gray-800 text-sm truncate max-w-[200px] sm:max-w-[320px]">
+              {fileNameValue || 'File uploaded successfully'}
+            </p>
+            <div className="flex items-center flex-wrap gap-2 sm:gap-3 mt-0.5">
+              <span className="text-green-600 text-xs font-medium">
+                {successMessage || 'Uploaded successfully'}
+              </span>
+              <a
+                href={value}
+                target="_blank"
+                rel="noreferrer"
+                className="text-blue-600 hover:text-blue-800 text-xs font-semibold flex items-center gap-0.5"
+              >
+                View <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            </div>
+          </div>
+        </div>
+        <button
+          type="button"
+          onClick={onClear}
+          className="text-xs bg-white border border-gray-200 hover:bg-gray-50 text-gray-600 rounded-lg px-3 py-1.5 font-medium transition-colors ml-4 flex-shrink-0"
+        >
+          Replace
+        </button>
+      </div>
+    )
+  }
+
+  return (
+    <div>
+      <div
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+        onClick={() => inputRef.current?.click()}
+        className={`border-2 border-dashed rounded-2xl p-8 flex flex-col items-center justify-center cursor-pointer transition-all text-center min-h-[140px]
+          ${dragOver ? 'border-blue-400 bg-blue-50/50' : 'border-gray-200 bg-gray-50/50 hover:border-blue-300 hover:bg-blue-50/50'}`}
+      >
+        <Upload className={`w-8 h-8 mb-2.5 ${dragOver ? 'text-blue-500' : 'text-gray-300'}`} />
+        <p className="text-gray-600 font-medium text-sm mb-0.5">Click to upload or drag and drop</p>
+        <p className="text-gray-400 text-xs">{allowedTypesLabel} · Max 5MB</p>
+        <input
+          ref={inputRef}
+          type="file"
+          accept={allowedTypes.includes('image/jpeg') ? '.pdf,.jpg,.jpeg,.png' : '.pdf'}
+          className="hidden"
+          onChange={(e) => handleUpload(e.target.files?.[0])}
+        />
+      </div>
+      {error && (
+        <div className="mt-2 text-xs text-red-500 flex items-center justify-between bg-red-50 border border-red-100 rounded-xl px-3.5 py-2.5">
+          <span className="flex items-center gap-1.5 font-medium">
+            <AlertCircle className="w-4 h-4 flex-shrink-0" /> {error}
+          </span>
+          <button
+            type="button"
+            onClick={handleRetry}
+            className="text-red-700 hover:text-red-900 font-semibold flex items-center gap-1.5 border-b border-dotted border-red-400 hover:border-red-900 flex-shrink-0"
+          >
+            <RefreshCw className="w-3 h-3 flex-shrink-0" /> Retry
+          </button>
+        </div>
+      )}
     </div>
   )
 }
@@ -183,69 +361,31 @@ function Step1({ data, onChange, onNext, errors }) {
 
 // ─── Step 2 ───────────────────────────────────────────────────────────────────
 
-function Step2({ data, onChange, onNext, onPrev, onSkip }) {
-  const inputRef = useRef()
-  const [dragOver, setDragOver] = useState(false)
-
-  const handleFile = (file) => {
-    if (!file) return
-    if (file.type !== 'application/pdf') { alert('Please upload a PDF file only.'); return }
-    if (file.size > 5 * 1024 * 1024) { alert('File size must be under 5MB.'); return }
-    onChange('resume_filename', file.name)
-  }
-
-  const handleDrop = (e) => {
-    e.preventDefault()
-    setDragOver(false)
-    const file = e.dataTransfer.files[0]
-    handleFile(file)
-  }
-
+function Step2({ data, onChange, onNext, onPrev, onSkip, universityId }) {
   return (
     <div>
       <h2 className="text-2xl font-bold mb-1" style={{ color: '#0D1B2A' }}>Upload Your Resume</h2>
       <p className="text-gray-500 text-sm mb-6">PDF format only, max 5MB</p>
 
-      {!data.resume_filename ? (
-        <div
-          onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
-          onDragLeave={() => setDragOver(false)}
-          onDrop={handleDrop}
-          onClick={() => inputRef.current?.click()}
-          className={`border-2 border-dashed rounded-2xl p-12 flex flex-col items-center justify-center cursor-pointer transition-all text-center
-            ${dragOver ? 'border-blue-400 bg-blue-50' : 'border-gray-200 bg-gray-50 hover:border-blue-300 hover:bg-blue-50'}`}
-        >
-          <Upload size={36} className={`mb-3 ${dragOver ? 'text-blue-500' : 'text-gray-300'}`} />
-          <p className="text-gray-600 font-medium mb-1">Drag and drop your resume here</p>
-          <p className="text-gray-400 text-sm mb-3">or click to browse</p>
-          <p className="text-gray-300 text-xs">PDF only · Max 5MB</p>
-          <input ref={inputRef} type="file" accept=".pdf" className="hidden" onChange={(e) => handleFile(e.target.files[0])} />
-        </div>
-      ) : (
-        <div className="border border-green-200 rounded-2xl p-6 bg-green-50 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center">
-              <FileText size={20} className="text-green-600" />
-            </div>
-            <div>
-              <p className="font-semibold text-gray-800 text-sm">{data.resume_filename}</p>
-              <p className="text-green-600 text-xs flex items-center gap-1 mt-0.5">
-                <CheckCircle2 size={12} /> Resume ready to upload
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={() => onChange('resume_filename', null)}
-            className="text-gray-400 hover:text-red-500 transition-colors"
-          >
-            <X size={18} />
-          </button>
-        </div>
-      )}
-
-      {data.resume_filename && (
-        <p className="text-gray-400 text-xs text-center mt-3">Resume will be uploaded on submit</p>
-      )}
+      <FileUploadZone
+        universityId={universityId}
+        folder="resume"
+        fileNamePrefix="resume"
+        useUniqueName={false}
+        allowedTypes={['application/pdf']}
+        allowedTypesLabel="PDF only"
+        value={data.resumeUrl}
+        fileNameValue={data.resume_filename}
+        successMessage="Resume uploaded successfully"
+        onUploadSuccess={(url, fileName) => {
+          onChange('resumeUrl', url)
+          onChange('resume_filename', fileName)
+        }}
+        onClear={() => {
+          onChange('resumeUrl', null)
+          onChange('resume_filename', null)
+        }}
+      />
 
       <div className="flex items-center justify-between mt-8">
         <button onClick={onPrev} className="flex items-center gap-2 border border-gray-200 hover:bg-gray-50 text-gray-600 rounded-xl px-5 py-3 font-semibold text-sm transition-colors">
@@ -266,7 +406,7 @@ function Step2({ data, onChange, onNext, onPrev, onSkip }) {
 
 // ─── Step 3 ───────────────────────────────────────────────────────────────────
 
-function Step3({ data, onChange, onNext, onPrev, onSkip }) {
+function Step3({ data, onChange, onNext, onPrev, onSkip, universityId }) {
   const updateCert = (idx, field, value) => {
     const updated = data.certifications.map((c, i) => i === idx ? { ...c, [field]: value } : c)
     onChange('certifications', updated)
@@ -353,6 +493,34 @@ function Step3({ data, onChange, onNext, onPrev, onSkip }) {
                   placeholder="e.g. Python, ML, Neural Networks"
                 />
               </div>
+
+              <div>
+                <label className="text-sm font-medium text-gray-700 mb-1.5 block">Certificate Upload</label>
+                <FileUploadZone
+                  universityId={universityId}
+                  folder="certifications"
+                  fileNamePrefix="cert"
+                  useUniqueName={true}
+                  index={idx}
+                  allowedTypes={['application/pdf', 'image/jpeg', 'image/png']}
+                  allowedTypesLabel="PDF, JPG, PNG"
+                  value={cert.certificateUrl}
+                  fileNameValue={cert.certificateFileName}
+                  successMessage="Certificate uploaded successfully"
+                  onUploadSuccess={(url, fileName) => {
+                    const updated = data.certifications.map((c, i) =>
+                      i === idx ? { ...c, certificateUrl: url, certificateFileName: fileName } : c
+                    )
+                    onChange('certifications', updated)
+                  }}
+                  onClear={() => {
+                    const updated = data.certifications.map((c, i) =>
+                      i === idx ? { ...c, certificateUrl: null, certificateFileName: null } : c
+                    )
+                    onChange('certifications', updated)
+                  }}
+                />
+              </div>
             </div>
           </div>
         ))}
@@ -384,7 +552,7 @@ function Step3({ data, onChange, onNext, onPrev, onSkip }) {
 
 // ─── Step 4 ───────────────────────────────────────────────────────────────────
 
-function Step4({ data, onChange, onPrev, onSubmit, submitting }) {
+function Step4({ data, onChange, onPrev, onSubmit, submitting, universityId }) {
   const updateExtra = (idx, field, value) => {
     const updated = data.extracurriculars.map((e, i) => i === idx ? { ...e, [field]: value } : e)
     onChange('extracurriculars', updated)
@@ -502,6 +670,35 @@ function Step4({ data, onChange, onPrev, onSubmit, submitting }) {
                   placeholder="e.g. React, Node.js, MongoDB"
                 />
               </div>
+
+              <div className="mb-3">
+                <label className="text-xs font-medium text-gray-600 mb-1 block">Offer Letter (Optional)</label>
+                <FileUploadZone
+                  universityId={universityId}
+                  folder="internships"
+                  fileNamePrefix="offer"
+                  useUniqueName={true}
+                  index={idx}
+                  allowedTypes={['application/pdf', 'image/jpeg', 'image/png']}
+                  allowedTypesLabel="PDF, JPG, PNG"
+                  value={intern.offerLetterUrl}
+                  fileNameValue={intern.offerLetterFileName}
+                  successMessage="Offer letter uploaded successfully"
+                  onUploadSuccess={(url, fileName) => {
+                    const updated = data.internships.map((e, i) =>
+                      i === idx ? { ...e, offerLetterUrl: url, offerLetterFileName: fileName } : e
+                    )
+                    onChange('internships', updated)
+                  }}
+                  onClear={() => {
+                    const updated = data.internships.map((e, i) =>
+                      i === idx ? { ...e, offerLetterUrl: null, offerLetterFileName: null } : e
+                    )
+                    onChange('internships', updated)
+                  }}
+                />
+              </div>
+
               <div>
                 <label className="text-xs font-medium text-gray-600 mb-1 block">Brief Description <span className="text-gray-400">(max 150 chars)</span></label>
                 <textarea
@@ -630,7 +827,7 @@ export default function FormPage() {
       try {
         const progress = JSON.parse(saved)
         if (progress.formData) setFormData(progress.formData)
-        if (progress.step)     setStep(progress.step)
+        if (progress.step) setStep(progress.step)
         if (progress.completedSteps) setCompletedSteps(progress.completedSteps)
       } catch { /* ignore */ }
     }
@@ -646,8 +843,7 @@ export default function FormPage() {
   }
 
   const updateField = (key, value) => {
-    const updated = { ...formData, [key]: value }
-    setFormData(updated)
+    setFormData(prev => ({ ...prev, [key]: value }))
   }
 
   // ── Navigation ─────────────────────────────────────────────────────────────
@@ -703,9 +899,24 @@ export default function FormPage() {
       universityId: student?.universityId,
       coding_profiles: formData.coding_profiles,
       resume_filename: formData.resume_filename,
-      certifications: formData.certifications,
+      resumeUrl: formData.resumeUrl || null,
       extracurriculars: formData.extracurriculars,
-      internships: formData.internships,
+      certifications: formData.certifications.map(c => ({
+        name: c.name,
+        platform: c.platform,
+        date: c.date,
+        skills: c.skills,
+        certificateUrl: c.certificateUrl || null,
+      })),
+      internships: formData.internships.map(i => ({
+        company: i.company,
+        role: i.role,
+        startDate: i.startDate,
+        endDate: i.endDate,
+        techStack: i.techStack,
+        description: i.description,
+        offerLetterUrl: i.offerLetterUrl || null,
+      })),
     }
     try {
       const res = await fetch('/api/form/submit', {
@@ -783,6 +994,7 @@ export default function FormPage() {
                   onNext={goNext}
                   onPrev={goPrev}
                   onSkip={goSkip}
+                  universityId={student?.universityId}
                 />
               )}
               {step === 3 && (
@@ -792,6 +1004,7 @@ export default function FormPage() {
                   onNext={goNext}
                   onPrev={goPrev}
                   onSkip={goSkip}
+                  universityId={student?.universityId}
                 />
               )}
               {step === 4 && (
@@ -801,6 +1014,7 @@ export default function FormPage() {
                   onPrev={goPrev}
                   onSubmit={handleSubmit}
                   submitting={submitting}
+                  universityId={student?.universityId}
                 />
               )}
             </div>
