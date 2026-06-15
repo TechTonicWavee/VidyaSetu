@@ -24,10 +24,26 @@ export async function POST(request) {
       })
     }
 
-    if (!student.email || student.email.trim().toLowerCase() !== email.trim().toLowerCase()) {
-      return Response.json({ 
-        success: false,
-        error: 'Verification failed.' 
+    if (student.email) {
+      // Case 1: Email exists in DB — compare as usual
+      if (student.email.trim().toLowerCase() !== email.trim().toLowerCase()) {
+        return Response.json({ 
+          success: false,
+          error: 'Verification failed.' 
+        })
+      }
+    } else {
+      // Case 2: Email is NULL — validate and persist a KIET email
+      const normalised = email.trim().toLowerCase()
+      if (!normalised.endsWith('@kiet.edu')) {
+        return Response.json({ 
+          success: false,
+          error: 'Please enter a valid KIET email.' 
+        })
+      }
+      await prisma.student.update({
+        where: { universityId },
+        data: { email: normalised }
       })
     }
 
