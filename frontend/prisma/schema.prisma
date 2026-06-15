@@ -11,7 +11,7 @@ model Student {
   id               String    @id @default(uuid())
   universityId     String    @unique
   fullName         String
-  dob              DateTime
+  dob              DateTime?
   branch           String?
   year             Int?
   section          String?
