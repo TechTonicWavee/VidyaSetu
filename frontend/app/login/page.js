@@ -118,7 +118,7 @@ function StudentLoginForm({ portal, onSwitchPortal, portals: allPortals }) {
 
   // Forgot state
   const [forgotId, setForgotId] = useState("");
-  const [forgotDob, setForgotDob] = useState("");
+  const [forgotEmail, setForgotEmail] = useState("");
   const [forgotLoading, setForgotLoading] = useState(false);
   const [forgotError, setForgotError] = useState("");
 
@@ -182,9 +182,9 @@ function StudentLoginForm({ portal, onSwitchPortal, portals: allPortals }) {
     }
   };
 
-  const handleVerifyDob = async () => {
+  const handleVerifyEmail = async () => {
     setForgotError("");
-    if (!forgotId.trim() || !forgotDob) {
+    if (!forgotId.trim() || !forgotEmail.trim()) {
       setForgotError("Please fill in all fields.");
       return;
     }
@@ -193,7 +193,7 @@ function StudentLoginForm({ portal, onSwitchPortal, portals: allPortals }) {
       const res = await fetch("/api/auth/verify-dob", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ universityId: forgotId.trim(), dob: forgotDob }),
+        body: JSON.stringify({ universityId: forgotId.trim(), email: forgotEmail.trim() }),
       });
       const data = await res.json();
       if (data.success) {
@@ -234,7 +234,7 @@ function StudentLoginForm({ portal, onSwitchPortal, portals: allPortals }) {
           setAuthState("login");
           setResetSuccess(false);
           setNewPass(""); setConfirmPass("");
-          setForgotId(""); setForgotDob("");
+          setForgotId(""); setForgotEmail("");
           setVerifiedId(""); setVerifiedName("");
         }, 2000);
       } else {
@@ -433,13 +433,14 @@ function StudentLoginForm({ portal, onSwitchPortal, portals: allPortals }) {
 
             <div className="mb-4">
               <label className="block text-sm font-semibold text-gray-700 mb-1.5">
-                Date of Birth
+                Official KIET Email
               </label>
               <input
-                type="date"
-                value={forgotDob}
-                onChange={(e) => setForgotDob(e.target.value)}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 focus:outline-none transition bg-white"
+                type="email"
+                value={forgotEmail}
+                onChange={(e) => setForgotEmail(e.target.value)}
+                placeholder="e.g. priyanshu.2428cse771@kiet.edu"
+                className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 placeholder-gray-400 focus:outline-none transition bg-white"
                 {...inputFocusHandlers}
               />
             </div>
@@ -451,7 +452,7 @@ function StudentLoginForm({ portal, onSwitchPortal, portals: allPortals }) {
             )}
 
             <button
-              onClick={handleVerifyDob}
+              onClick={handleVerifyEmail}
               disabled={forgotLoading}
               className="w-full py-3 rounded-xl text-white font-bold text-sm transition-all duration-150 mb-5 flex items-center justify-center gap-2 disabled:opacity-70"
               style={{ background: portal.gradient }}
