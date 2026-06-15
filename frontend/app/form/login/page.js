@@ -11,13 +11,13 @@ export default function FormLogin() {
   const [error, setError] = useState('')
   const [studentName, setStudentName] = useState('')
   const [universityId, setUniversityId] = useState('')
-  const [dob, setDob] = useState('')
+  const [kietEmail, setKietEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
 
   const handleVerify = async () => {
-    if (!universityId || !dob) {
+    if (!universityId || !kietEmail.trim()) {
       setError('Please fill all fields.')
       return
     }
@@ -27,7 +27,7 @@ export default function FormLogin() {
       const res = await fetch('/api/auth/verify-dob', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ universityId, dob })
+        body: JSON.stringify({ universityId, email: kietEmail.trim() })
       })
       const data = await res.json()
       if (!data.success) {
@@ -147,11 +147,12 @@ export default function FormLogin() {
                 />
               </div>
               <div>
-                <label className="text-sm font-semibold text-gray-700 block mb-1">Date of Birth</label>
+                <label className="text-sm font-semibold text-gray-700 block mb-1">Official KIET Email</label>
                 <input
-                  type="date"
-                  value={dob}
-                  onChange={e => setDob(e.target.value)}
+                  type="email"
+                  placeholder="e.g. priyanshu.2428cse771@kiet.edu"
+                  value={kietEmail}
+                  onChange={e => setKietEmail(e.target.value)}
                   className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400"
                 />
               </div>

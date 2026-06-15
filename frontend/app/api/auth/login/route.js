@@ -29,7 +29,7 @@ export async function POST(request) {
       return Response.json({ 
         success: false,
         status: 'not_registered',
-        error: 'Please verify with your DOB first.' 
+        error: 'Please verify your identity first.' 
       })
     }
 

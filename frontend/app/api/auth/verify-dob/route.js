@@ -2,7 +2,7 @@ import { prisma } from '@/lib/prisma'
 
 export async function POST(request) {
   try {
-    const { universityId, dob } = await request.json()
+    const { universityId, email } = await request.json()
 
     const student = await prisma.student.findUnique({
       where: { universityId }
@@ -24,13 +24,10 @@ export async function POST(request) {
       })
     }
 
-    const studentDob = student.dob.toISOString().split('T')[0]
-    const enteredDob = new Date(dob).toISOString().split('T')[0]
-
-    if (studentDob !== enteredDob) {
+    if (!student.email || student.email.trim().toLowerCase() !== email.trim().toLowerCase()) {
       return Response.json({ 
         success: false,
-        error: 'Date of birth does not match our records.' 
+        error: 'Verification failed.' 
       })
     }
 
