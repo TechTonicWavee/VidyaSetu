@@ -86,665 +86,695 @@ function CollapsibleSection({ title, icon: Icon, children, isOpen, onToggle, com
 export default function ProfileEditPage() {
   const router = useRouter()
   const [sidebarOpen, setSidebarOpen] = useState(true)
-  const [spiScore, setSpiScore] = useState(72)
+  const [spiScore, setSpiScore] = useState(null)           // [MODIFIED] real from DB
   const [expandedSections, setExpandedSections] = useState({
     basic: true,
-    projects: true,
-    certifications: true,
-    hackathons: true,
-    extracurriculars: true,
-    skills: true
+    coding: true,
+    projects: false,
+    certifications: false,
+    hackathons: false,
+    extracurriculars: false,
+    skills: false
   })
   const [loadingSections, setLoadingSections] = useState({})
   const [toastMessage, setToastMessage] = useState(null)
+  const [saving, setSaving] = useState(false)              // [MODIFIED] global save state
 
-  // Form states
-  const [basicInfo, setBasicInfo] = useState({ name: 'Priyanshu Raj', phone: '', linkedin: '', github: '', bio: '', photo: null })
+  // ── [MODIFIED] Session-backed state ─────────────────────────────────────────
+  const [universityId, setUniversityId] = useState('')
+
+  // Basic Info
+  const [basicInfo, setBasicInfo] = useState({
+    name: '', phone: '', email: '', bio: '', photo: null
+  })
+
+  // [MODIFIED] Coding platform usernames (replaces URL fields)
+  const [codingProfiles, setCodingProfiles] = useState({
+    github: '', leetcode: '', codechef: '', hackerrank: '', codeforces: '', gfg: '', linkedinUrl: ''
+  })
+
+  // Other sections (unchanged)
   const [projects, setProjects] = useState([])
   const [certifications, setCertifications] = useState([])
   const [hackathons, setHackathons] = useState([])
   const [extracurriculars, setExtracurriculars] = useState([])
   const [skills, setSkills] = useState([])
 
-  // Profile completion tracking
+  // ── [MODIFIED] Load session + existing SPI on mount ─────────────────────────
+  useEffect(() => {
+    const raw = localStorage.getItem('vs_student')
+    if (!raw) { router.push('/login'); return }
+    try {
+      const session = JSON.parse(raw)
+      const univId = session.universityId || ''
+      setUniversityId(univId)
+      if (session.name) setBasicInfo(prev => ({ ...prev, name: session.name }))
+      if (session.spiScore != null) setSpiScore(session.spiScore)
+
+      if (univId) {
+        fetch(`/api/student/update?universityId=${univId}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.success && data.student) {
+              setBasicInfo({
+                name: data.student.fullName || '',
+                phone: data.student.phone || '',
+                email: data.student.email || '',
+                bio: '',
+                photo: null
+              })
+              if (data.codingProfile) {
+                setCodingProfiles({
+                  github: data.codingProfile.github || '',
+                  leetcode: data.codingProfile.leetcode || '',
+                  codechef: data.codingProfile.codechef || '',
+                  hackerrank: data.codingProfile.hackerrank || '',
+                  codeforces: data.codingProfile.codeforces || '',
+                  gfg: data.codingProfile.gfg || '',
+                  linkedinUrl: data.codingProfile.linkedinUrl || '',
+                })
+              }
+            }
+          })
+          .catch(err => console.error('[edit/load] Error fetching profile:', err))
+      }
+    } catch {}
+  }, [])
+  // ────────────────────────────────────────────────────────────────────────────
+
+  // ── [MODIFIED] Profile completion (unchanged formula) ──────────────────────
   const profileCompletion = Math.round(
-    (Object.keys(basicInfo).filter(k => basicInfo[k]).length / 6 * 20 +
-    Math.min(projects.length, 1) * 15 +
-    Math.min(certifications.length, 1) * 15 +
-    Math.min(hackathons.length, 1) * 15 +
-    Math.min(extracurriculars.length, 1) * 15 +
-    Math.min(skills.length, 3) * 5) / 100 * 100
+    (Object.keys(basicInfo).filter(k => basicInfo[k]).length / 4 * 20 +
+    (codingProfiles.github ? 20 : 0) +
+    Math.min(projects.length, 1) * 10 +
+    Math.min(certifications.length, 1) * 10 +
+    Math.min(hackathons.length, 1) * 10 +
+    Math.min(extracurriculars.length, 1) * 10 +
+    Math.min(skills.length, 3) * 3.33) / 100 * 100
   )
 
   const toggleSection = (section) => {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }))
   }
 
-  const saveSection = async (section, data) => {
+  // ── [MODIFIED] Real save flow: Student → CodingProfile → fetch → SPI ────────
+  const handleSaveAll = async () => {
+    if (!universityId) {
+      setToastMessage('Session expired. Please log in again.')
+      setTimeout(() => setToastMessage(null), 4000)
+      return
+    }
+    setSaving(true)
+    setToastMessage(null)
+
+    // Step 1 & 2: Update Student + CodingProfile
+    try {
+      const updateRes = await fetch('/api/student/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          universityId,
+          student: {
+            fullName: basicInfo.name,
+            phone:    basicInfo.phone,
+            email:    basicInfo.email,
+          },
+          codingProfile: codingProfiles,
+        }),
+      })
+      const updateData = await updateRes.json()
+      if (!updateData.success) throw new Error(updateData.error || 'Profile update failed')
+    } catch (err) {
+      console.error('[save] Student/CP update failed:', err)
+      setToastMessage('Save failed: ' + err.message)
+      setTimeout(() => setToastMessage(null), 4000)
+      setSaving(false)
+      return
+    }
+
+    // Step 3: Refresh coding stats
+    let statsOk = true
+    try {
+      const fetchRes = await fetch(`/api/coding-profile/fetch?universityId=${universityId}`)
+      const fetchData = await fetchRes.json()
+      if (!fetchData.success) {
+        console.warn('[save] Stats fetch non-success:', fetchData.error)
+        statsOk = false
+      }
+    } catch (err) {
+      console.warn('[save] Stats fetch error:', err)
+      statsOk = false
+    }
+
+    // Step 4: Recalculate SPI
+    let spiOk = true
+    try {
+      const spiRes = await fetch('/api/spi/recalculate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ universityId }),
+      })
+      const spiData = await spiRes.json()
+      if (spiData.success && spiData.spi != null) {
+        setSpiScore(Number(spiData.spi.toFixed(1)))
+      } else {
+        console.warn('[save] SPI recalc non-success:', spiData.error)
+        spiOk = false
+      }
+    } catch (err) {
+      console.warn('[save] SPI recalc error:', err)
+      spiOk = false
+    }
+
+    setSaving(false)
+
+    // Step 5 & 6: Toast + redirect
+    if (!statsOk && !spiOk) {
+      setToastMessage('Profile saved. SPI will refresh later.')
+    } else if (!statsOk) {
+      setToastMessage('Profile saved. Unable to refresh coding statistics.')
+    } else {
+      setToastMessage('Profile updated and SPI recalculated successfully!')
+    }
+
+    setTimeout(() => router.push('/student'), 2000)
+  }
+  // ────────────────────────────────────────────────────────────────────────────
+
+  // [FIX] saveSection stub — per-section local state only
+  const saveSection = async (section) => {
     setLoadingSections(prev => ({ ...prev, [section]: true }))
-    
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500))
-    
-    // Save to localStorage
-    localStorage.setItem(`profile_${section}`, JSON.stringify(data))
-    
-    // Update SPI score
-    setSpiScore(prev => Math.min(100, prev + 2))
-    
-    // Show toast
-    setToastMessage('Profile updated — SPI recalculating...')
-    setTimeout(() => setToastMessage(null), 3000)
-    
+    await new Promise(resolve => setTimeout(resolve, 600))
     setLoadingSections(prev => ({ ...prev, [section]: false }))
   }
 
-  // ════════════════════════════════════════════
-  // SECTION 1: BASIC INFO
-  // ════════════════════════════════════════════
-  function BasicInfoSection() {
-    const handleSave = () => saveSection('basic', basicInfo)
-    
-    return (
-      <div className="space-y-4">
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-navy mb-1">Full Name</label>
-            <input
-              type="text"
-              value={basicInfo.name}
-              onChange={e => setBasicInfo({...basicInfo, name: e.target.value})}
-              className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="Your full name"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-navy mb-1">Phone</label>
-            <input
-              type="tel"
-              value={basicInfo.phone}
-              onChange={e => setBasicInfo({...basicInfo, phone: e.target.value})}
-              className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="+91 98765 43210"
-            />
-          </div>
-        </div>
+  // ── Inline section JSX refs (no inner component functions — prevents remount) ──
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-navy mb-1">LinkedIn URL</label>
-            <input
-              type="url"
-              value={basicInfo.linkedin}
-              onChange={e => setBasicInfo({...basicInfo, linkedin: e.target.value})}
-              className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="linkedin.com/in/yourprofile"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-navy mb-1">GitHub URL</label>
-            <input
-              type="url"
-              value={basicInfo.github}
-              onChange={e => setBasicInfo({...basicInfo, github: e.target.value})}
-              className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary"
-              placeholder="github.com/yourprofile"
-            />
-          </div>
-        </div>
+  const codingPlatformFields = [
+    { key: 'github',      label: 'GitHub Username',        placeholder: 'e.g. priyanshu-raj',  hint: 'github.com/' },
+    { key: 'leetcode',    label: 'LeetCode Username',      placeholder: 'e.g. priyanshu_raj',  hint: 'leetcode.com/u/' },
+    { key: 'codechef',    label: 'CodeChef Username',      placeholder: 'e.g. priyanshu123',   hint: 'codechef.com/users/' },
+    { key: 'codeforces',  label: 'Codeforces Username',    placeholder: 'e.g. priyanshu.raj',  hint: 'codeforces.com/profile/' },
+    { key: 'hackerrank',  label: 'HackerRank Username',    placeholder: 'e.g. priyanshu_raj',  hint: 'hackerrank.com/profile/' },
+    { key: 'gfg',         label: 'GeeksForGeeks Username', placeholder: 'e.g. priyanshuraj',  hint: 'geeksforgeeks.org/user/' },
+    { key: 'linkedinUrl', label: 'LinkedIn Username',      placeholder: 'e.g. priyanshu-raj',  hint: 'linkedin.com/in/' },
+  ]
 
-        <div>
-          <label className="block text-sm font-medium text-navy mb-1">Bio</label>
-          <textarea
-            value={basicInfo.bio}
-            onChange={e => setBasicInfo({...basicInfo, bio: e.target.value})}
-            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary resize-none"
-            placeholder="Tell us about yourself..."
-            rows="4"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-navy mb-2">Profile Photo</label>
-          <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary transition-colors cursor-pointer">
-            <Upload size={24} className="mx-auto text-gray-400 mb-2" />
-            <p className="text-sm text-gray-600">Upload a new photo</p>
-            <input type="file" accept="image/*" className="hidden" />
-          </div>
-        </div>
-
-        <button
-          onClick={handleSave}
-          disabled={loadingSections.basic}
-          className="w-full px-6 py-2.5 bg-primary text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
-        >
-          {loadingSections.basic ? <>
-            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-            Saving...
-          </> : <>
-            <CheckCircle size={18} />
-            Save Basic Info
-          </>}
-        </button>
-      </div>
-    )
+  // Per-section "add new" local states (outside child functions, stable across renders)
+  const [newProject,  setNewProject]  = useState({ title: '', description: '', techStack: [], github: '', liveDemo: '', status: 'Completed', type: 'Personal' })
+  const [newCert,     setNewCert]     = useState({ name: '', platform: 'Coursera', dateCompleted: '', skills: [] })
+  const [newHack,     setNewHack]     = useState({ name: '', organizer: '', date: '', position: '', teamSize: '', projectBuilt: '', outcome: '' })
+  const [newExtra,    setNewExtra]    = useState({ name: '', role: '', year: '', description: '', achievement: '' })
+  const [newSkill,    setNewSkill]    = useState({ name: '', rating: 3, category: 'Programming Languages' })  // ── Helper functions for managing lists ────────────────────────────────────
+  const addProject = () => {
+    if (newProject.title) {
+      setProjects([...projects, { ...newProject, id: Date.now() }])
+      setNewProject({ title: '', description: '', techStack: [], github: '', liveDemo: '', status: 'Completed', type: 'Personal' })
+    }
   }
 
-  // ════════════════════════════════════════════
-  // SECTION 2: PROJECTS
-  // ════════════════════════════════════════════
-  function ProjectsSection() {
-    const [newProject, setNewProject] = useState({
-      title: '', description: '', techStack: [], github: '', liveDemo: '', status: 'Completed', type: 'Personal'
-    })
+  const removeProject = (id) => {
+    setProjects(projects.filter(p => p.id !== id))
+  }
 
-    const addProject = () => {
-      if (newProject.title) {
-        setProjects([...projects, { ...newProject, id: Date.now() }])
-        setNewProject({ title: '', description: '', techStack: [], github: '', liveDemo: '', status: 'Completed', type: 'Personal' })
-      }
+  const addCertification = () => {
+    if (newCert.name) {
+      setCertifications([...certifications, { ...newCert, id: Date.now() }])
+      setNewCert({ name: '', platform: 'Coursera', dateCompleted: '', skills: [] })
     }
+  }
 
-    const removeProject = (id) => {
-      setProjects(projects.filter(p => p.id !== id))
+  const removeCert = (id) => {
+    setCertifications(certifications.filter(c => c.id !== id))
+  }
+
+  const addHackathon = () => {
+    if (newHack.name) {
+      setHackathons([...hackathons, { ...newHack, id: Date.now() }])
+      setNewHack({ name: '', organizer: '', date: '', position: '', teamSize: '', projectBuilt: '', outcome: '' })
     }
+  }
 
-    const handleSave = () => saveSection('projects', projects)
+  const removeHack = (id) => {
+    setHackathons(hackathons.filter(h => h.id !== id))
+  }
 
-    return (
-      <div className="space-y-4">
-        {projects.map(project => (
-          <div key={project.id} className="bg-white border border-gray-200 rounded-lg p-4">
-            <div className="flex justify-between items-start mb-3">
-              <div>
-                <h4 className="font-semibold text-navy">{project.title}</h4>
-                <p className="text-xs text-gray-500">{project.type}</p>
-              </div>
-              <button onClick={() => removeProject(project.id)} className="text-red-500 hover:bg-red-50 p-2 rounded">
-                <Trash2 size={18} />
-              </button>
-            </div>
-            <p className="text-sm text-gray-600 mb-2">{project.description}</p>
-            {project.techStack.length > 0 && (
-              <div className="flex flex-wrap gap-1 mb-2">
-                {project.techStack.map((tech, i) => (
-                  <span key={i} className="text-xs bg-blue-50 text-primary px-2 py-1 rounded">{tech}</span>
-                ))}
-              </div>
-            )}
-            <div className="flex gap-2 text-xs">
-              {project.github && <a href={project.github} target="_blank" className="text-primary hover:underline flex items-center gap-1"><Github size={14} /> Code</a>}
-              {project.liveDemo && <a href={project.liveDemo} target="_blank" className="text-primary hover:underline flex items-center gap-1"><ExternalLink size={14} /> Demo</a>}
+  const addExtra = () => {
+    if (newExtra.name) {
+      setExtracurriculars([...extracurriculars, { ...newExtra, id: Date.now() }])
+      setNewExtra({ name: '', role: '', year: '', description: '', achievement: '' })
+    }
+  }
+
+  const removeExtra = (id) => {
+    setExtracurriculars(extracurriculars.filter(e => e.id !== id))
+  }
+
+  const addSkill = () => {
+    if (newSkill.name) {
+      setSkills([...skills, { ...newSkill, id: Date.now() }])
+      setNewSkill({ name: '', rating: 3, category: 'Programming Languages' })
+    }
+  }
+
+  const removeSkill = (id) => {
+    setSkills(skills.filter(s => s.id !== id))
+  }
+
+  // ── Inline section JSX blocks (prevents remounting and losing focus) ───────
+  const basicInfoJSX = (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-navy mb-1">Full Name</label>
+          <input
+            type="text"
+            value={basicInfo.name || ''}
+            onChange={e => setBasicInfo({ ...basicInfo, name: e.target.value })}
+            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
+            placeholder="Your full name"
+          />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-navy mb-1">Phone</label>
+          <input
+            type="tel"
+            value={basicInfo.phone || ''}
+            onChange={e => setBasicInfo({ ...basicInfo, phone: e.target.value })}
+            className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
+            placeholder="+91 98765 43210"
+          />
+        </div>
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-navy mb-1">Email</label>
+        <input
+          type="email"
+          value={basicInfo.email || ''}
+          onChange={e => setBasicInfo({ ...basicInfo, email: e.target.value })}
+          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
+          placeholder="your.email@example.com"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-navy mb-1">Bio</label>
+        <textarea
+          value={basicInfo.bio || ''}
+          onChange={e => setBasicInfo({ ...basicInfo, bio: e.target.value })}
+          className="w-full px-4 py-2.5 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary resize-none text-sm text-navy"
+          placeholder="Tell us about yourself..."
+          rows="4"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-navy mb-2">Profile Photo</label>
+        <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-primary transition-colors cursor-pointer">
+          <Upload size={24} className="mx-auto text-gray-400 mb-2" />
+          <p className="text-sm text-gray-600">Upload a new photo</p>
+          <input type="file" accept="image/*" className="hidden" />
+        </div>
+      </div>
+    </div>
+  )
+
+  const codingPlatformsJSX = (
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {codingPlatformFields.map(field => (
+          <div key={field.key}>
+            <label className="block text-sm font-medium text-navy mb-1">{field.label}</label>
+            <div className="flex rounded-lg shadow-sm">
+              <span className="inline-flex items-center px-3 rounded-l-lg border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-xs select-none">
+                {field.hint}
+              </span>
+              <input
+                type="text"
+                value={codingProfiles[field.key] || ''}
+                onChange={e => setCodingProfiles({ ...codingProfiles, [field.key]: e.target.value })}
+                className="flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
+                placeholder={field.placeholder}
+              />
             </div>
           </div>
         ))}
-
-        <div className="bg-white border border-gray-200 rounded-lg p-4">
-          <h4 className="font-semibold text-navy mb-3">Add New Project</h4>
-          <input
-            type="text"
-            value={newProject.title}
-            onChange={e => setNewProject({...newProject, title: e.target.value})}
-            placeholder="Project title"
-            className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
-          />
-          <textarea
-            value={newProject.description}
-            onChange={e => setNewProject({...newProject, description: e.target.value})}
-            placeholder="Project description"
-            className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm resize-none"
-            rows="2"
-          />
-          <input
-            type="text"
-            value={newProject.techStack.join(', ')}
-            onChange={e => setNewProject({...newProject, techStack: e.target.value.split(',').map(t => t.trim()).filter(t => t)})}
-            placeholder="Tech stack (comma-separated)"
-            className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
-          />
-          <div className="grid grid-cols-2 gap-2 mb-2">
-            <select
-              value={newProject.type}
-              onChange={e => setNewProject({...newProject, type: e.target.value})}
-              className="px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
-            >
-              <option>Personal</option>
-              <option>Academic</option>
-              <option>Internship</option>
-              <option>Hackathon</option>
-            </select>
-            <select
-              value={newProject.status}
-              onChange={e => setNewProject({...newProject, status: e.target.value})}
-              className="px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
-            >
-              <option>Completed</option>
-              <option>In Progress</option>
-              <option>Planned</option>
-            </select>
-          </div>
-          <button
-            onClick={addProject}
-            className="w-full px-3 py-2 bg-primary text-white rounded text-sm font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-          >
-            <Plus size={16} /> Add Project
-          </button>
-        </div>
-
-        <button
-          onClick={handleSave}
-          disabled={loadingSections.projects}
-          className="w-full px-6 py-2.5 bg-primary text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
-        >
-          {loadingSections.projects ? <>
-            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-            Saving...
-          </> : <>
-            <CheckCircle size={18} />
-            Save Projects
-          </>}
-        </button>
       </div>
-    )
-  }
+    </div>
+  )
 
-  // ════════════════════════════════════════════
-  // SECTION 3: CERTIFICATIONS
-  // ════════════════════════════════════════════
-  function CertificationsSection() {
-    const [newCert, setNewCert] = useState({
-      name: '', platform: 'Coursera', dateCompleted: '', skills: []
-    })
-
-    const addCertification = () => {
-      if (newCert.name) {
-        setCertifications([...certifications, { ...newCert, id: Date.now() }])
-        setNewCert({ name: '', platform: 'Coursera', dateCompleted: '', skills: [] })
-      }
-    }
-
-    const removeCert = (id) => {
-      setCertifications(certifications.filter(c => c.id !== id))
-    }
-
-    const handleSave = () => saveSection('certifications', certifications)
-
-    return (
-      <div className="space-y-4">
-        {certifications.map(cert => (
-          <div key={cert.id} className="bg-white border border-gray-200 rounded-lg p-4">
-            <div className="flex justify-between items-start mb-2">
-              <div>
-                <h4 className="font-semibold text-navy">{cert.name}</h4>
-                <p className="text-xs text-gray-500">{cert.platform} • {cert.dateCompleted}</p>
-              </div>
-              <button onClick={() => removeCert(cert.id)} className="text-red-500 hover:bg-red-50 p-2 rounded">
-                <Trash2 size={18} />
-              </button>
+  const projectsJSX = (
+    <div className="space-y-4">
+      {projects.map(project => (
+        <div key={project.id} className="bg-white border border-gray-200 rounded-lg p-4">
+          <div className="flex justify-between items-start mb-3">
+            <div>
+              <h4 className="font-semibold text-navy">{project.title}</h4>
+              <p className="text-xs text-gray-500">{project.type}</p>
             </div>
-            {cert.skills.length > 0 && (
-              <div className="flex flex-wrap gap-1">
-                {cert.skills.map((skill, i) => (
-                  <span key={i} className="text-xs bg-green-50 text-green-700 px-2 py-1 rounded">{skill}</span>
-                ))}
-              </div>
-            )}
+            <button onClick={() => removeProject(project.id)} className="text-red-500 hover:bg-red-50 p-2 rounded">
+              <Trash2 size={18} />
+            </button>
           </div>
-        ))}
+          <p className="text-sm text-gray-600 mb-2">{project.description}</p>
+          {project.techStack && project.techStack.length > 0 && (
+            <div className="flex flex-wrap gap-1 mb-2">
+              {project.techStack.map((tech, i) => (
+                <span key={i} className="text-xs bg-blue-50 text-primary px-2 py-1 rounded">{tech}</span>
+              ))}
+            </div>
+          )}
+          <div className="flex gap-2 text-xs">
+            {project.github && <a href={project.github} target="_blank" rel="noreferrer" className="text-primary hover:underline flex items-center gap-1"><Github size={14} /> Code</a>}
+            {project.liveDemo && <a href={project.liveDemo} target="_blank" rel="noreferrer" className="text-primary hover:underline flex items-center gap-1"><ExternalLink size={14} /> Demo</a>}
+          </div>
+        </div>
+      ))}
 
-        <div className="bg-white border border-gray-200 rounded-lg p-4">
-          <h4 className="font-semibold text-navy mb-3">Add New Certification</h4>
-          <input
-            type="text"
-            value={newCert.name}
-            onChange={e => setNewCert({...newCert, name: e.target.value})}
-            placeholder="Certification name"
-            className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
-          />
+      <div className="bg-white border border-gray-200 rounded-lg p-4">
+        <h4 className="font-semibold text-navy mb-3">Add New Project</h4>
+        <input
+          type="text"
+          value={newProject.title}
+          onChange={e => setNewProject({...newProject, title: e.target.value})}
+          placeholder="Project title"
+          className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
+        />
+        <textarea
+          value={newProject.description}
+          onChange={e => setNewProject({...newProject, description: e.target.value})}
+          placeholder="Project description"
+          className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm resize-none text-navy"
+          rows="2"
+        />
+        <input
+          type="text"
+          value={newProject.techStack ? newProject.techStack.join(', ') : ''}
+          onChange={e => setNewProject({...newProject, techStack: e.target.value.split(',').map(t => t.trim()).filter(t => t)})}
+          placeholder="Tech stack (comma-separated)"
+          className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
+        />
+        <div className="grid grid-cols-2 gap-2 mb-2">
           <select
-            value={newCert.platform}
-            onChange={e => setNewCert({...newCert, platform: e.target.value})}
-            className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+            value={newProject.type}
+            onChange={e => setNewProject({...newProject, type: e.target.value})}
+            className="px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
           >
-            <option>Coursera</option>
-            <option>NPTEL</option>
-            <option>Udemy</option>
-            <option>Other</option>
+            <option>Personal</option>
+            <option>Academic</option>
+            <option>Internship</option>
+            <option>Hackathon</option>
           </select>
-          <input
-            type="date"
-            value={newCert.dateCompleted}
-            onChange={e => setNewCert({...newCert, dateCompleted: e.target.value})}
-            className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
-          />
-          <input
-            type="text"
-            value={newCert.skills.join(', ')}
-            onChange={e => setNewCert({...newCert, skills: e.target.value.split(',').map(s => s.trim()).filter(s => s)})}
-            placeholder="Skills (comma-separated)"
-            className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
-          />
-          <button
-            onClick={addCertification}
-            className="w-full px-3 py-2 bg-primary text-white rounded text-sm font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+          <select
+            value={newProject.status}
+            onChange={e => setNewProject({...newProject, status: e.target.value})}
+            className="px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
           >
-            <Plus size={16} /> Add Certification
-          </button>
+            <option>Completed</option>
+            <option>In Progress</option>
+            <option>Planned</option>
+          </select>
         </div>
-
+        <div className="grid grid-cols-2 gap-2 mb-2">
+          <input
+            type="url"
+            value={newProject.github || ''}
+            onChange={e => setNewProject({...newProject, github: e.target.value})}
+            placeholder="GitHub link"
+            className="px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy w-full"
+          />
+          <input
+            type="url"
+            value={newProject.liveDemo || ''}
+            onChange={e => setNewProject({...newProject, liveDemo: e.target.value})}
+            placeholder="Live demo link"
+            className="px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy w-full"
+          />
+        </div>
         <button
-          onClick={handleSave}
-          disabled={loadingSections.certifications}
-          className="w-full px-6 py-2.5 bg-primary text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+          onClick={addProject}
+          className="w-full px-3 py-2 bg-primary text-white rounded text-sm font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
         >
-          {loadingSections.certifications ? <>
-            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-            Saving...
-          </> : <>
-            <CheckCircle size={18} />
-            Save Certifications
-          </>}
+          <Plus size={16} /> Add Project
         </button>
       </div>
-    )
-  }
+    </div>
+  )
 
-  // ════════════════════════════════════════════
-  // SECTION 4: HACKATHONS & COMPETITIONS
-  // ════════════════════════════════════════════
-  function HackathonsSection() {
-    const [newHack, setNewHack] = useState({
-      name: '', organizer: '', date: '', position: '', teamSize: '', projectBuilt: '', outcome: ''
-    })
-
-    const addHackathon = () => {
-      if (newHack.name) {
-        setHackathons([...hackathons, { ...newHack, id: Date.now() }])
-        setNewHack({ name: '', organizer: '', date: '', position: '', teamSize: '', projectBuilt: '', outcome: '' })
-      }
-    }
-
-    const removeHack = (id) => {
-      setHackathons(hackathons.filter(h => h.id !== id))
-    }
-
-    const handleSave = () => saveSection('hackathons', hackathons)
-
-    return (
-      <div className="space-y-4">
-        {hackathons.map(hack => (
-          <div key={hack.id} className="bg-white border border-gray-200 rounded-lg p-4">
-            <div className="flex justify-between items-start mb-2">
-              <div>
-                <h4 className="font-semibold text-navy">{hack.name}</h4>
-                <p className="text-xs text-gray-500">{hack.organizer} • {hack.date}</p>
-              </div>
-              <button onClick={() => removeHack(hack.id)} className="text-red-500 hover:bg-red-50 p-2 rounded">
-                <Trash2 size={18} />
-              </button>
+  const certificationsJSX = (
+    <div className="space-y-4">
+      {certifications.map(cert => (
+        <div key={cert.id} className="bg-white border border-gray-200 rounded-lg p-4">
+          <div className="flex justify-between items-start mb-2">
+            <div>
+              <h4 className="font-semibold text-navy">{cert.name}</h4>
+              <p className="text-xs text-gray-500">{cert.platform} • {cert.dateCompleted}</p>
             </div>
-            <div className="text-sm text-gray-600 space-y-1">
-              <p><span className="font-medium">Position:</span> {hack.position}</p>
-              <p><span className="font-medium">Team Size:</span> {hack.teamSize}</p>
-              <p><span className="font-medium">Project:</span> {hack.projectBuilt}</p>
-            </div>
+            <button onClick={() => removeCert(cert.id)} className="text-red-500 hover:bg-red-50 p-2 rounded">
+              <Trash2 size={18} />
+            </button>
           </div>
-        ))}
-
-        <div className="bg-white border border-gray-200 rounded-lg p-4">
-          <h4 className="font-semibold text-navy mb-3">Add Hackathon/Competition</h4>
-          <input
-            type="text"
-            value={newHack.name}
-            onChange={e => setNewHack({...newHack, name: e.target.value})}
-            placeholder="Hackathon/Competition name"
-            className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
-          />
-          <input
-            type="text"
-            value={newHack.organizer}
-            onChange={e => setNewHack({...newHack, organizer: e.target.value})}
-            placeholder="Organizer"
-            className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
-          />
-          <input
-            type="date"
-            value={newHack.date}
-            onChange={e => setNewHack({...newHack, date: e.target.value})}
-            className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
-          />
-          <textarea
-            value={newHack.projectBuilt}
-            onChange={e => setNewHack({...newHack, projectBuilt: e.target.value})}
-            placeholder="Project built"
-            className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm resize-none"
-            rows="2"
-          />
-          <button
-            onClick={addHackathon}
-            className="w-full px-3 py-2 bg-primary text-white rounded text-sm font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-          >
-            <Plus size={16} /> Add Entry
-          </button>
-        </div>
-
-        <button
-          onClick={handleSave}
-          disabled={loadingSections.hackathons}
-          className="w-full px-6 py-2.5 bg-primary text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
-        >
-          {loadingSections.hackathons ? <>
-            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-            Saving...
-          </> : <>
-            <CheckCircle size={18} />
-            Save Hackathons
-          </>}
-        </button>
-      </div>
-    )
-  }
-
-  // ════════════════════════════════════════════
-  // SECTION 5: EXTRACURRICULARS
-  // ════════════════════════════════════════════
-  function ExtracurricularsSection() {
-    const [newExtra, setNewExtra] = useState({
-      name: '', role: '', year: '', description: '', achievement: ''
-    })
-
-    const addExtra = () => {
-      if (newExtra.name) {
-        setExtracurriculars([...extracurriculars, { ...newExtra, id: Date.now() }])
-        setNewExtra({ name: '', role: '', year: '', description: '', achievement: '' })
-      }
-    }
-
-    const removeExtra = (id) => {
-      setExtracurriculars(extracurriculars.filter(e => e.id !== id))
-    }
-
-    const handleSave = () => saveSection('extracurriculars', extracurriculars)
-
-    return (
-      <div className="space-y-4">
-        {extracurriculars.map(extra => (
-          <div key={extra.id} className="bg-white border border-gray-200 rounded-lg p-4">
-            <div className="flex justify-between items-start mb-2">
-              <div>
-                <h4 className="font-semibold text-navy">{extra.name}</h4>
-                <p className="text-xs text-gray-500">{extra.role} • {extra.year}</p>
-              </div>
-              <button onClick={() => removeExtra(extra.id)} className="text-red-500 hover:bg-red-50 p-2 rounded">
-                <Trash2 size={18} />
-              </button>
+          {cert.skills && cert.skills.length > 0 && (
+            <div className="flex flex-wrap gap-1">
+              {cert.skills.map((skill, i) => (
+                <span key={i} className="text-xs bg-green-50 text-green-700 px-2 py-1 rounded">{skill}</span>
+              ))}
             </div>
-            <p className="text-sm text-gray-600 mb-1">{extra.description}</p>
-            {extra.achievement && <p className="text-xs text-green-700 bg-green-50 px-2 py-1 rounded w-fit">{extra.achievement}</p>}
-          </div>
-        ))}
-
-        <div className="bg-white border border-gray-200 rounded-lg p-4">
-          <h4 className="font-semibold text-navy mb-3">Add Activity</h4>
-          <input
-            type="text"
-            value={newExtra.name}
-            onChange={e => setNewExtra({...newExtra, name: e.target.value})}
-            placeholder="Society/Club name"
-            className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
-          />
-          <input
-            type="text"
-            value={newExtra.role}
-            onChange={e => setNewExtra({...newExtra, role: e.target.value})}
-            placeholder="Your role/position"
-            className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
-          />
-          <input
-            type="text"
-            value={newExtra.year}
-            onChange={e => setNewExtra({...newExtra, year: e.target.value})}
-            placeholder="Year (e.g., 2nd Year)"
-            className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
-          />
-          <textarea
-            value={newExtra.description}
-            onChange={e => setNewExtra({...newExtra, description: e.target.value})}
-            placeholder="Description"
-            className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm resize-none"
-            rows="2"
-          />
-          <button
-            onClick={addExtra}
-            className="w-full px-3 py-2 bg-primary text-white rounded text-sm font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-          >
-            <Plus size={16} /> Add Activity
-          </button>
+          )}
         </div>
+      ))}
 
-        <button
-          onClick={handleSave}
-          disabled={loadingSections.extracurriculars}
-          className="w-full px-6 py-2.5 bg-primary text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+      <div className="bg-white border border-gray-200 rounded-lg p-4">
+        <h4 className="font-semibold text-navy mb-3">Add New Certification</h4>
+        <input
+          type="text"
+          value={newCert.name}
+          onChange={e => setNewCert({...newCert, name: e.target.value})}
+          placeholder="Certification name"
+          className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
+        />
+        <select
+          value={newCert.platform}
+          onChange={e => setNewCert({...newCert, platform: e.target.value})}
+          className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
         >
-          {loadingSections.extracurriculars ? <>
-            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-            Saving...
-          </> : <>
-            <CheckCircle size={18} />
-            Save Activities
-          </>}
+          <option>Coursera</option>
+          <option>NPTEL</option>
+          <option>Udemy</option>
+          <option>Other</option>
+        </select>
+        <input
+          type="date"
+          value={newCert.dateCompleted}
+          onChange={e => setNewCert({...newCert, dateCompleted: e.target.value})}
+          className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
+        />
+        <input
+          type="text"
+          value={newCert.skills ? newCert.skills.join(', ') : ''}
+          onChange={e => setNewCert({...newCert, skills: e.target.value.split(',').map(s => s.trim()).filter(s => s)})}
+          placeholder="Skills (comma-separated)"
+          className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
+        />
+        <button
+          onClick={addCertification}
+          className="w-full px-3 py-2 bg-primary text-white rounded text-sm font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+        >
+          <Plus size={16} /> Add Certification
         </button>
       </div>
-    )
-  }
+    </div>
+  )
 
-  // ════════════════════════════════════════════
-  // SECTION 6: SKILLS
-  // ════════════════════════════════════════════
-  function SkillsSection() {
-    const [newSkill, setNewSkill] = useState({ name: '', rating: 3, category: 'Programming Languages' })
+  const hackathonsJSX = (
+    <div className="space-y-4">
+      {hackathons.map(hack => (
+        <div key={hack.id} className="bg-white border border-gray-200 rounded-lg p-4">
+          <div className="flex justify-between items-start mb-2">
+            <div>
+              <h4 className="font-semibold text-navy">{hack.name}</h4>
+              <p className="text-xs text-gray-500">{hack.organizer} • {hack.date}</p>
+            </div>
+            <button onClick={() => removeHack(hack.id)} className="text-red-500 hover:bg-red-50 p-2 rounded">
+              <Trash2 size={18} />
+            </button>
+          </div>
+          <div className="text-sm text-gray-600 space-y-1">
+            <p><span className="font-medium">Position:</span> {hack.position}</p>
+            <p><span className="font-medium">Team Size:</span> {hack.teamSize}</p>
+            <p><span className="font-medium">Project:</span> {hack.projectBuilt}</p>
+          </div>
+        </div>
+      ))}
 
-    const addSkill = () => {
-      if (newSkill.name) {
-        setSkills([...skills, { ...newSkill, id: Date.now() }])
-        setNewSkill({ name: '', rating: 3, category: 'Programming Languages' })
-      }
-    }
+      <div className="bg-white border border-gray-200 rounded-lg p-4">
+        <h4 className="font-semibold text-navy mb-3">Add Hackathon/Competition</h4>
+        <input
+          type="text"
+          value={newHack.name}
+          onChange={e => setNewHack({...newHack, name: e.target.value})}
+          placeholder="Hackathon/Competition name"
+          className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
+        />
+        <input
+          type="text"
+          value={newHack.organizer}
+          onChange={e => setNewHack({...newHack, organizer: e.target.value})}
+          placeholder="Organizer"
+          className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
+        />
+        <input
+          type="date"
+          value={newHack.date}
+          onChange={e => setNewHack({...newHack, date: e.target.value})}
+          className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
+        />
+        <textarea
+          value={newHack.projectBuilt}
+          onChange={e => setNewHack({...newHack, projectBuilt: e.target.value})}
+          placeholder="Project built"
+          className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm resize-none text-navy"
+          rows="2"
+        />
+        <button
+          onClick={addHackathon}
+          className="w-full px-3 py-2 bg-primary text-white rounded text-sm font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+        >
+          <Plus size={16} /> Add Entry
+        </button>
+      </div>
+    </div>
+  )
 
-    const removeSkill = (id) => {
-      setSkills(skills.filter(s => s.id !== id))
-    }
+  const extracurricularsJSX = (
+    <div className="space-y-4">
+      {extracurriculars.map(extra => (
+        <div key={extra.id} className="bg-white border border-gray-200 rounded-lg p-4">
+          <div className="flex justify-between items-start mb-2">
+            <div>
+              <h4 className="font-semibold text-navy">{extra.name}</h4>
+              <p className="text-xs text-gray-500">{extra.role} • {extra.year}</p>
+            </div>
+            <button onClick={() => removeExtra(extra.id)} className="text-red-500 hover:bg-red-50 p-2 rounded">
+              <Trash2 size={18} />
+            </button>
+          </div>
+          <p className="text-sm text-gray-600 mb-1">{extra.description}</p>
+          {extra.achievement && <p className="text-xs text-green-700 bg-green-50 px-2 py-1 rounded w-fit">{extra.achievement}</p>}
+        </div>
+      ))}
 
-    const handleSave = () => saveSection('skills', skills)
+      <div className="bg-white border border-gray-200 rounded-lg p-4">
+        <h4 className="font-semibold text-navy mb-3">Add Activity</h4>
+        <input
+          type="text"
+          value={newExtra.name}
+          onChange={e => setNewExtra({...newExtra, name: e.target.value})}
+          placeholder="Society/Club name"
+          className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
+        />
+        <input
+          type="text"
+          value={newExtra.role}
+          onChange={e => setNewExtra({...newExtra, role: e.target.value})}
+          placeholder="Your role/position"
+          className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
+        />
+        <input
+          type="text"
+          value={newExtra.year}
+          onChange={e => setNewExtra({...newExtra, year: e.target.value})}
+          placeholder="Year (e.g., 2nd Year)"
+          className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
+        />
+        <textarea
+          value={newExtra.description}
+          onChange={e => setNewExtra({...newExtra, description: e.target.value})}
+          placeholder="Description"
+          className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm resize-none text-navy"
+          rows="2"
+        />
+        <button
+          onClick={addExtra}
+          className="w-full px-3 py-2 bg-primary text-white rounded text-sm font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+        >
+          <Plus size={16} /> Add Activity
+        </button>
+      </div>
+    </div>
+  )
 
-    const categories = ['Programming Languages', 'Frameworks', 'Tools', 'Soft Skills']
-    const skillsByCategory = categories.reduce((acc, cat) => {
-      acc[cat] = skills.filter(s => s.category === cat)
-      return acc
-    }, {})
+  const categories = ['Programming Languages', 'Frameworks', 'Tools', 'Soft Skills']
+  const skillsByCategory = categories.reduce((acc, cat) => {
+    acc[cat] = skills.filter(s => s.category === cat)
+    return acc
+  }, {})
 
-    return (
-      <div className="space-y-4">
-        {categories.map(category => (
-          skillsByCategory[category].length > 0 && (
-            <div key={category}>
-              <p className="text-sm font-semibold text-gray-600 mb-2">{category}</p>
-              <div className="grid grid-cols-2 gap-2 mb-3">
-                {skillsByCategory[category].map(skill => (
-                  <div key={skill.id} className="bg-white border border-gray-200 rounded-lg p-3 flex justify-between items-start">
-                    <div>
-                      <p className="text-sm font-medium text-navy">{skill.name}</p>
-                      <div className="flex gap-0.5 mt-1">
-                        {[...Array(5)].map((_, i) => (
-                          <Star key={i} size={12} className={i < skill.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'} />
-                        ))}
-                      </div>
+  const skillsJSX = (
+    <div className="space-y-4">
+      {categories.map(category => (
+        skillsByCategory[category] && skillsByCategory[category].length > 0 && (
+          <div key={category}>
+            <p className="text-sm font-semibold text-gray-600 mb-2">{category}</p>
+            <div className="grid grid-cols-2 gap-2 mb-3">
+              {skillsByCategory[category].map(skill => (
+                <div key={skill.id} className="bg-white border border-gray-200 rounded-lg p-3 flex justify-between items-start">
+                  <div>
+                    <p className="text-sm font-medium text-navy">{skill.name}</p>
+                    <div className="flex gap-0.5 mt-1">
+                      {[...Array(5)].map((_, i) => (
+                        <Star key={i} size={12} className={i < skill.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'} />
+                      ))}
                     </div>
-                    <button onClick={() => removeSkill(skill.id)} className="text-gray-400 hover:text-red-500">
-                      <X size={16} />
-                    </button>
                   </div>
-                ))}
-              </div>
-            </div>
-          )
-        ))}
-
-        <div className="bg-white border border-gray-200 rounded-lg p-4">
-          <h4 className="font-semibold text-navy mb-3">Add Skill</h4>
-          <input
-            type="text"
-            value={newSkill.name}
-            onChange={e => setNewSkill({...newSkill, name: e.target.value})}
-            placeholder="Skill name"
-            className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
-          />
-          <select
-            value={newSkill.category}
-            onChange={e => setNewSkill({...newSkill, category: e.target.value})}
-            className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm"
-          >
-            {categories.map(cat => <option key={cat}>{cat}</option>)}
-          </select>
-          <div className="mb-2">
-            <label className="block text-xs font-medium text-gray-600 mb-1">Rating</label>
-            <div className="flex gap-1">
-              {[1, 2, 3, 4, 5].map(i => (
-                <button
-                  key={i}
-                  onClick={() => setNewSkill({...newSkill, rating: i})}
-                  className="transition-all"
-                >
-                  <Star size={18} className={i <= newSkill.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'} />
-                </button>
+                  <button onClick={() => removeSkill(skill.id)} className="text-gray-400 hover:text-red-500">
+                    <X size={16} />
+                  </button>
+                </div>
               ))}
             </div>
           </div>
-          <button
-            onClick={addSkill}
-            className="w-full px-3 py-2 bg-primary text-white rounded text-sm font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
-          >
-            <Plus size={16} /> Add Skill
-          </button>
-        </div>
+        )
+      ))}
 
-        <button
-          onClick={handleSave}
-          disabled={loadingSections.skills}
-          className="w-full px-6 py-2.5 bg-primary text-white rounded-lg font-medium hover:bg-blue-700 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+      <div className="bg-white border border-gray-200 rounded-lg p-4">
+        <h4 className="font-semibold text-navy mb-3">Add Skill</h4>
+        <input
+          type="text"
+          value={newSkill.name}
+          onChange={e => setNewSkill({...newSkill, name: e.target.value})}
+          placeholder="Skill name"
+          className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
+        />
+        <select
+          value={newSkill.category}
+          onChange={e => setNewSkill({...newSkill, category: e.target.value})}
+          className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
         >
-          {loadingSections.skills ? <>
-            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-            Saving...
-          </> : <>
-            <CheckCircle size={18} />
-            Save Skills
-          </>}
+          {categories.map(cat => <option key={cat}>{cat}</option>)}
+        </select>
+        <div className="mb-2">
+          <label className="block text-xs font-medium text-gray-600 mb-1 text-navy">Rating</label>
+          <div className="flex gap-1">
+            {[1, 2, 3, 4, 5].map(i => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => setNewSkill({...newSkill, rating: i})}
+                className="transition-all"
+              >
+                <Star size={18} className={i <= newSkill.rating ? 'fill-yellow-400 text-yellow-400' : 'text-gray-300'} />
+              </button>
+            ))}
+          </div>
+        </div>
+        <button
+          onClick={addSkill}
+          className="w-full px-3 py-2 bg-primary text-white rounded text-sm font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+        >
+          <Plus size={16} /> Add Skill
         </button>
       </div>
-    )
-  }
+    </div>
+  )
 
   return (
     <div className="flex h-screen bg-bg-base overflow-hidden font-sans">
@@ -832,65 +862,46 @@ export default function ProfileEditPage() {
 
           {/* Sections */}
           <div className="space-y-4 max-w-4xl">
-            <CollapsibleSection
-              title="Basic Information"
-              icon={User}
-              isOpen={expandedSections.basic}
-              onToggle={() => toggleSection('basic')}
-              completionPercent={basicInfo.name ? 100 : 30}
-            >
-              <BasicInfoSection />
+            <CollapsibleSection title="Basic Information" icon={User} isOpen={expandedSections.basic} onToggle={() => toggleSection('basic')} completionPercent={basicInfo.name ? 100 : 30}>
+              {basicInfoJSX}
             </CollapsibleSection>
 
-            <CollapsibleSection
-              title="Projects"
-              icon={Folder}
-              isOpen={expandedSections.projects}
-              onToggle={() => toggleSection('projects')}
-              completionPercent={projects.length > 0 ? 100 : 0}
-            >
-              <ProjectsSection />
+            <CollapsibleSection title="Coding Platforms" icon={Cpu} isOpen={expandedSections.coding} onToggle={() => toggleSection('coding')} completionPercent={codingProfiles.github ? 100 : 0}>
+              {codingPlatformsJSX}
             </CollapsibleSection>
 
-            <CollapsibleSection
-              title="Certifications"
-              icon={Badge}
-              isOpen={expandedSections.certifications}
-              onToggle={() => toggleSection('certifications')}
-              completionPercent={certifications.length > 0 ? 100 : 0}
-            >
-              <CertificationsSection />
+            <CollapsibleSection title="Projects" icon={Folder} isOpen={expandedSections.projects} onToggle={() => toggleSection('projects')} completionPercent={projects.length > 0 ? 100 : 0}>
+              {projectsJSX}
             </CollapsibleSection>
 
-            <CollapsibleSection
-              title="Hackathons & Competitions"
-              icon={Zap}
-              isOpen={expandedSections.hackathons}
-              onToggle={() => toggleSection('hackathons')}
-              completionPercent={hackathons.length > 0 ? 100 : 0}
-            >
-              <HackathonsSection />
+            <CollapsibleSection title="Certifications" icon={Badge} isOpen={expandedSections.certifications} onToggle={() => toggleSection('certifications')} completionPercent={certifications.length > 0 ? 100 : 0}>
+              {certificationsJSX}
             </CollapsibleSection>
 
-            <CollapsibleSection
-              title="Extracurriculars"
-              icon={Award}
-              isOpen={expandedSections.extracurriculars}
-              onToggle={() => toggleSection('extracurriculars')}
-              completionPercent={extracurriculars.length > 0 ? 100 : 0}
-            >
-              <ExtracurricularsSection />
+            <CollapsibleSection title="Hackathons & Competitions" icon={Zap} isOpen={expandedSections.hackathons} onToggle={() => toggleSection('hackathons')} completionPercent={hackathons.length > 0 ? 100 : 0}>
+              {hackathonsJSX}
             </CollapsibleSection>
 
-            <CollapsibleSection
-              title="Skills"
-              icon={Star}
-              isOpen={expandedSections.skills}
-              onToggle={() => toggleSection('skills')}
-              completionPercent={skills.length > 0 ? Math.min(100, (skills.length / 3) * 100) : 0}
-            >
-              <SkillsSection />
+            <CollapsibleSection title="Extracurriculars" icon={Award} isOpen={expandedSections.extracurriculars} onToggle={() => toggleSection('extracurriculars')} completionPercent={extracurriculars.length > 0 ? 100 : 0}>
+              {extracurricularsJSX}
             </CollapsibleSection>
+
+            <CollapsibleSection title="Skills" icon={Star} isOpen={expandedSections.skills} onToggle={() => toggleSection('skills')} completionPercent={skills.length > 0 ? Math.min(100, (skills.length / 3) * 100) : 0}>
+              {skillsJSX}
+            </CollapsibleSection>
+
+            {/* [MODIFIED] Global Save Button — triggers the full 4-step save flow */}
+            <button
+              onClick={handleSaveAll}
+              disabled={saving}
+              className="w-full py-3 bg-primary text-white rounded-xl font-semibold text-sm hover:bg-blue-700 disabled:opacity-60 transition-all flex items-center justify-center gap-2 shadow-md"
+            >
+              {saving ? (
+                <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> Saving &amp; recalculating SPI...</>
+              ) : (
+                <><CheckCircle size={18} /> Save Profile &amp; Recalculate SPI</>
+              )}
+            </button>
           </div>
         </main>
       </div>

@@ -51,6 +51,8 @@ model CodingProfile {
   leetcodeSolved Int?
   codechefRating Int?
   lastFetched    DateTime?
+  githubStats    Json?
+  leetcodeStats  Json?
 
   student        Student   @relation(fields: [universityId], references: [universityId])
 
