@@ -3,10 +3,12 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import CollapsibleSidebar from '../../components/CollapsibleSidebar';
+import { STUDENT_PILOT_MODE, STUDENT_ALLOWED_MENU_ITEMS } from '@/lib/access';
 import {
   Home, User, Activity, TrendingUp, Users, Bell, Award,
   Grid, FileText, Target, CheckCircle, Zap, BookOpen, Plug, Bot
 } from 'lucide-react';
+
 
 const STUDENT_NAV = [
   { id: 'dashboard',  label: 'Dashboard',          icon: Home,        path: '/student' },
@@ -83,10 +85,14 @@ export default function StudentLayout({ children }) {
   // Build role string
   const role = `${student.branch || 'CSE'} · ${student.year || 2} Year, Sec ${student.section || 'A'}`;
 
+  const visibleNavLinks = STUDENT_NAV.filter(
+    link => !STUDENT_PILOT_MODE || STUDENT_ALLOWED_MENU_ITEMS.includes(link.label)
+  );
+
   return (
     <div className="flex h-screen bg-gray-50 overflow-hidden">
       <CollapsibleSidebar
-        navLinks={STUDENT_NAV}
+        navLinks={visibleNavLinks}
         userInfo={{ initials, name: student.name, role }}
         theme={STUDENT_THEME}
       />

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import { STUDENT_PILOT_MODE, STUDENT_ALLOWED_MENU_ITEMS } from '@/lib/access'
 import { Home, User, Activity, TrendingUp, Users, Bell, Award, Grid, FileText, Settings, LogOut, Search, ChevronDown, ArrowUpRight, Clock, AlertCircle, BookOpen, CheckCircle, Folder, ThumbsUp, Star, CalendarDays, Cpu, Briefcase, ChevronRight, Target, Zap, Plug, X, Plus, Upload, Edit2, Trash2, Eye, EyeOff, ExternalLink, Award as Badge, Tag } from 'lucide-react'
 
 const Github = (props) => (
@@ -798,17 +799,19 @@ export default function ProfileEditPage() {
         </div>
 
         <nav className="flex-1 p-3 overflow-y-auto">
-          {navLinks.map(link => (
-            <button
-              key={link.id}
-              onClick={() => router.push(link.path)}
-              className={`nav-link w-full text-left mb-0.5 ${link.active ? 'active' : ''}`}
-            >
-              <link.icon size={17} />
-              <span className="flex-1">{link.label}</span>
-              {link.badge && <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{link.badge}</span>}
-            </button>
-          ))}
+          {navLinks
+            .filter(link => !STUDENT_PILOT_MODE || STUDENT_ALLOWED_MENU_ITEMS.includes(link.label))
+            .map(link => (
+              <button
+                key={link.id}
+                onClick={() => router.push(link.path)}
+                className={`nav-link w-full text-left mb-0.5 ${link.active ? 'active' : ''}`}
+              >
+                <link.icon size={17} />
+                <span className="flex-1">{link.label}</span>
+                {link.badge && <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{link.badge}</span>}
+              </button>
+            ))}
         </nav>
 
         <div className="p-3 border-t border-gray-50">
