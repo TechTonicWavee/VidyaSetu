@@ -1,5 +1,7 @@
 import { prisma } from '@/lib/prisma'
 
+export const dynamic = 'force-dynamic'
+
 // POST /api/student/update
 // Body: { universityId, student, codingProfile, projects?, certifications?, hackathons?, extracurriculars? }
 // Saves Student, CodingProfile, and optionally replaces all list records.

@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic'
+
 // API Route: POST /api/ai/context
 // Builds a rich RAG context string for AI advisor
 

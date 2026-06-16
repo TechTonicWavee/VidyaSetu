@@ -8,6 +8,8 @@ import calcGitHubScore from '@/../lib/spi/sources/githubScore'
 import calcLeetCodeScore from '@/../lib/spi/sources/leetcodeScore'
 import calculateSPI from '@/../lib/spi/orchestrator/calculateSPI'
 
+export const dynamic = 'force-dynamic'
+
 // ======================================================
 // POST /api/spi/recalculate
 // Body:

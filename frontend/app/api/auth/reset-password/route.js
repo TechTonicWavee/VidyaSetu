@@ -1,6 +1,8 @@
 import { prisma } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
 
+export const dynamic = 'force-dynamic'
+
 export async function POST(request) {
   try {
     const { universityId, password } = await request.json()

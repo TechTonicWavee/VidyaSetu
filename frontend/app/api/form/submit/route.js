@@ -1,5 +1,7 @@
 import { prisma } from '@/lib/prisma'
 
+export const dynamic = 'force-dynamic'
+
 // ─── GitHub stat fetcher ───────────────────────────────────────────────────────
 
 async function fetchGitHubStats(username) {
