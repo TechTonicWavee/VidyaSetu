@@ -24,18 +24,9 @@ const navLinks = [
   { id: 'attendance',   label: 'Attendance',     icon: CheckCircle,badge: null,  active: false, path: '/student/attendance' },
 ]
 
-const statCards = [
-  {
-    label: 'SPI Score',
-    value: '72',
-    sub: '+3 this month',
-    subColor: 'text-green-600',
-    icon: TrendingUp,
-    iconBg: 'bg-blue-100',
-    iconColor: '#1A56DB',
-    accent: 'stat-blue',
-    border: 'border-l-4 border-l-blue-500',
-  },
+// ── [MODIFIED] SPI stat card value is now injected at render time from state.
+// The remaining three cards keep their static values.
+const staticStatCards = [
   {
     label: 'Placement Readiness',
     value: '68%',
@@ -148,6 +139,11 @@ export default function StudentDashboard() {
   const [notifOpen, setNotifOpen] = useState(false)
   const [studentName, setStudentName] = useState('Student')
 
+  // ── [MODIFIED] Real SPI state ─────────────────────────
+  const [spiScore, setSpiScore] = useState(null)
+  const [spiLoading, setSpiLoading] = useState(true)
+  // ─────────────────────────────────────────────────────
+
   useEffect(() => {
     const rawSession = localStorage.getItem('vs_student')
     if (rawSession) {
@@ -156,7 +152,38 @@ export default function StudentDashboard() {
         if (session.name) {
           setStudentName(session.name.split(' ')[0])
         }
-      } catch (e) {}
+
+        // ── [MODIFIED] Fetch real SPI on dashboard load ──
+        if (session.universityId) {
+          fetch('/api/spi/recalculate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ universityId: session.universityId }),
+          })
+            .then((res) => res.json())
+            .then((data) => {
+              // [FIX] guard: data.spi undefined when calculateSPI was a stub
+              if (data.success && typeof data.spi === 'number') {
+                setSpiScore(data.spi)
+              } else {
+                console.error('SPI fetch: non-success or bad spi value', data)
+                setSpiScore(null)
+              }
+            })
+            .catch((err) => {
+              console.error('SPI fetch error:', err)
+              setSpiScore(null)
+            })
+            .finally(() => setSpiLoading(false))
+        } else {
+          setSpiLoading(false)
+        }
+        // ─────────────────────────────────────────────────
+      } catch (e) {
+        setSpiLoading(false)
+      }
+    } else {
+      setSpiLoading(false)
     }
   }, [])
 
@@ -246,13 +273,32 @@ export default function StudentDashboard() {
             </p>
           </div>
 
-          {/* Stat Cards */}
+          {/* Stat Cards — [MODIFIED] SPI card uses live spiScore state */}
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
-            {statCards.map((card, i) => (
+
+            {/* SPI Score card — real data */}
+            <div
+              className="card stat-blue border-l-4 border-l-blue-500 animate-fade-in"
+              style={{ animationDelay: '0s' }}
+            >
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">SPI Score</p>
+                <div className="w-8 h-8 rounded-lg bg-blue-100 flex items-center justify-center">
+                  <TrendingUp size={16} color="#1A56DB" />
+                </div>
+              </div>
+              <p className="text-2xl font-bold text-navy mb-1">
+                {spiLoading ? '…' : (spiScore != null ? spiScore.toFixed(2) : '--')}
+              </p>
+              <p className="text-xs font-medium text-green-600">+3 this month</p>
+            </div>
+
+            {/* Remaining static cards */}
+            {staticStatCards.map((card, i) => (
               <div
                 key={i}
                 className={`card ${card.accent} ${card.border} animate-fade-in`}
-                style={{ animationDelay: `${i * 0.07}s` }}
+                style={{ animationDelay: `${(i + 1) * 0.07}s` }}
               >
                 <div className="flex items-center justify-between mb-3">
                   <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
@@ -332,18 +378,20 @@ export default function StudentDashboard() {
                 ))}
               </div>
 
-              {/* Mini SPI card */}
+              {/* Mini SPI card — [MODIFIED] uses live spiScore state */}
               <div
                 className="mt-4 rounded-xl p-4"
                 style={{ background: 'linear-gradient(135deg, #0D1B2A, #0f2744)' }}
               >
                 <p className="text-xs text-gray-400 mb-1">Your SPI this semester</p>
-                <p className="text-2xl font-bold text-white mb-2">72 / 100</p>
+                <p className="text-2xl font-bold text-white mb-2">
+                  {spiLoading ? '…' : (spiScore != null ? spiScore.toFixed(2) : '--')} / 100
+                </p>
                 <div className="w-full bg-white bg-opacity-10 rounded-full h-2">
                   <div
                     className="h-2 rounded-full"
                     style={{
-                      width: '72%',
+                      width: `${spiScore ?? 0}%`,
                       background: 'linear-gradient(90deg, #1A56DB, #60a5fa)',
                     }}
                   />
