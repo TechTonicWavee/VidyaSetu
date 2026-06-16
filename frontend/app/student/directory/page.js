@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import getInitials from '@/lib/getInitials'
 import { useRouter } from 'next/navigation'
 import { Home, User, Activity, TrendingUp, Users, Bell, Award, Grid, FileText, Settings, LogOut, Search, ChevronDown, ArrowUpRight, Globe, Cpu, BarChart2, Wifi, PenTool, Code, BookOpen, X, CheckCircle, Plus, Target, Zap, AlertCircle, Plug } from 'lucide-react'
 
@@ -76,6 +77,29 @@ function SPIArcSidebar({ score, onClick }) {
 }
 
 export default function DomainDirectoryPage() {
+  const [studentName, setStudentName] = useState('Priyanshu Raj')
+  const [studentMeta, setStudentMeta] = useState({ branch: 'CSE', year: '2nd', section: 'B' })
+
+  useEffect(() => {
+    const raw = localStorage.getItem('vs_student')
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw)
+        if (parsed.name) setStudentName(parsed.name)
+        if (parsed.branch) {
+          setStudentMeta({
+            branch: parsed.branch,
+            year: parsed.year || '2nd',
+            section: parsed.section || 'B'
+          })
+        }
+      } catch(e){}
+    }
+  }, [])
+
+  const initials = getInitials(studentName)
+  const branchAndYear = `${studentMeta.branch} — ${studentMeta.year} Year${studentMeta.section ? ', Section ' + studentMeta.section : ''}`
+
   const router = useRouter()
   const [activeNav] = useState('directory')
   const [sidebarOpen, setSidebarOpen] = useState(true)
@@ -119,8 +143,8 @@ export default function DomainDirectoryPage() {
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}>PR</div>
             <div className="overflow-hidden">
-              <p className="font-semibold text-sm text-navy truncate">Priyanshu Raj</p>
-              <p className="text-xs text-gray-500 truncate">CSE — 2nd Year, Section B</p>
+              <p className="font-semibold text-sm text-navy truncate">{studentName}</p>
+              <p className="text-xs text-gray-500 truncate">{branchAndYear}</p>
             </div>
           </div>
           <SPIArcSidebar score={72} onClick={() => router.push('/student/spi')} />
@@ -147,8 +171,8 @@ export default function DomainDirectoryPage() {
             <Grid size={20} />
           </button>
           <div className="flex items-center gap-2 mr-4">
-            <div className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs" style={{ background: '#1A56DB' }}>EA</div>
-            <span className="font-bold text-navy text-sm hidden sm:block">Educator Analytics OS</span>
+            <div className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs" style={{ background: '#1A56DB' }}>VS</div>
+            <span className="font-bold text-navy text-sm hidden sm:block">VidyaSetu</span>
           </div>
           <div className="flex-1" />
           <button onClick={() => router.push('/student/notifications')} className="relative p-2 rounded-lg hover:bg-gray-100 transition text-gray-500">

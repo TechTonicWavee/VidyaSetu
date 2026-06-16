@@ -1,7 +1,8 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
+import getInitials from '@/lib/getInitials'
 import { Home, User, Activity, TrendingUp, Users, Bell, Award, Grid, FileText, Settings, LogOut, Search, ChevronDown, Target, Clock, AlertTriangle, BookOpen, CheckCircle, Zap, ExternalLink, Plug, Layout, ArrowRight } from 'lucide-react'
 
 const navLinks = [
@@ -59,6 +60,29 @@ function SPIArc({ score, onClick }) {
 }
 
 export default function IntegrationsHub() {
+  const [studentName, setStudentName] = useState('Priyanshu Raj')
+  const [studentMeta, setStudentMeta] = useState({ branch: 'CSE', year: '2nd', section: 'B' })
+
+  useEffect(() => {
+    const raw = localStorage.getItem('vs_student')
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw)
+        if (parsed.name) setStudentName(parsed.name)
+        if (parsed.branch) {
+          setStudentMeta({
+            branch: parsed.branch,
+            year: parsed.year || '2nd',
+            section: parsed.section || 'B'
+          })
+        }
+      } catch(e){}
+    }
+  }, [])
+
+  const initials = getInitials(studentName)
+  const branchAndYear = `${studentMeta.branch} — ${studentMeta.year} Year${studentMeta.section ? ', Section ' + studentMeta.section : ''}`
+
   const router = useRouter()
   const [sidebarOpen, setSidebarOpen] = useState(true)
 
@@ -79,10 +103,10 @@ export default function IntegrationsHub() {
       <aside className={`${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'} flex-shrink-0 bg-white border-r border-gray-100 flex flex-col transition-all duration-300 shadow-sm`}>
         <div className="p-5 border-b border-gray-50">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}>PR</div>
+            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}>{initials}</div>
             <div className="overflow-hidden">
-              <p className="font-semibold text-sm text-navy truncate">Priyanshu Raj</p>
-              <p className="text-xs text-gray-500 truncate">CSE — 2nd Year, Section B</p>
+              <p className="font-semibold text-sm text-navy truncate">{studentName}</p>
+              <p className="text-xs text-gray-500 truncate">{branchAndYear}</p>
             </div>
           </div>
           <SPIArc score={72} onClick={() => router.push('/student/spi')} />
@@ -110,8 +134,8 @@ export default function IntegrationsHub() {
             <Grid size={20} />
           </button>
           <div className="flex items-center gap-2 mr-4">
-            <div className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs" style={{ background: '#1A56DB' }}>EA</div>
-            <span className="font-bold text-navy text-sm hidden sm:block">Educator Analytics OS</span>
+            <div className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs" style={{ background: '#1A56DB' }}>VS</div>
+            <span className="font-bold text-navy text-sm hidden sm:block">VidyaSetu</span>
           </div>
           <div className="flex-1 max-w-md relative">
             <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
@@ -123,7 +147,7 @@ export default function IntegrationsHub() {
             <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">3</span>
           </button>
           <div className="flex items-center gap-2 cursor-pointer group">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs" style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}>PR</div>
+            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs" style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}>{initials}</div>
             <ChevronDown size={14} className="text-gray-400 group-hover:text-gray-600 transition" />
           </div>
         </header>

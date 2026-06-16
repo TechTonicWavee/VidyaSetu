@@ -219,7 +219,7 @@ function DemoCompletionOverlay({ onExplore, onBackToLogin }) {
       
       <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">Tour Complete!</h1>
       <p className="text-gray-400 text-lg mb-10 text-center max-w-md">
-        You have seen the 8 core features of Educator Analytics OS
+        You have seen the 8 core features of VidyaSetu
       </p>
 
       <div className="flex flex-wrap justify-center gap-2 mb-12 max-w-3xl">

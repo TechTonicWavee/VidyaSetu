@@ -771,13 +771,22 @@ function CelebrationScreen({ name }) {
       </p>
 
       <div className="mt-6 bg-blue-50 border border-blue-100 rounded-2xl px-6 py-5 max-w-md fade-up-3">
-        <p className="text-blue-700 text-sm leading-relaxed">
-          Your SPI score will be calculated and will appear on your <strong>VidyaSetu dashboard</strong> once the platform launches.
+        <p className="text-blue-700 text-sm leading-relaxed mb-3">
+          You can now access your personalized <strong>Student Potential Index (SPI)</strong> through your VidyaSetu dashboard.
+        </p>
+        <p className="text-blue-700 text-sm leading-relaxed mb-3">
+          Please use the <strong>same password</strong> that you created during the setup process to log in to the VidyaSetu application.
+        </p>
+        <p className="text-blue-700 text-sm leading-relaxed mb-3">
+          As you continue updating your profile with projects, certifications, internships, coding achievements, and extracurricular activities, your SPI and future insights will become even more accurate and personalized.
+        </p>
+        <p className="text-blue-700 text-sm leading-relaxed font-medium">
+          Welcome to VidyaSetu — your journey of growth, collaboration, and opportunity starts here.
         </p>
       </div>
 
       <p className="text-gray-400 text-sm mt-6 fade-up-4 flex items-center gap-1.5">
-        <AlertCircle size={14} /> You can no longer edit this form.
+        <AlertCircle size={14} /> If you wish to update your information in the future, you can do so through the <strong>Edit Profile</strong> section available inside your VidyaSetu dashboard.
       </p>
     </div>
   )

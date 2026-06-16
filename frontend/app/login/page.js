@@ -707,10 +707,10 @@ export default function LoginPage() {
             className="w-11 h-11 rounded-xl flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
             style={{ background: "linear-gradient(135deg,#1A56DB,#5B21B6)" }}
           >
-            EA
+            VS
           </div>
           <div>
-            <p className="font-bold text-gray-900 text-base leading-tight">Educator Analytics OS</p>
+            <p className="font-bold text-gray-900 text-base leading-tight">VidyaSetu</p>
             <p className="text-sm text-gray-400 mt-0.5">CSE Department · KIET Group of Institutions</p>
           </div>
         </header>
@@ -761,7 +761,7 @@ export default function LoginPage() {
           </div>
 
           <p className="text-center text-xs text-gray-400 mt-12">
-            © 2026 Educator Analytics OS · CSE Department · KIET Group of Institutions
+            © 2026 VidyaSetu · CSE Department · KIET Group of Institutions
           </p>
         </main>
       </div>
