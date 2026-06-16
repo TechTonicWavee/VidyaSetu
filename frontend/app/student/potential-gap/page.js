@@ -2,7 +2,8 @@
 
 import { EmptyState } from '@/components/EmptyState'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import getInitials from '@/lib/getInitials'
 import { useRouter } from 'next/navigation'
 import { Home, User, Activity, TrendingUp, Users, Bell, Award, Grid, FileText, Settings, LogOut, Search, ChevronDown, Target, ArrowUpRight, Clock, AlertCircle, BookOpen, CheckCircle, Zap, MoreHorizontal, ExternalLink, Plug } from 'lucide-react'
 
@@ -146,6 +147,29 @@ function SPIArc({ score, onClick }) {
 }
 
 export default function StudentDashboard() {
+  const [studentName, setStudentName] = useState('Priyanshu Raj')
+  const [studentMeta, setStudentMeta] = useState({ branch: 'CSE', year: '2nd', section: 'B' })
+
+  useEffect(() => {
+    const raw = localStorage.getItem('vs_student')
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw)
+        if (parsed.name) setStudentName(parsed.name)
+        if (parsed.branch) {
+          setStudentMeta({
+            branch: parsed.branch,
+            year: parsed.year || '2nd',
+            section: parsed.section || 'B'
+          })
+        }
+      } catch(e){}
+    }
+  }, [])
+
+  const initials = getInitials(studentName)
+  const branchAndYear = `${studentMeta.branch} — ${studentMeta.year} Year${studentMeta.section ? ', Section ' + studentMeta.section : ''}`
+
   const router = useRouter()
   const [activeNav, setActiveNav] = useState('dashboard')
   const [sidebarOpen, setSidebarOpen] = useState(true)
@@ -172,8 +196,8 @@ export default function StudentDashboard() {
               AS
             </div>
             <div className="overflow-hidden">
-              <p className="font-semibold text-sm text-navy truncate">Priyanshu Raj</p>
-              <p className="text-xs text-gray-500 truncate">CSE — 2nd Year, Section B</p>
+              <p className="font-semibold text-sm text-navy truncate">{studentName}</p>
+              <p className="text-xs text-gray-500 truncate">{branchAndYear}</p>
             </div>
           </div>
           <SPIArc score={72} onClick={() => router.push('/student/spi')} />
@@ -250,7 +274,7 @@ export default function StudentDashboard() {
               EA
             </div>
             <span className="font-bold text-navy text-sm hidden sm:block">
-              Educator Analytics OS
+              VidyaSetu
             </span>
           </div>
 

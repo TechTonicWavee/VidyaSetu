@@ -72,8 +72,8 @@ export default function LandingPage() {
             />
             <div className="h-6 w-px bg-gray-200 flex-shrink-0 hidden sm:block" />
             <div className="w-7 h-7 rounded-full flex items-center justify-center text-white font-bold text-[11px] shadow-sm hidden sm:flex"
-              style={{ background: '#1A56DB' }}>EA</div>
-            <span className="font-bold text-[14px] text-slate-800 tracking-tight hidden sm:block">Educator Analytics</span>
+              style={{ background: '#1A56DB' }}>VS</div>
+            <span className="font-bold text-[14px] text-slate-800 tracking-tight hidden sm:block">VidyaSetu</span>
           </div>
           <div className="flex items-center gap-2">
             <button
@@ -225,11 +225,11 @@ export default function LandingPage() {
       <footer className="bg-[#FAFAFA] border-t border-gray-200 py-8 px-6">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2 text-slate-900 font-bold tracking-tight">
-            <div className="w-5 h-5 flex items-center justify-center bg-[#1A56DB] text-white rounded text-[9px]">EA</div>
-            <span className="text-[14px]">Educator Analytics</span>
+            <div className="w-5 h-5 flex items-center justify-center bg-[#1A56DB] text-white rounded text-[9px]">VS</div>
+            <span className="text-[14px]">VidyaSetu</span>
           </div>
           <p className="text-[12.5px] text-slate-400 font-medium">
-            © {new Date().getFullYear()} Educator Analytics.
+            © {new Date().getFullYear()} VidyaSetu.
           </p>
         </div>
       </footer>

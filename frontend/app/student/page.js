@@ -3,6 +3,9 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { Home, User, Activity, TrendingUp, Users, Bell, Award, Grid, FileText, Settings, LogOut, Search, ChevronDown, Target, ArrowUpRight, Clock, AlertCircle, BookOpen, CheckCircle, Zap, MoreHorizontal, ExternalLink, Plug } from 'lucide-react'
+import PilotAnnouncementModal from '@/components/PilotAnnouncementModal'
+import { PILOT_ANNOUNCEMENT } from '@/lib/announcement'
+import getInitials from '@/lib/getInitials'
 
 const navLinks = [
   { id: 'dashboard',  label: 'Dashboard',       icon: Home,       badge: null,  active: true, path: '/student' },
@@ -138,23 +141,52 @@ export default function StudentDashboard() {
   const router = useRouter()
   const [notifOpen, setNotifOpen] = useState(false)
   const [studentName, setStudentName] = useState('Student')
+  const [currentDate, setCurrentDate] = useState('')
 
-  // ── [MODIFIED] Real SPI state ─────────────────────────
+  // ── Pilot announcement modal ────────────────────────────
+  const [showAnnouncement, setShowAnnouncement] = useState(false)
+  // ──────────────────────────────────────────────────────
+
+  // ── Real SPI and student profile state ─────────────────
   const [spiScore, setSpiScore] = useState(null)
   const [spiLoading, setSpiLoading] = useState(true)
+  const [studentData, setStudentData] = useState(null)
   // ─────────────────────────────────────────────────────
 
+
+
   useEffect(() => {
+    const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }
+    setCurrentDate(new Date().toLocaleDateString('en-US', options))
+
     const rawSession = localStorage.getItem('vs_student')
     if (rawSession) {
+      // ── Show pilot announcement if not seen this session ──
+      if (!sessionStorage.getItem(PILOT_ANNOUNCEMENT.sessionKey)) {
+        setShowAnnouncement(true)
+      }
+      // ─────────────────────────────────────────────────────
       try {
         const session = JSON.parse(rawSession)
         if (session.name) {
           setStudentName(session.name.split(' ')[0])
         }
 
-        // ── [MODIFIED] Fetch real SPI on dashboard load ──
+        // Fetch real student profile (including projects)
         if (session.universityId) {
+          fetch(`/api/student/profile?universityId=${session.universityId}`)
+            .then(res => res.json())
+            .then(data => {
+              if (data.success && data.student) {
+                setStudentData(data.student)
+                if (data.student.spiScore != null) {
+                  setSpiScore(data.student.spiScore)
+                }
+              }
+            })
+            .catch(err => console.error('Error fetching student profile:', err))
+
+          // Recalculate SPI just to be fresh
           fetch('/api/spi/recalculate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -162,32 +194,71 @@ export default function StudentDashboard() {
           })
             .then((res) => res.json())
             .then((data) => {
-              // [FIX] guard: data.spi undefined when calculateSPI was a stub
               if (data.success && typeof data.spi === 'number') {
                 setSpiScore(data.spi)
-              } else {
-                console.error('SPI fetch: non-success or bad spi value', data)
-                setSpiScore(null)
               }
             })
             .catch((err) => {
-              console.error('SPI fetch error:', err)
-              setSpiScore(null)
+              console.error('SPI recalculate error:', err)
             })
             .finally(() => setSpiLoading(false))
         } else {
           setSpiLoading(false)
         }
-        // ─────────────────────────────────────────────────
       } catch (e) {
         setSpiLoading(false)
       }
     } else {
       setSpiLoading(false)
     }
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const projectCount = studentData?.projects?.length ?? 0
+  const statCards = [
+    {
+      label: 'Placement Readiness',
+      value: '—',
+      sub: 'Pending Evaluation',
+      subColor: 'text-teal-600',
+      icon: Target,
+      iconBg: 'bg-teal-100',
+      iconColor: '#0F766E',
+      accent: 'stat-teal',
+      border: 'border-l-4 border-l-teal-500',
+    },
+    {
+      label: 'Active Alerts',
+      value: '0',
+      sub: 'No active alerts',
+      subColor: 'text-amber-600',
+      icon: Bell,
+      iconBg: 'bg-amber-100',
+      iconColor: '#D97706',
+      accent: 'stat-amber',
+      border: 'border-l-4 border-l-amber-500',
+    },
+    {
+      label: 'Team Projects',
+      value: projectCount > 0 ? `${projectCount} Active` : '0',
+      sub: projectCount > 0 ? 'Project details uploaded' : 'No projects uploaded',
+      subColor: 'text-purple-600',
+      icon: Users,
+      iconBg: 'bg-purple-100',
+      iconColor: '#5B21B6',
+      accent: 'stat-purple',
+      border: 'border-l-4 border-l-purple-600',
+    },
+  ]
+
+  const initials = studentData?.fullName ? getInitials(studentData.fullName) : (studentName ? getInitials(studentName) : 'S')
 
   return (
+    <>
+    {/* ── Pilot Announcement Modal ──────────────────────── */}
+    {showAnnouncement && (
+      <PilotAnnouncementModal onClose={() => setShowAnnouncement(false)} />
+    )}
+    {/* ──────────────────────────────────────────────────── */}
     <div className="flex flex-col h-screen bg-bg-base overflow-hidden font-sans">
       {/* TOP NAV */}
       <header className="bg-white border-b border-gray-100 px-6 py-3 flex items-center gap-4 flex-shrink-0 shadow-sm">
@@ -197,10 +268,10 @@ export default function StudentDashboard() {
               className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs"
               style={{ background: '#1A56DB' }}
             >
-              EA
+              VS
             </div>
             <span className="font-bold text-navy text-sm hidden sm:block">
-              Educator Analytics OS
+              VidyaSetu
             </span>
           </div>
 
@@ -228,25 +299,15 @@ export default function StudentDashboard() {
               className="relative p-2 rounded-lg hover:bg-gray-100 transition text-gray-500"
             >
               <Bell size={19} />
-              <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
-                3
-              </span>
             </button>
             {notifOpen && (
               <div className="absolute right-0 top-11 w-72 bg-white rounded-xl shadow-lg border border-gray-100 z-50 animate-fade-in overflow-hidden">
                 <div className="px-4 py-3 border-b border-gray-50 flex items-center justify-between">
                   <p className="font-semibold text-sm text-navy">Notifications</p>
-                  <span className="text-xs text-blue-600 cursor-pointer">Mark all read</span>
                 </div>
-                {activities.slice(0, 3).map((a, i) => (
-                  <div key={i} className="px-4 py-3 hover:bg-gray-50 transition flex gap-3 items-start border-b border-gray-50 last:border-0">
-                    <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${a.dot}`} />
-                    <div>
-                      <p className="text-xs text-gray-700 leading-snug">{a.text}</p>
-                      <p className="text-[10px] text-gray-400 mt-1">{a.time}</p>
-                    </div>
-                  </div>
-                ))}
+                <div className="px-4 py-6 text-center text-gray-500 text-xs">
+                  No new notifications
+                </div>
               </div>
             )}
           </div>
@@ -257,7 +318,7 @@ export default function StudentDashboard() {
               className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs"
               style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}
             >
-              AS
+              {initials}
             </div>
             <ChevronDown size={14} className="text-gray-400 group-hover:text-gray-600 transition" />
           </div>
@@ -269,11 +330,11 @@ export default function StudentDashboard() {
           <div className="mb-6 animate-fade-in">
             <h1 className="text-2xl font-bold text-navy">Good morning, {studentName}</h1>
             <p className="text-gray-500 text-sm mt-1">
-              Here is your overview for today — Tuesday, 15 April 2026
+              Here is your overview for today — {currentDate || 'Tuesday, 15 April 2026'}
             </p>
           </div>
 
-          {/* Stat Cards — [MODIFIED] SPI card uses live spiScore state */}
+          {/* Stat Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
 
             {/* SPI Score card — real data */}
@@ -290,11 +351,11 @@ export default function StudentDashboard() {
               <p className="text-2xl font-bold text-navy mb-1">
                 {spiLoading ? '…' : (spiScore != null ? spiScore.toFixed(2) : '--')}
               </p>
-              <p className="text-xs font-medium text-green-600">+3 this month</p>
+              <p className="text-xs font-medium text-gray-400">—</p>
             </div>
 
-            {/* Remaining static cards */}
-            {staticStatCards.map((card, i) => (
+            {/* Remaining cards */}
+            {statCards.map((card, i) => (
               <div
                 key={i}
                 className={`card ${card.accent} ${card.border} animate-fade-in`}
@@ -321,31 +382,11 @@ export default function StudentDashboard() {
             <div className="lg:col-span-3 card animate-fade-in" style={{ animationDelay: '0.3s' }}>
               <div className="flex items-center justify-between mb-4">
                 <h2 className="font-semibold text-navy text-sm">Recent Activity</h2>
-                <button className="text-xs text-blue-600 hover:underline flex items-center gap-1">
-                  View all <ExternalLink size={12} />
-                </button>
               </div>
-              <div className="space-y-1">
-                {activities.map((a, i) => (
-                  <div
-                    key={i}
-                    className="flex items-start gap-3 py-3 px-3 rounded-lg hover:bg-gray-50 transition group cursor-pointer"
-                  >
-                    <div
-                      className={`w-2.5 h-2.5 rounded-full mt-1.5 flex-shrink-0 ${a.dot}`}
-                    />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-sm text-gray-700 leading-snug">{a.text}</p>
-                      <p className="text-xs text-gray-400 mt-0.5 flex items-center gap-1">
-                        <Clock size={11} /> {a.time}
-                      </p>
-                    </div>
-                    <MoreHorizontal
-                      size={16}
-                      className="text-gray-300 group-hover:text-gray-500 flex-shrink-0 mt-0.5 transition"
-                    />
-                  </div>
-                ))}
+              <div className="flex flex-col items-center justify-center py-12 text-center text-gray-500">
+                <Activity size={24} className="text-gray-300 mb-2" />
+                <p className="text-sm font-medium">No recent activity</p>
+                <p className="text-xs text-gray-400 mt-0.5">Your updates will show up here</p>
               </div>
             </div>
 
@@ -378,7 +419,7 @@ export default function StudentDashboard() {
                 ))}
               </div>
 
-              {/* Mini SPI card — [MODIFIED] uses live spiScore state */}
+              {/* Mini SPI card */}
               <div
                 className="mt-4 rounded-xl p-4"
                 style={{ background: 'linear-gradient(135deg, #0D1B2A, #0f2744)' }}
@@ -419,16 +460,17 @@ export default function StudentDashboard() {
               </div>
               <div>
                 <p className="text-sm font-semibold text-navy">
-                  Operating Systems — Assignment 4
+                  No Pending Tasks
                 </p>
-                <p className="text-xs text-blue-600">Due tomorrow · 40 marks · Unit 5 coverage</p>
+                <p className="text-xs text-blue-600">You are all caught up for this week</p>
               </div>
             </div>
-            <button className="text-xs font-semibold px-4 py-2 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition flex-shrink-0">
-              View Assignment
+            <button className="text-xs font-semibold px-4 py-2 rounded-lg bg-gray-200 text-gray-500 cursor-not-allowed flex-shrink-0" disabled>
+              No Actions Required
             </button>
           </div>
         </main>
     </div>
+    </>
   )
 }

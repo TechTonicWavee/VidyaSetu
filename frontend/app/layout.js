@@ -6,7 +6,7 @@ import { GlobalBreadcrumbs } from '@/components/GlobalBreadcrumbs'
 import { DemoFloatingButton } from '@/components/DemoFloatingButton'
 
 export const metadata = {
-  title: 'Educator Analytics OS — AI-Powered Student Intelligence Platform',
+  title: 'VidyaSetu — AI-Powered Student Intelligence Platform',
   description: 'Multi-role AI-powered web application for engineering colleges in India. Track Student Potential Index, career paths, and institutional analytics.',
 }
 

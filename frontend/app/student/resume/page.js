@@ -1,6 +1,7 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import getInitials from '@/lib/getInitials'
 import { useRouter } from 'next/navigation'
 import { Home, User, Activity, TrendingUp, Users, Bell, Award, Grid, FileText, Settings, LogOut, Search, ChevronDown, Download, Edit2, CheckCircle2, GripVertical, AlertTriangle, Send, Link as LinkIcon, Target, CheckCircle, Zap, BookOpen, AlertCircle, Plug } from 'lucide-react'
 
@@ -54,6 +55,29 @@ const colors = [
 const fonts = ['Calibri', 'Arial', 'Times New Roman', 'Georgia']
 
 export default function ResumeBuilderPage() {
+  const [studentName, setStudentName] = useState('Priyanshu Raj')
+  const [studentMeta, setStudentMeta] = useState({ branch: 'CSE', year: '2nd', section: 'B' })
+
+  useEffect(() => {
+    const raw = localStorage.getItem('vs_student')
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw)
+        if (parsed.name) setStudentName(parsed.name)
+        if (parsed.branch) {
+          setStudentMeta({
+            branch: parsed.branch,
+            year: parsed.year || '2nd',
+            section: parsed.section || 'B'
+          })
+        }
+      } catch(e){}
+    }
+  }, [])
+
+  const initials = getInitials(studentName)
+  const branchAndYear = `${studentMeta.branch} — ${studentMeta.year} Year${studentMeta.section ? ', Section ' + studentMeta.section : ''}`
+
   const router = useRouter()
   const [activeNav] = useState('resume')
   const [sidebarOpen, setSidebarOpen] = useState(true)
@@ -92,7 +116,7 @@ export default function ResumeBuilderPage() {
           <div className="flex items-center gap-3 mb-4">
             <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}>PR</div>
             <div className="overflow-hidden">
-              <p className="font-semibold text-sm text-navy truncate">Priyanshu Raj</p>
+              <p className="font-semibold text-sm text-navy truncate">{studentName}</p>
               <p className="text-xs text-gray-500 truncate">CSE — 2nd Year</p>
             </div>
           </div>
@@ -126,8 +150,8 @@ export default function ResumeBuilderPage() {
             <Settings size={20} />
           </button>
           <div className="flex items-center gap-2 mr-4">
-            <div className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs" style={{ background: '#4F46E5' }}>EA</div>
-            <span className="font-bold text-navy text-sm hidden sm:block">Educator Analytics OS</span>
+            <div className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs" style={{ background: '#4F46E5' }}>VS</div>
+            <span className="font-bold text-navy text-sm hidden sm:block">VidyaSetu</span>
           </div>
           <div className="flex-1 max-w-md relative">
             <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />

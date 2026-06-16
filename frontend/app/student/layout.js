@@ -8,6 +8,7 @@ import {
   Home, User, Activity, TrendingUp, Users, Bell, Award,
   Grid, FileText, Target, CheckCircle, Zap, BookOpen, Plug, Bot
 } from 'lucide-react';
+import getInitials from '@/lib/getInitials';
 
 
 const STUDENT_NAV = [
@@ -17,7 +18,7 @@ const STUDENT_NAV = [
   { id: 'spi',        label: 'SPI Score',           icon: TrendingUp,  path: '/student/spi' },
   { id: 'career',     label: 'Career Path',         icon: TrendingUp,  path: '/student/career' },
   { id: 'team',       label: 'My Team',             icon: Users,       path: '/student/my-team' },
-  { id: 'notifs',     label: 'Notifications',       icon: Bell,        path: '/student/notifications', badge: '3' },
+  { id: 'notifs',     label: 'Notifications',       icon: Bell,        path: '/student/notifications' },
   { id: 'rankings',   label: 'Rankings',            icon: Award,       path: '/student/rankings' },
   { id: 'directory',  label: 'Domain Directory',    icon: Grid,        path: '/student/directory' },
   { id: 'resume',     label: 'Resume Builder',      icon: FileText,    path: '/student/resume' },
@@ -78,9 +79,7 @@ export default function StudentLayout({ children }) {
   }
 
   // Calculate initials from name
-  const initials = student.name
-    ? student.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
-    : 'ST';
+  const initials = getInitials(student.name);
 
   // Build role string
   const role = `${student.branch || 'CSE'} · ${student.year || 2} Year, Sec ${student.section || 'A'}`;
