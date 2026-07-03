@@ -24,6 +24,8 @@ model Student {
   formProgress     Json?
   formSubmittedAt  DateTime?
   resumeUrl        String?
+  resumeParsed      Json?
+ resumeAnalyzedAt  DateTime?
   spiScore         Float?    @default(0)
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt

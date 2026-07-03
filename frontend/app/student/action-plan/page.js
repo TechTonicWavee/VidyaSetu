@@ -8,23 +8,23 @@ import { useRouter } from 'next/navigation'
 import { Home, User, Activity, TrendingUp, Users, Bell, Award, Grid, FileText, Settings, LogOut, Search, ChevronDown, Target, ArrowUpRight, Clock, AlertCircle, BookOpen, CheckCircle, Zap, MoreHorizontal, ExternalLink, Plug } from 'lucide-react'
 
 const navLinks = [
-  { id: 'dashboard',  label: 'Dashboard',       icon: Home,       badge: null,  active: true, path: '/student' },
-  { id: 'profile',    label: 'My Profile',       icon: User,       badge: null,  active: false, path: '/student/profile' },
-  { id: 'skill',      label: 'Skill Radar',      icon: Activity,   badge: null,  active: false, path: '/student/skill-radar' },
-  { id: 'spi',        label: 'SPI Score',        icon: TrendingUp, badge: null,  active: false, path: '/student/spi' },
-  { id: 'career',     label: 'Career Path',      icon: TrendingUp, badge: null,  active: false, path: '/student/career' },
-  { id: 'team',       label: 'My Team',          icon: Users,      badge: null,  active: false, path: '/student/my-team' },
-  { id: 'notifs',     label: 'Notifications',    icon: Bell,       badge: '3',   active: false, path: '/student/notifications' },
-  { id: 'rankings',   label: 'Rankings',         icon: Award,      badge: null,  active: false, path: '/student/rankings' },
-  { id: 'directory',  label: 'Domain Directory', icon: Grid,       badge: null,  active: false, path: '/student/directory' },
-  { id: 'resume',     label: 'Resume Builder',   icon: FileText,   badge: null,  active: false, path: '/student/resume' },
-  { id: 'placement',  label: 'Placement Readiness', icon: Target, badge: null,  active: false, path: '/student/placement' },
-  { id: 'action',     label: 'Action Plan',      icon: CheckCircle, badge: null,  active: false, path: '/student/action-plan' },
-  { id: 'potential',  label: 'Potential Gap',    icon: Zap,        badge: null,  active: false, path: '/student/potential-gap' },
-  { id: 'extra',      label: 'Extracurriculars', icon: Award,      badge: null,  active: false, path: '/student/extracurricular' },
-  { id: 'integrations', label: 'Integrations',   icon: Plug,       badge: null,  active: false, path: '/integrations' },
-  { id: 'assignments',  label: 'Assignments',    icon: BookOpen,   badge: null,  active: false, path: '/student/assignments' },
-  { id: 'attendance',   label: 'Attendance',     icon: CheckCircle,badge: null,  active: false, path: '/student/attendance' },
+  { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null, active: true, path: '/student' },
+  { id: 'profile', label: 'My Profile', icon: User, badge: null, active: false, path: '/student/profile' },
+  { id: 'skill', label: 'Skill Radar', icon: Activity, badge: null, active: false, path: '/student/skill-radar' },
+  { id: 'spi', label: 'SPI Score', icon: TrendingUp, badge: null, active: false, path: '/student/spi' },
+  { id: 'career', label: 'Career Path', icon: TrendingUp, badge: null, active: false, path: '/student/career' },
+  { id: 'team', label: 'My Team', icon: Users, badge: null, active: false, path: '/student/my-team' },
+  { id: 'notifs', label: 'Notifications', icon: Bell, badge: '3', active: false, path: '/student/notifications' },
+  { id: 'rankings', label: 'Rankings', icon: Award, badge: null, active: false, path: '/student/rankings' },
+  { id: 'directory', label: 'Domain Directory', icon: Grid, badge: null, active: false, path: '/student/directory' },
+  { id: 'resume', label: 'Resume Builder', icon: FileText, badge: null, active: false, path: '/student/resume' },
+  { id: 'placement', label: 'Placement Readiness', icon: Target, badge: null, active: false, path: '/student/placement' },
+  { id: 'action', label: 'Action Plan', icon: CheckCircle, badge: null, active: false, path: '/student/action-plan' },
+  { id: 'potential', label: 'Potential Gap', icon: Zap, badge: null, active: false, path: '/student/potential-gap' },
+  { id: 'extra', label: 'Extracurriculars', icon: Award, badge: null, active: false, path: '/student/extracurricular' },
+  { id: 'integrations', label: 'Integrations', icon: Plug, badge: null, active: false, path: '/integrations' },
+  { id: 'assignments', label: 'Assignments', icon: BookOpen, badge: null, active: false, path: '/student/assignments' },
+  { id: 'attendance', label: 'Attendance', icon: CheckCircle, badge: null, active: false, path: '/student/attendance' },
 ]
 
 const statCards = [
@@ -106,10 +106,10 @@ const activities = [
 ]
 
 const quickActions = [
-  { label: 'View My Full Profile', icon: User,       color: '#1A56DB', bg: 'bg-blue-50',   path: '/student/profile' },
-  { label: 'Check Career Path',    icon: TrendingUp, color: '#0F766E', bg: 'bg-teal-50',   path: '/student/career' },
-  { label: 'Find Teammates',       icon: Users,      color: '#5B21B6', bg: 'bg-purple-50', path: '/student/team' },
-  { label: 'Download Resume',      icon: FileText,   color: '#D97706', bg: 'bg-amber-50',  path: '/student/resume' },
+  { label: 'View My Full Profile', icon: User, color: '#1A56DB', bg: 'bg-blue-50', path: '/student/profile' },
+  { label: 'Check Career Path', icon: TrendingUp, color: '#0F766E', bg: 'bg-teal-50', path: '/student/career' },
+  { label: 'Find Teammates', icon: Users, color: '#5B21B6', bg: 'bg-purple-50', path: '/student/team' },
+  { label: 'Download Resume', icon: FileText, color: '#D97706', bg: 'bg-amber-50', path: '/student/resume' },
 ]
 
 function SPIArc({ score, onClick }) {
@@ -163,7 +163,7 @@ export default function StudentDashboard() {
             section: parsed.section || 'B'
           })
         }
-      } catch(e){}
+      } catch (e) { }
     }
   }, [])
 
@@ -182,9 +182,8 @@ export default function StudentDashboard() {
           SIDEBAR
       ══════════════════════════════════ */}
       <aside
-        className={`${
-          sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'
-        } flex-shrink-0 bg-white border-r border-gray-100 flex flex-col transition-all duration-300 shadow-sm`}
+        className={`${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'
+          } flex-shrink-0 bg-white border-r border-gray-100 flex flex-col transition-all duration-300 shadow-sm`}
       >
         {/* User info */}
         <div className="p-5 border-b border-gray-50">
@@ -339,9 +338,9 @@ export default function StudentDashboard() {
 
         {/* PAGE BODY */}
         <main className="flex-1 overflow-y-auto p-6 flex flex-col justify-center">
-          <EmptyState 
-            title="Action Plan" 
-            description="No action plan is currently defined for this semester." 
+          <EmptyState
+            title="Action Plan"
+            description="No action plan is currently defined for this semester."
             iconName="Box"
             actionLabel={'Action Plan' === 'Parent Visit Mode' ? 'Generate QR Code' : 'Refresh Data'}
             onAction={() => alert('Action triggered')}

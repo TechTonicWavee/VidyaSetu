@@ -12,20 +12,20 @@ import getInitials from '@/lib/getInitials';
 
 
 const STUDENT_NAV = [
-  { id: 'dashboard',  label: 'Dashboard',          icon: Home,        path: '/student' },
-  { id: 'profile',    label: 'My Profile',          icon: User,        path: '/student/profile' },
-  { id: 'skill',      label: 'Skill Radar',         icon: Activity,    path: '/student/skill-radar' },
-  { id: 'spi',        label: 'SPI Score',           icon: TrendingUp,  path: '/student/spi' },
-  { id: 'career',     label: 'Career Path',         icon: TrendingUp,  path: '/student/career' },
-  { id: 'team',       label: 'My Team',             icon: Users,       path: '/student/my-team' },
-  { id: 'notifs',     label: 'Notifications',       icon: Bell,        path: '/student/notifications' },
-  { id: 'rankings',   label: 'Rankings',            icon: Award,       path: '/student/rankings' },
-  { id: 'directory',  label: 'Domain Directory',    icon: Grid,        path: '/student/directory' },
-  { id: 'resume',     label: 'Resume Builder',      icon: FileText,    path: '/student/resume' },
-  { id: 'placement',  label: 'Placement Readiness', icon: Target,      path: '/student/placement' },
-  { id: 'extra',      label: 'Extracurriculars',    icon: Award,       path: '/student/extracurricular' },
-  { id: 'assignments',label: 'Assignments',         icon: BookOpen,    path: '/student/assignments' },
-  { id: 'ai-advisor', label: 'AI Advisor',          icon: Bot,         path: '/student/ai-advisor' },
+  { id: 'dashboard', label: 'Dashboard', icon: Home, path: '/student' },
+  { id: 'profile', label: 'My Profile', icon: User, path: '/student/profile' },
+  { id: 'skill', label: 'Skill Radar', icon: Activity, path: '/student/skill-radar' },
+  { id: 'spi', label: 'SPI Score', icon: TrendingUp, path: '/student/spi' },
+  { id: 'career', label: 'Career Path', icon: TrendingUp, path: '/student/career' },
+  { id: 'team', label: 'My Team', icon: Users, path: '/student/my-team' },
+  { id: 'notifs', label: 'Notifications', icon: Bell, path: '/student/notifications' },
+  { id: 'rankings', label: 'Rankings', icon: Award, path: '/student/rankings' },
+  { id: 'directory', label: 'Domain Directory', icon: Grid, path: '/student/directory' },
+  { id: 'resume', label: 'Resume Builder', icon: FileText, path: '/student/resume' },
+  { id: 'placement', label: 'Placement Readiness', icon: Target, path: '/student/placement' },
+  { id: 'extra', label: 'Extracurriculars', icon: Award, path: '/student/extracurricular' },
+  { id: 'assignments', label: 'Assignments', icon: BookOpen, path: '/student/assignments' },
+  { id: 'ai-advisor', label: 'AI Advisor', icon: Bot, path: '/student/ai-advisor' },
 ];
 
 const STUDENT_THEME = {

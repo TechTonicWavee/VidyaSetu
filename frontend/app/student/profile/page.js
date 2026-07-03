@@ -7,24 +7,24 @@ import { Home, User, Activity, TrendingUp, Users, Bell, Award, Grid, FileText, S
 import getInitials from '@/lib/getInitials'
 
 const navLinks = [
-  { id: 'dashboard',  label: 'Dashboard',       icon: Home,       badge: null,  active: false, path: '/student' },
-  { id: 'profile',    label: 'My Profile',       icon: User,       badge: null,  active: true,  path: '/student/profile' },
-  { id: 'edit-profile', label: 'Edit Profile',    icon: Edit2,      badge: null,  active: false, path: '/student/profile/edit' },
-  { id: 'skill',      label: 'Skill Radar',      icon: Activity,   badge: null,  active: false, path: '/student/skill-radar' },
-  { id: 'spi',        label: 'SPI Score',        icon: TrendingUp, badge: null,  active: false, path: '/student/spi' },
-  { id: 'career',     label: 'Career Path',      icon: TrendingUp, badge: null,  active: false, path: '/student/career' },
-  { id: 'team',       label: 'My Team',          icon: Users,      badge: null,  active: false, path: '/student/my-team' },
-  { id: 'notifs',     label: 'Notifications',    icon: Bell,       badge: null,  active: false, path: '/student/notifications' },
-  { id: 'rankings',   label: 'Rankings',         icon: Award,      badge: null,  active: false, path: '/student/rankings' },
-  { id: 'directory',  label: 'Domain Directory', icon: Grid,       badge: null,  active: false, path: '/student/directory' },
-  { id: 'resume',     label: 'Resume Builder',   icon: FileText,   badge: null,  active: false, path: '/student/resume' },
-  { id: 'placement',  label: 'Placement Readiness', icon: Target, badge: null,  active: false, path: '/student/placement' },
-  { id: 'action',     label: 'Action Plan',      icon: CheckCircle, badge: null,  active: false, path: '/student/action-plan' },
-  { id: 'potential',  label: 'Potential Gap',    icon: Zap,        badge: null,  active: false, path: '/student/potential-gap' },
-  { id: 'extra',      label: 'Extracurriculars', icon: Award,      badge: null,  active: false, path: '/student/extracurricular' },
-  { id: 'integrations', label: 'Integrations',   icon: Plug,       badge: null,  active: false, path: '/integrations' },
-  { id: 'assignments',  label: 'Assignments',    icon: BookOpen,   badge: null,  active: false, path: '/student/assignments' },
-  { id: 'attendance',   label: 'Attendance',     icon: CheckCircle,badge: null,  active: false, path: '/student/attendance' },
+  { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null, active: false, path: '/student' },
+  { id: 'profile', label: 'My Profile', icon: User, badge: null, active: true, path: '/student/profile' },
+  { id: 'edit-profile', label: 'Edit Profile', icon: Edit2, badge: null, active: false, path: '/student/profile/edit' },
+  { id: 'skill', label: 'Skill Radar', icon: Activity, badge: null, active: false, path: '/student/skill-radar' },
+  { id: 'spi', label: 'SPI Score', icon: TrendingUp, badge: null, active: false, path: '/student/spi' },
+  { id: 'career', label: 'Career Path', icon: TrendingUp, badge: null, active: false, path: '/student/career' },
+  { id: 'team', label: 'My Team', icon: Users, badge: null, active: false, path: '/student/my-team' },
+  { id: 'notifs', label: 'Notifications', icon: Bell, badge: null, active: false, path: '/student/notifications' },
+  { id: 'rankings', label: 'Rankings', icon: Award, badge: null, active: false, path: '/student/rankings' },
+  { id: 'directory', label: 'Domain Directory', icon: Grid, badge: null, active: false, path: '/student/directory' },
+  { id: 'resume', label: 'Resume Builder', icon: FileText, badge: null, active: false, path: '/student/resume' },
+  { id: 'placement', label: 'Placement Readiness', icon: Target, badge: null, active: false, path: '/student/placement' },
+  { id: 'action', label: 'Action Plan', icon: CheckCircle, badge: null, active: false, path: '/student/action-plan' },
+  { id: 'potential', label: 'Potential Gap', icon: Zap, badge: null, active: false, path: '/student/potential-gap' },
+  { id: 'extra', label: 'Extracurriculars', icon: Award, badge: null, active: false, path: '/student/extracurricular' },
+  { id: 'integrations', label: 'Integrations', icon: Plug, badge: null, active: false, path: '/integrations' },
+  { id: 'assignments', label: 'Assignments', icon: BookOpen, badge: null, active: false, path: '/student/assignments' },
+  { id: 'attendance', label: 'Attendance', icon: CheckCircle, badge: null, active: false, path: '/student/attendance' },
 ]
 
 export default function StudentProfile() {
@@ -68,8 +68,8 @@ export default function StudentProfile() {
   const initials = student?.fullName ? getInitials(student.fullName) : 'S'
   const projectsCount = student?.projects?.length ?? 0
   const spiValue = student?.spiScore != null ? Number(student.spiScore).toFixed(1) : '—'
-  const branchAndYear = student?.branch && student?.year 
-    ? `${student.branch} — ${student.year} Year ${student.section ? ', Section ' + student.section : ''}` 
+  const branchAndYear = student?.branch && student?.year
+    ? `${student.branch} — ${student.year} Year ${student.section ? ', Section ' + student.section : ''}`
     : '—'
 
   return (
@@ -144,11 +144,11 @@ export default function StudentProfile() {
 
         {/* PAGE BODY */}
         <main className="flex-1 overflow-y-auto bg-bg-base">
-          
+
           {/* ════════ SECTION 1 — PROFILE HERO CARD ════════ */}
           <div className="bg-navy px-8 py-10" style={{ background: 'linear-gradient(160deg, #0D1B2A 0%, #152d47 100%)' }}>
             <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between gap-8">
-              
+
               {/* Left Side */}
               <div className="flex flex-col md:flex-row items-center md:items-start gap-6 text-center md:text-left">
                 <div className="w-20 h-20 rounded-full flex items-center justify-center text-white font-bold text-3xl shadow-lg border-2 border-blue-400/30 flex-shrink-0" style={{ background: '#1A56DB' }}>
@@ -219,7 +219,7 @@ export default function StudentProfile() {
 
           {/* ════════ TAB CONTENT ════════ */}
           <div className="max-w-6xl mx-auto p-6 md:p-8 animate-fade-in">
-            
+
             {/* ──────── TAB 1: OVERVIEW ──────── */}
             {activeTab === 'Overview' && (
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-fade-in">

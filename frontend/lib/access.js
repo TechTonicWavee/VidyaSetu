@@ -1,4 +1,4 @@
-export const STUDENT_PILOT_MODE = true
+export const STUDENT_PILOT_MODE = false
 
 /**
  * Routes accessible during the student pilot.

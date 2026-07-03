@@ -8,7 +8,7 @@ import {
   Settings, LogOut, Search, ChevronDown, ArrowUpRight, Clock, AlertCircle,
   BookOpen, CheckCircle, Folder, ThumbsUp, Star, CalendarDays, Cpu, Briefcase,
   ChevronRight, Target, Zap, Plug, X, Plus, Upload, Edit2, Trash2, Eye, EyeOff,
-  ExternalLink, Award as Badge, Tag, Menu, Info, Lock
+  ExternalLink, Award as Badge, Tag, Menu, Info, Lock, Download
 } from 'lucide-react'
 import getInitials from '@/lib/getInitials'
 
@@ -31,24 +31,24 @@ const Github = (props) => (
 )
 
 const navLinks = [
-  { id: 'dashboard',    label: 'Dashboard',         icon: Home,        badge: null, active: false, path: '/student' },
-  { id: 'profile',      label: 'My Profile',         icon: User,        badge: null, active: false, path: '/student/profile' },
-  { id: 'edit-profile', label: 'Edit Profile',       icon: Edit2,       badge: null, active: true,  path: '/student/profile/edit' },
-  { id: 'skill',        label: 'Skill Radar',        icon: Activity,    badge: null, active: false, path: '/student/skill-radar' },
-  { id: 'spi',          label: 'SPI Score',          icon: TrendingUp,  badge: null, active: false, path: '/student/spi' },
-  { id: 'career',       label: 'Career Path',        icon: TrendingUp,  badge: null, active: false, path: '/student/career' },
-  { id: 'team',         label: 'My Team',            icon: Users,       badge: null, active: false, path: '/student/my-team' },
-  { id: 'notifs',       label: 'Notifications',      icon: Bell,        badge: null, active: false, path: '/student/notifications' },
-  { id: 'rankings',     label: 'Rankings',           icon: Award,       badge: null, active: false, path: '/student/rankings' },
-  { id: 'directory',    label: 'Domain Directory',   icon: Grid,        badge: null, active: false, path: '/student/directory' },
-  { id: 'resume',       label: 'Resume Builder',     icon: FileText,    badge: null, active: false, path: '/student/resume' },
-  { id: 'placement',    label: 'Placement Readiness',icon: Target,      badge: null, active: false, path: '/student/placement' },
-  { id: 'action',       label: 'Action Plan',        icon: CheckCircle, badge: null, active: false, path: '/student/action-plan' },
-  { id: 'potential',    label: 'Potential Gap',      icon: Zap,         badge: null, active: false, path: '/student/potential-gap' },
-  { id: 'extra',        label: 'Extracurriculars',   icon: Award,       badge: null, active: false, path: '/student/extracurricular' },
-  { id: 'integrations', label: 'Integrations',       icon: Plug,        badge: null, active: false, path: '/integrations' },
-  { id: 'assignments',  label: 'Assignments',        icon: BookOpen,    badge: null, active: false, path: '/student/assignments' },
-  { id: 'attendance',   label: 'Attendance',         icon: CheckCircle, badge: null, active: false, path: '/student/attendance' },
+  { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null, active: false, path: '/student' },
+  { id: 'profile', label: 'My Profile', icon: User, badge: null, active: false, path: '/student/profile' },
+  { id: 'edit-profile', label: 'Edit Profile', icon: Edit2, badge: null, active: true, path: '/student/profile/edit' },
+  { id: 'skill', label: 'Skill Radar', icon: Activity, badge: null, active: false, path: '/student/skill-radar' },
+  { id: 'spi', label: 'SPI Score', icon: TrendingUp, badge: null, active: false, path: '/student/spi' },
+  { id: 'career', label: 'Career Path', icon: TrendingUp, badge: null, active: false, path: '/student/career' },
+  { id: 'team', label: 'My Team', icon: Users, badge: null, active: false, path: '/student/my-team' },
+  { id: 'notifs', label: 'Notifications', icon: Bell, badge: null, active: false, path: '/student/notifications' },
+  { id: 'rankings', label: 'Rankings', icon: Award, badge: null, active: false, path: '/student/rankings' },
+  { id: 'directory', label: 'Domain Directory', icon: Grid, badge: null, active: false, path: '/student/directory' },
+  { id: 'resume', label: 'Resume Builder', icon: FileText, badge: null, active: false, path: '/student/resume' },
+  { id: 'placement', label: 'Placement Readiness', icon: Target, badge: null, active: false, path: '/student/placement' },
+  { id: 'action', label: 'Action Plan', icon: CheckCircle, badge: null, active: false, path: '/student/action-plan' },
+  { id: 'potential', label: 'Potential Gap', icon: Zap, badge: null, active: false, path: '/student/potential-gap' },
+  { id: 'extra', label: 'Extracurriculars', icon: Award, badge: null, active: false, path: '/student/extracurricular' },
+  { id: 'integrations', label: 'Integrations', icon: Plug, badge: null, active: false, path: '/integrations' },
+  { id: 'assignments', label: 'Assignments', icon: BookOpen, badge: null, active: false, path: '/student/assignments' },
+  { id: 'attendance', label: 'Attendance', icon: CheckCircle, badge: null, active: false, path: '/student/attendance' },
 ]
 
 function Toast({ message, type = 'success' }) {
@@ -73,7 +73,11 @@ function CollapsibleSection({ title, icon: Icon, children, isOpen, onToggle, com
             <div className="flex items-center gap-2">
               <h3 className="font-semibold text-navy">{title}</h3>
               {badge && (
-                <span className="text-xs bg-amber-100 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full font-medium">
+                <span className={`text-xs border px-2 py-0.5 rounded-full font-medium ${
+                  typeof badge === 'string' && badge.includes('Counts for SPI')
+                    ? 'bg-blue-100 text-blue-700 border-blue-200'
+                    : 'bg-amber-100 text-amber-700 border-amber-200'
+                }`}>
                   {badge}
                 </span>
               )}
@@ -105,6 +109,7 @@ export default function ProfileEditPage() {
   const [expandedSections, setExpandedSections] = useState({
     basic: true,
     coding: true,
+    resume: false,
     projects: false,
     certifications: false,
     hackathons: false,
@@ -114,6 +119,13 @@ export default function ProfileEditPage() {
   const [toastType, setToastType] = useState('success')
   const [saving, setSaving] = useState(false)
   const [validationError, setValidationError] = useState('')
+
+  // Resume state
+  const [resumeUrl, setResumeUrl] = useState('')
+  const [resumeParsed, setResumeParsed] = useState(null)
+  const [resumeAnalyzedAt, setResumeAnalyzedAt] = useState(null)
+  const [resumeScore, setResumeScore] = useState(null)
+  const [uploadingResume, setUploadingResume] = useState(false)
 
   // Session state
   const [universityId, setUniversityId] = useState('')
@@ -152,62 +164,66 @@ export default function ProfileEditPage() {
             if (data.success && data.student) {
               const s = data.student
               setBasicInfo({
-                name:  s.fullName || '',
-                phone: s.phone   || '',
-                email: s.email   || '',
+                name: s.fullName || '',
+                phone: s.phone || '',
+                email: s.email || '',
               })
               setStudentMeta({
                 branch: s.branch || '',
-                year:   s.year   || '',
+                year: s.year || '',
               })
               if (s.spiScore != null) setSpiScore(s.spiScore)
+              setResumeUrl(s.resumeUrl || '')
+              setResumeParsed(s.resumeParsed || null)
+              setResumeAnalyzedAt(s.resumeAnalyzedAt || null)
+              setResumeScore(s.resumeScore != null ? s.resumeScore : null)
               if (s.codingProfile) {
                 setCodingProfiles({
-                  github:      s.codingProfile.github      || '',
-                  leetcode:    s.codingProfile.leetcode    || '',
-                  codeforces:  s.codingProfile.codeforces  || '',
+                  github: s.codingProfile.github || '',
+                  leetcode: s.codingProfile.leetcode || '',
+                  codeforces: s.codingProfile.codeforces || '',
                   linkedinUrl: s.codingProfile.linkedinUrl || '',
                 })
               }
               // Map DB records to UI state — normalise field names
               if (s.projects?.length) {
                 setProjects(s.projects.map(p => ({
-                  id:          p.id,
-                  title:       p.title       || '',
+                  id: p.id,
+                  title: p.title || '',
                   description: p.description || '',
-                  techStack:   p.techStack   || [],
-                  type:        p.type        || 'Personal',
-                  status:      p.status      || 'Completed',
-                  github:      p.githubLink  || '',
-                  liveDemo:    p.liveLink    || '',
+                  techStack: p.techStack || [],
+                  type: p.type || 'Personal',
+                  status: p.status || 'Completed',
+                  github: p.githubLink || '',
+                  liveDemo: p.liveLink || '',
                 })))
               }
               if (s.certifications?.length) {
                 setCertifications(s.certifications.map(c => ({
-                  id:            c.id,
-                  name:          c.name     || '',
-                  platform:      c.platform || 'Coursera',
+                  id: c.id,
+                  name: c.name || '',
+                  platform: c.platform || 'Coursera',
                   dateCompleted: c.completionDate ? c.completionDate.substring(0, 10) : '',
-                  skills:        c.skills   || [],
+                  skills: c.skills || [],
                 })))
               }
               if (s.hackathons?.length) {
                 setHackathons(s.hackathons.map(h => ({
-                  id:           h.id,
-                  name:         h.name         || '',
-                  organizer:    h.organizer     || '',
-                  date:         h.date ? h.date.substring(0, 10) : '',
-                  position:     h.position     || '',
-                  teamSize:     h.teamSize != null ? String(h.teamSize) : '',
-                  projectBuilt: h.solution     || '',
+                  id: h.id,
+                  name: h.name || '',
+                  organizer: h.organizer || '',
+                  date: h.date ? h.date.substring(0, 10) : '',
+                  position: h.position || '',
+                  teamSize: h.teamSize != null ? String(h.teamSize) : '',
+                  projectBuilt: h.solution || '',
                 })))
               }
               if (s.extracurriculars?.length) {
                 setExtracurriculars(s.extracurriculars.map(e => ({
-                  id:          e.id,
-                  name:        e.society     || '',
-                  role:        e.role        || '',
-                  year:        e.year        || '',
+                  id: e.id,
+                  name: e.society || '',
+                  role: e.role || '',
+                  year: e.year || '',
                   achievement: e.achievement || '',
                 })))
               }
@@ -215,7 +231,7 @@ export default function ProfileEditPage() {
           })
           .catch(err => console.error('[edit/load] Error fetching profile:', err))
       }
-    } catch {}
+    } catch { }
   }, [])
 
   const showToast = (msg, type = 'success') => {
@@ -231,12 +247,12 @@ export default function ProfileEditPage() {
   // ── Profile completion bar ─────────────────────────────────────────────────
   const profileCompletion = Math.round(
     (basicInfo.phone ? 10 : 0) +
-    (codingProfiles.github   ? 25 : 0) +
+    (codingProfiles.github ? 25 : 0) +
     (codingProfiles.leetcode ? 25 : 0) +
     (codingProfiles.linkedinUrl ? 10 : 0) +
     Math.min(projects.length, 1) * 10 +
     Math.min(certifications.length, 1) * 10 +
-    Math.min(hackathons.length, 1) * 5  +
+    Math.min(hackathons.length, 1) * 5 +
     Math.min(extracurriculars.length, 1) * 5
   )
 
@@ -269,14 +285,14 @@ export default function ProfileEditPage() {
             phone: basicInfo.phone,
           },
           codingProfile: {
-            github:      codingProfiles.github,
-            leetcode:    codingProfiles.leetcode,
-            codeforces:  codingProfiles.codeforces,
+            github: codingProfiles.github,
+            leetcode: codingProfiles.leetcode,
+            codeforces: codingProfiles.codeforces,
             linkedinUrl: codingProfiles.linkedinUrl,
           },
-          projects:        projects,
-          certifications:  certifications,
-          hackathons:      hackathons,
+          projects: projects,
+          certifications: certifications,
+          hackathons: hackathons,
           extracurriculars: extracurriculars,
         }),
       })
@@ -325,10 +341,10 @@ export default function ProfileEditPage() {
   }
 
   // ── Add/remove helpers ─────────────────────────────────────────────────────
-  const [newProject,  setNewProject]  = useState({ title: '', description: '', techStack: [], github: '', liveDemo: '', status: 'Completed', type: 'Personal' })
-  const [newCert,     setNewCert]     = useState({ name: '', platform: 'Coursera', dateCompleted: '', skills: [] })
-  const [newHack,     setNewHack]     = useState({ name: '', organizer: '', date: '', position: '', teamSize: '', projectBuilt: '' })
-  const [newExtra,    setNewExtra]    = useState({ name: '', role: '', year: '', achievement: '' })
+  const [newProject, setNewProject] = useState({ title: '', description: '', techStack: [], github: '', liveDemo: '', status: 'Completed', type: 'Personal' })
+  const [newCert, setNewCert] = useState({ name: '', platform: 'Coursera', dateCompleted: '', skills: [] })
+  const [newHack, setNewHack] = useState({ name: '', organizer: '', date: '', position: '', teamSize: '', projectBuilt: '' })
+  const [newExtra, setNewExtra] = useState({ name: '', role: '', year: '', achievement: '' })
 
   const addProject = () => {
     if (!newProject.title.trim()) return
@@ -358,7 +374,272 @@ export default function ProfileEditPage() {
   }
   const removeExtra = (id) => setExtracurriculars(extracurriculars.filter(e => e.id !== id))
 
+  // ── Resume Handlers ────────────────────────────────────────────────────────
+  const handleResumeFileChange = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    if (file.type !== 'application/pdf') {
+      showToast('Only PDF files are allowed.', 'error')
+      return
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      showToast('Resume size must be under 5MB.', 'error')
+      return
+    }
+
+    setUploadingResume(true)
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('universityId', universityId || 'unknown')
+    formData.append('folder', 'resume')
+    formData.append('fileName', 'resume.pdf')
+
+    try {
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      })
+      const data = await res.json()
+      if (!data.success) {
+        throw new Error(data.error || 'Upload failed')
+      }
+
+      const newResumeUrl = data.url
+      // Update student table & trigger parsing
+      const updateRes = await fetch('/api/student/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          universityId,
+          student: {
+            resumeUrl: newResumeUrl,
+          },
+        }),
+      })
+      const updateData = await updateRes.json()
+      if (!updateData.success) {
+        throw new Error(updateData.error || 'Database update failed')
+      }
+
+      // Re-fetch profile to load updated parser results and score
+      const profileRes = await fetch(`/api/student/profile?universityId=${universityId}`)
+      const profileData = await profileRes.json()
+      if (profileData.success && profileData.student) {
+        const s = profileData.student
+        setResumeUrl(s.resumeUrl || '')
+        setResumeParsed(s.resumeParsed || null)
+        setResumeAnalyzedAt(s.resumeAnalyzedAt || null)
+        setResumeScore(s.resumeScore != null ? s.resumeScore : null)
+
+        // Recalculate overall SPI score
+        const spiRes = await fetch('/api/spi/recalculate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ universityId }),
+        })
+        const spiData = await spiRes.json()
+        if (spiData.success && spiData.spi != null) {
+          setSpiScore(Number(spiData.spi.toFixed(1)))
+        }
+      }
+
+      showToast('Resume uploaded and parsed successfully!', 'success')
+    } catch (err) {
+      console.error('[resume upload] Error:', err)
+      showToast('Upload failed: ' + err.message, 'error')
+    } finally {
+      setUploadingResume(false)
+      e.target.value = ''
+    }
+  }
+
+  const handleDeleteResume = async () => {
+    if (!confirm('Are you sure you want to delete your resume?')) return
+
+    setUploadingResume(true)
+    try {
+      const updateRes = await fetch('/api/student/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          universityId,
+          student: {
+            resumeUrl: null,
+          },
+        }),
+      })
+      const updateData = await updateRes.json()
+      if (!updateData.success) {
+        throw new Error(updateData.error || 'Database update failed')
+      }
+
+      // Clear local states
+      setResumeUrl('')
+      setResumeParsed(null)
+      setResumeAnalyzedAt(null)
+      setResumeScore(null)
+
+      // Recalculate SPI
+      const spiRes = await fetch('/api/spi/recalculate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ universityId }),
+      })
+      const spiData = await spiRes.json()
+      if (spiData.success && spiData.spi != null) {
+        setSpiScore(Number(spiData.spi.toFixed(1)))
+      }
+
+      showToast('Resume deleted successfully.', 'success')
+    } catch (err) {
+      console.error('[resume delete] Error:', err)
+      showToast('Delete failed: ' + err.message, 'error')
+    } finally {
+      setUploadingResume(false)
+    }
+  }
+
+  const handleDownloadResume = async () => {
+    if (!resumeUrl) return
+    try {
+      const response = await fetch(resumeUrl)
+      const blob = await response.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'resume.pdf'
+      document.body.appendChild(a)
+      a.click()
+      window.URL.revokeObjectURL(url)
+      document.body.removeChild(a)
+    } catch (err) {
+      window.open(resumeUrl, '_blank')
+    }
+  }
+
   // ── JSX blocks ─────────────────────────────────────────────────────────────
+
+  const resumeJSX = (
+    <div className="space-y-4">
+      {uploadingResume ? (
+        <div className="border border-blue-200 rounded-lg p-6 bg-blue-50/50 flex flex-col items-center justify-center min-h-[140px] transition-all">
+          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mb-2" />
+          <p className="text-sm font-medium text-blue-700">Uploading &amp; parsing resume...</p>
+        </div>
+      ) : resumeUrl ? (
+        <div className="bg-white border border-gray-200 rounded-lg p-5">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-4">
+            <div className="flex items-center gap-3">
+              <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0 text-primary">
+                <FileText size={24} />
+              </div>
+              <div>
+                <p className="text-xs text-gray-500 font-medium">Current Resume</p>
+                <h4 className="font-semibold text-navy text-base">resume.pdf</h4>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs bg-green-100 text-green-700 border border-green-200 px-2.5 py-1 rounded-full font-medium flex items-center gap-1">
+                <CheckCircle size={12} /> Uploaded
+              </span>
+            </div>
+          </div>
+
+          {/* Metadata Grid */}
+          {(resumeAnalyzedAt || resumeParsed || resumeScore != null) && (
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 border-t border-b border-gray-100 py-4 mb-4">
+              {resumeAnalyzedAt && (
+                <div>
+                  <p className="text-xs text-gray-500 font-medium">Last Updated</p>
+                  <p className="text-sm font-semibold text-navy mt-0.5">
+                    {new Date(resumeAnalyzedAt).toLocaleDateString(undefined, {
+                      year: 'numeric',
+                      month: 'short',
+                      day: 'numeric',
+                      hour: '2-digit',
+                      minute: '2-digit',
+                    })}
+                  </p>
+                </div>
+              )}
+              {resumeParsed && (
+                <div>
+                  <p className="text-xs text-gray-500 font-medium">Resume Parsed</p>
+                  <p className="text-sm font-semibold text-green-600 mt-0.5 flex items-center gap-1">
+                    <CheckCircle size={14} /> Yes ({Object.keys(resumeParsed).filter(k => resumeParsed[k] && (!Array.isArray(resumeParsed[k]) || resumeParsed[k].length > 0)).length} sections)
+                  </p>
+                </div>
+              )}
+              {resumeScore != null && (
+                <div>
+                  <p className="text-xs text-gray-500 font-medium">Resume Score</p>
+                  <p className="text-sm font-semibold text-primary mt-0.5">
+                    {resumeScore} / 10
+                  </p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Actions */}
+          <div className="flex flex-wrap gap-2">
+            <a
+              href={resumeUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-1.5"
+            >
+              <ExternalLink size={16} /> View Resume
+            </a>
+            <button
+              onClick={handleDownloadResume}
+              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-1.5"
+            >
+              <Download size={16} /> Download Resume
+            </button>
+            <button
+              onClick={() => document.getElementById('resume-file-input').click()}
+              className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-50 transition-colors flex items-center gap-1.5"
+            >
+              <Upload size={16} /> Replace Resume
+            </button>
+            <button
+              onClick={handleDeleteResume}
+              className="px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg text-sm font-medium transition-colors flex items-center gap-1.5 sm:ml-auto"
+            >
+              <Trash2 size={16} /> Delete
+            </button>
+          </div>
+        </div>
+      ) : (
+        <div className="bg-white border border-gray-200 rounded-lg p-6">
+          <div className="flex flex-col items-center justify-center py-6 text-center">
+            <div className="w-12 h-12 rounded-xl bg-gray-50 flex items-center justify-center mb-3 text-gray-400">
+              <FileText size={24} />
+            </div>
+            <h4 className="font-semibold text-navy text-base mb-1">No resume uploaded</h4>
+            <p className="text-sm text-gray-500 mb-4">Upload your resume (PDF only, max 5MB) to include it in your SPI calculation.</p>
+            <button
+              onClick={() => document.getElementById('resume-file-input').click()}
+              className="px-5 py-2.5 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors flex items-center gap-2 shadow-sm"
+            >
+              <Upload size={16} /> Upload Resume
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Hidden file input */}
+      <input
+        id="resume-file-input"
+        type="file"
+        accept=".pdf"
+        onChange={handleResumeFileChange}
+        className="hidden"
+      />
+    </div>
+  )
 
   const basicInfoJSX = (
     <div className="space-y-4">
@@ -403,10 +684,10 @@ export default function ProfileEditPage() {
 
   // Pilot: only GitHub, LeetCode, Codeforces, LinkedIn
   const codingPlatformFields = [
-    { key: 'github',      label: 'GitHub Username *',      placeholder: 'e.g. priyanshu-raj',  hint: 'github.com/',        required: true },
-    { key: 'leetcode',    label: 'LeetCode Username *',    placeholder: 'e.g. priyanshu_raj',  hint: 'leetcode.com/u/',    required: true },
-    { key: 'codeforces',  label: 'Codeforces Username',    placeholder: 'e.g. priyanshu.raj',  hint: 'codeforces.com/profile/', required: false },
-    { key: 'linkedinUrl', label: 'LinkedIn Username',      placeholder: 'e.g. priyanshu-raj',  hint: 'linkedin.com/in/',   required: false },
+    { key: 'github', label: 'GitHub Username *', placeholder: 'e.g. priyanshu-raj', hint: 'github.com/', required: true },
+    { key: 'leetcode', label: 'LeetCode Username *', placeholder: 'e.g. priyanshu_raj', hint: 'leetcode.com/u/', required: true },
+    { key: 'codeforces', label: 'Codeforces Username', placeholder: 'e.g. priyanshu.raj', hint: 'codeforces.com/profile/', required: false },
+    { key: 'linkedinUrl', label: 'LinkedIn Username', placeholder: 'e.g. priyanshu-raj', hint: 'linkedin.com/in/', required: false },
   ]
 
   const codingPlatformsJSX = (
@@ -456,9 +737,8 @@ export default function ProfileEditPage() {
                   setValidationError('')
                   setCodingProfiles({ ...codingProfiles, [field.key]: e.target.value })
                 }}
-                className={`flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-lg border focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy ${
-                  field.required && !codingProfiles[field.key] ? 'border-red-300' : 'border-gray-300'
-                }`}
+                className={`flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-lg border focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy ${field.required && !codingProfiles[field.key] ? 'border-red-300' : 'border-gray-300'
+                  }`}
                 placeholder={field.placeholder}
               />
             </div>
@@ -507,13 +787,13 @@ export default function ProfileEditPage() {
         <input
           type="text"
           value={newProject.title}
-          onChange={e => setNewProject({...newProject, title: e.target.value})}
+          onChange={e => setNewProject({ ...newProject, title: e.target.value })}
           placeholder="Project title *"
           className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
         />
         <textarea
           value={newProject.description}
-          onChange={e => setNewProject({...newProject, description: e.target.value})}
+          onChange={e => setNewProject({ ...newProject, description: e.target.value })}
           placeholder="Project description"
           className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm resize-none text-navy"
           rows="2"
@@ -521,14 +801,14 @@ export default function ProfileEditPage() {
         <input
           type="text"
           value={newProject.techStack ? newProject.techStack.join(', ') : ''}
-          onChange={e => setNewProject({...newProject, techStack: e.target.value.split(',').map(t => t.trim()).filter(t => t)})}
+          onChange={e => setNewProject({ ...newProject, techStack: e.target.value.split(',').map(t => t.trim()).filter(t => t) })}
           placeholder="Tech stack (comma-separated, e.g. React, Node.js)"
           className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
         />
         <div className="grid grid-cols-2 gap-2 mb-2">
           <select
             value={newProject.type}
-            onChange={e => setNewProject({...newProject, type: e.target.value})}
+            onChange={e => setNewProject({ ...newProject, type: e.target.value })}
             className="px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
           >
             <option>Personal</option>
@@ -538,7 +818,7 @@ export default function ProfileEditPage() {
           </select>
           <select
             value={newProject.status}
-            onChange={e => setNewProject({...newProject, status: e.target.value})}
+            onChange={e => setNewProject({ ...newProject, status: e.target.value })}
             className="px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
           >
             <option>Completed</option>
@@ -550,14 +830,14 @@ export default function ProfileEditPage() {
           <input
             type="url"
             value={newProject.github || ''}
-            onChange={e => setNewProject({...newProject, github: e.target.value})}
+            onChange={e => setNewProject({ ...newProject, github: e.target.value })}
             placeholder="GitHub link"
             className="px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy w-full"
           />
           <input
             type="url"
             value={newProject.liveDemo || ''}
-            onChange={e => setNewProject({...newProject, liveDemo: e.target.value})}
+            onChange={e => setNewProject({ ...newProject, liveDemo: e.target.value })}
             placeholder="Live demo link"
             className="px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy w-full"
           />
@@ -605,13 +885,13 @@ export default function ProfileEditPage() {
         <input
           type="text"
           value={newCert.name}
-          onChange={e => setNewCert({...newCert, name: e.target.value})}
+          onChange={e => setNewCert({ ...newCert, name: e.target.value })}
           placeholder="Certification name *"
           className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
         />
         <select
           value={newCert.platform}
-          onChange={e => setNewCert({...newCert, platform: e.target.value})}
+          onChange={e => setNewCert({ ...newCert, platform: e.target.value })}
           className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
         >
           <option>Coursera</option>
@@ -626,13 +906,13 @@ export default function ProfileEditPage() {
         <input
           type="date"
           value={newCert.dateCompleted}
-          onChange={e => setNewCert({...newCert, dateCompleted: e.target.value})}
+          onChange={e => setNewCert({ ...newCert, dateCompleted: e.target.value })}
           className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
         />
         <input
           type="text"
           value={newCert.skills ? newCert.skills.join(', ') : ''}
-          onChange={e => setNewCert({...newCert, skills: e.target.value.split(',').map(s => s.trim()).filter(s => s)})}
+          onChange={e => setNewCert({ ...newCert, skills: e.target.value.split(',').map(s => s.trim()).filter(s => s) })}
           placeholder="Skills covered (comma-separated)"
           className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
         />
@@ -677,14 +957,14 @@ export default function ProfileEditPage() {
         <input
           type="text"
           value={newHack.name}
-          onChange={e => setNewHack({...newHack, name: e.target.value})}
+          onChange={e => setNewHack({ ...newHack, name: e.target.value })}
           placeholder="Hackathon/Competition name *"
           className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
         />
         <input
           type="text"
           value={newHack.organizer}
-          onChange={e => setNewHack({...newHack, organizer: e.target.value})}
+          onChange={e => setNewHack({ ...newHack, organizer: e.target.value })}
           placeholder="Organizer"
           className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
         />
@@ -692,13 +972,13 @@ export default function ProfileEditPage() {
           <input
             type="date"
             value={newHack.date}
-            onChange={e => setNewHack({...newHack, date: e.target.value})}
+            onChange={e => setNewHack({ ...newHack, date: e.target.value })}
             className="px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
           />
           <input
             type="text"
             value={newHack.position}
-            onChange={e => setNewHack({...newHack, position: e.target.value})}
+            onChange={e => setNewHack({ ...newHack, position: e.target.value })}
             placeholder="Position/Rank (e.g. 1st)"
             className="px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
           />
@@ -706,14 +986,14 @@ export default function ProfileEditPage() {
         <input
           type="number"
           value={newHack.teamSize}
-          onChange={e => setNewHack({...newHack, teamSize: e.target.value})}
+          onChange={e => setNewHack({ ...newHack, teamSize: e.target.value })}
           placeholder="Team size"
           min="1"
           className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
         />
         <textarea
           value={newHack.projectBuilt}
-          onChange={e => setNewHack({...newHack, projectBuilt: e.target.value})}
+          onChange={e => setNewHack({ ...newHack, projectBuilt: e.target.value })}
           placeholder="What did you build?"
           className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm resize-none text-navy"
           rows="2"
@@ -755,28 +1035,28 @@ export default function ProfileEditPage() {
         <input
           type="text"
           value={newExtra.name}
-          onChange={e => setNewExtra({...newExtra, name: e.target.value})}
+          onChange={e => setNewExtra({ ...newExtra, name: e.target.value })}
           placeholder="Society/Club name *"
           className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
         />
         <input
           type="text"
           value={newExtra.role}
-          onChange={e => setNewExtra({...newExtra, role: e.target.value})}
+          onChange={e => setNewExtra({ ...newExtra, role: e.target.value })}
           placeholder="Your role/position"
           className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
         />
         <input
           type="text"
           value={newExtra.year}
-          onChange={e => setNewExtra({...newExtra, year: e.target.value})}
+          onChange={e => setNewExtra({ ...newExtra, year: e.target.value })}
           placeholder="Year (e.g. 2nd Year)"
           className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
         />
         <input
           type="text"
           value={newExtra.achievement}
-          onChange={e => setNewExtra({...newExtra, achievement: e.target.value})}
+          onChange={e => setNewExtra({ ...newExtra, achievement: e.target.value })}
           placeholder="Achievement (optional)"
           className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
         />
@@ -889,6 +1169,10 @@ export default function ProfileEditPage() {
 
             <CollapsibleSection title="Coding Platforms" icon={Cpu} isOpen={expandedSections.coding} onToggle={() => toggleSection('coding')} completionPercent={codingProfiles.github && codingProfiles.leetcode ? 100 : codingProfiles.github || codingProfiles.leetcode ? 50 : 0}>
               {codingPlatformsJSX}
+            </CollapsibleSection>
+
+            <CollapsibleSection title="📄 Resume" icon={FileText} isOpen={expandedSections.resume} onToggle={() => toggleSection('resume')} completionPercent={resumeUrl ? 100 : 0} badge={resumeUrl ? "Counts for SPI ✦" : undefined}>
+              {resumeJSX}
             </CollapsibleSection>
 
             <CollapsibleSection title="Projects" icon={Folder} isOpen={expandedSections.projects} onToggle={() => toggleSection('projects')} completionPercent={projects.length > 0 ? 100 : 0} badge="Saved · Future SPI">

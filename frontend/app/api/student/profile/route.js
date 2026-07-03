@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma'
+import calcResumeScore from '@/../lib/spi/sources/resume'
 
 export const dynamic = 'force-dynamic'
 
@@ -33,6 +34,11 @@ export async function GET(request) {
       )
     }
 
+    const resumeResult = calcResumeScore({
+      year: student.year,
+      resumeParsed: student.resumeParsed,
+    })
+
     return Response.json({
       success: true,
       student: {
@@ -46,6 +52,9 @@ export async function GET(request) {
         formStatus: student.formStatus,
         formSubmittedAt: student.formSubmittedAt,
         resumeUrl: student.resumeUrl,
+        resumeParsed: student.resumeParsed,
+        resumeAnalyzedAt: student.resumeAnalyzedAt,
+        resumeScore: resumeResult?.score ?? null,
         codingProfile: student.codingProfile ? {
           github: student.codingProfile.github,
           leetcode: student.codingProfile.leetcode,

@@ -6,23 +6,23 @@ import { useRouter } from 'next/navigation'
 import { Home, User, Activity, TrendingUp, Users, Bell, Award, Grid, FileText, Settings, LogOut, Search, ChevronDown, ArrowUpRight, CheckCircle, Clock, Check, MoreVertical, X, Target, Zap, BookOpen, AlertCircle, Plug } from 'lucide-react'
 
 const navLinks = [
-  { id: 'dashboard',  label: 'Dashboard',       icon: Home,       badge: null,  active: true, path: '/student' },
-  { id: 'profile',    label: 'My Profile',       icon: User,       badge: null,  active: false, path: '/student/profile' },
-  { id: 'skill',      label: 'Skill Radar',      icon: Activity,   badge: null,  active: false, path: '/student/skill-radar' },
-  { id: 'spi',        label: 'SPI Score',        icon: TrendingUp, badge: null,  active: false, path: '/student/spi' },
-  { id: 'career',     label: 'Career Path',      icon: TrendingUp, badge: null,  active: false, path: '/student/career' },
-  { id: 'team',       label: 'My Team',          icon: Users,      badge: null,  active: false, path: '/student/my-team' },
-  { id: 'notifs',     label: 'Notifications',    icon: Bell,       badge: '3',   active: false, path: '/student/notifications' },
-  { id: 'rankings',   label: 'Rankings',         icon: Award,      badge: null,  active: false, path: '/student/rankings' },
-  { id: 'directory',  label: 'Domain Directory', icon: Grid,       badge: null,  active: false, path: '/student/directory' },
-  { id: 'resume',     label: 'Resume Builder',   icon: FileText,   badge: null,  active: false, path: '/student/resume' },
-  { id: 'placement',  label: 'Placement Readiness', icon: Target, badge: null,  active: false, path: '/student/placement' },
-  { id: 'action',     label: 'Action Plan',      icon: CheckCircle, badge: null,  active: false, path: '/student/action-plan' },
-  { id: 'potential',  label: 'Potential Gap',    icon: Zap,        badge: null,  active: false, path: '/student/potential-gap' },
-  { id: 'extra',      label: 'Extracurriculars', icon: Award,      badge: null,  active: false, path: '/student/extracurricular' },
-  { id: 'integrations', label: 'Integrations',   icon: Plug,       badge: null,  active: false, path: '/integrations' },
-  { id: 'assignments',  label: 'Assignments',    icon: BookOpen,   badge: null,  active: false, path: '/student/assignments' },
-  { id: 'attendance',   label: 'Attendance',     icon: CheckCircle,badge: null,  active: false, path: '/student/attendance' },
+  { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null, active: true, path: '/student' },
+  { id: 'profile', label: 'My Profile', icon: User, badge: null, active: false, path: '/student/profile' },
+  { id: 'skill', label: 'Skill Radar', icon: Activity, badge: null, active: false, path: '/student/skill-radar' },
+  { id: 'spi', label: 'SPI Score', icon: TrendingUp, badge: null, active: false, path: '/student/spi' },
+  { id: 'career', label: 'Career Path', icon: TrendingUp, badge: null, active: false, path: '/student/career' },
+  { id: 'team', label: 'My Team', icon: Users, badge: null, active: false, path: '/student/my-team' },
+  { id: 'notifs', label: 'Notifications', icon: Bell, badge: '3', active: false, path: '/student/notifications' },
+  { id: 'rankings', label: 'Rankings', icon: Award, badge: null, active: false, path: '/student/rankings' },
+  { id: 'directory', label: 'Domain Directory', icon: Grid, badge: null, active: false, path: '/student/directory' },
+  { id: 'resume', label: 'Resume Builder', icon: FileText, badge: null, active: false, path: '/student/resume' },
+  { id: 'placement', label: 'Placement Readiness', icon: Target, badge: null, active: false, path: '/student/placement' },
+  { id: 'action', label: 'Action Plan', icon: CheckCircle, badge: null, active: false, path: '/student/action-plan' },
+  { id: 'potential', label: 'Potential Gap', icon: Zap, badge: null, active: false, path: '/student/potential-gap' },
+  { id: 'extra', label: 'Extracurriculars', icon: Award, badge: null, active: false, path: '/student/extracurricular' },
+  { id: 'integrations', label: 'Integrations', icon: Plug, badge: null, active: false, path: '/integrations' },
+  { id: 'assignments', label: 'Assignments', icon: BookOpen, badge: null, active: false, path: '/student/assignments' },
+  { id: 'attendance', label: 'Attendance', icon: CheckCircle, badge: null, active: false, path: '/student/attendance' },
 ]
 
 function SPIArcSidebar({ score, onClick }) {
@@ -67,7 +67,7 @@ export default function MyTeamPage() {
             section: parsed.section || 'B'
           })
         }
-      } catch(e){}
+      } catch (e) { }
     }
   }, [])
 
@@ -151,7 +151,7 @@ export default function MyTeamPage() {
                 <h1 className="text-3xl font-bold text-navy mb-1">My Team</h1>
                 <p className="text-gray-500 text-sm">Your current project team and collaboration space</p>
               </div>
-              <button 
+              <button
                 onClick={() => router.push('/student/directory')}
                 className="px-5 py-2 bg-blue-600 text-white font-semibold text-sm rounded-xl hover:bg-blue-700 transition shadow-sm"
               >
@@ -209,15 +209,15 @@ export default function MyTeamPage() {
 
             {/* MIDDLE: MILESTONES & ACTIVITY */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              
+
               {/* Left - Milestones */}
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col">
                 <h3 className="text-lg font-bold text-navy mb-5">SIH 2026 — Project Milestones</h3>
-                
+
                 <div className="space-y-0 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gray-200 mb-6">
                   {/* Since vertical lines are tricky, let's use a simpler flex layout for the timeline */}
                 </div>
-                
+
                 <div className="relative pl-8 space-y-6 before:absolute before:inset-0 before:ml-[11px] before:w-0.5 before:bg-gray-100 before:z-0 mb-8 flex-1">
                   {/* Milestone 1 */}
                   <div className="relative z-10">
@@ -287,31 +287,31 @@ export default function MyTeamPage() {
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col">
                 <h3 className="text-lg font-bold text-navy mb-6">Recent Team Activity</h3>
                 <div className="space-y-6 relative before:absolute before:inset-0 before:ml-[7px] before:w-0.5 before:bg-gray-100 flex-1">
-                  
+
                   <div className="relative z-10 pl-6 flex flex-col">
                     <div className="absolute left-0 top-1.5 w-4 h-4 rounded-full bg-blue-500 border-4 border-white shadow-sm"></div>
                     <p className="text-sm text-gray-700 leading-snug"><span className="font-semibold text-navy">Harsh Chaudhary</span> added the problem statement document</p>
                     <span className="text-xs text-gray-400 mt-1 flex items-center gap-1"><Clock size={12} /> 2 hrs ago</span>
                   </div>
-                  
+
                   <div className="relative z-10 pl-6 flex flex-col">
                     <div className="absolute left-0 top-1.5 w-4 h-4 rounded-full bg-teal-500 border-4 border-white shadow-sm"></div>
                     <p className="text-sm text-gray-700 leading-snug"><span className="font-semibold text-navy">Neha Joshi</span> shared an ML model architecture diagram</p>
                     <span className="text-xs text-gray-400 mt-1 flex items-center gap-1"><Clock size={12} /> 5 hrs ago</span>
                   </div>
-                  
+
                   <div className="relative z-10 pl-6 flex flex-col">
                     <div className="absolute left-0 top-1.5 w-4 h-4 rounded-full bg-green-500 border-4 border-white shadow-sm"></div>
                     <p className="text-sm text-gray-700 leading-snug"><span className="font-semibold text-navy">Ananya Verma</span> completed the first wireframe</p>
                     <span className="text-xs text-gray-400 mt-1 flex items-center gap-1"><Clock size={12} /> Yesterday</span>
                   </div>
-                  
+
                   <div className="relative z-10 pl-6 flex flex-col">
                     <div className="absolute left-0 top-1.5 w-4 h-4 rounded-full bg-blue-500 border-4 border-white shadow-sm"></div>
                     <p className="text-sm text-gray-700 leading-snug"><span className="font-semibold text-navy">Team meeting</span> scheduled for 18 April at 4 PM</p>
                     <span className="text-xs text-gray-400 mt-1 flex items-center gap-1"><Clock size={12} /> Yesterday</span>
                   </div>
-                  
+
                   <div className="relative z-10 pl-6 flex flex-col">
                     <div className="absolute left-0 top-1.5 w-4 h-4 rounded-full bg-amber-500 border-4 border-white shadow-sm"></div>
                     <p className="text-sm text-gray-700 leading-snug"><span className="font-semibold text-navy">Priyanshu Raj (You)</span> accepted team invite</p>

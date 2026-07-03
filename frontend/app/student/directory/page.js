@@ -6,23 +6,23 @@ import { useRouter } from 'next/navigation'
 import { Home, User, Activity, TrendingUp, Users, Bell, Award, Grid, FileText, Settings, LogOut, Search, ChevronDown, ArrowUpRight, Globe, Cpu, BarChart2, Wifi, PenTool, Code, BookOpen, X, CheckCircle, Plus, Target, Zap, AlertCircle, Plug } from 'lucide-react'
 
 const navLinks = [
-  { id: 'dashboard',  label: 'Dashboard',       icon: Home,       badge: null,  active: true, path: '/student' },
-  { id: 'profile',    label: 'My Profile',       icon: User,       badge: null,  active: false, path: '/student/profile' },
-  { id: 'skill',      label: 'Skill Radar',      icon: Activity,   badge: null,  active: false, path: '/student/skill-radar' },
-  { id: 'spi',        label: 'SPI Score',        icon: TrendingUp, badge: null,  active: false, path: '/student/spi' },
-  { id: 'career',     label: 'Career Path',      icon: TrendingUp, badge: null,  active: false, path: '/student/career' },
-  { id: 'team',       label: 'My Team',          icon: Users,      badge: null,  active: false, path: '/student/my-team' },
-  { id: 'notifs',     label: 'Notifications',    icon: Bell,       badge: '3',   active: false, path: '/student/notifications' },
-  { id: 'rankings',   label: 'Rankings',         icon: Award,      badge: null,  active: false, path: '/student/rankings' },
-  { id: 'directory',  label: 'Domain Directory', icon: Grid,       badge: null,  active: false, path: '/student/directory' },
-  { id: 'resume',     label: 'Resume Builder',   icon: FileText,   badge: null,  active: false, path: '/student/resume' },
-  { id: 'placement',  label: 'Placement Readiness', icon: Target, badge: null,  active: false, path: '/student/placement' },
-  { id: 'action',     label: 'Action Plan',      icon: CheckCircle, badge: null,  active: false, path: '/student/action-plan' },
-  { id: 'potential',  label: 'Potential Gap',    icon: Zap,        badge: null,  active: false, path: '/student/potential-gap' },
-  { id: 'extra',      label: 'Extracurriculars', icon: Award,      badge: null,  active: false, path: '/student/extracurricular' },
-  { id: 'integrations', label: 'Integrations',   icon: Plug,       badge: null,  active: false, path: '/integrations' },
-  { id: 'assignments',  label: 'Assignments',    icon: BookOpen,   badge: null,  active: false, path: '/student/assignments' },
-  { id: 'attendance',   label: 'Attendance',     icon: CheckCircle,badge: null,  active: false, path: '/student/attendance' },
+  { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null, active: true, path: '/student' },
+  { id: 'profile', label: 'My Profile', icon: User, badge: null, active: false, path: '/student/profile' },
+  { id: 'skill', label: 'Skill Radar', icon: Activity, badge: null, active: false, path: '/student/skill-radar' },
+  { id: 'spi', label: 'SPI Score', icon: TrendingUp, badge: null, active: false, path: '/student/spi' },
+  { id: 'career', label: 'Career Path', icon: TrendingUp, badge: null, active: false, path: '/student/career' },
+  { id: 'team', label: 'My Team', icon: Users, badge: null, active: false, path: '/student/my-team' },
+  { id: 'notifs', label: 'Notifications', icon: Bell, badge: '3', active: false, path: '/student/notifications' },
+  { id: 'rankings', label: 'Rankings', icon: Award, badge: null, active: false, path: '/student/rankings' },
+  { id: 'directory', label: 'Domain Directory', icon: Grid, badge: null, active: false, path: '/student/directory' },
+  { id: 'resume', label: 'Resume Builder', icon: FileText, badge: null, active: false, path: '/student/resume' },
+  { id: 'placement', label: 'Placement Readiness', icon: Target, badge: null, active: false, path: '/student/placement' },
+  { id: 'action', label: 'Action Plan', icon: CheckCircle, badge: null, active: false, path: '/student/action-plan' },
+  { id: 'potential', label: 'Potential Gap', icon: Zap, badge: null, active: false, path: '/student/potential-gap' },
+  { id: 'extra', label: 'Extracurriculars', icon: Award, badge: null, active: false, path: '/student/extracurricular' },
+  { id: 'integrations', label: 'Integrations', icon: Plug, badge: null, active: false, path: '/integrations' },
+  { id: 'assignments', label: 'Assignments', icon: BookOpen, badge: null, active: false, path: '/student/assignments' },
+  { id: 'attendance', label: 'Attendance', icon: CheckCircle, badge: null, active: false, path: '/student/attendance' },
 ]
 
 const domains = [
@@ -93,7 +93,7 @@ export default function DomainDirectoryPage() {
             section: parsed.section || 'B'
           })
         }
-      } catch(e){}
+      } catch (e) { }
     }
   }, [])
 
@@ -103,10 +103,10 @@ export default function DomainDirectoryPage() {
   const router = useRouter()
   const [activeNav] = useState('directory')
   const [sidebarOpen, setSidebarOpen] = useState(true)
-  
+
   const [activeDomain, setActiveDomain] = useState('All Students')
   const [searchQuery, setSearchQuery] = useState('')
-  
+
   const [inviteModalOpen, setInviteModalOpen] = useState(false)
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [showToast, setShowToast] = useState(false)
@@ -115,9 +115,9 @@ export default function DomainDirectoryPage() {
   const filteredStudents = students.filter(s => {
     const matchesDomain = activeDomain === 'All Students' || s.domain === activeDomain
     const query = searchQuery.toLowerCase()
-    const matchesSearch = s.name.toLowerCase().includes(query) || 
-                          s.domain.toLowerCase().includes(query) || 
-                          s.skills.some(sk => sk.toLowerCase().includes(query))
+    const matchesSearch = s.name.toLowerCase().includes(query) ||
+      s.domain.toLowerCase().includes(query) ||
+      s.skills.some(sk => sk.toLowerCase().includes(query))
     return matchesDomain && matchesSearch
   })
 
@@ -197,12 +197,12 @@ export default function DomainDirectoryPage() {
               </div>
               <div className="relative w-full md:w-80">
                 <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                <input 
-                  type="text" 
+                <input
+                  type="text"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search by name, skill, or domain..." 
-                  className="w-full pl-9 pr-4 py-2.5 text-sm rounded-xl border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-300 transition" 
+                  placeholder="Search by name, skill, or domain..."
+                  className="w-full pl-9 pr-4 py-2.5 text-sm rounded-xl border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-300 transition"
                 />
               </div>
             </div>
@@ -216,11 +216,10 @@ export default function DomainDirectoryPage() {
                   <button
                     key={dom.name}
                     onClick={() => setActiveDomain(dom.name)}
-                    className={`flex items-center gap-3 p-3 rounded-xl border flex-shrink-0 transition-all ${
-                      isActive 
-                        ? `bg-${baseColor}-500 border-${baseColor}-500 text-white shadow-md transform -translate-y-0.5` 
+                    className={`flex items-center gap-3 p-3 rounded-xl border flex-shrink-0 transition-all ${isActive
+                        ? `bg-${baseColor}-500 border-${baseColor}-500 text-white shadow-md transform -translate-y-0.5`
                         : 'bg-white border-gray-200 text-gray-600 hover:border-gray-300 hover:bg-gray-50'
-                    }`}
+                      }`}
                   >
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center ${isActive ? 'bg-white/20' : `bg-${baseColor}-100 text-${baseColor}-600`}`}>
                       <dom.icon size={16} />
@@ -243,7 +242,7 @@ export default function DomainDirectoryPage() {
                 return (
                   <div key={student.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition flex flex-col relative">
                     <div className={`h-1.5 w-full bg-${bColor}-500`} />
-                    
+
                     <div className="p-5 flex-1 flex flex-col">
                       <div className="flex justify-between items-start mb-3">
                         <div className={`w-12 h-12 rounded-full flex items-center justify-center font-bold text-lg text-${bColor}-700 bg-${bColor}-100`}>
@@ -253,7 +252,7 @@ export default function DomainDirectoryPage() {
                           {student.status}
                         </span>
                       </div>
-                      
+
                       <div className="mb-3">
                         <h3 className="font-bold text-navy text-lg leading-tight">{student.name}</h3>
                         <p className="text-xs text-gray-500">{student.roll} · {student.year}</p>
@@ -296,7 +295,7 @@ export default function DomainDirectoryPage() {
                 )
               })}
             </div>
-            
+
             {filteredStudents.length > 0 && (
               <div className="flex justify-center mt-8 pb-8">
                 <button className="px-6 py-2 border border-gray-200 text-gray-600 font-semibold text-sm rounded-lg hover:bg-gray-50 transition">
@@ -327,12 +326,12 @@ export default function DomainDirectoryPage() {
               <div className="bg-blue-50 text-blue-800 p-3 rounded-lg text-sm font-semibold flex items-center gap-2">
                 <Users size={16} /> Inviting: {selectedStudent?.name}
               </div>
-              
+
               <div>
                 <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Project/Hackathon Name</label>
                 <input type="text" placeholder="e.g. Smart India Hackathon 2026" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-300" />
               </div>
-              
+
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Your Role in Team</label>
@@ -359,9 +358,9 @@ export default function DomainDirectoryPage() {
 
               <div>
                 <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Message to student</label>
-                <textarea 
-                  rows={3} 
-                  placeholder="Tell them why you want them on your team..." 
+                <textarea
+                  rows={3}
+                  placeholder="Tell them why you want them on your team..."
                   className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-300 resize-none"
                 />
               </div>

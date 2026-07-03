@@ -1,10 +1,13 @@
-import { prisma } from '@/lib/prisma'
+import { prisma }       from '@/lib/prisma'
+import { parseResume }  from '@/lib/resume/parser'
 
 export const dynamic = 'force-dynamic'
 
 // POST /api/student/update
 // Body: { universityId, student, codingProfile, projects?, certifications?, hackathons?, extracurriculars? }
 // Saves Student, CodingProfile, and optionally replaces all list records.
+// When student.resumeUrl is present the parser runs automatically and persists
+// Student.resumeParsed + Student.resumeAnalyzedAt.
 
 export async function POST(request) {
   try {
@@ -28,13 +31,42 @@ export async function POST(request) {
 
     // ── 1. Update Student table (only mutable fields) ─────────────────────────
     const studentUpdate = {}
-    if (studentData?.phone != null) studentUpdate.phone = studentData.phone.trim()
+    if (studentData?.phone      != null) studentUpdate.phone     = studentData.phone.trim()
+    if (studentData && 'resumeUrl' in studentData) {
+      const rUrl = studentData.resumeUrl ? studentData.resumeUrl.trim() : null
+      studentUpdate.resumeUrl = rUrl
+      if (!rUrl) {
+        studentUpdate.resumeParsed = null
+        studentUpdate.resumeAnalyzedAt = null
+      }
+    }
 
     if (Object.keys(studentUpdate).length > 0) {
       await prisma.student.update({
         where: { universityId },
         data:  studentUpdate,
       })
+    }
+
+    // ── 1a. Auto-parse resume whenever resumeUrl is provided ───────────────────
+    if (studentData?.resumeUrl) {
+      console.log('Resume Upload Triggered')
+      const resumeUrl = studentData.resumeUrl.trim()
+      try {
+        const resumeParsed = await parseResume(resumeUrl)
+        console.log('Updating Database...')
+        await prisma.student.update({
+          where: { universityId },
+          data: {
+            resumeParsed,
+            resumeAnalyzedAt: new Date(),
+          },
+        })
+        console.log('Resume Stored Successfully')
+      } catch (parseError) {
+        console.error(`[student/update] Resume parsing failed for ${universityId}:`, parseError)
+        throw parseError // Do NOT silently catch / swallow the error
+      }
     }
 
     // ── 2. Upsert CodingProfile (pilot platforms only) ─────────────────────────

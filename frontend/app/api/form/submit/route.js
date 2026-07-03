@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma'
+import { parseResume } from '@/lib/resume/parser'
 
 export const dynamic = 'force-dynamic'
 
@@ -208,6 +209,37 @@ export async function POST(request) {
     console.error('[Step 1] Student update failed:', err.message)
     // Fatal — if we can't update the student record the form isn't "submitted"
     return Response.json({ success: false, error: err.message }, { status: 500 })
+  }
+
+  // ── Step 1.5: Resume Parsing ──────────────────────────────────────────────
+  if (resumeUrl) {
+    try {
+      console.log('[Resume] Parser Started')
+      console.log('[Resume] Downloading PDF from:', resumeUrl)
+
+      const resumeJson = await parseResume(resumeUrl)
+
+      console.log('[Resume] PDF Parsed')
+      console.log('[Resume] Sections Extracted')
+      console.log('[Resume] Normalized JSON:', JSON.stringify(resumeJson, null, 2))
+
+      await prisma.student.update({
+        where: { universityId },
+        data: {
+          resumeParsed: resumeJson,
+          resumeAnalyzedAt: new Date(),
+        },
+      })
+
+      console.log('[Resume] Student updated with resumeParsed and resumeAnalyzedAt')
+      console.log('[Resume] Parser Completed Successfully')
+    } catch (resumeErr) {
+      console.error('[Resume] Parser Failed:', resumeErr.message)
+      console.error('[Resume] Full error:', resumeErr)
+      // Non-fatal — resume parsing failure should not block the rest of the submission
+    }
+  } else {
+    console.log('[Resume] No resumeUrl provided, skipping parser')
   }
 
   // ── Step 2: Fetch coding stats & upsert CodingProfile ─────────────────────

@@ -9,23 +9,23 @@ import {
 } from 'recharts'
 
 const navLinks = [
-  { id: 'dashboard',  label: 'Dashboard',       icon: Home,       badge: null,  active: true, path: '/student' },
-  { id: 'profile',    label: 'My Profile',       icon: User,       badge: null,  active: false, path: '/student/profile' },
-  { id: 'skill',      label: 'Skill Radar',      icon: Activity,   badge: null,  active: false, path: '/student/skill-radar' },
-  { id: 'spi',        label: 'SPI Score',        icon: TrendingUp, badge: null,  active: false, path: '/student/spi' },
-  { id: 'career',     label: 'Career Path',      icon: TrendingUp, badge: null,  active: false, path: '/student/career' },
-  { id: 'team',       label: 'My Team',          icon: Users,      badge: null,  active: false, path: '/student/my-team' },
-  { id: 'notifs',     label: 'Notifications',    icon: Bell,       badge: '3',   active: false, path: '/student/notifications' },
-  { id: 'rankings',   label: 'Rankings',         icon: Award,      badge: null,  active: false, path: '/student/rankings' },
-  { id: 'directory',  label: 'Domain Directory', icon: Grid,       badge: null,  active: false, path: '/student/directory' },
-  { id: 'resume',     label: 'Resume Builder',   icon: FileText,   badge: null,  active: false, path: '/student/resume' },
-  { id: 'placement',  label: 'Placement Readiness', icon: Target, badge: null,  active: false, path: '/student/placement' },
-  { id: 'action',     label: 'Action Plan',      icon: CheckCircle, badge: null,  active: false, path: '/student/action-plan' },
-  { id: 'potential',  label: 'Potential Gap',    icon: Zap,        badge: null,  active: false, path: '/student/potential-gap' },
-  { id: 'extra',      label: 'Extracurriculars', icon: Award,      badge: null,  active: false, path: '/student/extracurricular' },
-  { id: 'integrations', label: 'Integrations',   icon: Plug,       badge: null,  active: false, path: '/integrations' },
-  { id: 'assignments',  label: 'Assignments',    icon: BookOpen,   badge: null,  active: false, path: '/student/assignments' },
-  { id: 'attendance',   label: 'Attendance',     icon: CheckCircle,badge: null,  active: false, path: '/student/attendance' },
+  { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null, active: true, path: '/student' },
+  { id: 'profile', label: 'My Profile', icon: User, badge: null, active: false, path: '/student/profile' },
+  { id: 'skill', label: 'Skill Radar', icon: Activity, badge: null, active: false, path: '/student/skill-radar' },
+  { id: 'spi', label: 'SPI Score', icon: TrendingUp, badge: null, active: false, path: '/student/spi' },
+  { id: 'career', label: 'Career Path', icon: TrendingUp, badge: null, active: false, path: '/student/career' },
+  { id: 'team', label: 'My Team', icon: Users, badge: null, active: false, path: '/student/my-team' },
+  { id: 'notifs', label: 'Notifications', icon: Bell, badge: '3', active: false, path: '/student/notifications' },
+  { id: 'rankings', label: 'Rankings', icon: Award, badge: null, active: false, path: '/student/rankings' },
+  { id: 'directory', label: 'Domain Directory', icon: Grid, badge: null, active: false, path: '/student/directory' },
+  { id: 'resume', label: 'Resume Builder', icon: FileText, badge: null, active: false, path: '/student/resume' },
+  { id: 'placement', label: 'Placement Readiness', icon: Target, badge: null, active: false, path: '/student/placement' },
+  { id: 'action', label: 'Action Plan', icon: CheckCircle, badge: null, active: false, path: '/student/action-plan' },
+  { id: 'potential', label: 'Potential Gap', icon: Zap, badge: null, active: false, path: '/student/potential-gap' },
+  { id: 'extra', label: 'Extracurriculars', icon: Award, badge: null, active: false, path: '/student/extracurricular' },
+  { id: 'integrations', label: 'Integrations', icon: Plug, badge: null, active: false, path: '/integrations' },
+  { id: 'assignments', label: 'Assignments', icon: BookOpen, badge: null, active: false, path: '/student/assignments' },
+  { id: 'attendance', label: 'Attendance', icon: CheckCircle, badge: null, active: false, path: '/student/attendance' },
 ]
 
 const skillData = [
@@ -56,7 +56,7 @@ export default function PlacementReadinessPage() {
             section: parsed.section || 'B'
           })
         }
-      } catch(e){}
+      } catch (e) { }
     }
   }, [])
 
@@ -143,7 +143,7 @@ export default function PlacementReadinessPage() {
         {/* PAGE BODY */}
         <main className="flex-1 overflow-y-auto bg-gray-50/50">
           <div className="max-w-[1400px] mx-auto p-6 md:p-8 animate-fade-in space-y-8 pb-20">
-            
+
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
               <div>
@@ -161,7 +161,7 @@ export default function PlacementReadinessPage() {
             {/* TOP - READINESS HERO */}
             <div className="bg-navy rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-8 text-white relative overflow-hidden shadow-lg border border-navy">
               <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4"></div>
-              
+
               <div className="flex-1 w-full relative z-10">
                 <p className="text-gray-400 text-sm font-bold uppercase tracking-widest mb-4">Current Status</p>
                 <p className="text-amber-400 font-bold text-2xl mb-1">Approaching Tier 2 Ready</p>
@@ -195,12 +195,12 @@ export default function PlacementReadinessPage() {
                     </div>
                   </div>
                 </div>
-                <p className="text-gray-400 text-xs font-bold uppercase tracking-wider text-center">Placement Readiness<br/>Score</p>
+                <p className="text-gray-400 text-xs font-bold uppercase tracking-wider text-center">Placement Readiness<br />Score</p>
               </div>
 
               <div className="flex-1 w-full flex flex-col items-end relative z-10">
                 <p className="text-gray-400 text-sm font-bold uppercase tracking-widest mb-4 w-full text-right">Your Progress</p>
-                
+
                 <div className="flex items-center gap-2 mb-4 w-full justify-end">
                   <div className="flex flex-col items-center">
                     <span className="text-xs text-gray-400 mb-1">Aug 25</span>
@@ -233,7 +233,7 @@ export default function PlacementReadinessPage() {
             <div>
               <h2 className="text-lg font-bold text-navy mb-4">Readiness by Company Tier</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                
+
                 {/* TIER 3 */}
                 <div className="bg-white rounded-2xl border-2 border-green-500 overflow-hidden shadow-sm hover:-translate-y-1 transition-transform duration-300">
                   <div className="bg-green-500 text-white p-3 text-center">
@@ -253,19 +253,19 @@ export default function PlacementReadinessPage() {
                   </div>
                   <div className="p-5 space-y-3 text-sm">
                     <p className="flex items-start gap-2 text-gray-700">
-                      <CheckCircle2 size={16} className="text-green-500 flex-shrink-0 mt-0.5" /> 
+                      <CheckCircle2 size={16} className="text-green-500 flex-shrink-0 mt-0.5" />
                       <span>CGPA above 6.0 — <span className="font-bold text-gray-900">You: 7.4</span></span>
                     </p>
                     <p className="flex items-start gap-2 text-gray-700">
-                      <CheckCircle2 size={16} className="text-green-500 flex-shrink-0 mt-0.5" /> 
+                      <CheckCircle2 size={16} className="text-green-500 flex-shrink-0 mt-0.5" />
                       <span>Basic coding skills — <span className="font-bold text-gray-900">Verified</span></span>
                     </p>
                     <p className="flex items-start gap-2 text-gray-700">
-                      <CheckCircle2 size={16} className="text-green-500 flex-shrink-0 mt-0.5" /> 
+                      <CheckCircle2 size={16} className="text-green-500 flex-shrink-0 mt-0.5" />
                       <span>Communication baseline — <span className="font-bold text-gray-900">71%</span></span>
                     </p>
                     <p className="flex items-start gap-2 text-gray-700">
-                      <CheckCircle2 size={16} className="text-green-500 flex-shrink-0 mt-0.5" /> 
+                      <CheckCircle2 size={16} className="text-green-500 flex-shrink-0 mt-0.5" />
                       <span>Attendance above 75% — <span className="font-bold text-gray-900">79%</span></span>
                     </p>
                   </div>
@@ -293,19 +293,19 @@ export default function PlacementReadinessPage() {
                   </div>
                   <div className="p-5 space-y-3 text-sm">
                     <p className="flex items-start gap-2 text-gray-700">
-                      <CheckCircle2 size={16} className="text-green-500 flex-shrink-0 mt-0.5" /> 
+                      <CheckCircle2 size={16} className="text-green-500 flex-shrink-0 mt-0.5" />
                       <span>CGPA above 7.0 — <span className="font-bold text-gray-900">You: 7.4</span></span>
                     </p>
                     <p className="flex items-start gap-2 text-gray-700">
-                      <CheckCircle2 size={16} className="text-green-500 flex-shrink-0 mt-0.5" /> 
+                      <CheckCircle2 size={16} className="text-green-500 flex-shrink-0 mt-0.5" />
                       <span>Strong project portfolio — <span className="font-bold text-gray-900">88% avg</span></span>
                     </p>
                     <p className="flex items-start gap-2 text-amber-700 font-medium">
-                      <AlertTriangle size={16} className="text-amber-500 flex-shrink-0 mt-0.5" /> 
+                      <AlertTriangle size={16} className="text-amber-500 flex-shrink-0 mt-0.5" />
                       <span>DSA and problem solving — <span className="font-bold text-amber-900 block mt-0.5">Improve from 65% to 75%</span></span>
                     </p>
                     <p className="flex items-start gap-2 text-amber-700 font-medium">
-                      <AlertTriangle size={16} className="text-amber-500 flex-shrink-0 mt-0.5" /> 
+                      <AlertTriangle size={16} className="text-amber-500 flex-shrink-0 mt-0.5" />
                       <span>System design basics — <span className="font-bold text-amber-900 block mt-0.5">Not yet covered</span></span>
                     </p>
 
@@ -341,7 +341,7 @@ export default function PlacementReadinessPage() {
                   </div>
                   <div className="p-5 space-y-3 text-sm">
                     <p className="flex items-start gap-2 text-gray-700">
-                      <CheckCircle2 size={16} className="text-green-500 flex-shrink-0 mt-0.5" /> 
+                      <CheckCircle2 size={16} className="text-green-500 flex-shrink-0 mt-0.5" />
                       <span>Strong projects — <span className="font-bold text-gray-900">88% avg</span></span>
                     </p>
                     <p className="flex items-start gap-2 text-red-700 font-medium">
@@ -385,7 +385,7 @@ export default function PlacementReadinessPage() {
                     <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} domain={[0, 100]} />
                     <RechartsTooltip cursor={{ fill: '#f3f4f6' }} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
                     <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: '12px', paddingBottom: '20px' }} />
-                    
+
                     <Bar dataKey="score" name="Your Score" radius={[4, 4, 0, 0]}>
                       {skillData.map((entry, index) => (
                         <Cell key={`cell-${index}`} fill={entry.score >= entry.req ? '#22C55E' : '#EF4444'} />
@@ -404,7 +404,7 @@ export default function PlacementReadinessPage() {
 
             {/* SECTION C - TIMELINE AND WATCHLIST */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-              
+
               {/* Left - Timeline */}
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
                 <div className="p-6 border-b border-gray-100">
@@ -413,7 +413,7 @@ export default function PlacementReadinessPage() {
                 </div>
                 <div className="p-6 relative">
                   <div className="absolute top-6 bottom-6 left-[39px] w-0.5 bg-gray-200"></div>
-                  
+
                   <div className="space-y-6 relative">
                     {/* Month 1 - Current */}
                     <div className="flex gap-4">
@@ -521,7 +521,7 @@ export default function PlacementReadinessPage() {
                   <h3 className="text-lg font-bold text-navy mb-1">Your Target Companies</h3>
                   <p className="text-sm text-gray-500">Based on your skill profile and career recommendations</p>
                 </div>
-                
+
                 <div className="p-6 space-y-4">
                   {/* Company 1 */}
                   <div className="group border border-gray-100 rounded-xl p-4 hover:border-blue-200 hover:shadow-md transition bg-white relative overflow-hidden">
@@ -665,7 +665,7 @@ export default function PlacementReadinessPage() {
                 <p className="text-sm text-gray-500">Curated based on your specific skill gaps</p>
               </div>
               <div className="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                
+
                 {/* R1 */}
                 <div className="border border-gray-200 rounded-xl p-5 hover:shadow-md transition flex flex-col justify-between group">
                   <div>
