@@ -6,23 +6,23 @@ import { useRouter } from 'next/navigation'
 import { Home, User, Activity, TrendingUp, Users, Bell, Award, Grid, FileText, Settings, LogOut, Search, ChevronDown, Cpu, Sparkles, CheckCircle, AlertTriangle, ArrowRight, X, Circle, Target, Check, Zap, BookOpen, AlertCircle, Plug } from 'lucide-react'
 
 const navLinks = [
-  { id: 'dashboard',  label: 'Dashboard',          icon: Home,        badge: null, active: false, path: '/student' },
-  { id: 'profile',    label: 'My Profile',          icon: User,        badge: null, active: false, path: '/student/profile' },
-  { id: 'skill',      label: 'Skill Radar',         icon: Activity,    badge: null, active: false, path: '/student/skill-radar' },
-  { id: 'spi',        label: 'SPI Score',           icon: TrendingUp,  badge: null, active: false, path: '/student/spi' },
-  { id: 'career',     label: 'Career Path',         icon: TrendingUp,  badge: null, active: true,  path: '/student/career' },
-  { id: 'team',       label: 'My Team',             icon: Users,       badge: null, active: false, path: '/student/my-team' },
-  { id: 'notifs',     label: 'Notifications',       icon: Bell,        badge: '3',  active: false, path: '/student/notifications' },
-  { id: 'rankings',   label: 'Rankings',            icon: Award,       badge: null, active: false, path: '/student/rankings' },
-  { id: 'directory',  label: 'Domain Directory',    icon: Grid,        badge: null, active: false, path: '/student/directory' },
-  { id: 'resume',     label: 'Resume Builder',      icon: FileText,    badge: null, active: false, path: '/student/resume' },
-  { id: 'placement',  label: 'Placement Readiness', icon: Target,      badge: null, active: false, path: '/student/placement' },
-  { id: 'action',     label: 'Action Plan',         icon: CheckCircle, badge: null, active: false, path: '/student/action-plan' },
-  { id: 'potential',  label: 'Potential Gap',       icon: Zap,         badge: null, active: false, path: '/student/potential-gap' },
-  { id: 'extra',      label: 'Extracurriculars',    icon: Award,       badge: null, active: false, path: '/student/extracurricular' },
-  { id: 'integrations', label: 'Integrations',      icon: Plug,        badge: null, active: false, path: '/integrations' },
-  { id: 'assignments',  label: 'Assignments',       icon: BookOpen,    badge: null, active: false, path: '/student/assignments' },
-  { id: 'attendance',   label: 'Attendance',        icon: CheckCircle, badge: null, active: false, path: '/student/attendance' },
+  { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null, active: false, path: '/student' },
+  { id: 'profile', label: 'My Profile', icon: User, badge: null, active: false, path: '/student/profile' },
+  { id: 'skill', label: 'Skill Radar', icon: Activity, badge: null, active: false, path: '/student/skill-radar' },
+  { id: 'spi', label: 'SPI Score', icon: TrendingUp, badge: null, active: false, path: '/student/spi' },
+  { id: 'career', label: 'Career Path', icon: TrendingUp, badge: null, active: true, path: '/student/career' },
+  { id: 'team', label: 'My Team', icon: Users, badge: null, active: false, path: '/student/my-team' },
+  { id: 'notifs', label: 'Notifications', icon: Bell, badge: '3', active: false, path: '/student/notifications' },
+  { id: 'rankings', label: 'Rankings', icon: Award, badge: null, active: false, path: '/student/rankings' },
+  { id: 'directory', label: 'Domain Directory', icon: Grid, badge: null, active: false, path: '/student/directory' },
+  { id: 'resume', label: 'Resume Builder', icon: FileText, badge: null, active: false, path: '/student/resume' },
+  { id: 'placement', label: 'Placement Readiness', icon: Target, badge: null, active: false, path: '/student/placement' },
+  { id: 'action', label: 'Action Plan', icon: CheckCircle, badge: null, active: false, path: '/student/action-plan' },
+  { id: 'potential', label: 'Potential Gap', icon: Zap, badge: null, active: false, path: '/student/potential-gap' },
+  { id: 'extra', label: 'Extracurriculars', icon: Award, badge: null, active: false, path: '/student/extracurricular' },
+  { id: 'integrations', label: 'Integrations', icon: Plug, badge: null, active: false, path: '/integrations' },
+  { id: 'assignments', label: 'Assignments', icon: BookOpen, badge: null, active: false, path: '/student/assignments' },
+  { id: 'attendance', label: 'Attendance', icon: CheckCircle, badge: null, active: false, path: '/student/attendance' },
 ]
 
 function SPIArcSidebar({ score, onClick }) {
@@ -115,7 +115,7 @@ export default function CareerPathPage() {
             section: parsed.section || 'B'
           })
         }
-      } catch(e){}
+      } catch (e) { }
     }
   }, [])
 
@@ -220,7 +220,7 @@ export default function CareerPathPage() {
                   </span>
                 </div>
               </div>
-              
+
               <div className="bg-purple-50/80 border border-purple-100 rounded-2xl p-5 flex gap-4 shadow-sm relative overflow-hidden">
                 <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-purple-500" />
                 <div className="text-purple-600 mt-0.5"><Sparkles size={20} /></div>
@@ -234,11 +234,11 @@ export default function CareerPathPage() {
             <div>
               <h2 className="text-xl font-bold text-navy mb-5">Recommended Career Paths</h2>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
-                
+
                 {/* Card 1 - Primary */}
                 <div className="bg-blue-50/30 rounded-2xl shadow-md border border-blue-400 relative p-6 flex flex-col ring-2 ring-blue-500/20">
                   <span className="absolute top-4 right-4 bg-blue-600 text-white text-[10px] font-bold px-2.5 py-1 rounded-full shadow-sm">Best Match</span>
-                  
+
                   <div className="mb-5">
                     <h3 className="font-bold text-navy text-lg mb-1 pr-20">Full Stack Development</h3>
                     <div className="flex items-center gap-2 mb-2">
@@ -430,11 +430,10 @@ export default function CareerPathPage() {
                   <button
                     key={key}
                     onClick={() => setActiveTab(key)}
-                    className={`px-6 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap transition-all ${
-                      activeTab === key 
-                        ? `bg-white text-${data.metrics.placementColor === 'amber' ? (key === 'C' ? 'purple-700' : 'blue-700') : 'green-700'} shadow-sm` 
+                    className={`px-6 py-2.5 rounded-lg text-sm font-bold whitespace-nowrap transition-all ${activeTab === key
+                        ? `bg-white text-${data.metrics.placementColor === 'amber' ? (key === 'C' ? 'purple-700' : 'blue-700') : 'green-700'} shadow-sm`
                         : 'text-gray-500 hover:text-gray-700'
-                    }`}
+                      }`}
                   >
                     {data.name}
                   </button>
@@ -442,26 +441,24 @@ export default function CareerPathPage() {
               </div>
 
               <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-                
+
                 {/* Timeline Left */}
                 <div className="lg:col-span-3 bg-white border border-gray-200 rounded-2xl p-6 md:p-8 shadow-sm">
                   <div className="relative pl-8 space-y-8 before:absolute before:inset-0 before:ml-[11px] before:w-0.5 before:bg-gray-100 before:z-0 py-2">
                     {currentPath.timeline.map((step, i) => (
                       <div key={i} className="relative z-10">
-                        <div className={`absolute -left-[37px] top-1 w-6 h-6 rounded-full flex items-center justify-center ring-4 ring-white ${
-                          step.type === 'filled' 
-                            ? `bg-${step.color}-500 text-white` 
+                        <div className={`absolute -left-[37px] top-1 w-6 h-6 rounded-full flex items-center justify-center ring-4 ring-white ${step.type === 'filled'
+                            ? `bg-${step.color}-500 text-white`
                             : `bg-white border-2 border-${step.color}-400`
-                        }`}>
+                          }`}>
                           {step.type === 'filled' && <Target size={14} strokeWidth={3} />}
                         </div>
                         <div>
-                          <p className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${
-                            step.color === 'gray' ? 'text-gray-400' : `text-${step.color}-600`
-                          }`}>{step.title}</p>
+                          <p className={`text-[10px] font-bold uppercase tracking-wider mb-1 ${step.color === 'gray' ? 'text-gray-400' : `text-${step.color}-600`
+                            }`}>{step.title}</p>
                           <h4 className="font-bold text-navy text-sm sm:text-base mb-1">{step.date}</h4>
                           <p className="text-sm text-gray-700 mb-2 font-medium">{step.desc || step.role}</p>
-                          
+
                           <div className="flex flex-wrap gap-2 mt-2">
                             {step.spi && <span className="px-2 py-0.5 bg-gray-50 border border-gray-200 rounded text-[11px] font-bold text-gray-600">SPI: {step.spi}</span>}
                             {step.predictedSpi && <span className="px-2 py-0.5 bg-blue-50 border border-blue-100 rounded text-[11px] font-bold text-blue-700">Pred. SPI: {step.predictedSpi}</span>}
@@ -487,7 +484,7 @@ export default function CareerPathPage() {
                 <div className="lg:col-span-2 flex flex-col gap-6">
                   <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
                     <h3 className="font-bold text-navy text-lg mb-5">{currentPath.name} Outcomes</h3>
-                    
+
                     <div className="space-y-5 mb-6">
                       <div>
                         <div className="flex justify-between text-sm mb-1">
@@ -496,28 +493,28 @@ export default function CareerPathPage() {
                         </div>
                         <div className="h-2 w-full bg-gray-100 rounded-full overflow-hidden"><div className={`h-full bg-${currentPath.metrics.placementColor}-500 rounded-full`} style={{ width: `${currentPath.metrics.placement}%` }} /></div>
                       </div>
-                      
+
                       <div className="flex justify-between items-center py-2 border-b border-gray-50">
                         <span className="text-sm text-gray-600 font-semibold">Expected first package</span>
                         <span className="text-sm font-bold text-blue-600">{currentPath.metrics.firstPkg}</span>
                       </div>
-                      
+
                       <div className="flex justify-between items-center py-2 border-b border-gray-50">
                         <span className="text-sm text-gray-600 font-semibold">5-year CTC ceiling</span>
                         <span className="text-sm font-bold text-blue-600">{currentPath.metrics.fiveYr}</span>
                       </div>
-                      
+
                       <div className="flex justify-between items-center py-2 border-b border-gray-50">
                         <span className="text-sm text-gray-600 font-semibold">10-year CTC ceiling</span>
                         <span className="text-sm font-bold text-green-600">{currentPath.metrics.tenYr}</span>
                       </div>
-                      
+
                       <div className="flex justify-between items-center py-2">
                         <span className="text-sm text-gray-600 font-semibold">Career satisfaction index</span>
                         <span className="text-sm font-bold text-teal-600">{currentPath.metrics.sat}/100</span>
                       </div>
                     </div>
-                    
+
                     <div className={`p-4 rounded-xl bg-${currentPath.insightColor}-50 border border-${currentPath.insightColor}-100`}>
                       <p className={`text-sm leading-relaxed text-${currentPath.insightColor}-800 font-medium`}>
                         {currentPath.insight}
@@ -544,7 +541,7 @@ export default function CareerPathPage() {
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                
+
                 {[
                   { name: 'Rahul Gupta', batch: 'CSE 2023', match: 91, oldProf: 'SPI 74, Web Dev focus, 2 projects', role: 'Full Stack Developer', co: 'Razorpay', pkg: '14 LPA', connected: true, tag: 'Path A follower → upgraded to Path B in final year', ava: 'RG', col: 'blue' },
                   { name: 'Anjali Sharma', batch: 'CSE 2022', match: 87, oldProf: 'SPI 71, ML interest, 1 TensorFlow project', role: 'ML Engineer', co: 'Mu Sigma', pkg: '16 LPA', connected: false, tag: 'Chose Career Pivot path in 3rd year — paid off', ava: 'PR', col: 'teal' },
@@ -592,11 +589,11 @@ export default function CareerPathPage() {
 
             {/* SECTION 5 - READINESS & ACTION PLAN */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              
+
               {/* Placement Readiness */}
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col">
                 <h3 className="text-lg font-bold text-navy mb-6 text-center">Placement Readiness: 68/100</h3>
-                
+
                 <div className="flex justify-center mb-8">
                   <div className="relative w-40 h-40">
                     <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
@@ -648,7 +645,7 @@ export default function CareerPathPage() {
                 </div>
 
                 <div className="space-y-6 flex-1">
-                  
+
                   {/* Week 1 */}
                   <div>
                     <h4 className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 border-b border-gray-100 pb-1">Week 1</h4>
@@ -748,7 +745,7 @@ export default function CareerPathPage() {
               </button>
             </div>
             <div className="p-6 space-y-6">
-              
+
               <div className="flex gap-4">
                 <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">1</div>
                 <div>
@@ -756,7 +753,7 @@ export default function CareerPathPage() {
                   <p className="text-sm text-gray-500 mt-1">Deep dive into advanced React concepts, Redux/Zustand, and TypeScript fundamentals.</p>
                 </div>
               </div>
-              
+
               <div className="flex gap-4">
                 <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">2</div>
                 <div>

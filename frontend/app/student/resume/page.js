@@ -6,23 +6,23 @@ import { useRouter } from 'next/navigation'
 import { Home, User, Activity, TrendingUp, Users, Bell, Award, Grid, FileText, Settings, LogOut, Search, ChevronDown, Download, Edit2, CheckCircle2, GripVertical, AlertTriangle, Send, Link as LinkIcon, Target, CheckCircle, Zap, BookOpen, AlertCircle, Plug } from 'lucide-react'
 
 const navLinks = [
-  { id: 'dashboard',  label: 'Dashboard',       icon: Home,       badge: null,  active: true, path: '/student' },
-  { id: 'profile',    label: 'My Profile',       icon: User,       badge: null,  active: false, path: '/student/profile' },
-  { id: 'skill',      label: 'Skill Radar',      icon: Activity,   badge: null,  active: false, path: '/student/skill-radar' },
-  { id: 'spi',        label: 'SPI Score',        icon: TrendingUp, badge: null,  active: false, path: '/student/spi' },
-  { id: 'career',     label: 'Career Path',      icon: TrendingUp, badge: null,  active: false, path: '/student/career' },
-  { id: 'team',       label: 'My Team',          icon: Users,      badge: null,  active: false, path: '/student/my-team' },
-  { id: 'notifs',     label: 'Notifications',    icon: Bell,       badge: '3',   active: false, path: '/student/notifications' },
-  { id: 'rankings',   label: 'Rankings',         icon: Award,      badge: null,  active: false, path: '/student/rankings' },
-  { id: 'directory',  label: 'Domain Directory', icon: Grid,       badge: null,  active: false, path: '/student/directory' },
-  { id: 'resume',     label: 'Resume Builder',   icon: FileText,   badge: null,  active: false, path: '/student/resume' },
-  { id: 'placement',  label: 'Placement Readiness', icon: Target, badge: null,  active: false, path: '/student/placement' },
-  { id: 'action',     label: 'Action Plan',      icon: CheckCircle, badge: null,  active: false, path: '/student/action-plan' },
-  { id: 'potential',  label: 'Potential Gap',    icon: Zap,        badge: null,  active: false, path: '/student/potential-gap' },
-  { id: 'extra',      label: 'Extracurriculars', icon: Award,      badge: null,  active: false, path: '/student/extracurricular' },
-  { id: 'integrations', label: 'Integrations',   icon: Plug,       badge: null,  active: false, path: '/integrations' },
-  { id: 'assignments',  label: 'Assignments',    icon: BookOpen,   badge: null,  active: false, path: '/student/assignments' },
-  { id: 'attendance',   label: 'Attendance',     icon: CheckCircle,badge: null,  active: false, path: '/student/attendance' },
+  { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null, active: true, path: '/student' },
+  { id: 'profile', label: 'My Profile', icon: User, badge: null, active: false, path: '/student/profile' },
+  { id: 'skill', label: 'Skill Radar', icon: Activity, badge: null, active: false, path: '/student/skill-radar' },
+  { id: 'spi', label: 'SPI Score', icon: TrendingUp, badge: null, active: false, path: '/student/spi' },
+  { id: 'career', label: 'Career Path', icon: TrendingUp, badge: null, active: false, path: '/student/career' },
+  { id: 'team', label: 'My Team', icon: Users, badge: null, active: false, path: '/student/my-team' },
+  { id: 'notifs', label: 'Notifications', icon: Bell, badge: '3', active: false, path: '/student/notifications' },
+  { id: 'rankings', label: 'Rankings', icon: Award, badge: null, active: false, path: '/student/rankings' },
+  { id: 'directory', label: 'Domain Directory', icon: Grid, badge: null, active: false, path: '/student/directory' },
+  { id: 'resume', label: 'Resume Builder', icon: FileText, badge: null, active: false, path: '/student/resume' },
+  { id: 'placement', label: 'Placement Readiness', icon: Target, badge: null, active: false, path: '/student/placement' },
+  { id: 'action', label: 'Action Plan', icon: CheckCircle, badge: null, active: false, path: '/student/action-plan' },
+  { id: 'potential', label: 'Potential Gap', icon: Zap, badge: null, active: false, path: '/student/potential-gap' },
+  { id: 'extra', label: 'Extracurriculars', icon: Award, badge: null, active: false, path: '/student/extracurricular' },
+  { id: 'integrations', label: 'Integrations', icon: Plug, badge: null, active: false, path: '/integrations' },
+  { id: 'assignments', label: 'Assignments', icon: BookOpen, badge: null, active: false, path: '/student/assignments' },
+  { id: 'attendance', label: 'Attendance', icon: CheckCircle, badge: null, active: false, path: '/student/attendance' },
 ]
 
 const initialSections = [
@@ -71,7 +71,7 @@ export default function ResumeBuilderPage() {
             section: parsed.section || 'B'
           })
         }
-      } catch(e){}
+      } catch (e) { }
     }
   }, [])
 
@@ -81,7 +81,7 @@ export default function ResumeBuilderPage() {
   const router = useRouter()
   const [activeNav] = useState('resume')
   const [sidebarOpen, setSidebarOpen] = useState(true)
-  
+
   const [sections, setSections] = useState(initialSections)
   const [template, setTemplate] = useState('classic')
   const [accentColor, setAccentColor] = useState('#2563EB')
@@ -171,7 +171,7 @@ export default function ResumeBuilderPage() {
         {/* PAGE BODY */}
         <main className="flex-1 overflow-y-auto bg-gray-50/50 pb-20">
           <div className="max-w-[1400px] mx-auto p-6 md:p-8 animate-fade-in space-y-6">
-            
+
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
               <div>
@@ -179,12 +179,12 @@ export default function ResumeBuilderPage() {
                 <p className="text-gray-500 text-sm max-w-2xl">Your resume is automatically built from your verified platform data — skills, projects, achievements and certifications all pulled in for you</p>
               </div>
               <div className="flex items-center gap-3">
-                <button 
+                <button
                   onClick={() => showToast('Edit mode coming soon — resume auto-updates from your profile')}
                   className="flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 font-bold text-sm rounded-lg hover:bg-gray-50 transition">
                   <Edit2 size={16} /> Edit Resume
                 </button>
-                <button 
+                <button
                   onClick={() => showToast('Preparing your resume for download...')}
                   className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white font-bold text-sm rounded-lg hover:bg-blue-700 transition shadow-sm">
                   <Download size={16} /> Download PDF
@@ -204,7 +204,7 @@ export default function ResumeBuilderPage() {
                 </div>
                 <p className="text-sm text-blue-800 font-medium">Your resume is strong. Add 2 more items to reach 100%.</p>
               </div>
-              
+
               <div className="flex-1 w-full md:border-l md:border-blue-200 md:pl-6 space-y-3">
                 <div className="flex items-center gap-2 px-3 py-2 bg-amber-100/50 border border-amber-200 text-amber-800 rounded-lg text-sm font-bold w-fit">
                   <AlertTriangle size={16} className="text-amber-500" /> Add a LinkedIn profile URL
@@ -218,10 +218,10 @@ export default function ResumeBuilderPage() {
 
             {/* TWO COLUMN LAYOUT */}
             <div className="flex flex-col lg:flex-row gap-8 items-start">
-              
+
               {/* LEFT COLUMN: Controls */}
               <div className="w-full lg:w-[40%] space-y-8 bg-white p-6 rounded-2xl shadow-sm border border-gray-100 sticky top-6">
-                
+
                 {/* Toggles */}
                 <div>
                   <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Resume Sections</h3>
@@ -233,7 +233,7 @@ export default function ResumeBuilderPage() {
                           <span className={`text-sm font-semibold ${section.enabled ? 'text-navy' : 'text-gray-500'}`}>{section.label}</span>
                           {section.note && <span className="text-[10px] text-gray-500 bg-gray-100 px-2 py-0.5 rounded font-medium">{section.note}</span>}
                         </div>
-                        <button 
+                        <button
                           onClick={() => toggleSection(section.id)}
                           disabled={!section.toggleable}
                           className={`w-10 h-5 rounded-full relative transition-colors ${section.enabled ? 'bg-blue-600' : 'bg-gray-300'}`}
@@ -250,7 +250,7 @@ export default function ResumeBuilderPage() {
                   <h3 className="text-sm font-bold text-gray-400 uppercase tracking-wider mb-4">Resume Template</h3>
                   <div className="grid grid-cols-3 gap-3">
                     {templates.map(t => (
-                      <button 
+                      <button
                         key={t.id}
                         onClick={() => setTemplate(t.id)}
                         className={`flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition-all ${template === t.id ? 'border-blue-600 bg-blue-50/50' : 'border-gray-200 hover:border-blue-300'}`}
@@ -291,7 +291,7 @@ export default function ResumeBuilderPage() {
                   <div className="flex flex-col gap-4">
                     <div>
                       <label className="text-xs font-bold text-gray-500 block mb-1.5">Font Family</label>
-                      <select 
+                      <select
                         value={font}
                         onChange={(e) => setFont(e.target.value)}
                         className="w-full bg-gray-50 border border-gray-200 rounded-lg px-3 py-2 text-sm text-navy font-medium focus:ring-2 focus:ring-blue-500 outline-none"
@@ -320,13 +320,13 @@ export default function ResumeBuilderPage() {
               {/* RIGHT COLUMN: Preview */}
               <div className="w-full lg:w-[60%] flex justify-center bg-gray-200/50 p-4 md:p-8 rounded-2xl border border-gray-200 overflow-x-auto">
                 {/* A4 Paper Container */}
-                <div 
+                <div
                   className="bg-white shadow-lg w-[800px] min-h-[1131px] flex-shrink-0 transition-all duration-300 relative"
-                  style={{ 
-                    fontFamily: font === 'Arial' ? 'Arial, sans-serif' : font === 'Times New Roman' ? '"Times New Roman", serif' : font === 'Georgia' ? 'Georgia, serif' : 'Calibri, sans-serif' 
+                  style={{
+                    fontFamily: font === 'Arial' ? 'Arial, sans-serif' : font === 'Times New Roman' ? '"Times New Roman", serif' : font === 'Georgia' ? 'Georgia, serif' : 'Calibri, sans-serif'
                   }}
                 >
-                  
+
                   {/* TEMPLATE: MODERN */}
                   {template === 'modern' ? (
                     <div className="flex w-full h-full min-h-[1131px]">
@@ -336,14 +336,14 @@ export default function ResumeBuilderPage() {
                           <div className="mb-10">
                             <h1 className="text-3xl font-bold mb-2 break-words leading-tight">PRIYANSHU RAJ</h1>
                             <div className="space-y-3 mt-6 text-sm text-white/90">
-                              <p className="flex items-center gap-2"><Send size={14} className="opacity-70"/> arman.singh@college.edu</p>
-                              <p className="flex items-center gap-2"><Send size={14} className="opacity-70"/> +91 98765 43210</p>
-                              <p className="flex items-center gap-2"><LinkIcon size={14} className="opacity-70"/> github.com/armansingh</p>
-                              <p className="flex items-center gap-2"><LinkIcon size={14} className="opacity-70"/> Delhi, India</p>
+                              <p className="flex items-center gap-2"><Send size={14} className="opacity-70" /> arman.singh@college.edu</p>
+                              <p className="flex items-center gap-2"><Send size={14} className="opacity-70" /> +91 98765 43210</p>
+                              <p className="flex items-center gap-2"><LinkIcon size={14} className="opacity-70" /> github.com/armansingh</p>
+                              <p className="flex items-center gap-2"><LinkIcon size={14} className="opacity-70" /> Delhi, India</p>
                             </div>
                           </div>
                         )}
-                        
+
                         {isEnabled('skills') && (
                           <div className="mb-8">
                             <h2 className="text-lg font-bold border-b border-white/20 pb-2 mb-4 tracking-widest uppercase">Skills</h2>
@@ -375,7 +375,7 @@ export default function ResumeBuilderPage() {
                           </div>
                         )}
                       </div>
-                      
+
                       {/* Right Content */}
                       <div className="w-[70%] p-8 bg-white text-gray-800">
                         {isEnabled('education') && (
@@ -452,7 +452,7 @@ export default function ResumeBuilderPage() {
                             </ul>
                           </div>
                         )}
-                        
+
                         {isEnabled('extra') && (
                           <div>
                             <h2 className="text-xl font-bold mb-4 uppercase tracking-wider" style={{ color: accentColor }}>Extracurriculars</h2>
@@ -467,7 +467,7 @@ export default function ResumeBuilderPage() {
                   ) : (
                     /* TEMPLATE: CLASSIC OR MINIMAL */
                     <div className="w-full h-full pb-10">
-                      
+
                       {isEnabled('personal') && (
                         <div className={`${template === 'classic' ? 'text-white p-8 text-center' : 'p-8 pb-4 text-center border-b border-gray-200'}`} style={{ backgroundColor: template === 'classic' ? accentColor : 'transparent' }}>
                           <h1 className={`text-4xl font-bold mb-3 tracking-wide ${template === 'minimal' ? 'text-gray-900' : ''}`}>PRIYANSHU RAJ</h1>
@@ -481,7 +481,7 @@ export default function ResumeBuilderPage() {
                       )}
 
                       <div className="px-10 py-6 space-y-6">
-                        
+
                         {isEnabled('education') && (
                           <section>
                             <h2 className={`text-lg font-bold mb-3 uppercase tracking-widest ${template === 'classic' ? 'pl-2 border-l-4' : 'border-b pb-1'}`} style={{ borderColor: accentColor, color: template === 'minimal' ? '#111' : accentColor }}>
@@ -613,7 +613,7 @@ export default function ResumeBuilderPage() {
                 </div>
               </div>
             </div>
-            
+
           </div>
         </main>
 
@@ -623,17 +623,17 @@ export default function ResumeBuilderPage() {
             Last updated: 2 hours ago from your profile data
           </p>
           <div className="flex flex-wrap items-center gap-3">
-            <button 
+            <button
               onClick={() => showToast('Preparing your resume for download...')}
               className="px-5 py-2.5 bg-blue-600 text-white font-bold text-sm rounded-xl hover:bg-blue-700 transition shadow-sm flex items-center gap-2">
               <Download size={16} /> Download PDF
             </button>
-            <button 
+            <button
               onClick={() => showToast('Share link copied to clipboard!')}
               className="px-5 py-2.5 border border-gray-300 text-gray-700 font-bold text-sm rounded-xl hover:bg-gray-50 transition flex items-center gap-2">
               <LinkIcon size={16} /> Copy Share Link
             </button>
-            <button 
+            <button
               onClick={() => setReviewModalOpen(true)}
               className="px-5 py-2.5 border border-teal-500 text-teal-700 font-bold text-sm rounded-xl hover:bg-teal-50 transition flex items-center gap-2">
               <CheckCircle2 size={16} /> Request Faculty Review
@@ -660,19 +660,19 @@ export default function ResumeBuilderPage() {
               </div>
               <h2 className="text-xl font-bold text-navy mb-2">Request Faculty Review</h2>
               <p className="text-sm text-gray-600 mb-6">Send your current resume to Prof. Priya Kapoor for review and feedback?</p>
-              
+
               <div className="flex gap-3">
-                <button 
-                  onClick={() => setReviewModalOpen(false)} 
+                <button
+                  onClick={() => setReviewModalOpen(false)}
                   className="flex-1 py-2.5 border border-gray-200 text-gray-700 font-bold text-sm rounded-xl hover:bg-gray-50 transition"
                 >
                   Cancel
                 </button>
-                <button 
+                <button
                   onClick={() => {
                     setReviewModalOpen(false)
                     showToast('Resume sent to Prof. Priya Kapoor for review')
-                  }} 
+                  }}
                   className="flex-1 py-2.5 bg-teal-600 text-white font-bold text-sm rounded-xl hover:bg-teal-700 transition shadow-sm"
                 >
                   Confirm & Send

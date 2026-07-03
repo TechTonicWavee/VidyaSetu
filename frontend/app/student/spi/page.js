@@ -10,23 +10,23 @@ import {
 } from 'recharts'
 
 const navLinks = [
-  { id: 'dashboard',  label: 'Dashboard',       icon: Home,       badge: null,  active: false, path: '/student' },
-  { id: 'profile',    label: 'My Profile',       icon: User,       badge: null,  active: false, path: '/student/profile' },
-  { id: 'skill',      label: 'Skill Radar',      icon: Activity,   badge: null,  active: false, path: '/student/skill-radar' },
-  { id: 'spi',        label: 'SPI Score',        icon: TrendingUp, badge: null,  active: true,  path: '/student/spi' },
-  { id: 'career',     label: 'Career Path',      icon: TrendingUp, badge: null,  active: false, path: '/student/career' },
-  { id: 'team',       label: 'My Team',          icon: Users,      badge: null,  active: false, path: '/student/my-team' },
-  { id: 'notifs',     label: 'Notifications',    icon: Bell,       badge: null,  active: false, path: '/student/notifications' },
-  { id: 'rankings',   label: 'Rankings',         icon: Award,      badge: null,  active: false, path: '/student/rankings' },
-  { id: 'directory',  label: 'Domain Directory', icon: Grid,       badge: null,  active: false, path: '/student/directory' },
-  { id: 'resume',     label: 'Resume Builder',   icon: FileText,   badge: null,  active: false, path: '/student/resume' },
-  { id: 'placement',  label: 'Placement Readiness', icon: Target, badge: null,  active: false, path: '/student/placement' },
-  { id: 'action',     label: 'Action Plan',      icon: CheckCircle, badge: null,  active: false, path: '/student/action-plan' },
-  { id: 'potential',  label: 'Potential Gap',    icon: Zap,        badge: null,  active: false, path: '/student/potential-gap' },
-  { id: 'extra',      label: 'Extracurriculars', icon: Award,      badge: null,  active: false, path: '/student/extracurricular' },
-  { id: 'integrations', label: 'Integrations',   icon: Plug,       badge: null,  active: false, path: '/integrations' },
-  { id: 'assignments',  label: 'Assignments',    icon: BookOpen,   badge: null,  active: false, path: '/student/assignments' },
-  { id: 'attendance',   label: 'Attendance',     icon: CheckCircle,badge: null,  active: false, path: '/student/attendance' },
+  { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null, active: false, path: '/student' },
+  { id: 'profile', label: 'My Profile', icon: User, badge: null, active: false, path: '/student/profile' },
+  { id: 'skill', label: 'Skill Radar', icon: Activity, badge: null, active: false, path: '/student/skill-radar' },
+  { id: 'spi', label: 'SPI Score', icon: TrendingUp, badge: null, active: true, path: '/student/spi' },
+  { id: 'career', label: 'Career Path', icon: TrendingUp, badge: null, active: false, path: '/student/career' },
+  { id: 'team', label: 'My Team', icon: Users, badge: null, active: false, path: '/student/my-team' },
+  { id: 'notifs', label: 'Notifications', icon: Bell, badge: null, active: false, path: '/student/notifications' },
+  { id: 'rankings', label: 'Rankings', icon: Award, badge: null, active: false, path: '/student/rankings' },
+  { id: 'directory', label: 'Domain Directory', icon: Grid, badge: null, active: false, path: '/student/directory' },
+  { id: 'resume', label: 'Resume Builder', icon: FileText, badge: null, active: false, path: '/student/resume' },
+  { id: 'placement', label: 'Placement Readiness', icon: Target, badge: null, active: false, path: '/student/placement' },
+  { id: 'action', label: 'Action Plan', icon: CheckCircle, badge: null, active: false, path: '/student/action-plan' },
+  { id: 'potential', label: 'Potential Gap', icon: Zap, badge: null, active: false, path: '/student/potential-gap' },
+  { id: 'extra', label: 'Extracurriculars', icon: Award, badge: null, active: false, path: '/student/extracurricular' },
+  { id: 'integrations', label: 'Integrations', icon: Plug, badge: null, active: false, path: '/integrations' },
+  { id: 'assignments', label: 'Assignments', icon: BookOpen, badge: null, active: false, path: '/student/assignments' },
+  { id: 'attendance', label: 'Attendance', icon: CheckCircle, badge: null, active: false, path: '/student/attendance' },
 ]
 
 function SPIArcSidebar({ score, onClick }) {
@@ -68,7 +68,7 @@ export default function SPIDeepDivePage() {
   const [spiScore, setSpiScore] = useState(0)
   const [spiLoading, setSpiLoading] = useState(true)
   const [studentData, setStudentData] = useState(null)
-  
+
   // Dimensions state computed from recalculate response or local defaults
   const [dims, setDims] = useState({
     technicalDepth: 0,
@@ -138,8 +138,8 @@ export default function SPIDeepDivePage() {
 
   // Calculate dynamic initials and names
   const initials = studentData?.fullName ? getInitials(studentData.fullName) : 'S'
-  const branchAndYear = studentData?.branch && studentData?.year 
-    ? `${studentData.branch} — ${studentData.year} Year ${studentData.section ? ', Section ' + studentData.section : ''}` 
+  const branchAndYear = studentData?.branch && studentData?.year
+    ? `${studentData.branch} — ${studentData.year} Year ${studentData.section ? ', Section ' + studentData.section : ''}`
     : '—'
 
   // SPI Hero Arc Math
@@ -356,7 +356,7 @@ export default function SPIDeepDivePage() {
             {/* TOP SECTION: SPI Hero Card */}
             <div className="rounded-2xl shadow-md p-8 relative overflow-hidden" style={{ background: '#0D1B2A' }}>
               <div className="absolute right-0 top-0 w-64 h-64 bg-blue-500 rounded-full blur-[100px] opacity-20 -mr-20 -mt-20 pointer-events-none" />
-              
+
               <div className="flex flex-col lg:flex-row items-center justify-center gap-10 lg:gap-20 mb-10 relative z-10">
                 {/* Left Stats */}
                 <div className="text-center lg:text-right space-y-3">

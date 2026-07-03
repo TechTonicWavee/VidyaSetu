@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model Student {
@@ -23,6 +24,8 @@ model Student {
   formProgress     Json?
   formSubmittedAt  DateTime?
   resumeUrl        String?
+  resumeParsed      Json?
+ resumeAnalyzedAt  DateTime?
   spiScore         Float?    @default(0)
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt

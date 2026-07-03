@@ -6,23 +6,23 @@ import { useRouter } from 'next/navigation'
 import { Home, User, Activity, TrendingUp, Users, Bell, Award, Grid, FileText, Settings, LogOut, Search, ChevronDown, AlertTriangle, CheckCircle, Book, Star, ArrowUpRight, Filter, Target, Zap, BookOpen, AlertCircle, Plug } from 'lucide-react'
 
 const navLinks = [
-  { id: 'dashboard',  label: 'Dashboard',       icon: Home,       badge: null,  active: true, path: '/student' },
-  { id: 'profile',    label: 'My Profile',       icon: User,       badge: null,  active: false, path: '/student/profile' },
-  { id: 'skill',      label: 'Skill Radar',      icon: Activity,   badge: null,  active: false, path: '/student/skill-radar' },
-  { id: 'spi',        label: 'SPI Score',        icon: TrendingUp, badge: null,  active: false, path: '/student/spi' },
-  { id: 'career',     label: 'Career Path',      icon: TrendingUp, badge: null,  active: false, path: '/student/career' },
-  { id: 'team',       label: 'My Team',          icon: Users,      badge: null,  active: false, path: '/student/my-team' },
-  { id: 'notifs',     label: 'Notifications',    icon: Bell,       badge: '3',   active: false, path: '/student/notifications' },
-  { id: 'rankings',   label: 'Rankings',         icon: Award,      badge: null,  active: false, path: '/student/rankings' },
-  { id: 'directory',  label: 'Domain Directory', icon: Grid,       badge: null,  active: false, path: '/student/directory' },
-  { id: 'resume',     label: 'Resume Builder',   icon: FileText,   badge: null,  active: false, path: '/student/resume' },
-  { id: 'placement',  label: 'Placement Readiness', icon: Target, badge: null,  active: false, path: '/student/placement' },
-  { id: 'action',     label: 'Action Plan',      icon: CheckCircle, badge: null,  active: false, path: '/student/action-plan' },
-  { id: 'potential',  label: 'Potential Gap',    icon: Zap,        badge: null,  active: false, path: '/student/potential-gap' },
-  { id: 'extra',      label: 'Extracurriculars', icon: Award,      badge: null,  active: false, path: '/student/extracurricular' },
-  { id: 'integrations', label: 'Integrations',   icon: Plug,       badge: null,  active: false, path: '/integrations' },
-  { id: 'assignments',  label: 'Assignments',    icon: BookOpen,   badge: null,  active: false, path: '/student/assignments' },
-  { id: 'attendance',   label: 'Attendance',     icon: CheckCircle,badge: null,  active: false, path: '/student/attendance' },
+  { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null, active: true, path: '/student' },
+  { id: 'profile', label: 'My Profile', icon: User, badge: null, active: false, path: '/student/profile' },
+  { id: 'skill', label: 'Skill Radar', icon: Activity, badge: null, active: false, path: '/student/skill-radar' },
+  { id: 'spi', label: 'SPI Score', icon: TrendingUp, badge: null, active: false, path: '/student/spi' },
+  { id: 'career', label: 'Career Path', icon: TrendingUp, badge: null, active: false, path: '/student/career' },
+  { id: 'team', label: 'My Team', icon: Users, badge: null, active: false, path: '/student/my-team' },
+  { id: 'notifs', label: 'Notifications', icon: Bell, badge: '3', active: false, path: '/student/notifications' },
+  { id: 'rankings', label: 'Rankings', icon: Award, badge: null, active: false, path: '/student/rankings' },
+  { id: 'directory', label: 'Domain Directory', icon: Grid, badge: null, active: false, path: '/student/directory' },
+  { id: 'resume', label: 'Resume Builder', icon: FileText, badge: null, active: false, path: '/student/resume' },
+  { id: 'placement', label: 'Placement Readiness', icon: Target, badge: null, active: false, path: '/student/placement' },
+  { id: 'action', label: 'Action Plan', icon: CheckCircle, badge: null, active: false, path: '/student/action-plan' },
+  { id: 'potential', label: 'Potential Gap', icon: Zap, badge: null, active: false, path: '/student/potential-gap' },
+  { id: 'extra', label: 'Extracurriculars', icon: Award, badge: null, active: false, path: '/student/extracurricular' },
+  { id: 'integrations', label: 'Integrations', icon: Plug, badge: null, active: false, path: '/integrations' },
+  { id: 'assignments', label: 'Assignments', icon: BookOpen, badge: null, active: false, path: '/student/assignments' },
+  { id: 'attendance', label: 'Attendance', icon: CheckCircle, badge: null, active: false, path: '/student/attendance' },
 ]
 
 const notificationsData = [
@@ -141,7 +141,7 @@ export default function NotificationsPage() {
             section: parsed.section || 'B'
           })
         }
-      } catch(e){}
+      } catch (e) { }
     }
   }, [])
 
@@ -239,16 +239,14 @@ export default function NotificationsPage() {
                 <button
                   key={f.value}
                   onClick={() => setActiveFilter(f.value)}
-                  className={`px-4 py-2 rounded-full text-sm font-semibold border transition flex items-center gap-2 ${
-                    activeFilter === f.value
+                  className={`px-4 py-2 rounded-full text-sm font-semibold border transition flex items-center gap-2 ${activeFilter === f.value
                       ? `bg-${f.color}-50 border-${f.color}-200 text-${f.color}-700 shadow-sm`
                       : 'bg-white border-gray-200 text-gray-500 hover:bg-gray-50'
-                  }`}
+                    }`}
                 >
                   {f.label}
-                  <span className={`px-2 py-0.5 rounded-full text-[10px] ${
-                    activeFilter === f.value ? `bg-${f.color}-100` : 'bg-gray-100 text-gray-500'
-                  }`}>
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] ${activeFilter === f.value ? `bg-${f.color}-100` : 'bg-gray-100 text-gray-500'
+                    }`}>
                     {f.count}
                   </span>
                 </button>
@@ -279,11 +277,10 @@ export default function NotificationsPage() {
                             <p className="text-sm text-gray-600 leading-relaxed mb-4">{n.body}</p>
                             <div className="flex gap-2">
                               {n.buttons.map((btn, i) => (
-                                <button key={i} className={`text-sm font-semibold px-4 py-2 rounded-lg transition ${
-                                  btn.style === 'filled' 
-                                    ? `bg-${btn.btnColor || n.color}-600 hover:bg-${btn.btnColor || n.color}-700 text-white shadow-sm` 
+                                <button key={i} className={`text-sm font-semibold px-4 py-2 rounded-lg transition ${btn.style === 'filled'
+                                    ? `bg-${btn.btnColor || n.color}-600 hover:bg-${btn.btnColor || n.color}-700 text-white shadow-sm`
                                     : `border ${btn.btnColor === 'red' ? 'border-red-200 text-red-600 hover:bg-red-50' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`
-                                }`}>
+                                  }`}>
                                   {btn.label}
                                 </button>
                               ))}
@@ -317,11 +314,10 @@ export default function NotificationsPage() {
                             <p className="text-sm text-gray-500 leading-relaxed mb-4">{n.body}</p>
                             <div className="flex gap-2">
                               {n.buttons.map((btn, i) => (
-                                <button key={i} className={`text-sm font-semibold px-4 py-2 rounded-lg transition ${
-                                  btn.style === 'filled' 
-                                    ? `bg-${btn.btnColor || 'blue'}-600 text-white shadow-sm` 
+                                <button key={i} className={`text-sm font-semibold px-4 py-2 rounded-lg transition ${btn.style === 'filled'
+                                    ? `bg-${btn.btnColor || 'blue'}-600 text-white shadow-sm`
                                     : `border ${btn.btnColor === 'red' ? 'border-red-200 text-red-600 hover:bg-red-50' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`
-                                }`}>
+                                  }`}>
                                   {btn.label}
                                 </button>
                               ))}

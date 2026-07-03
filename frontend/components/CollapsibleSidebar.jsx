@@ -35,8 +35,8 @@ export default function CollapsibleSidebar({ navLinks, userInfo, theme }) {
     if (path === pathname) return true;
     // exact match for root portal pages to avoid greedy prefix matching
     const rootPaths = [
-      '/dean','/faculty','/student',
-      '/admin','/parent',
+      '/dean', '/faculty', '/student',
+      '/admin', '/parent',
     ];
     if (rootPaths.includes(path)) return pathname === path;
     return pathname?.startsWith(path + '/') || pathname === path;

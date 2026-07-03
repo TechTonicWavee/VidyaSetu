@@ -11,23 +11,23 @@ import {
 } from 'recharts'
 
 const navLinks = [
-  { id: 'dashboard',  label: 'Dashboard',       icon: Home,       badge: null,  active: true, path: '/student' },
-  { id: 'profile',    label: 'My Profile',       icon: User,       badge: null,  active: false, path: '/student/profile' },
-  { id: 'skill',      label: 'Skill Radar',      icon: Activity,   badge: null,  active: false, path: '/student/skill-radar' },
-  { id: 'spi',        label: 'SPI Score',        icon: TrendingUp, badge: null,  active: false, path: '/student/spi' },
-  { id: 'career',     label: 'Career Path',      icon: TrendingUp, badge: null,  active: false, path: '/student/career' },
-  { id: 'team',       label: 'My Team',          icon: Users,      badge: null,  active: false, path: '/student/my-team' },
-  { id: 'notifs',     label: 'Notifications',    icon: Bell,       badge: '3',   active: false, path: '/student/notifications' },
-  { id: 'rankings',   label: 'Rankings',         icon: Award,      badge: null,  active: false, path: '/student/rankings' },
-  { id: 'directory',  label: 'Domain Directory', icon: Grid,       badge: null,  active: false, path: '/student/directory' },
-  { id: 'resume',     label: 'Resume Builder',   icon: FileText,   badge: null,  active: false, path: '/student/resume' },
-  { id: 'placement',  label: 'Placement Readiness', icon: Target, badge: null,  active: false, path: '/student/placement' },
-  { id: 'action',     label: 'Action Plan',      icon: CheckCircle, badge: null,  active: false, path: '/student/action-plan' },
-  { id: 'potential',  label: 'Potential Gap',    icon: Zap,        badge: null,  active: false, path: '/student/potential-gap' },
-  { id: 'extra',      label: 'Extracurriculars', icon: Award,      badge: null,  active: false, path: '/student/extracurricular' },
-  { id: 'integrations', label: 'Integrations',   icon: Plug,       badge: null,  active: false, path: '/integrations' },
-  { id: 'assignments',  label: 'Assignments',    icon: BookOpen,   badge: null,  active: false, path: '/student/assignments' },
-  { id: 'attendance',   label: 'Attendance',     icon: CheckCircle,badge: null,  active: false, path: '/student/attendance' },
+  { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null, active: true, path: '/student' },
+  { id: 'profile', label: 'My Profile', icon: User, badge: null, active: false, path: '/student/profile' },
+  { id: 'skill', label: 'Skill Radar', icon: Activity, badge: null, active: false, path: '/student/skill-radar' },
+  { id: 'spi', label: 'SPI Score', icon: TrendingUp, badge: null, active: false, path: '/student/spi' },
+  { id: 'career', label: 'Career Path', icon: TrendingUp, badge: null, active: false, path: '/student/career' },
+  { id: 'team', label: 'My Team', icon: Users, badge: null, active: false, path: '/student/my-team' },
+  { id: 'notifs', label: 'Notifications', icon: Bell, badge: '3', active: false, path: '/student/notifications' },
+  { id: 'rankings', label: 'Rankings', icon: Award, badge: null, active: false, path: '/student/rankings' },
+  { id: 'directory', label: 'Domain Directory', icon: Grid, badge: null, active: false, path: '/student/directory' },
+  { id: 'resume', label: 'Resume Builder', icon: FileText, badge: null, active: false, path: '/student/resume' },
+  { id: 'placement', label: 'Placement Readiness', icon: Target, badge: null, active: false, path: '/student/placement' },
+  { id: 'action', label: 'Action Plan', icon: CheckCircle, badge: null, active: false, path: '/student/action-plan' },
+  { id: 'potential', label: 'Potential Gap', icon: Zap, badge: null, active: false, path: '/student/potential-gap' },
+  { id: 'extra', label: 'Extracurriculars', icon: Award, badge: null, active: false, path: '/student/extracurricular' },
+  { id: 'integrations', label: 'Integrations', icon: Plug, badge: null, active: false, path: '/integrations' },
+  { id: 'assignments', label: 'Assignments', icon: BookOpen, badge: null, active: false, path: '/student/assignments' },
+  { id: 'attendance', label: 'Attendance', icon: CheckCircle, badge: null, active: false, path: '/student/attendance' },
 ]
 
 const radarData = [
@@ -118,7 +118,7 @@ export default function SkillRadarPage() {
             section: parsed.section || 'B'
           })
         }
-      } catch(e){}
+      } catch (e) { }
     }
   }, [])
 
@@ -285,7 +285,7 @@ export default function SkillRadarPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left relative z-10">
                 <div className="bg-white/60 p-5 rounded-xl border border-purple-100/50">
-                  <h4 className="font-bold text-navy mb-3 flex items-center gap-2"><CheckCircle size={16} className="text-purple-500"/> You Thrive In</h4>
+                  <h4 className="font-bold text-navy mb-3 flex items-center gap-2"><CheckCircle size={16} className="text-purple-500" /> You Thrive In</h4>
                   <ul className="space-y-2 text-sm text-purple-900/80">
                     <li className="flex gap-2 items-start"><span className="text-purple-400">•</span> Project-based learning</li>
                     <li className="flex gap-2 items-start"><span className="text-purple-400">•</span> Lab and practical environments</li>
@@ -294,7 +294,7 @@ export default function SkillRadarPage() {
                   </ul>
                 </div>
                 <div className="bg-white/60 p-5 rounded-xl border border-purple-100/50">
-                  <h4 className="font-bold text-navy mb-3 flex items-center gap-2"><TrendingUp size={16} className="text-purple-500"/> Career Paths That Fit</h4>
+                  <h4 className="font-bold text-navy mb-3 flex items-center gap-2"><TrendingUp size={16} className="text-purple-500" /> Career Paths That Fit</h4>
                   <ul className="space-y-2 text-sm text-purple-900/80">
                     <li className="flex gap-2 items-start"><span className="text-purple-400">•</span> Full Stack Development</li>
                     <li className="flex gap-2 items-start"><span className="text-purple-400">•</span> Machine Learning Engineering</li>
@@ -303,7 +303,7 @@ export default function SkillRadarPage() {
                   </ul>
                 </div>
                 <div className="bg-white/60 p-5 rounded-xl border border-purple-100/50">
-                  <h4 className="font-bold text-navy mb-3 flex items-center gap-2"><Lightbulb size={16} className="text-purple-500"/> How You Learn Best</h4>
+                  <h4 className="font-bold text-navy mb-3 flex items-center gap-2"><Lightbulb size={16} className="text-purple-500" /> How You Learn Best</h4>
                   <ul className="space-y-2 text-sm text-purple-900/80">
                     <li className="flex gap-2 items-start"><span className="text-purple-400">•</span> Hands-on coding practice</li>
                     <li className="flex gap-2 items-start"><span className="text-purple-400">•</span> Visual learning with diagrams</li>

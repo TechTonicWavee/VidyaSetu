@@ -6,6 +6,7 @@ import { prisma } from '@/lib/prisma'
 
 import calcGitHubScore from '@/../lib/spi/sources/githubScore'
 import calcLeetCodeScore from '@/../lib/spi/sources/leetcodeScore'
+import calcResumeScore from '@/../lib/spi/sources/resume'
 import calculateSPI from '@/../lib/spi/orchestrator/calculateSPI'
 
 // ======================================================
@@ -87,6 +88,10 @@ export async function POST(request) {
       missingEvidence.push('LeetCode')
     }
 
+    if (!student.resumeParsed) {
+      missingEvidence.push('Resume')
+    }
+
     // Run GitHub evidence engine
     const githubResult = calcGitHubScore({
       year: student.year,
@@ -99,10 +104,17 @@ export async function POST(request) {
       leetcodeStats: codingProfile.leetcodeStats,
     })
 
+    // Run Resume evidence engine
+    const resumeResult = calcResumeScore({
+      year: student.year,
+      resumeParsed: student.resumeParsed,
+    })
+
     // Calculate SPI
     const spiResult = calculateSPI({
       github: githubResult,
       leetcode: leetcodeResult,
+      resume: resumeResult,
     })
 
     // Save SPI back to Student table
@@ -135,6 +147,8 @@ export async function POST(request) {
         github: githubResult,
 
         leetcode: leetcodeResult,
+
+        resume: resumeResult,
       },
       {
         status: 200,

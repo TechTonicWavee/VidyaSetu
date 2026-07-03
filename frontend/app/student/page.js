@@ -8,23 +8,23 @@ import { PILOT_ANNOUNCEMENT } from '@/lib/announcement'
 import getInitials from '@/lib/getInitials'
 
 const navLinks = [
-  { id: 'dashboard',  label: 'Dashboard',       icon: Home,       badge: null,  active: true, path: '/student' },
-  { id: 'profile',    label: 'My Profile',       icon: User,       badge: null,  active: false, path: '/student/profile' },
-  { id: 'skill',      label: 'Skill Radar',      icon: Activity,   badge: null,  active: false, path: '/student/skill-radar' },
-  { id: 'spi',        label: 'SPI Score',        icon: TrendingUp, badge: null,  active: false, path: '/student/spi' },
-  { id: 'career',     label: 'Career Path',      icon: TrendingUp, badge: null,  active: false, path: '/student/career' },
-  { id: 'team',       label: 'My Team',          icon: Users,      badge: null,  active: false, path: '/student/my-team' },
-  { id: 'notifs',     label: 'Notifications',    icon: Bell,       badge: '3',   active: false, path: '/student/notifications' },
-  { id: 'rankings',   label: 'Rankings',         icon: Award,      badge: null,  active: false, path: '/student/rankings' },
-  { id: 'directory',  label: 'Domain Directory', icon: Grid,       badge: null,  active: false, path: '/student/directory' },
-  { id: 'resume',     label: 'Resume Builder',   icon: FileText,   badge: null,  active: false, path: '/student/resume' },
-  { id: 'placement',  label: 'Placement Readiness', icon: Target, badge: null,  active: false, path: '/student/placement' },
-  { id: 'action',     label: 'Action Plan',      icon: CheckCircle, badge: null,  active: false, path: '/student/action-plan' },
-  { id: 'potential',  label: 'Potential Gap',    icon: Zap,        badge: null,  active: false, path: '/student/potential-gap' },
-  { id: 'extra',      label: 'Extracurriculars', icon: Award,      badge: null,  active: false, path: '/student/extracurricular' },
-  { id: 'integrations', label: 'Integrations',   icon: Plug,       badge: null,  active: false, path: '/integrations' },
-  { id: 'assignments',  label: 'Assignments',    icon: BookOpen,   badge: null,  active: false, path: '/student/assignments' },
-  { id: 'attendance',   label: 'Attendance',     icon: CheckCircle,badge: null,  active: false, path: '/student/attendance' },
+  { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null, active: true, path: '/student' },
+  { id: 'profile', label: 'My Profile', icon: User, badge: null, active: false, path: '/student/profile' },
+  { id: 'skill', label: 'Skill Radar', icon: Activity, badge: null, active: false, path: '/student/skill-radar' },
+  { id: 'spi', label: 'SPI Score', icon: TrendingUp, badge: null, active: false, path: '/student/spi' },
+  { id: 'career', label: 'Career Path', icon: TrendingUp, badge: null, active: false, path: '/student/career' },
+  { id: 'team', label: 'My Team', icon: Users, badge: null, active: false, path: '/student/my-team' },
+  { id: 'notifs', label: 'Notifications', icon: Bell, badge: '3', active: false, path: '/student/notifications' },
+  { id: 'rankings', label: 'Rankings', icon: Award, badge: null, active: false, path: '/student/rankings' },
+  { id: 'directory', label: 'Domain Directory', icon: Grid, badge: null, active: false, path: '/student/directory' },
+  { id: 'resume', label: 'Resume Builder', icon: FileText, badge: null, active: false, path: '/student/resume' },
+  { id: 'placement', label: 'Placement Readiness', icon: Target, badge: null, active: false, path: '/student/placement' },
+  { id: 'action', label: 'Action Plan', icon: CheckCircle, badge: null, active: false, path: '/student/action-plan' },
+  { id: 'potential', label: 'Potential Gap', icon: Zap, badge: null, active: false, path: '/student/potential-gap' },
+  { id: 'extra', label: 'Extracurriculars', icon: Award, badge: null, active: false, path: '/student/extracurricular' },
+  { id: 'integrations', label: 'Integrations', icon: Plug, badge: null, active: false, path: '/integrations' },
+  { id: 'assignments', label: 'Assignments', icon: BookOpen, badge: null, active: false, path: '/student/assignments' },
+  { id: 'attendance', label: 'Attendance', icon: CheckCircle, badge: null, active: false, path: '/student/attendance' },
 ]
 
 // ── [MODIFIED] SPI stat card value is now injected at render time from state.
@@ -97,10 +97,10 @@ const activities = [
 ]
 
 const quickActions = [
-  { label: 'View My Full Profile', icon: User,       color: '#1A56DB', bg: 'bg-blue-50',   path: '/student/profile' },
-  { label: 'Check Career Path',    icon: TrendingUp, color: '#0F766E', bg: 'bg-teal-50',   path: '/student/career' },
-  { label: 'Find Teammates',       icon: Users,      color: '#5B21B6', bg: 'bg-purple-50', path: '/student/team' },
-  { label: 'Download Resume',      icon: FileText,   color: '#D97706', bg: 'bg-amber-50',  path: '/student/resume' },
+  { label: 'View My Full Profile', icon: User, color: '#1A56DB', bg: 'bg-blue-50', path: '/student/profile' },
+  { label: 'Check Career Path', icon: TrendingUp, color: '#0F766E', bg: 'bg-teal-50', path: '/student/career' },
+  { label: 'Find Teammates', icon: Users, color: '#5B21B6', bg: 'bg-purple-50', path: '/student/team' },
+  { label: 'Download Resume', icon: FileText, color: '#D97706', bg: 'bg-amber-50', path: '/student/resume' },
 ]
 
 function SPIArc({ score, onClick }) {
@@ -254,14 +254,14 @@ export default function StudentDashboard() {
 
   return (
     <>
-    {/* ── Pilot Announcement Modal ──────────────────────── */}
-    {showAnnouncement && (
-      <PilotAnnouncementModal onClose={() => setShowAnnouncement(false)} />
-    )}
-    {/* ──────────────────────────────────────────────────── */}
-    <div className="flex flex-col h-screen bg-bg-base overflow-hidden font-sans">
-      {/* TOP NAV */}
-      <header className="bg-white border-b border-gray-100 px-6 py-3 flex items-center gap-4 flex-shrink-0 shadow-sm">
+      {/* ── Pilot Announcement Modal ──────────────────────── */}
+      {showAnnouncement && (
+        <PilotAnnouncementModal onClose={() => setShowAnnouncement(false)} />
+      )}
+      {/* ──────────────────────────────────────────────────── */}
+      <div className="flex flex-col h-screen bg-bg-base overflow-hidden font-sans">
+        {/* TOP NAV */}
+        <header className="bg-white border-b border-gray-100 px-6 py-3 flex items-center gap-4 flex-shrink-0 shadow-sm">
           {/* Logo */}
           <div className="flex items-center gap-2 mr-4">
             <div
@@ -470,7 +470,7 @@ export default function StudentDashboard() {
             </button>
           </div>
         </main>
-    </div>
+      </div>
     </>
   )
 }

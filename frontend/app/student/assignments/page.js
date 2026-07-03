@@ -7,27 +7,27 @@ import { Home, User, Activity, TrendingUp, Users, Bell, Award, Grid, FileText, S
 import { useToast } from '@/components/ToastContext'
 
 const navLinks = [
-  { id: 'dashboard',  label: 'Dashboard',       icon: Home,       badge: null,  active: false, path: '/student' },
-  { id: 'profile',    label: 'My Profile',       icon: User,       badge: null,  active: false, path: '/student/profile' },
-  { id: 'skill',      label: 'Skill Radar',      icon: Activity,   badge: null,  active: false, path: '/student/skill-radar' },
-  { id: 'spi',        label: 'SPI Score',        icon: TrendingUp, badge: null,  active: false, path: '/student/spi' },
-  { id: 'career',     label: 'Career Path',      icon: TrendingUp, badge: null,  active: false, path: '/student/career' },
-  { id: 'team',       label: 'My Team',          icon: Users,      badge: null,  active: false, path: '/student/my-team' },
-  { id: 'notifs',     label: 'Notifications',    icon: Bell,       badge: '3',   active: false, path: '/student/notifications' },
-  { id: 'rankings',   label: 'Rankings',         icon: Award,      badge: null,  active: false, path: '/student/rankings' },
-  { id: 'directory',  label: 'Domain Directory', icon: Grid,       badge: null,  active: false, path: '/student/directory' },
-  { id: 'resume',     label: 'Resume Builder',   icon: FileText,   badge: null,  active: false, path: '/student/resume' },
-  { id: 'placement',  label: 'Placement Readiness', icon: Target, badge: null,  active: false, path: '/student/placement' },
-  { id: 'action',     label: 'Action Plan',      icon: CheckCircle, badge: null,  active: false, path: '/student/action-plan' },
-  { id: 'potential',  label: 'Potential Gap',    icon: Zap,        badge: null,  active: false, path: '/student/potential-gap' },
-  { id: 'extra',      label: 'Extracurriculars', icon: Award,      badge: null,  active: false, path: '/student/extracurricular' },
-  { id: 'integrations', label: 'Integrations',   icon: Plug,       badge: null,  active: false, path: '/integrations' },
-  { id: 'assignments',  label: 'Assignments',    icon: BookOpen,   badge: null,  active: true, path: '/student/assignments' },
-  { id: 'attendance',   label: 'Attendance',     icon: CheckCircle,badge: null,  active: false, path: '/student/attendance' },
+  { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null, active: false, path: '/student' },
+  { id: 'profile', label: 'My Profile', icon: User, badge: null, active: false, path: '/student/profile' },
+  { id: 'skill', label: 'Skill Radar', icon: Activity, badge: null, active: false, path: '/student/skill-radar' },
+  { id: 'spi', label: 'SPI Score', icon: TrendingUp, badge: null, active: false, path: '/student/spi' },
+  { id: 'career', label: 'Career Path', icon: TrendingUp, badge: null, active: false, path: '/student/career' },
+  { id: 'team', label: 'My Team', icon: Users, badge: null, active: false, path: '/student/my-team' },
+  { id: 'notifs', label: 'Notifications', icon: Bell, badge: '3', active: false, path: '/student/notifications' },
+  { id: 'rankings', label: 'Rankings', icon: Award, badge: null, active: false, path: '/student/rankings' },
+  { id: 'directory', label: 'Domain Directory', icon: Grid, badge: null, active: false, path: '/student/directory' },
+  { id: 'resume', label: 'Resume Builder', icon: FileText, badge: null, active: false, path: '/student/resume' },
+  { id: 'placement', label: 'Placement Readiness', icon: Target, badge: null, active: false, path: '/student/placement' },
+  { id: 'action', label: 'Action Plan', icon: CheckCircle, badge: null, active: false, path: '/student/action-plan' },
+  { id: 'potential', label: 'Potential Gap', icon: Zap, badge: null, active: false, path: '/student/potential-gap' },
+  { id: 'extra', label: 'Extracurriculars', icon: Award, badge: null, active: false, path: '/student/extracurricular' },
+  { id: 'integrations', label: 'Integrations', icon: Plug, badge: null, active: false, path: '/integrations' },
+  { id: 'assignments', label: 'Assignments', icon: BookOpen, badge: null, active: true, path: '/student/assignments' },
+  { id: 'attendance', label: 'Attendance', icon: CheckCircle, badge: null, active: false, path: '/student/attendance' },
 ]
 
 function Plug({ size = 17 }) {
-  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v8"/><path d="m16 6-4 4-4-4"/><path d="M12 10v12"/><path d="m8 18 4 4 4-4"/></svg>
+  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v8" /><path d="m16 6-4 4-4-4" /><path d="M12 10v12" /><path d="m8 18 4 4 4-4" /></svg>
 }
 
 function SPIArc({ score, onClick }) {
@@ -81,7 +81,7 @@ export default function AssignmentDashboard() {
             section: parsed.section || 'B'
           })
         }
-      } catch(e){}
+      } catch (e) { }
     }
   }, [])
 
@@ -305,7 +305,7 @@ export default function AssignmentDashboard() {
                 ))}
               </div>
               <div className="flex items-center gap-3 w-full md:w-auto">
-                <select 
+                <select
                   value={subjectFilter}
                   onChange={(e) => setSubjectFilter(e.target.value)}
                   className="bg-white border border-gray-200 rounded-lg px-4 py-2 text-sm font-semibold text-gray-700 outline-none focus:ring-2 focus:ring-blue-100 transition min-w-[140px]"
@@ -328,8 +328,8 @@ export default function AssignmentDashboard() {
             {/* ASSIGNMENT LIST */}
             <div className="grid grid-cols-1 gap-6">
               {filteredAssignments.map((a, i) => (
-                <div 
-                  key={a.id} 
+                <div
+                  key={a.id}
                   className={`bg-white rounded-2xl shadow-sm border-l-4 border-y border-r border-gray-200 overflow-hidden relative group transition-all hover:shadow-md ${a.status === 'Overdue' ? 'border-l-red-500 ring-2 ring-red-500/10' : a.status === 'Due Tomorrow' ? 'border-l-amber-500 ring-2 ring-amber-500/10' : a.type === 'Pending' ? 'border-l-blue-500' : a.type === 'Graded' ? 'border-l-green-500' : 'border-l-blue-500'} ${a.status === 'Overdue' ? 'animate-pulse-subtle' : ''}`}
                 >
                   <div className="p-6">
@@ -414,7 +414,7 @@ export default function AssignmentDashboard() {
                           )}
                           {a.type === 'Graded' && (
                             <button onClick={handleMoodleRedirect} className="flex items-center gap-2 px-5 py-2.5 bg-white border border-orange-200 text-orange-700 font-bold text-sm rounded-xl hover:bg-orange-50 transition">
-                               View Full Feedback in Moodle
+                              View Full Feedback in Moodle
                             </button>
                           )}
                         </div>
@@ -422,14 +422,14 @@ export default function AssignmentDashboard() {
                     ) : (
                       /* COMPACT CARDS for 7-11 */
                       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 py-2">
-                         <div className="flex items-center gap-4">
-                            <div className="bg-green-50 px-3 py-1 rounded text-[11px] font-bold text-green-700 border border-green-100">
-                               {a.grade} • {a.percent}
-                            </div>
-                            <button onClick={handleMoodleRedirect} className="text-orange-600 font-bold text-[11px] hover:underline flex items-center gap-1">
-                               View in Moodle <ExternalLink size={10} />
-                            </button>
-                         </div>
+                        <div className="flex items-center gap-4">
+                          <div className="bg-green-50 px-3 py-1 rounded text-[11px] font-bold text-green-700 border border-green-100">
+                            {a.grade} • {a.percent}
+                          </div>
+                          <button onClick={handleMoodleRedirect} className="text-orange-600 font-bold text-[11px] hover:underline flex items-center gap-1">
+                            View in Moodle <ExternalLink size={10} />
+                          </button>
+                        </div>
                       </div>
                     )}
                   </div>
@@ -443,11 +443,11 @@ export default function AssignmentDashboard() {
                 <h2 className="text-xl font-bold text-navy mb-1">Upcoming Deadline Timeline</h2>
                 <p className="text-sm text-gray-500">Next 30 days — all deadlines in one view</p>
               </div>
-              
+
               <div className="relative overflow-x-auto pb-8 pt-20 hide-scrollbar">
                 <div className="min-w-[800px] relative flex items-center h-2">
                   <div className="absolute inset-0 bg-gray-100 h-0.5 mt-0.5 w-full z-0" />
-                  
+
                   {/* Today Marker */}
                   <div className="absolute left-[5%] flex flex-col items-center z-10">
                     <div className="w-3 h-3 bg-blue-600 rounded-full border-4 border-white shadow-sm ring-2 ring-blue-100" />
@@ -457,9 +457,9 @@ export default function AssignmentDashboard() {
                   {/* April 17 - TOMORROW */}
                   <div className="absolute left-[15%] flex flex-col items-center z-10 group">
                     <div className="absolute -top-16 bg-white border border-amber-200 p-3 rounded-xl shadow-md w-40 animate-bounce-slow">
-                       <span className="px-1.5 py-0.5 bg-amber-500 text-white text-[8px] font-bold rounded block w-fit mb-1">URGENT</span>
-                       <p className="text-[11px] font-bold text-navy truncate">DBMS Assignment 5</p>
-                       <p className="text-[9px] text-gray-500 mt-0.5">25 marks • Due 11:59 PM</p>
+                      <span className="px-1.5 py-0.5 bg-amber-500 text-white text-[8px] font-bold rounded block w-fit mb-1">URGENT</span>
+                      <p className="text-[11px] font-bold text-navy truncate">DBMS Assignment 5</p>
+                      <p className="text-[9px] text-gray-500 mt-0.5">25 marks • Due 11:59 PM</p>
                     </div>
                     <div className="w-4 h-4 bg-red-500 rounded-full border-4 border-white shadow-sm ring-2 ring-red-100" />
                     <span className="absolute -bottom-6 text-[10px] font-bold text-gray-600 uppercase">Apr 17</span>
@@ -468,8 +468,8 @@ export default function AssignmentDashboard() {
                   {/* April 22 */}
                   <div className="absolute left-[35%] flex flex-col items-center z-10">
                     <div className="absolute -top-14 bg-white border border-gray-100 p-2.5 rounded-xl shadow-sm w-36 hover:shadow-md transition">
-                       <p className="text-[11px] font-bold text-navy truncate">TOC Assignment 3</p>
-                       <p className="text-[9px] text-gray-500 mt-0.5">20 marks • 7 days</p>
+                      <p className="text-[11px] font-bold text-navy truncate">TOC Assignment 3</p>
+                      <p className="text-[9px] text-gray-500 mt-0.5">20 marks • 7 days</p>
                     </div>
                     <div className="w-3 h-3 bg-blue-500 rounded-full border-2 border-white shadow-sm" />
                     <span className="absolute -bottom-6 text-[10px] font-bold text-gray-400 uppercase">Apr 22</span>
@@ -478,9 +478,9 @@ export default function AssignmentDashboard() {
                   {/* April 30 */}
                   <div className="absolute left-[55%] flex flex-col items-center z-10">
                     <div className="absolute -top-14 bg-white border border-gray-100 p-2.5 rounded-xl shadow-sm w-36">
-                       <span className="px-1.5 py-0.5 bg-green-500 text-white text-[8px] font-bold rounded block w-fit mb-1 tracking-tight">NEW ON MOODLE</span>
-                       <p className="text-[11px] font-bold text-navy truncate">OS Assignment 5</p>
-                       <p className="text-[9px] text-gray-500 mt-0.5">25 marks • 15 days</p>
+                      <span className="px-1.5 py-0.5 bg-green-500 text-white text-[8px] font-bold rounded block w-fit mb-1 tracking-tight">NEW ON MOODLE</span>
+                      <p className="text-[11px] font-bold text-navy truncate">OS Assignment 5</p>
+                      <p className="text-[9px] text-gray-500 mt-0.5">25 marks • 15 days</p>
                     </div>
                     <div className="w-3 h-3 bg-gray-400 rounded-full border-2 border-white shadow-sm" />
                     <span className="absolute -bottom-6 text-[10px] font-bold text-gray-400 uppercase">Apr 30</span>
@@ -489,8 +489,8 @@ export default function AssignmentDashboard() {
                   {/* May 8 */}
                   <div className="absolute left-[75%] flex flex-col items-center z-10">
                     <div className="absolute -top-12 bg-white border border-gray-100 p-2.5 rounded-xl shadow-sm w-32">
-                       <p className="text-[11px] font-bold text-navy truncate">DSA Assignment 4</p>
-                       <p className="text-[9px] text-gray-500 mt-0.5">30 marks • 23 days</p>
+                      <p className="text-[11px] font-bold text-navy truncate">DSA Assignment 4</p>
+                      <p className="text-[9px] text-gray-500 mt-0.5">30 marks • 23 days</p>
                     </div>
                     <div className="w-3 h-3 bg-gray-400 rounded-full border-2 border-white shadow-sm" />
                     <span className="absolute -bottom-6 text-[10px] font-bold text-gray-400 uppercase">May 08</span>
@@ -499,8 +499,8 @@ export default function AssignmentDashboard() {
                   {/* May 15 */}
                   <div className="absolute left-[95%] flex flex-col items-center z-10">
                     <div className="absolute -top-12 bg-white border border-gray-100 p-2.5 rounded-xl shadow-sm w-32">
-                       <p className="text-[11px] font-bold text-navy truncate">DBMS Assignment 6</p>
-                       <p className="text-[9px] text-gray-500 mt-0.5">25 marks • 30 days</p>
+                      <p className="text-[11px] font-bold text-navy truncate">DBMS Assignment 6</p>
+                      <p className="text-[9px] text-gray-500 mt-0.5">25 marks • 30 days</p>
                     </div>
                     <div className="w-3 h-3 bg-gray-400 rounded-full border-2 border-white shadow-sm" />
                     <span className="absolute -bottom-6 text-[10px] font-bold text-gray-400 uppercase">May 15</span>
@@ -512,7 +512,7 @@ export default function AssignmentDashboard() {
           </div>
         </main>
       </div>
-      
+
       <style jsx global>{`
         @keyframes pulse-subtle {
           0%, 100% { transform: scale(1); }
