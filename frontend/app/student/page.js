@@ -161,11 +161,7 @@ export default function StudentDashboard() {
 
     const rawSession = localStorage.getItem('vs_student')
     if (rawSession) {
-      // ── Show pilot announcement if not seen this session ──
-      if (!sessionStorage.getItem(PILOT_ANNOUNCEMENT.sessionKey)) {
-        setShowAnnouncement(true)
-      }
-      // ─────────────────────────────────────────────────────
+
       try {
         const session = JSON.parse(rawSession)
         if (session.name) {
@@ -254,11 +250,7 @@ export default function StudentDashboard() {
 
   return (
     <>
-      {/* ── Pilot Announcement Modal ──────────────────────── */}
-      {showAnnouncement && (
-        <PilotAnnouncementModal onClose={() => setShowAnnouncement(false)} />
-      )}
-      {/* ──────────────────────────────────────────────────── */}
+
       <div className="flex flex-col h-screen bg-bg-base overflow-hidden font-sans">
         {/* TOP NAV */}
         <header className="bg-white border-b border-gray-100 px-6 py-3 flex items-center gap-4 flex-shrink-0 shadow-sm">

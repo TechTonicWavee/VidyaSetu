@@ -111,8 +111,15 @@ export default function DomainDirectoryPage() {
   const [selectedStudent, setSelectedStudent] = useState(null)
   const [showToast, setShowToast] = useState(false)
   const [toastMsg, setToastMsg] = useState('')
+  const [inviteCategory, setInviteCategory] = useState('')
+  const [inviteProjectName, setInviteProjectName] = useState('')
+  const [inviteMessage, setInviteMessage] = useState('')
 
-  const filteredStudents = students.filter(s => {
+  const [sortOrder, setSortOrder] = useState('none')
+  const [visibleCount, setVisibleCount] = useState(8)
+  const [viewProfileStudent, setViewProfileStudent] = useState(null)
+
+  let filteredStudents = students.filter(s => {
     const matchesDomain = activeDomain === 'All Students' || s.domain === activeDomain
     const query = searchQuery.toLowerCase()
     const matchesSearch = s.name.toLowerCase().includes(query) ||
@@ -121,45 +128,54 @@ export default function DomainDirectoryPage() {
     return matchesDomain && matchesSearch
   })
 
+  if (sortOrder === 'high-to-low') {
+    filteredStudents.sort((a, b) => b.spi - a.spi)
+  } else if (sortOrder === 'low-to-high') {
+    filteredStudents.sort((a, b) => a.spi - b.spi)
+  }
+
+  const visibleStudents = filteredStudents.slice(0, visibleCount)
+
   const handleInviteClick = (student) => {
     setSelectedStudent(student)
     setInviteModalOpen(true)
   }
 
   const handleSendInvite = () => {
+    if (!inviteCategory) {
+      alert("Please select a category.");
+      return;
+    }
     setInviteModalOpen(false)
+    
+    // Save to localStorage for notifications
+    const existingStr = localStorage.getItem('custom_notifs')
+    const existing = existingStr ? JSON.parse(existingStr) : []
+    const newNotif = {
+      id: Date.now(),
+      isRead: false,
+      category: 'Alerts',
+      catPill: 'INVITE',
+      color: 'blue',
+      iconName: 'Users',
+      title: `Team Invitation sent to ${selectedStudent?.name}`,
+      body: `You invited ${selectedStudent?.name} to join your team for a ${inviteCategory} (${inviteProjectName || 'Untitled'}). Message: "${inviteMessage}"`,
+      time: 'Just now',
+      buttons: [{ label: 'View Request', style: 'outline', btnColor: 'blue' }]
+    }
+    localStorage.setItem('custom_notifs', JSON.stringify([newNotif, ...existing]))
+
     setToastMsg(`Invite sent to ${selectedStudent?.name} successfully!`)
     setShowToast(true)
     setTimeout(() => setShowToast(false), 3000)
+    setInviteCategory('')
+    setInviteProjectName('')
+    setInviteMessage('')
   }
 
   return (
     <div className="flex h-screen bg-bg-base overflow-hidden font-sans relative">
-      {/* ══════════════════════════════════
-          SIDEBAR
-      ══════════════════════════════════ */}
-      <aside className={`${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'} flex-shrink-0 bg-white border-r border-gray-100 flex flex-col transition-all duration-300 shadow-sm z-20`}>
-        <div className="p-5 border-b border-gray-50">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}>PR</div>
-            <div className="overflow-hidden">
-              <p className="font-semibold text-sm text-navy truncate">{studentName}</p>
-              <p className="text-xs text-gray-500 truncate">{branchAndYear}</p>
-            </div>
-          </div>
-          <SPIArcSidebar score={72} onClick={() => router.push('/student/spi')} />
-        </div>
-
-        <nav className="flex-1 p-3 overflow-y-auto">
-          {navLinks.map(link => (
-            <button key={link.id} onClick={() => router.push(link.path)} className={`nav-link w-full text-left mb-0.5 ${activeNav === link.id ? 'active' : ''}`}>
-              <link.icon size={17} />
-              <span className="flex-1">{link.label}</span>
-              {link.badge && <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{link.badge}</span>}
-            </button>
-          ))}
-        </nav>
-      </aside>
+      
 
       {/* ══════════════════════════════════
           MAIN CONTENT
@@ -195,15 +211,26 @@ export default function DomainDirectoryPage() {
                 <h1 className="text-3xl font-bold text-navy mb-1">Branch Domain Directory</h1>
                 <p className="text-gray-500 text-sm">Find students by their strongest domain — build your dream team for hackathons, projects and competitions</p>
               </div>
-              <div className="relative w-full md:w-80">
-                <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search by name, skill, or domain..."
-                  className="w-full pl-9 pr-4 py-2.5 text-sm rounded-xl border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-300 transition"
-                />
+              <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+                <div className="relative w-full md:w-80">
+                  <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search by name, skill, or domain..."
+                    className="w-full pl-9 pr-4 py-2.5 text-sm rounded-xl border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-300 transition"
+                  />
+                </div>
+                <select 
+                  value={sortOrder} 
+                  onChange={(e) => setSortOrder(e.target.value)}
+                  className="w-full sm:w-auto px-4 py-2.5 text-sm rounded-xl border border-gray-200 bg-white shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-300 transition"
+                >
+                  <option value="none">Sort by SPI</option>
+                  <option value="high-to-low">Highest to Lowest</option>
+                  <option value="low-to-high">Lowest to Highest</option>
+                </select>
               </div>
             </div>
 
@@ -235,7 +262,7 @@ export default function DomainDirectoryPage() {
 
             {/* STUDENT GRID */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filteredStudents.map(student => {
+              {visibleStudents.map(student => {
                 const domainData = domains.find(d => d.name === student.domain) || domains[0]
                 const bColor = domainData.color === 'navy' ? 'slate' : domainData.color
 
@@ -276,17 +303,21 @@ export default function DomainDirectoryPage() {
                         </span>
                       </div>
 
-                      <div className="space-y-2">
-                        <button className="w-full py-2 border border-gray-200 text-gray-600 font-semibold text-sm rounded-xl hover:bg-gray-50 transition">
+                      <div className="mt-auto space-y-2">
+                        <button onClick={() => setViewProfileStudent(student)} className="w-full py-2 border border-gray-200 text-gray-600 font-semibold text-sm rounded-xl hover:bg-gray-50 transition">
                           View Profile
                         </button>
                         {student.isTeammate ? (
                           <button className="w-full py-2 bg-green-50 text-green-600 font-semibold text-sm rounded-xl border border-green-200 flex items-center justify-center gap-2">
                             <CheckCircle size={16} /> Already Teammate
                           </button>
-                        ) : student.status === 'Open to Team Up' && (
+                        ) : student.status === 'Open to Team Up' ? (
                           <button onClick={() => handleInviteClick(student)} className="w-full py-2 bg-blue-600 text-white font-semibold text-sm rounded-xl hover:bg-blue-700 transition flex items-center justify-center gap-2 shadow-sm">
                             <Plus size={16} /> Invite to Team
+                          </button>
+                        ) : (
+                          <button disabled className="w-full py-2 bg-gray-50 text-gray-400 font-semibold text-sm rounded-xl border border-gray-200 flex items-center justify-center gap-2 cursor-not-allowed">
+                            <Users size={16} /> In a Team
                           </button>
                         )}
                       </div>
@@ -296,9 +327,9 @@ export default function DomainDirectoryPage() {
               })}
             </div>
 
-            {filteredStudents.length > 0 && (
+            {filteredStudents.length > visibleCount && (
               <div className="flex justify-center mt-8 pb-8">
-                <button className="px-6 py-2 border border-gray-200 text-gray-600 font-semibold text-sm rounded-lg hover:bg-gray-50 transition">
+                <button onClick={() => setVisibleCount(v => v + 8)} className="px-6 py-2 border border-gray-200 text-gray-600 font-semibold text-sm rounded-lg hover:bg-gray-50 transition">
                   Load More Students
                 </button>
               </div>
@@ -328,8 +359,20 @@ export default function DomainDirectoryPage() {
               </div>
 
               <div>
+                <label className="block text-xs font-bold text-gray-600 uppercase mb-2">Category <span className="text-red-500">*</span></label>
+                <div className="grid grid-cols-2 gap-2">
+                  {['Hackathon', 'Project', 'Startup Idea', 'Custom'].map(cat => (
+                    <label key={cat} className={`flex items-center gap-2 p-2 border rounded-lg cursor-pointer transition ${inviteCategory === cat ? 'bg-blue-50 border-blue-300 text-blue-700 font-semibold' : 'border-gray-200 text-gray-600 hover:bg-gray-50'}`}>
+                      <input type="radio" name="inviteCategory" value={cat} checked={inviteCategory === cat} onChange={(e) => setInviteCategory(e.target.value)} className="w-4 h-4 text-blue-600" />
+                      <span className="text-sm">{cat}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div>
                 <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Project/Hackathon Name</label>
-                <input type="text" placeholder="e.g. Smart India Hackathon 2026" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-300" />
+                <input type="text" value={inviteProjectName} onChange={(e) => setInviteProjectName(e.target.value)} placeholder="e.g. Smart India Hackathon 2026" className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-300" />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -360,6 +403,8 @@ export default function DomainDirectoryPage() {
                 <label className="block text-xs font-bold text-gray-600 uppercase mb-1">Message to student</label>
                 <textarea
                   rows={3}
+                  value={inviteMessage}
+                  onChange={(e) => setInviteMessage(e.target.value)}
                   placeholder="Tell them why you want them on your team..."
                   className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-300 resize-none"
                 />
@@ -369,9 +414,86 @@ export default function DomainDirectoryPage() {
               <button onClick={() => setInviteModalOpen(false)} className="px-5 py-2 border border-gray-300 text-gray-600 font-semibold text-sm rounded-xl hover:bg-gray-100 transition">
                 Cancel
               </button>
-              <button onClick={handleSendInvite} className="px-5 py-2 bg-blue-600 text-white font-semibold text-sm rounded-xl hover:bg-blue-700 transition shadow-sm">
+              <button onClick={handleSendInvite} disabled={!inviteCategory} className={`px-5 py-2 font-semibold text-sm rounded-xl transition shadow-sm ${inviteCategory ? 'bg-blue-600 text-white hover:bg-blue-700' : 'bg-blue-300 text-white cursor-not-allowed'}`}>
                 Send Invite
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* VIEW PROFILE MODAL */}
+      {viewProfileStudent && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden animate-fade-in max-h-[90vh] flex flex-col">
+            <div className="flex justify-between items-center p-5 border-b border-gray-100 flex-shrink-0">
+              <h2 className="font-bold text-lg text-navy">Student Profile</h2>
+              <button onClick={() => setViewProfileStudent(null)} className="text-gray-400 hover:text-gray-600">
+                <X size={20} />
+              </button>
+            </div>
+            
+            <div className="p-6 overflow-y-auto">
+              <div className="flex items-center gap-4 mb-6">
+                <div className={`w-16 h-16 rounded-full flex items-center justify-center font-bold text-2xl text-blue-700 bg-blue-100`}>
+                  {viewProfileStudent.initials}
+                </div>
+                <div>
+                  <h3 className="font-bold text-navy text-xl">{viewProfileStudent.name}</h3>
+                  <p className="text-gray-500 text-sm">{viewProfileStudent.roll} · {viewProfileStudent.year}</p>
+                  <span className={`mt-1 inline-block px-2 py-0.5 rounded text-[10px] font-bold uppercase ${viewProfileStudent.status === 'Open to Team Up' ? 'bg-green-50 text-green-600 border border-green-200' : 'bg-gray-100 text-gray-500 border border-gray-200'}`}>
+                    {viewProfileStudent.status}
+                  </span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 mb-6">
+                <div className="p-4 bg-gray-50 rounded-xl border border-gray-100 text-center">
+                  <p className="text-xs text-gray-500 font-bold mb-1 uppercase tracking-wide">SPI Score</p>
+                  <p className="text-2xl font-bold text-blue-600">{viewProfileStudent.spi}</p>
+                </div>
+                <div className="p-4 bg-gray-50 rounded-xl border border-gray-100 text-center flex flex-col items-center justify-center">
+                  <p className="text-xs text-gray-500 font-bold mb-1 uppercase tracking-wide">Domain</p>
+                  <p className="text-sm font-bold text-navy text-center">{viewProfileStudent.domain}</p>
+                </div>
+              </div>
+
+              <div>
+                <h4 className="font-bold text-navy text-sm mb-3">Top Skills</h4>
+                <div className="flex flex-wrap gap-2">
+                  {viewProfileStudent.skills.map((skill, i) => (
+                    <span key={i} className="px-3 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-xs font-semibold border border-gray-200">
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mt-6 pt-6 border-t border-gray-100">
+                <h4 className="font-bold text-navy text-sm mb-3">About {viewProfileStudent.name.split(' ')[0]}</h4>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  {viewProfileStudent.name} is a {viewProfileStudent.year} student passionate about {viewProfileStudent.domain}. 
+                  With a strong SPI of {viewProfileStudent.spi} and expertise in {viewProfileStudent.skills.join(', ')}, 
+                  they are currently {viewProfileStudent.status.toLowerCase()}.
+                </p>
+              </div>
+            </div>
+
+            <div className="p-5 border-t border-gray-100 flex justify-end gap-3 bg-gray-50 flex-shrink-0">
+              <button onClick={() => setViewProfileStudent(null)} className="px-5 py-2 border border-gray-300 text-gray-600 font-semibold text-sm rounded-xl hover:bg-gray-100 transition">
+                Close
+              </button>
+              {viewProfileStudent.status === 'Open to Team Up' && !viewProfileStudent.isTeammate && (
+                <button 
+                  onClick={() => {
+                    setViewProfileStudent(null)
+                    handleInviteClick(viewProfileStudent)
+                  }} 
+                  className="px-5 py-2 bg-blue-600 text-white font-semibold text-sm rounded-xl hover:bg-blue-700 transition flex items-center justify-center gap-2 shadow-sm"
+                >
+                  <Plus size={16} /> Invite to Team
+                </button>
+              )}
             </div>
           </div>
         </div>

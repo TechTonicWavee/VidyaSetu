@@ -5,6 +5,11 @@ module.exports = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  safelist: [
+    { pattern: /bg-(gray|blue|teal|purple|amber|rose|green|slate)-(50|100|500|600|700)/ },
+    { pattern: /text-(gray|blue|teal|purple|amber|rose|green|slate)-(500|600|700)/ },
+    { pattern: /border-(gray|blue|teal|purple|amber|rose|green|slate)-(100|200|500)/ },
+  ],
   theme: {
     extend: {
       colors: {

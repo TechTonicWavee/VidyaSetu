@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import CollapsibleSidebar from '../../components/CollapsibleSidebar';
+
 import { STUDENT_PILOT_MODE, STUDENT_ALLOWED_MENU_ITEMS } from '@/lib/access';
 import {
   Home, User, Activity, TrendingUp, Users, Bell, Award,

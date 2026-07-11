@@ -152,31 +152,7 @@ export default function AttendanceView() {
   return (
     <div className="flex h-screen bg-bg-base overflow-hidden font-sans">
       {/* SIDEBAR */}
-      <aside className={`${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'} flex-shrink-0 bg-white border-r border-gray-100 flex flex-col transition-all duration-300 shadow-sm`}>
-        <div className="p-5 border-b border-gray-50">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}>PR</div>
-            <div className="overflow-hidden">
-              <p className="font-semibold text-sm text-navy truncate">{studentName}</p>
-              <p className="text-xs text-gray-500 truncate">{branchAndYear}</p>
-            </div>
-          </div>
-          <SPIArc score={72} onClick={() => router.push('/student/spi')} />
-        </div>
-        <nav className="flex-1 p-3 overflow-y-auto">
-          {navLinks.map(link => (
-            <button
-              key={link.id}
-              onClick={() => router.push(link.path)}
-              className={`nav-link w-full text-left mb-0.5 ${link.active ? 'active' : ''}`}
-            >
-              <link.icon size={17} />
-              <span className="flex-1">{link.label}</span>
-              {link.badge && <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{link.badge}</span>}
-            </button>
-          ))}
-        </nav>
-      </aside>
+      
 
       {/* MAIN CONTENT */}
       <div className="flex-1 flex flex-col overflow-hidden">

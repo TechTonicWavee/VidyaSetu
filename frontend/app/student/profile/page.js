@@ -34,6 +34,7 @@ export default function StudentProfile() {
   const [activeTab, setActiveTab] = useState('Overview')
   const [student, setStudent] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [teamStatus, setTeamStatus] = useState('Open to Team Up')
 
   const tabs = ['Overview', 'Academics', 'Skills & Projects', 'Extracurriculars', 'Career Path', 'Alerts & Notes']
 
@@ -63,7 +64,18 @@ export default function StudentProfile() {
     } else {
       setLoading(false)
     }
+
+    const savedStatus = localStorage.getItem('student_team_status')
+    if (savedStatus) {
+      setTeamStatus(savedStatus)
+    }
   }, [])
+
+  const handleStatusChange = (e) => {
+    const val = e.target.value
+    setTeamStatus(val)
+    localStorage.setItem('student_team_status', val)
+  }
 
   const initials = student?.fullName ? getInitials(student.fullName) : 'S'
   const projectsCount = student?.projects?.length ?? 0
@@ -74,44 +86,7 @@ export default function StudentProfile() {
 
   return (
     <div className="flex h-screen bg-bg-base overflow-hidden font-sans">
-      {/* ══════════════════════════════════
-          SIDEBAR
-      ══════════════════════════════════ */}
-      <aside className={`${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'} flex-shrink-0 bg-white border-r border-gray-100 flex flex-col transition-all duration-300 shadow-sm`}>
-        <div className="p-5 border-b border-gray-50">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}>
-              {initials}
-            </div>
-            <div className="overflow-hidden">
-              <p className="font-semibold text-sm text-navy truncate">{student?.fullName ?? 'Student'}</p>
-              <p className="text-xs text-gray-500 truncate">{branchAndYear}</p>
-            </div>
-          </div>
-        </div>
-
-        <nav className="flex-1 p-3 overflow-y-auto">
-          {navLinks
-            .filter(link => !STUDENT_PILOT_MODE || STUDENT_ALLOWED_MENU_ITEMS.includes(link.label))
-            .map(link => (
-              <button
-                key={link.id}
-                onClick={() => router.push(link.path)}
-                className={`nav-link w-full text-left mb-0.5 ${activeNav === link.id ? 'active' : ''}`}
-              >
-                <link.icon size={17} />
-                <span className="flex-1">{link.label}</span>
-              </button>
-            ))}
-        </nav>
-
-        <div className="p-3 border-t border-gray-50">
-          <button onClick={() => router.push('/login')} className="nav-link w-full text-left text-red-500 hover:bg-red-50 hover:text-red-600">
-            <LogOut size={17} />
-            <span>Switch Role</span>
-          </button>
-        </div>
-      </aside>
+      
 
       {/* ══════════════════════════════════
           MAIN CONTENT
@@ -163,6 +138,16 @@ export default function StudentProfile() {
                     >
                       <Edit2 size={13} /> Edit Profile
                     </button>
+                    <select
+                      value={teamStatus}
+                      onChange={handleStatusChange}
+                      className="ml-2 bg-white/10 text-white border border-white/20 rounded-lg text-xs font-semibold px-2 py-1 outline-none cursor-pointer appearance-none hover:bg-white/20 transition"
+                      style={{ paddingRight: '20px' }}
+                    >
+                      <option value="Open to Team Up" className="text-black">Open to Team Up</option>
+                      <option value="In a Team" className="text-black">In a Team</option>
+                      <option value="Creating a Team" className="text-black">Creating a Team</option>
+                    </select>
                   </div>
                   <p className="text-gray-300 text-sm mb-4">{branchAndYear}</p>
                   <div className="flex flex-wrap justify-center md:justify-start gap-2">

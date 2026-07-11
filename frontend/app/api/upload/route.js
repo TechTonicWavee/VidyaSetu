@@ -1,4 +1,6 @@
-import { supabase } from '@/lib/supabase'
+import { writeFile, mkdir } from 'fs/promises'
+import path from 'path'
+import os from 'os'
 
 export const dynamic = 'force-dynamic'
 
@@ -6,9 +8,9 @@ export async function POST(request) {
   try {
     const formData = await request.formData()
     const file = formData.get('file')
-    const universityId = formData.get('universityId')
-    const folder = formData.get('folder') // 'resume', 'certifications', 'internships'
-    const fileName = formData.get('fileName') // unique name like cert-1.pdf
+    const universityId = formData.get('universityId') || 'temp'
+    const folder = formData.get('folder') || 'misc'
+    const fileName = formData.get('fileName') || file.name || 'file'
 
     if (!file) {
       return Response.json({ success: false, error: 'No file provided' })
@@ -32,29 +34,23 @@ export async function POST(request) {
     const arrayBuffer = await file.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
 
-    const path = `${universityId}/${folder}/${fileName}`
-
-    const { data, error } = await supabase.storage
-      .from('student-documents')
-      .upload(path, buffer, { 
-        contentType: file.type, 
-        upsert: true 
-      })
-
-    if (error) {
-      return Response.json({ success: false, error: error.message })
-    }
-
-    const { data: urlData } = supabase.storage
-      .from('student-documents')
-      .getPublicUrl(path)
+    const uploadDir = path.join(process.cwd(), 'public', 'uploads', universityId, folder)
+    await mkdir(uploadDir, { recursive: true })
+    
+    const uniqueFileName = `${Date.now()}-${fileName}`
+    const filePath = path.join(uploadDir, uniqueFileName)
+    
+    await writeFile(filePath, buffer)
+    
+    const publicUrl = `/uploads/${universityId}/${folder}/${uniqueFileName}`
 
     return Response.json({ 
       success: true, 
-      url: urlData.publicUrl 
+      url: publicUrl 
     })
 
   } catch (error) {
+    console.error('Upload Error:', error)
     return Response.json({ success: false, error: error.message })
   }
 }
