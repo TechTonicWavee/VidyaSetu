@@ -1212,9 +1212,6 @@ export default function ProfileEditPage() {
             </button>
           </div>
           <div className="flex items-center gap-4">
-            <button className="p-2 hover:bg-gray-100 rounded-lg relative">
-              <Bell size={20} className="text-gray-600" />
-            </button>
             <button className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-purple-600 text-white flex items-center justify-center font-bold text-sm">
               {initials}
             </button>

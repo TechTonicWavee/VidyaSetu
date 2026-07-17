@@ -7,6 +7,7 @@ import { acceptInvite, declineInvite } from '../../../lib/api/teams';
 import { ApiError } from '../../../lib/api/client';
 import { formatRelativeTime } from '../../../lib/format/relativeTime';
 import { useNotifications } from '../../../lib/notifications/NotificationsProvider';
+import { useSocket } from '../../../lib/socket/SocketProvider';
 
 const PAGE_SIZE = 15;
 
@@ -20,6 +21,7 @@ function iconFor(type: string) {
 
 export default function NotificationsPage() {
   const { markRead: markReadShared, refresh: refreshShared } = useNotifications();
+  const { socket } = useSocket();
 
   const [items, setItems] = useState<Notification[]>([]);
   const [page, setPage] = useState(1);
@@ -29,6 +31,21 @@ export default function NotificationsPage() {
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState('');
   const [inviteState, setInviteState] = useState<Record<string, 'pending' | 'accepted' | 'declined' | 'error'>>({});
+
+  // Live updates: prepend newly-arrived notifications without requiring a reload.
+  useEffect(() => {
+    if (!socket) return;
+    const onNew = (notification: Notification) => {
+      const matchesFilter =
+        filter === 'all' || (filter === 'unread' && !notification.read) || (filter === 'team_invite' && notification.type === 'team_invite');
+      if (!matchesFilter) return;
+      setItems((list) => [notification, ...list.filter((n) => n.id !== notification.id)]);
+    };
+    socket.on('notification:new', onNew);
+    return () => {
+      socket.off('notification:new', onNew);
+    };
+  }, [socket, filter]);
 
   useEffect(() => {
     setLoading(true);

@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import { STUDENT_PILOT_MODE, STUDENT_ALLOWED_MENU_ITEMS } from '@/lib/access'
 import { Home, User, Activity, TrendingUp, Users, Bell, Award, Grid, FileText, Settings, LogOut, Search, ChevronDown, ArrowUpRight, Book, Code, TrendingUp as TrendingUpIcon, AlertCircle, CheckCircle, Zap, Clock, Target, BookOpen, Plug } from 'lucide-react'
 import getInitials from '@/lib/getInitials'
+import { authedFetch } from '../../../lib/api/sameOriginFetch'
 import {
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer
 } from 'recharts'
@@ -88,8 +89,10 @@ export default function SPIDeepDivePage() {
       try {
         const session = JSON.parse(rawSession)
         if (session.universityId) {
+          // [Krrish/auth] Same JWT requirement as the dashboard — these routes
+          // now check the caller owns universityId.
           // Fetch student details
-          fetch(`/api/student/profile?universityId=${session.universityId}`)
+          authedFetch(`/api/student/profile?universityId=${session.universityId}`)
             .then(res => res.json())
             .then(data => {
               if (data.success && data.student) {
@@ -99,7 +102,7 @@ export default function SPIDeepDivePage() {
             .catch(err => console.error('Error fetching student profile:', err))
 
           // Recalculate SPI and fetch dimensions
-          fetch('/api/spi/recalculate', {
+          authedFetch('/api/spi/recalculate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ universityId: session.universityId }),

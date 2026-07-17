@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ArrowLeft, Crown, LogOut, Trash2, UserPlus, UserMinus, Loader2 } from 'lucide-react';
 import getInitials from '@/lib/getInitials';
 import { useAuth } from '../../../../lib/auth/AuthProvider';
+import { useSocket } from '../../../../lib/socket/SocketProvider';
 import { getTeam, removeTeamMember, updateTeam, deleteTeam, type Team } from '../../../../lib/api/teams';
 import { ApiError } from '../../../../lib/api/client';
 import InviteMemberModal from '../../../../components/team/InviteMemberModal';
@@ -14,6 +15,7 @@ export default function TeamDetailPage() {
   const { teamId } = useParams<{ teamId: string }>();
   const router = useRouter();
   const { student } = useAuth();
+  const { socket } = useSocket();
 
   const [team, setTeam] = useState<Team | null>(null);
   const [loading, setLoading] = useState(true);
@@ -36,6 +38,19 @@ export default function TeamDetailPage() {
   useEffect(() => {
     load();
   }, [load]);
+
+  // Live updates: refresh membership when someone accepts/declines an invite
+  // to this team, or is removed/leaves, without requiring a reload.
+  useEffect(() => {
+    if (!socket) return;
+    const refresh = () => load();
+    socket.on('invite:accepted', refresh);
+    socket.on('invite:declined', refresh);
+    return () => {
+      socket.off('invite:accepted', refresh);
+      socket.off('invite:declined', refresh);
+    };
+  }, [socket, load]);
 
   const isLeader = team?.leaderId === student?.universityId;
 

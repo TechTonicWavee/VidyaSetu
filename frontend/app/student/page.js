@@ -6,6 +6,7 @@ import { Home, User, Activity, TrendingUp, Users, Bell, Award, Grid, FileText, S
 import PilotAnnouncementModal from '@/components/PilotAnnouncementModal'
 import { PILOT_ANNOUNCEMENT } from '@/lib/announcement'
 import getInitials from '@/lib/getInitials'
+import { authedFetch } from '../../lib/api/sameOriginFetch'
 
 const navLinks = [
   { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null, active: true, path: '/student' },
@@ -170,7 +171,10 @@ export default function StudentDashboard() {
 
         // Fetch real student profile (including projects)
         if (session.universityId) {
-          fetch(`/api/student/profile?universityId=${session.universityId}`)
+          // [Krrish/auth] These two routes now require the JWT the rest of the app
+          // sends via authedFetch — attaching it here too since this page calls
+          // them directly. No other change to this file's logic.
+          authedFetch(`/api/student/profile?universityId=${session.universityId}`)
             .then(res => res.json())
             .then(data => {
               if (data.success && data.student) {
@@ -183,7 +187,7 @@ export default function StudentDashboard() {
             .catch(err => console.error('Error fetching student profile:', err))
 
           // Recalculate SPI just to be fresh
-          fetch('/api/spi/recalculate', {
+          authedFetch('/api/spi/recalculate', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ universityId: session.universityId }),

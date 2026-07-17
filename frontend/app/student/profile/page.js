@@ -100,9 +100,6 @@ export default function StudentProfile() {
             <input type="text" placeholder="Search..." className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-300 transition" disabled />
           </div>
           <div className="flex-1" />
-          <button className="relative p-2 rounded-lg hover:bg-gray-100 transition text-gray-500">
-            <Bell size={19} />
-          </button>
           <div className="flex items-center gap-2 cursor-pointer group">
             <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs" style={{ background: 'linear-gradient(135deg, #1A56DB, #5B21B6)' }}>
               {initials}
