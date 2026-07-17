@@ -366,7 +366,7 @@ export default function StudentProfile() {
                         <div className="flex flex-col items-center justify-center py-12 text-center text-gray-500">
                           <Folder size={24} className="text-gray-300 mb-2" />
                           <p className="text-sm font-medium">No Projects Uploaded</p>
-                          <p className="text-xs text-gray-400 mt-0.5">Go to 'Edit Profile' to add your project details.</p>
+                          <p className="text-xs text-gray-400 mt-0.5">Go to &apos;Edit Profile&apos; to add your project details.</p>
                         </div>
                       )}
                     </div>
@@ -384,7 +384,7 @@ export default function StudentProfile() {
                           {student.codingProfile.hackerrank && <span className="px-3 py-1 bg-amber-50 text-amber-700 border border-amber-200 rounded-lg text-sm font-medium">HackerRank: {student.codingProfile.hackerrank}</span>}
                         </div>
                       ) : (
-                        <div className="text-sm text-gray-500 italic">No platforms connected. You can link your platforms in 'Edit Profile'.</div>
+                        <div className="text-sm text-gray-500 italic">No platforms connected. You can link your platforms in &apos;Edit Profile&apos;.</div>
                       )}
                     </div>
                   </div>
