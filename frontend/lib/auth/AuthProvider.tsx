@@ -31,6 +31,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const hydrated = useRef(false);
 
+  // [Krrish/auth] localStorage.vs_student is no longer trusted for authentication — every
+  // API call now requires a real JWT. This mirror exists only so other pages that
+  // still read vs_student for display (name/branch/year/section) keep working;
+  // it's kept in sync with the verified session, not the other way around.
+  function syncLegacySessionMirror(s: StudentSession | null) {
+    if (typeof window === 'undefined') return;
+    if (s) {
+      localStorage.setItem(
+        'vs_student',
+        JSON.stringify({
+          universityId: s.universityId,
+          name: s.name,
+          branch: s.branch,
+          year: s.year,
+          section: s.section,
+          loginTime: Date.now(),
+        }),
+      );
+    } else {
+      localStorage.removeItem('vs_student');
+    }
+  }
+
   const logout = useCallback(async () => {
     try {
       await apiPost('/api/auth/logout');
@@ -40,6 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     clearAccessToken();
     setToken(null);
     setStudent(null);
+    syncLegacySessionMirror(null);
     router.push('/login');
   }, [router]);
 
@@ -50,6 +74,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     registerUnauthorizedHandler(() => {
       setToken(null);
       setStudent(null);
+      syncLegacySessionMirror(null);
       router.push('/login');
     });
 
@@ -61,7 +86,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setAccessToken(json.data.accessToken);
           setToken(json.data.accessToken);
           setStudent(json.data.student);
+          syncLegacySessionMirror(json.data.student);
         } else {
+          syncLegacySessionMirror(null);
           router.push('/login');
         }
       } catch {

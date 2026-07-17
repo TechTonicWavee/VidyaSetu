@@ -11,6 +11,8 @@ import {
   ExternalLink, Award as Badge, Tag, Menu, Info, Lock, Download
 } from 'lucide-react'
 import getInitials from '@/lib/getInitials'
+import { useAuth } from '../../../../lib/auth/AuthProvider'
+import { authedFetch } from '../../../../lib/api/sameOriginFetch'
 
 const Github = (props) => (
   <svg
@@ -29,6 +31,38 @@ const Github = (props) => (
     <path d="M9 18c-4.51 2-5-2-7-2" />
   </svg>
 )
+
+// Strip a pasted full profile URL down to a bare username, mirroring the
+// normalization the API applies server-side on save.
+const PLATFORM_URL_STRIP = {
+  github: /^(https?:\/\/)?(www\.)?github\.com\//i,
+  leetcode: /^(https?:\/\/)?(www\.)?leetcode\.com\/(u\/)?/i,
+  codeforces: /^(https?:\/\/)?(www\.)?codeforces\.com\/profile\//i,
+  linkedinUrl: /^(https?:\/\/)?(www\.)?linkedin\.com\/in\//i,
+}
+
+// Allowed-character rules per platform, applied after stripping/trimming.
+const PLATFORM_USERNAME_RULES = {
+  github: { pattern: /^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,37}[a-zA-Z0-9])?$/, hint: 'letters, numbers and hyphens only, cannot start or end with a hyphen' },
+  leetcode: { pattern: /^[a-zA-Z0-9_-]{1,30}$/, hint: 'letters, numbers, hyphens and underscores only' },
+  codeforces: { pattern: /^[a-zA-Z0-9_.-]{1,24}$/, hint: 'letters, numbers, dots, hyphens and underscores only' },
+  linkedinUrl: { pattern: /^[a-zA-Z0-9-]{3,100}$/, hint: 'letters, numbers and hyphens only, at least 3 characters' },
+}
+
+function normalizePlatformValue(key, rawValue) {
+  const stripRegex = PLATFORM_URL_STRIP[key]
+  let value = (rawValue || '').trim()
+  if (stripRegex) value = value.replace(stripRegex, '')
+  return value.replace(/\/+$/, '').trim()
+}
+
+function validatePlatformValue(key, value) {
+  if (!value) return null
+  const rule = PLATFORM_USERNAME_RULES[key]
+  if (!rule) return null
+  if (!rule.pattern.test(value)) return `Invalid username — ${rule.hint}.`
+  return null
+}
 
 const navLinks = [
   { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null, active: false, path: '/student' },
@@ -104,6 +138,7 @@ function CollapsibleSection({ title, icon: Icon, children, isOpen, onToggle, com
 
 export default function ProfileEditPage() {
   const router = useRouter()
+  const { student: authStudent } = useAuth()
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [spiScore, setSpiScore] = useState(null)
   const [expandedSections, setExpandedSections] = useState({
@@ -140,6 +175,7 @@ export default function ProfileEditPage() {
   const [codingProfiles, setCodingProfiles] = useState({
     github: '', leetcode: '', codeforces: '', linkedinUrl: ''
   })
+  const [platformErrors, setPlatformErrors] = useState({})
 
   // List sections
   const [projects, setProjects] = useState([])
@@ -149,16 +185,13 @@ export default function ProfileEditPage() {
 
   // ── Load session + profile data on mount ──────────────────────────────────
   useEffect(() => {
-    const raw = localStorage.getItem('vs_student')
-    if (!raw) { router.push('/login'); return }
+    if (!authStudent) return
     try {
-      const session = JSON.parse(raw)
-      const univId = session.universityId || ''
+      const univId = authStudent.universityId || ''
       setUniversityId(univId)
-      if (session.spiScore != null) setSpiScore(session.spiScore)
 
       if (univId) {
-        fetch(`/api/student/profile?universityId=${univId}`)
+        authedFetch(`/api/student/profile?universityId=${univId}`)
           .then(res => res.json())
           .then(data => {
             if (data.success && data.student) {
@@ -232,7 +265,7 @@ export default function ProfileEditPage() {
           .catch(err => console.error('[edit/load] Error fetching profile:', err))
       }
     } catch { }
-  }, [])
+  }, [authStudent])
 
   const showToast = (msg, type = 'success') => {
     setToastMessage(msg)
@@ -264,8 +297,25 @@ export default function ProfileEditPage() {
       return
     }
 
-    // Validation — GitHub and LeetCode are required
-    if (!codingProfiles.github.trim() || !codingProfiles.leetcode.trim()) {
+    // Validation — normalize + check format for every filled platform field,
+    // then require GitHub and LeetCode specifically (they count toward SPI).
+    const normalizedProfiles = {}
+    const nextPlatformErrors = {}
+    for (const field of Object.keys(codingProfiles)) {
+      normalizedProfiles[field] = normalizePlatformValue(field, codingProfiles[field])
+      nextPlatformErrors[field] = validatePlatformValue(field, normalizedProfiles[field])
+    }
+    setCodingProfiles(normalizedProfiles)
+    setPlatformErrors(nextPlatformErrors)
+
+    if (Object.values(nextPlatformErrors).some(Boolean)) {
+      setValidationError('Fix the highlighted coding platform username(s) before saving.')
+      setExpandedSections(prev => ({ ...prev, coding: true }))
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      return
+    }
+
+    if (!normalizedProfiles.github || !normalizedProfiles.leetcode) {
       setValidationError('GitHub and LeetCode usernames are required to calculate your SPI.')
       setExpandedSections(prev => ({ ...prev, coding: true }))
       window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -276,7 +326,7 @@ export default function ProfileEditPage() {
 
     // Step 1: Update Student (phone only — name/email are read-only) + CodingProfile + Lists
     try {
-      const updateRes = await fetch('/api/student/update', {
+      const updateRes = await authedFetch('/api/student/update', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -285,10 +335,10 @@ export default function ProfileEditPage() {
             phone: basicInfo.phone,
           },
           codingProfile: {
-            github: codingProfiles.github,
-            leetcode: codingProfiles.leetcode,
-            codeforces: codingProfiles.codeforces,
-            linkedinUrl: codingProfiles.linkedinUrl,
+            github: normalizedProfiles.github,
+            leetcode: normalizedProfiles.leetcode,
+            codeforces: normalizedProfiles.codeforces,
+            linkedinUrl: normalizedProfiles.linkedinUrl,
           },
           projects: projects,
           certifications: certifications,
@@ -308,7 +358,7 @@ export default function ProfileEditPage() {
     // Step 2: Refresh coding stats
     let statsOk = true
     try {
-      const fetchRes = await fetch(`/api/coding-profile/fetch?universityId=${universityId}`)
+      const fetchRes = await authedFetch(`/api/coding-profile/fetch?universityId=${universityId}`)
       const fetchData = await fetchRes.json()
       if (!fetchData.success) { statsOk = false }
     } catch { statsOk = false }
@@ -316,7 +366,7 @@ export default function ProfileEditPage() {
     // Step 3: Recalculate SPI
     let spiOk = true
     try {
-      const spiRes = await fetch('/api/spi/recalculate', {
+      const spiRes = await authedFetch('/api/spi/recalculate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ universityId }),
@@ -396,7 +446,7 @@ export default function ProfileEditPage() {
     formData.append('fileName', 'resume.pdf')
 
     try {
-      const res = await fetch('/api/upload', {
+      const res = await authedFetch('/api/upload', {
         method: 'POST',
         body: formData,
       })
@@ -407,7 +457,7 @@ export default function ProfileEditPage() {
 
       const newResumeUrl = data.url
       // Update student table & trigger parsing
-      const updateRes = await fetch('/api/student/update', {
+      const updateRes = await authedFetch('/api/student/update', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -423,7 +473,7 @@ export default function ProfileEditPage() {
       }
 
       // Re-fetch profile to load updated parser results and score
-      const profileRes = await fetch(`/api/student/profile?universityId=${universityId}`)
+      const profileRes = await authedFetch(`/api/student/profile?universityId=${universityId}`)
       const profileData = await profileRes.json()
       if (profileData.success && profileData.student) {
         const s = profileData.student
@@ -433,7 +483,7 @@ export default function ProfileEditPage() {
         setResumeScore(s.resumeScore != null ? s.resumeScore : null)
 
         // Recalculate overall SPI score
-        const spiRes = await fetch('/api/spi/recalculate', {
+        const spiRes = await authedFetch('/api/spi/recalculate', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ universityId }),
@@ -459,7 +509,7 @@ export default function ProfileEditPage() {
 
     setUploadingResume(true)
     try {
-      const updateRes = await fetch('/api/student/update', {
+      const updateRes = await authedFetch('/api/student/update', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -481,7 +531,7 @@ export default function ProfileEditPage() {
       setResumeScore(null)
 
       // Recalculate SPI
-      const spiRes = await fetch('/api/spi/recalculate', {
+      const spiRes = await authedFetch('/api/spi/recalculate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ universityId }),
@@ -684,10 +734,10 @@ export default function ProfileEditPage() {
 
   // Pilot: only GitHub, LeetCode, Codeforces, LinkedIn
   const codingPlatformFields = [
-    { key: 'github', label: 'GitHub Username *', placeholder: 'e.g. priyanshu-raj', hint: 'github.com/', required: true },
-    { key: 'leetcode', label: 'LeetCode Username *', placeholder: 'e.g. priyanshu_raj', hint: 'leetcode.com/u/', required: true },
-    { key: 'codeforces', label: 'Codeforces Username', placeholder: 'e.g. priyanshu.raj', hint: 'codeforces.com/profile/', required: false },
-    { key: 'linkedinUrl', label: 'LinkedIn Username', placeholder: 'e.g. priyanshu-raj', hint: 'linkedin.com/in/', required: false },
+    { key: 'github', label: 'GitHub Username *', placeholder: 'your-github-username', hint: 'github.com/', required: true },
+    { key: 'leetcode', label: 'LeetCode Username *', placeholder: 'your-leetcode-id', hint: 'leetcode.com/u/', required: true },
+    { key: 'codeforces', label: 'Codeforces Username', placeholder: 'your-codeforces-handle', hint: 'codeforces.com/profile/', required: false },
+    { key: 'linkedinUrl', label: 'LinkedIn Username', placeholder: 'your-linkedin-username', hint: 'linkedin.com/in/', required: false },
   ]
 
   const codingPlatformsJSX = (
@@ -735,13 +785,22 @@ export default function ProfileEditPage() {
                 value={codingProfiles[field.key] || ''}
                 onChange={e => {
                   setValidationError('')
+                  setPlatformErrors(prev => ({ ...prev, [field.key]: null }))
                   setCodingProfiles({ ...codingProfiles, [field.key]: e.target.value })
                 }}
-                className={`flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-lg border focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy ${field.required && !codingProfiles[field.key] ? 'border-red-300' : 'border-gray-300'
+                onBlur={e => {
+                  const normalized = normalizePlatformValue(field.key, e.target.value)
+                  setCodingProfiles(prev => ({ ...prev, [field.key]: normalized }))
+                  setPlatformErrors(prev => ({ ...prev, [field.key]: validatePlatformValue(field.key, normalized) }))
+                }}
+                className={`flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-lg border focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy ${(field.required && !codingProfiles[field.key]) || platformErrors[field.key] ? 'border-red-300' : 'border-gray-300'
                   }`}
                 placeholder={field.placeholder}
               />
             </div>
+            {platformErrors[field.key] && (
+              <p className="text-xs text-red-600 mt-1">{platformErrors[field.key]}</p>
+            )}
           </div>
         ))}
       </div>

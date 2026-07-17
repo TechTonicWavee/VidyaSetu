@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import { STUDENT_PILOT_MODE, STUDENT_ALLOWED_MENU_ITEMS } from '@/lib/access'
 import { Home, User, Activity, TrendingUp, Users, Bell, Award, Grid, FileText, Settings, LogOut, Search, ChevronDown, ArrowUpRight, Clock, AlertCircle, BookOpen, CheckCircle, Folder, Star, Cpu, Briefcase, ChevronRight, Target, Zap, Plug, Edit2 } from 'lucide-react'
 import getInitials from '@/lib/getInitials'
+import { useAuth } from '../../../lib/auth/AuthProvider'
+import { authedFetch } from '../../../lib/api/sameOriginFetch'
 
 const navLinks = [
   { id: 'dashboard', label: 'Dashboard', icon: Home, badge: null, active: false, path: '/student' },
@@ -29,6 +31,7 @@ const navLinks = [
 
 export default function StudentProfile() {
   const router = useRouter()
+  const { student: authStudent } = useAuth()
   const [activeNav] = useState('profile')
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [activeTab, setActiveTab] = useState('Overview')
@@ -41,26 +44,17 @@ export default function StudentProfile() {
 
 
   useEffect(() => {
-    const raw = localStorage.getItem('vs_student')
-    if (raw) {
-      try {
-        const session = JSON.parse(raw)
-        if (session.universityId) {
-          fetch(`/api/student/profile?universityId=${session.universityId}`)
-            .then(res => res.json())
-            .then(data => {
-              if (data.success && data.student) {
-                setStudent(data.student)
-              }
-            })
-            .catch(err => console.error('Error fetching student profile:', err))
-            .finally(() => setLoading(false))
-        } else {
-          setLoading(false)
-        }
-      } catch (e) {
-        setLoading(false)
-      }
+    if (!authStudent) return
+    if (authStudent.universityId) {
+      authedFetch(`/api/student/profile?universityId=${authStudent.universityId}`)
+        .then(res => res.json())
+        .then(data => {
+          if (data.success && data.student) {
+            setStudent(data.student)
+          }
+        })
+        .catch(err => console.error('Error fetching student profile:', err))
+        .finally(() => setLoading(false))
     } else {
       setLoading(false)
     }
@@ -69,7 +63,7 @@ export default function StudentProfile() {
     if (savedStatus) {
       setTeamStatus(savedStatus)
     }
-  }, [])
+  }, [authStudent])
 
   const handleStatusChange = (e) => {
     const val = e.target.value
