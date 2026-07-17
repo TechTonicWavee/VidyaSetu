@@ -730,7 +730,7 @@ export default function ProfileEditPage() {
       />
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-navy mb-1 flex items-center gap-1.5">
+          <label className="text-sm font-medium text-navy mb-1 flex items-center gap-1.5">
             Full Name <Lock size={12} className="text-gray-400" />
           </label>
           <input
@@ -753,7 +753,7 @@ export default function ProfileEditPage() {
         </div>
       </div>
       <div>
-        <label className="block text-sm font-medium text-navy mb-1 flex items-center gap-1.5">
+        <label className="text-sm font-medium text-navy mb-1 flex items-center gap-1.5">
           Email <Lock size={12} className="text-gray-400" />
         </label>
         <input
