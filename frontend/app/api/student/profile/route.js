@@ -58,7 +58,10 @@ export async function GET(request) {
         resumeUrl: student.resumeUrl,
         resumeParsed: student.resumeParsed,
         resumeAnalyzedAt: student.resumeAnalyzedAt,
+        resumePublicId: student.resumePublicId,
         resumeScore: resumeResult?.score ?? null,
+        avatarUrl: student.avatarUrl,
+        avatarPublicId: student.avatarPublicId,
         codingProfile: student.codingProfile ? {
           github: student.codingProfile.github,
           leetcode: student.codingProfile.leetcode,

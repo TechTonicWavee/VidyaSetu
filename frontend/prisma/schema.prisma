@@ -26,6 +26,7 @@ model Student {
   resumeUrl        String?
   resumeParsed     Json?
   resumeAnalyzedAt DateTime?
+  resumePublicId   String?
   avatarUrl        String?
   avatarPublicId   String?
   domain           String?
@@ -73,19 +74,20 @@ model CodingProfile {
 }
 
 model Project {
-  id            String   @id @default(uuid())
-  universityId  String
-  title         String
-  description   String?
-  techStack     String[]
-  type          String?
-  teamSize      String?
-  githubLink    String?
-  liveLink      String?
-  screenshotUrl String?
-  status        String?
-  role          String?
-  createdAt     DateTime @default(now())
+  id                 String   @id @default(uuid())
+  universityId       String
+  title              String
+  description        String?
+  techStack          String[]
+  type               String?
+  teamSize           String?
+  githubLink         String?
+  liveLink           String?
+  screenshotUrl      String?
+  screenshotPublicId String?
+  status             String?
+  role               String?
+  createdAt          DateTime @default(now())
 
   student Student @relation(fields: [universityId], references: [universityId])
 
@@ -93,14 +95,15 @@ model Project {
 }
 
 model Certification {
-  id             String    @id @default(uuid())
-  universityId   String
-  name           String
-  platform       String?
-  completionDate DateTime?
-  certificateUrl String?
-  skills         String[]
-  createdAt      DateTime  @default(now())
+  id                  String    @id @default(uuid())
+  universityId        String
+  name                String
+  platform            String?
+  completionDate      DateTime?
+  certificateUrl      String?
+  certificatePublicId String?
+  skills              String[]
+  createdAt           DateTime  @default(now())
 
   student Student @relation(fields: [universityId], references: [universityId])
 

@@ -13,6 +13,8 @@ import {
 import getInitials from '@/lib/getInitials'
 import { useAuth } from '../../../../lib/auth/AuthProvider'
 import { authedFetch } from '../../../../lib/api/sameOriginFetch'
+import { uploadToCloudinary, deleteCloudinaryAsset } from '../../../../lib/upload/cloudinaryClient'
+import FileUploadField from '../../../../components/profile/FileUploadField'
 
 const Github = (props) => (
   <svg
@@ -157,10 +159,15 @@ export default function ProfileEditPage() {
 
   // Resume state
   const [resumeUrl, setResumeUrl] = useState('')
+  const [resumePublicId, setResumePublicId] = useState(null)
   const [resumeParsed, setResumeParsed] = useState(null)
   const [resumeAnalyzedAt, setResumeAnalyzedAt] = useState(null)
   const [resumeScore, setResumeScore] = useState(null)
   const [uploadingResume, setUploadingResume] = useState(false)
+
+  // Avatar state
+  const [avatarUrl, setAvatarUrl] = useState(null)
+  const [avatarPublicId, setAvatarPublicId] = useState(null)
 
   // Session state
   const [universityId, setUniversityId] = useState('')
@@ -207,9 +214,12 @@ export default function ProfileEditPage() {
               })
               if (s.spiScore != null) setSpiScore(s.spiScore)
               setResumeUrl(s.resumeUrl || '')
+              setResumePublicId(s.resumePublicId || null)
               setResumeParsed(s.resumeParsed || null)
               setResumeAnalyzedAt(s.resumeAnalyzedAt || null)
               setResumeScore(s.resumeScore != null ? s.resumeScore : null)
+              setAvatarUrl(s.avatarUrl || null)
+              setAvatarPublicId(s.avatarPublicId || null)
               if (s.codingProfile) {
                 setCodingProfiles({
                   github: s.codingProfile.github || '',
@@ -229,6 +239,8 @@ export default function ProfileEditPage() {
                   status: p.status || 'Completed',
                   github: p.githubLink || '',
                   liveDemo: p.liveLink || '',
+                  screenshotUrl: p.screenshotUrl || '',
+                  screenshotPublicId: p.screenshotPublicId || null,
                 })))
               }
               if (s.certifications?.length) {
@@ -238,6 +250,8 @@ export default function ProfileEditPage() {
                   platform: c.platform || 'Coursera',
                   dateCompleted: c.completionDate ? c.completionDate.substring(0, 10) : '',
                   skills: c.skills || [],
+                  certificateUrl: c.certificateUrl || '',
+                  certificatePublicId: c.certificatePublicId || null,
                 })))
               }
               if (s.hackathons?.length) {
@@ -391,22 +405,22 @@ export default function ProfileEditPage() {
   }
 
   // ── Add/remove helpers ─────────────────────────────────────────────────────
-  const [newProject, setNewProject] = useState({ title: '', description: '', techStack: [], github: '', liveDemo: '', status: 'Completed', type: 'Personal' })
-  const [newCert, setNewCert] = useState({ name: '', platform: 'Coursera', dateCompleted: '', skills: [] })
+  const [newProject, setNewProject] = useState({ title: '', description: '', techStack: [], github: '', liveDemo: '', status: 'Completed', type: 'Personal', screenshotUrl: '', screenshotPublicId: null })
+  const [newCert, setNewCert] = useState({ name: '', platform: 'Coursera', dateCompleted: '', skills: [], certificateUrl: '', certificatePublicId: null })
   const [newHack, setNewHack] = useState({ name: '', organizer: '', date: '', position: '', teamSize: '', projectBuilt: '' })
   const [newExtra, setNewExtra] = useState({ name: '', role: '', year: '', achievement: '' })
 
   const addProject = () => {
     if (!newProject.title.trim()) return
     setProjects([...projects, { ...newProject, id: `tmp_${Date.now()}` }])
-    setNewProject({ title: '', description: '', techStack: [], github: '', liveDemo: '', status: 'Completed', type: 'Personal' })
+    setNewProject({ title: '', description: '', techStack: [], github: '', liveDemo: '', status: 'Completed', type: 'Personal', screenshotUrl: '', screenshotPublicId: null })
   }
   const removeProject = (id) => setProjects(projects.filter(p => p.id !== id))
 
   const addCertification = () => {
     if (!newCert.name.trim()) return
     setCertifications([...certifications, { ...newCert, id: `tmp_${Date.now()}` }])
-    setNewCert({ name: '', platform: 'Coursera', dateCompleted: '', skills: [] })
+    setNewCert({ name: '', platform: 'Coursera', dateCompleted: '', skills: [], certificateUrl: '', certificatePublicId: null })
   }
   const removeCert = (id) => setCertifications(certifications.filter(c => c.id !== id))
 
@@ -429,33 +443,13 @@ export default function ProfileEditPage() {
     const file = e.target.files?.[0]
     if (!file) return
 
-    if (file.type !== 'application/pdf') {
-      showToast('Only PDF files are allowed.', 'error')
-      return
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      showToast('Resume size must be under 5MB.', 'error')
-      return
-    }
-
     setUploadingResume(true)
-    const formData = new FormData()
-    formData.append('file', file)
-    formData.append('universityId', universityId || 'unknown')
-    formData.append('folder', 'resume')
-    formData.append('fileName', 'resume.pdf')
+    const previousPublicId = resumePublicId
 
     try {
-      const res = await authedFetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      })
-      const data = await res.json()
-      if (!data.success) {
-        throw new Error(data.error || 'Upload failed')
-      }
+      const uploaded = await uploadToCloudinary('resume', file, () => {})
+      const newResumeUrl = uploaded.secureUrl
 
-      const newResumeUrl = data.url
       // Update student table & trigger parsing
       const updateRes = await authedFetch('/api/student/update', {
         method: 'POST',
@@ -464,12 +458,20 @@ export default function ProfileEditPage() {
           universityId,
           student: {
             resumeUrl: newResumeUrl,
+            resumePublicId: uploaded.publicId,
           },
         }),
       })
       const updateData = await updateRes.json()
       if (!updateData.success) {
         throw new Error(updateData.error || 'Database update failed')
+      }
+      setResumePublicId(uploaded.publicId)
+
+      if (previousPublicId) {
+        deleteCloudinaryAsset(previousPublicId, uploaded.resourceType).catch(() => {
+          // best-effort — an orphaned old resume isn't worth failing the UI over
+        })
       }
 
       // Re-fetch profile to load updated parser results and score
@@ -516,6 +518,7 @@ export default function ProfileEditPage() {
           universityId,
           student: {
             resumeUrl: null,
+            resumePublicId: null,
           },
         }),
       })
@@ -524,8 +527,13 @@ export default function ProfileEditPage() {
         throw new Error(updateData.error || 'Database update failed')
       }
 
+      if (resumePublicId) {
+        deleteCloudinaryAsset(resumePublicId, 'image').catch(() => {})
+      }
+
       // Clear local states
       setResumeUrl('')
+      setResumePublicId(null)
       setResumeParsed(null)
       setResumeAnalyzedAt(null)
       setResumeScore(null)
@@ -669,7 +677,7 @@ export default function ProfileEditPage() {
               <FileText size={24} />
             </div>
             <h4 className="font-semibold text-navy text-base mb-1">No resume uploaded</h4>
-            <p className="text-sm text-gray-500 mb-4">Upload your resume (PDF only, max 5MB) to include it in your SPI calculation.</p>
+            <p className="text-sm text-gray-500 mb-4">Upload your resume (PDF only, max 10MB) to include it in your SPI calculation.</p>
             <button
               onClick={() => document.getElementById('resume-file-input').click()}
               className="px-5 py-2.5 bg-primary text-white rounded-lg text-sm font-semibold hover:bg-blue-700 transition-colors flex items-center gap-2 shadow-sm"
@@ -684,15 +692,42 @@ export default function ProfileEditPage() {
       <input
         id="resume-file-input"
         type="file"
-        accept=".pdf"
+        accept="application/pdf"
         onChange={handleResumeFileChange}
         className="hidden"
       />
     </div>
   )
 
+  const handleAvatarUploaded = async ({ url, publicId }) => {
+    setAvatarUrl(url)
+    setAvatarPublicId(publicId)
+    try {
+      const res = await authedFetch('/api/student/update', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          universityId,
+          student: { avatarUrl: url, avatarPublicId: publicId },
+        }),
+      })
+      const data = await res.json()
+      if (!data.success) throw new Error(data.error || 'Failed to save avatar')
+      showToast('Profile photo updated!', 'success')
+    } catch (err) {
+      showToast('Failed to save avatar: ' + err.message, 'error')
+    }
+  }
+
   const basicInfoJSX = (
     <div className="space-y-4">
+      <FileUploadField
+        folder="avatar"
+        variant="avatar"
+        currentUrl={avatarUrl}
+        currentPublicId={avatarPublicId}
+        onUploaded={handleAvatarUploaded}
+      />
       <div className="grid grid-cols-2 gap-4">
         <div>
           <label className="block text-sm font-medium text-navy mb-1 flex items-center gap-1.5">
@@ -901,6 +936,16 @@ export default function ProfileEditPage() {
             className="px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy w-full"
           />
         </div>
+        <div className="mb-2">
+          <FileUploadField
+            folder="projects"
+            label="Upload project screenshot"
+            currentUrl={newProject.screenshotUrl}
+            currentPublicId={newProject.screenshotPublicId}
+            onUploaded={({ url, publicId }) => setNewProject({ ...newProject, screenshotUrl: url, screenshotPublicId: publicId })}
+            onRemoved={() => setNewProject({ ...newProject, screenshotUrl: '', screenshotPublicId: null })}
+          />
+        </div>
         <button
           onClick={addProject}
           className="w-full px-3 py-2 bg-primary text-white rounded text-sm font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
@@ -975,6 +1020,16 @@ export default function ProfileEditPage() {
           placeholder="Skills covered (comma-separated)"
           className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
         />
+        <div className="mb-2">
+          <FileUploadField
+            folder="certificates"
+            label="Upload certificate"
+            currentUrl={newCert.certificateUrl}
+            currentPublicId={newCert.certificatePublicId}
+            onUploaded={({ url, publicId }) => setNewCert({ ...newCert, certificateUrl: url, certificatePublicId: publicId })}
+            onRemoved={() => setNewCert({ ...newCert, certificateUrl: '', certificatePublicId: null })}
+          />
+        </div>
         <button
           onClick={addCertification}
           className="w-full px-3 py-2 bg-primary text-white rounded text-sm font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"

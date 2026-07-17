@@ -1,6 +1,7 @@
 import { prisma }       from '@/lib/prisma'
 import { parseResume }  from '@/lib/resume/parser'
 import { AuthError, requireAuth, requireOwnResource } from '../../../../lib/auth/verifyAccessToken'
+import { destroyCloudinaryAsset } from '../../../../lib/server/cloudinary'
 
 export const dynamic = 'force-dynamic'
 
@@ -43,6 +44,15 @@ export async function POST(request) {
         studentUpdate.resumeParsed = null
         studentUpdate.resumeAnalyzedAt = null
       }
+    }
+    if (studentData && 'resumePublicId' in studentData) {
+      studentUpdate.resumePublicId = studentData.resumePublicId || null
+    }
+    if (studentData && 'avatarUrl' in studentData) {
+      studentUpdate.avatarUrl = studentData.avatarUrl || null
+    }
+    if (studentData && 'avatarPublicId' in studentData) {
+      studentUpdate.avatarPublicId = studentData.avatarPublicId || null
     }
 
     if (Object.keys(studentUpdate).length > 0) {
@@ -89,35 +99,59 @@ export async function POST(request) {
     }
 
     // ── 3. Replace Projects (delete all + insert new) ─────────────────────────
+    let orphanedProjectAssets = []
     if (Array.isArray(projectsData)) {
+      const existingProjects = await prisma.project.findMany({
+        where: { universityId },
+        select: { screenshotPublicId: true },
+      })
+      const keptPublicIds = new Set(projectsData.map(p => p.screenshotPublicId).filter(Boolean))
+      orphanedProjectAssets = existingProjects
+        .map(p => p.screenshotPublicId)
+        .filter(id => id && !keptPublicIds.has(id))
+
       await prisma.project.deleteMany({ where: { universityId } })
       if (projectsData.length > 0) {
         await prisma.project.createMany({
           data: projectsData.map(p => ({
             universityId,
-            title:       p.title?.trim()       || 'Untitled',
-            description: p.description?.trim() || null,
-            techStack:   Array.isArray(p.techStack) ? p.techStack : [],
-            type:        p.type                || null,
-            status:      p.status              || null,
-            githubLink:  p.github?.trim()      || null,
-            liveLink:    p.liveDemo?.trim()     || null,
+            title:              p.title?.trim()       || 'Untitled',
+            description:        p.description?.trim() || null,
+            techStack:          Array.isArray(p.techStack) ? p.techStack : [],
+            type:               p.type                || null,
+            status:             p.status              || null,
+            githubLink:         p.github?.trim()      || null,
+            liveLink:           p.liveDemo?.trim()     || null,
+            screenshotUrl:      p.screenshotUrl        || null,
+            screenshotPublicId: p.screenshotPublicId   || null,
           }))
         })
       }
     }
 
     // ── 4. Replace Certifications ─────────────────────────────────────────────
+    let orphanedCertAssets = []
     if (Array.isArray(certsData)) {
+      const existingCerts = await prisma.certification.findMany({
+        where: { universityId },
+        select: { certificatePublicId: true },
+      })
+      const keptCertPublicIds = new Set(certsData.map(c => c.certificatePublicId).filter(Boolean))
+      orphanedCertAssets = existingCerts
+        .map(c => c.certificatePublicId)
+        .filter(id => id && !keptCertPublicIds.has(id))
+
       await prisma.certification.deleteMany({ where: { universityId } })
       if (certsData.length > 0) {
         await prisma.certification.createMany({
           data: certsData.map(c => ({
             universityId,
-            name:           c.name?.trim()          || 'Untitled',
-            platform:       c.platform?.trim()       || null,
-            completionDate: c.dateCompleted ? new Date(c.dateCompleted) : null,
-            skills:         Array.isArray(c.skills) ? c.skills : [],
+            name:                c.name?.trim()          || 'Untitled',
+            platform:            c.platform?.trim()       || null,
+            completionDate:      c.dateCompleted ? new Date(c.dateCompleted) : null,
+            skills:              Array.isArray(c.skills) ? c.skills : [],
+            certificateUrl:      c.certificateUrl         || null,
+            certificatePublicId: c.certificatePublicId    || null,
           }))
         })
       }
@@ -156,6 +190,13 @@ export async function POST(request) {
         })
       }
     }
+
+    // Best-effort cleanup — an asset no longer referenced by any project/certification
+    // after this save shouldn't fail the request if Cloudinary is briefly unavailable.
+    await Promise.allSettled([
+      ...orphanedProjectAssets.map(id => destroyCloudinaryAsset(id, 'image')),
+      ...orphanedCertAssets.map(id => destroyCloudinaryAsset(id, 'image')),
+    ])
 
     return Response.json({ success: true })
 
