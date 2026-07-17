@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma'
+import { AuthError, requireAuth, requireOwnResource } from '../../../../lib/auth/verifyAccessToken'
 
 export const dynamic = 'force-dynamic'
 
@@ -176,6 +177,18 @@ export async function GET(request) {
 
   if (!universityId) {
     return Response.json({ success: false, error: 'universityId is required' }, { status: 400 })
+  }
+
+  // [Krrish/auth] This is called from the Profile save flow — same ownership check as
+  // /api/student/profile and /api/student/update, added when JWT auth replaced localStorage sessions.
+  try {
+    const auth = requireAuth(request)
+    requireOwnResource(auth, universityId)
+  } catch (err) {
+    if (err instanceof AuthError) {
+      return Response.json({ success: false, error: err.message }, { status: err.status })
+    }
+    throw err
   }
 
   // Load existing profile to get usernames

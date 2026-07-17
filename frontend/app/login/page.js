@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { BACKEND_URL } from "../../lib/api/config";
+import { setAccessToken } from "../../lib/auth/tokenStore";
 import {
   User, BookOpen, Building2, Heart, Settings,
   Eye, EyeOff, GraduationCap, BrainCircuit,
@@ -146,26 +148,17 @@ function StudentLoginForm({ portal, onSwitchPortal, portals: allPortals }) {
     }
     setLoginLoading(true);
     try {
-      const res = await fetch("/api/auth/student-login", {
+      const res = await fetch(`${BACKEND_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ universityId: universityId.trim(), password }),
       });
       const data = await res.json();
       if (data.success) {
-        localStorage.setItem(
-          "vs_student",
-          JSON.stringify({
-            universityId: data.student.universityId,
-            name: data.student.name,
-            branch: data.student.branch,
-            year: data.student.year,
-            section: data.student.section,
-            loginTime: Date.now(),
-          })
-        );
+        setAccessToken(data.data.accessToken);
         router.push("/student");
-      } else if (data.status === "form_incomplete") {
+      } else if (data.error?.code === "FORM_INCOMPLETE") {
         setLoginError({
           type: "blue",
           message: "Please complete your profile form first.",
@@ -173,7 +166,7 @@ function StudentLoginForm({ portal, onSwitchPortal, portals: allPortals }) {
           linkText: "Go to profile form →",
         });
       } else {
-        setLoginError({ type: "red", message: data.error || "Login failed." });
+        setLoginError({ type: "red", message: data.error?.message || "Login failed." });
       }
     } catch {
       setLoginError({ type: "red", message: "Network error. Please try again." });

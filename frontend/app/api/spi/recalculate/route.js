@@ -8,6 +8,7 @@ import calcGitHubScore from '@/../lib/spi/sources/githubScore'
 import calcLeetCodeScore from '@/../lib/spi/sources/leetcodeScore'
 import calcResumeScore from '@/../lib/spi/sources/resume'
 import calculateSPI from '@/../lib/spi/orchestrator/calculateSPI'
+import { AuthError, requireAuth, requireOwnResource } from '../../../../lib/auth/verifyAccessToken'
 
 export const dynamic = 'force-dynamic'
 
@@ -40,6 +41,11 @@ export async function POST(request) {
         }
       )
     }
+
+    // [Krrish/auth] Same ownership check as /api/student/profile — this is called
+    // at the end of the Profile save flow.
+    const auth = requireAuth(request)
+    requireOwnResource(auth, universityId)
 
     // Fetch Student + CodingProfile
     const student = await prisma.student.findUnique({
@@ -157,6 +163,9 @@ export async function POST(request) {
       }
     )
   } catch (error) {
+    if (error instanceof AuthError) {
+      return Response.json({ success: false, error: error.message }, { status: error.status })
+    }
     console.error('SPI Recalculation Error:', error)
 
     return Response.json(

@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import calcResumeScore from '@/../lib/spi/sources/resume'
+import { AuthError, requireAuth, requireOwnResource } from '../../../../lib/auth/verifyAccessToken'
 
 export const dynamic = 'force-dynamic'
 
@@ -14,6 +15,9 @@ export async function GET(request) {
         { status: 400 }
       )
     }
+
+    const auth = requireAuth(request)
+    requireOwnResource(auth, universityId)
 
     const student = await prisma.student.findUnique({
       where: { universityId },
@@ -76,6 +80,9 @@ export async function GET(request) {
     })
 
   } catch (error) {
+    if (error instanceof AuthError) {
+      return Response.json({ success: false, error: error.message }, { status: error.status })
+    }
     console.error('[api/student/profile] Error:', error.message)
     return Response.json(
       { success: false, error: error.message },

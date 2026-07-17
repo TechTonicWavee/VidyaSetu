@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, Loader2 } from 'lucide-react'
+import { BACKEND_URL } from '../../../lib/api/config'
+import { setAccessToken } from '../../../lib/auth/tokenStore'
 
 export default function FormLogin() {
   const router = useRouter()
@@ -93,24 +95,26 @@ export default function FormLogin() {
     setLoading(true)
     setError('')
     try {
-      const res = await fetch('/api/auth/login', {
+      const res = await fetch(`${BACKEND_URL}/api/auth/form-login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({ universityId, password })
       })
       const data = await res.json()
       if (!data.success) {
-        if (data.status === 'submitted') {
+        if (data.error?.code === 'ALREADY_SUBMITTED') {
           setState('submitted')
         } else {
-          setError(data.error)
+          setError(data.error?.message || 'Login failed.')
         }
       } else {
+        setAccessToken(data.data.accessToken)
         localStorage.setItem('vs_session', JSON.stringify({
           universityId,
-          name: data.student.name,
-          branch: data.student.branch,
-          year: data.student.year,
+          name: data.data.student.name,
+          branch: data.data.student.branch,
+          year: data.data.student.year,
           loginTime: Date.now()
         }))
         router.push('/form')

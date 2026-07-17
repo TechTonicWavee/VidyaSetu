@@ -1,7 +1,5 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import CollapsibleSidebar from '../../components/CollapsibleSidebar';
 
 import { STUDENT_PILOT_MODE, STUDENT_ALLOWED_MENU_ITEMS } from '@/lib/access';
@@ -10,6 +8,11 @@ import {
   Grid, FileText, Target, CheckCircle, Zap, BookOpen, Plug, Bot
 } from 'lucide-react';
 import getInitials from '@/lib/getInitials';
+import { AuthProvider, useAuth } from '../../lib/auth/AuthProvider';
+import { SocketProvider } from '../../lib/socket/SocketProvider';
+import { NotificationsProvider } from '../../lib/notifications/NotificationsProvider';
+import NotificationBell from '../../components/notifications/NotificationBell';
+import ToastStack from '../../components/notifications/ToastStack';
 
 
 const STUDENT_NAV = [
@@ -41,34 +44,10 @@ const STUDENT_THEME = {
   accentGradient: 'linear-gradient(135deg,#3b82f6,#1A56DB)',
 };
 
-export default function StudentLayout({ children }) {
-  const router = useRouter();
-  const [student, setStudent] = useState(null);
-  const [loading, setLoading] = useState(true);
+function StudentShell({ children }) {
+  const { student, loading } = useAuth();
 
-  useEffect(() => {
-    const rawSession = localStorage.getItem('vs_student');
-    if (!rawSession) {
-      router.push('/login');
-      return;
-    }
-    try {
-      const session = JSON.parse(rawSession);
-      const isExpired = Date.now() - session.loginTime > 24 * 60 * 60 * 1000;
-      if (isExpired) {
-        localStorage.removeItem('vs_student');
-        router.push('/login');
-        return;
-      }
-      setStudent(session);
-      setLoading(false);
-    } catch (e) {
-      localStorage.removeItem('vs_student');
-      router.push('/login');
-    }
-  }, [router]);
-
-  if (loading) {
+  if (loading || !student) {
     return (
       <div className="flex h-screen w-screen items-center justify-center bg-gray-50">
         <div className="flex flex-col items-center gap-3">
@@ -79,10 +58,7 @@ export default function StudentLayout({ children }) {
     );
   }
 
-  // Calculate initials from name
   const initials = getInitials(student.name);
-
-  // Build role string
   const role = `${student.branch || 'CSE'} · ${student.year || 2} Year, Sec ${student.section || 'A'}`;
 
   const visibleNavLinks = STUDENT_NAV.filter(
@@ -96,9 +72,27 @@ export default function StudentLayout({ children }) {
         userInfo={{ initials, name: student.name, role }}
         theme={STUDENT_THEME}
       />
-      <main className="flex-1 overflow-y-auto bg-gray-50">
-        {children}
-      </main>
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <div className="h-14 flex-shrink-0 flex items-center justify-end px-6 bg-[#0b0f1a] border-b border-white/10">
+          <NotificationBell />
+        </div>
+        <main className="flex-1 overflow-y-auto bg-gray-50">
+          {children}
+        </main>
+      </div>
+      <ToastStack />
     </div>
+  );
+}
+
+export default function StudentLayout({ children }) {
+  return (
+    <AuthProvider>
+      <SocketProvider>
+        <NotificationsProvider>
+          <StudentShell>{children}</StudentShell>
+        </NotificationsProvider>
+      </SocketProvider>
+    </AuthProvider>
   );
 }

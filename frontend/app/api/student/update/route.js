@@ -1,5 +1,6 @@
 import { prisma }       from '@/lib/prisma'
 import { parseResume }  from '@/lib/resume/parser'
+import { AuthError, requireAuth, requireOwnResource } from '../../../../lib/auth/verifyAccessToken'
 
 export const dynamic = 'force-dynamic'
 
@@ -28,6 +29,9 @@ export async function POST(request) {
         { status: 400 }
       )
     }
+
+    const auth = requireAuth(request)
+    requireOwnResource(auth, universityId)
 
     // ── 1. Update Student table (only mutable fields) ─────────────────────────
     const studentUpdate = {}
@@ -156,6 +160,9 @@ export async function POST(request) {
     return Response.json({ success: true })
 
   } catch (error) {
+    if (error instanceof AuthError) {
+      return Response.json({ success: false, error: error.message }, { status: error.status })
+    }
     console.error('[student/update] Error:', error.message)
     return Response.json(
       { success: false, error: error.message },
@@ -176,6 +183,9 @@ export async function GET(request) {
         { status: 400 }
       )
     }
+
+    const auth = requireAuth(request)
+    requireOwnResource(auth, universityId)
 
     const student = await prisma.student.findUnique({
       where:   { universityId },
@@ -205,6 +215,9 @@ export async function GET(request) {
     })
 
   } catch (error) {
+    if (error instanceof AuthError) {
+      return Response.json({ success: false, error: error.message }, { status: error.status })
+    }
     console.error('[student/get] Error:', error.message)
     return Response.json(
       { success: false, error: error.message },
