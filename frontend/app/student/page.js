@@ -99,7 +99,7 @@ const activities = [
 const quickActions = [
   { label: 'View My Full Profile', icon: User, color: '#1A56DB', bg: 'bg-blue-50', path: '/student/profile' },
   { label: 'Check Career Path', icon: TrendingUp, color: '#0F766E', bg: 'bg-teal-50', path: '/student/career' },
-  { label: 'Find Teammates', icon: Users, color: '#5B21B6', bg: 'bg-purple-50', path: '/student/team' },
+  { label: 'Find Teammates', icon: Users, color: '#5B21B6', bg: 'bg-purple-50', path: '/student/my-team' },
   { label: 'Download Resume', icon: FileText, color: '#D97706', bg: 'bg-amber-50', path: '/student/resume' },
 ]
 
