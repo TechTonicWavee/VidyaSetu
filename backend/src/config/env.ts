@@ -8,7 +8,7 @@ const envSchema = z.object({
   PORT: z.coerce.number().default(4000),
   DATABASE_URL: z.string().min(1, 'DATABASE_URL is required'),
   DIRECT_URL: z.string().min(1).optional(),
-  FRONTEND_ORIGIN: z.string().min(1).default('http://localhost:3001'),
+  FRONTEND_ORIGIN: z.string().min(1).default('http://localhost:3000'),
   JWT_ACCESS_SECRET: z.string().min(16, 'JWT_ACCESS_SECRET must be at least 16 characters'),
   JWT_REFRESH_SECRET: z.string().min(16, 'JWT_REFRESH_SECRET must be at least 16 characters'),
   ACCESS_TOKEN_TTL: z.string().default('15m'),

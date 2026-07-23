@@ -16,6 +16,7 @@ teamRouter.use(authMiddleware);
 
 teamRouter.post('/', validate({ body: createTeamSchema }), teamController.create);
 teamRouter.get('/my', teamController.listMine);
+teamRouter.get('/open', teamController.listOpen);
 teamRouter.get('/invites/sent', teamController.listSentInvites);
 teamRouter.get('/invites/received', teamController.listReceivedInvites);
 teamRouter.get('/:id', validate({ params: teamIdParamsSchema }), teamController.getOne);
@@ -25,6 +26,11 @@ teamRouter.post(
   '/:id/invites',
   validate({ params: teamIdParamsSchema, body: createInviteSchema }),
   teamController.invite,
+);
+teamRouter.post(
+  '/:id/join-requests',
+  validate({ params: teamIdParamsSchema }),
+  teamController.requestToJoin,
 );
 teamRouter.delete(
   '/:id/members/:userId',

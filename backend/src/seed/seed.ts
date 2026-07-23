@@ -1,5 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { prisma } from '../lib/prisma';
+import { seedBulkStudents, seedBulkTeams } from './bulkStudents';
 
 // Demo data for Krrish's modules (My Team / Domain Directory / Notifications),
 // recreating (as real DB rows) what used to be hardcoded directly in the
@@ -252,6 +253,9 @@ async function main() {
 
   const team = await seedTeam();
   console.log(`Seeded team "${team.name}" (${team.id})`);
+
+  const bulkIds = await seedBulkStudents(passwordHash);
+  await seedBulkTeams(bulkIds);
 
   console.log('Seed complete. Log in with any DEMO2026CSE0xx university ID and the demo password.');
 }

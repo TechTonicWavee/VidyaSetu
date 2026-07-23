@@ -204,6 +204,9 @@ model TeamInvite {
   receiverId  String
   message     String?
   status      String    @default("pending")
+  // 'invite'       — a leader/member invites a student (receiver = invited student)
+  // 'join_request' — a student requests to join (sender = requesting student, receiver = team leader)
+  type        String    @default("invite")
   createdAt   DateTime  @default(now())
   respondedAt DateTime?
 

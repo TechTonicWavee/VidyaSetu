@@ -29,12 +29,74 @@ export async function createTeam(
   });
 }
 
-export async function listMyTeams(universityId: string) {
-  return prisma.team.findMany({
-    where: { OR: [{ leaderId: universityId }, { members: { some: { universityId } } }] },
+export async function listMyTeams(universityId: string, opts: { page?: number; limit?: number } = {}) {
+  const page = Math.max(1, opts.page ?? 1);
+  const limit = Math.min(50, Math.max(1, opts.limit ?? 20));
+  const where = { OR: [{ leaderId: universityId }, { members: { some: { universityId } } }] };
+
+  const [items, total] = await Promise.all([
+    prisma.team.findMany({
+      where,
+      include: memberInclude,
+      orderBy: { createdAt: 'desc' },
+      skip: (page - 1) * limit,
+      take: limit,
+    }),
+    prisma.team.count({ where }),
+  ]);
+
+  return { items, total, page, totalPages: Math.max(1, Math.ceil(total / limit)) };
+}
+
+/**
+ * Teams with an open slot that `universityId` is not already part of — the
+ * pool for the "Find a Team" browse/request-to-join flow.
+ *
+ * Prisma can't filter `WHERE members_count < maxMembers` directly (no
+ * cross-field aggregate comparison), so this fetches a bounded, ordered batch
+ * and filters/paginates in memory. Team volume in this app is small (dozens,
+ * not thousands), so this is simpler than a raw SQL HAVING query and fast
+ * enough; revisit with raw SQL if team counts ever grow into the thousands.
+ */
+export async function listOpenTeams(
+  universityId: string,
+  opts: { search?: string; domain?: string; page?: number; limit?: number } = {},
+) {
+  const page = Math.max(1, opts.page ?? 1);
+  const limit = Math.min(50, Math.max(1, opts.limit ?? 12));
+  const search = opts.search?.trim();
+
+  const candidates = await prisma.team.findMany({
+    where: {
+      NOT: { members: { some: { universityId } } },
+      ...(opts.domain ? { domain: opts.domain } : {}),
+      ...(search ? { name: { contains: search, mode: 'insensitive' as const } } : {}),
+    },
     include: memberInclude,
     orderBy: { createdAt: 'desc' },
+    take: 300,
   });
+
+  const open = candidates.filter((t) => t.members.length < t.maxMembers);
+
+  const pendingRequests = await prisma.teamInvite.findMany({
+    where: {
+      senderId: universityId,
+      type: 'join_request',
+      status: 'pending',
+      teamId: { in: open.map((t) => t.id) },
+    },
+    select: { teamId: true },
+  });
+  const pendingTeamIds = new Set(pendingRequests.map((r) => r.teamId));
+
+  const total = open.length;
+  const start = (page - 1) * limit;
+  const items = open
+    .slice(start, start + limit)
+    .map((t) => ({ ...t, hasPendingRequestFromMe: pendingTeamIds.has(t.id) }));
+
+  return { items, total, page, totalPages: Math.max(1, Math.ceil(total / limit)) };
 }
 
 async function getTeamOr404(teamId: string) {
@@ -143,6 +205,47 @@ export async function createInvite(
   return invite;
 }
 
+/**
+ * A student requests to join a team with an open slot. Mirrors createInvite
+ * but with sender/receiver swapped: sender = requesting student, receiver =
+ * team leader. acceptInvite/declineInvite/cancelInvite all branch on
+ * `type` to add the correct person, so the rest of the invite pipeline
+ * (notifications, socket events, the received-invites inbox) is reused as-is.
+ */
+export async function createJoinRequest(teamId: string, studentId: string) {
+  const team = await getTeamOr404(teamId);
+
+  if (team.members.some((m) => m.universityId === studentId)) {
+    throw AppError.badRequest('You are already a member of this team.');
+  }
+  if (team.members.length >= team.maxMembers) {
+    throw AppError.conflict('This team is already full.', 'TEAM_FULL');
+  }
+
+  const existing = await prisma.teamInvite.findFirst({
+    where: { teamId, senderId: studentId, type: 'join_request', status: 'pending' },
+  });
+  if (existing) {
+    throw AppError.conflict('You already have a pending request to join this team.', 'DUPLICATE_INVITE');
+  }
+
+  const requester = await prisma.student.findUnique({ where: { universityId: studentId }, select: { fullName: true } });
+
+  const invite = await prisma.teamInvite.create({
+    data: { teamId, senderId: studentId, receiverId: team.leaderId, type: 'join_request' },
+  });
+
+  await createNotification({
+    universityId: team.leaderId,
+    type: 'team_invite',
+    title: `${requester?.fullName ?? 'A student'} wants to join ${team.name}`,
+    payload: { inviteId: invite.id, teamId, teamName: team.name, senderId: studentId },
+    events: ['invite:received'],
+  });
+
+  return invite;
+}
+
 export async function cancelInvite(inviteId: string, senderId: string) {
   const invite = await prisma.teamInvite.findUnique({ where: { id: inviteId } });
   if (!invite) throw AppError.notFound('Invite not found.');
@@ -156,16 +259,21 @@ export async function cancelInvite(inviteId: string, senderId: string) {
 }
 
 /**
- * Accepts an invite. Wrapped in a transaction that row-locks the team so two
- * concurrent accepts for the last open slot can't both succeed, and re-checks
- * the invite's status inside the lock so a concurrently cancelled/declined
- * invite can't be accepted.
+ * Accepts an invite OR a join request (the row's `type` decides which). Wrapped
+ * in a transaction that row-locks the team so two concurrent accepts for the
+ * last open slot can't both succeed, and re-checks the invite's status inside
+ * the lock so a concurrently cancelled/declined invite can't be accepted.
+ *
+ * For an 'invite' (leader/member invited a student), the receiver — who must
+ * be the caller — is the one who joins. For a 'join_request' (student asked
+ * to join), the receiver is the team leader approving it, and the sender —
+ * the requesting student — is the one who joins.
  */
-export async function acceptInvite(inviteId: string, receiverId: string) {
+export async function acceptInvite(inviteId: string, callerId: string) {
   const result = await prisma.$transaction(async (tx) => {
     const invite = await tx.teamInvite.findUnique({ where: { id: inviteId } });
     if (!invite) throw AppError.notFound('Invite not found.');
-    if (invite.receiverId !== receiverId) throw AppError.forbidden('This invite is not addressed to you.');
+    if (invite.receiverId !== callerId) throw AppError.forbidden('This invite is not addressed to you.');
 
     const lockedTeams = await tx.$queryRaw<{ id: string; maxMembers: number; name: string }[]>`
       SELECT "id", "maxMembers", "name" FROM "teams" WHERE "id" = ${invite.teamId} FOR UPDATE
@@ -183,26 +291,44 @@ export async function acceptInvite(inviteId: string, receiverId: string) {
       throw AppError.conflict('Team is full.', 'TEAM_FULL');
     }
 
-    await tx.teamMember.create({ data: { teamId: team.id, universityId: receiverId, role: 'member' } });
+    const newMemberId = invite.type === 'join_request' ? invite.senderId : invite.receiverId;
+
+    await tx.teamMember.create({ data: { teamId: team.id, universityId: newMemberId, role: 'member' } });
     await tx.teamInvite.update({
       where: { id: inviteId },
       data: { status: 'accepted', respondedAt: new Date() },
     });
 
-    // Any other pending invites to this same person for this team are now moot.
+    // Any other pending invites/requests involving the new member for this
+    // team are now moot (e.g. they'd requested two different teams, or had
+    // invites from two different members of this same team).
     await tx.teamInvite.updateMany({
-      where: { teamId: team.id, receiverId, status: 'pending', id: { not: inviteId } },
+      where: {
+        teamId: team.id,
+        status: 'pending',
+        id: { not: inviteId },
+        OR: [
+          { type: 'invite', receiverId: newMemberId },
+          { type: 'join_request', senderId: newMemberId },
+        ],
+      },
       data: { status: 'cancelled', respondedAt: new Date() },
     });
 
-    return { teamId: team.id, teamName: team.name, senderId: invite.senderId };
+    return { teamId: team.id, teamName: team.name, type: invite.type, senderId: invite.senderId, newMemberId };
   });
 
+  const notifyUserId = result.type === 'join_request' ? result.newMemberId : result.senderId;
+  const title =
+    result.type === 'join_request'
+      ? `Your request to join ${result.teamName} was approved`
+      : `Your invite to join ${result.teamName} was accepted`;
+
   await createNotification({
-    universityId: result.senderId,
+    universityId: notifyUserId,
     type: 'invite_accepted',
-    title: `Your invite to join ${result.teamName} was accepted`,
-    payload: { teamId: result.teamId, receiverId },
+    title,
+    payload: { teamId: result.teamId, receiverId: result.newMemberId },
     events: ['invite:accepted'],
   });
 
@@ -222,29 +348,56 @@ export async function declineInvite(inviteId: string, receiverId: string) {
     data: { status: 'declined', respondedAt: new Date() },
   });
 
+  const title =
+    invite.type === 'join_request'
+      ? `Your request to join ${team?.name ?? 'the team'} was declined`
+      : `Your invite to join ${team?.name ?? 'the team'} was declined`;
+
   await createNotification({
     universityId: invite.senderId,
     type: 'invite_declined',
-    title: `Your invite to join ${team?.name ?? 'the team'} was declined`,
+    title,
     payload: { teamId: invite.teamId, receiverId },
     events: ['invite:declined'],
   });
 }
 
-export async function listMySentInvites(universityId: string) {
-  return prisma.teamInvite.findMany({
-    where: { senderId: universityId },
-    include: { team: { select: { id: true, name: true } }, receiver: { select: publicStudentCardSelect } },
-    orderBy: { createdAt: 'desc' },
-  });
+export async function listMySentInvites(universityId: string, opts: { page?: number; limit?: number } = {}) {
+  const page = Math.max(1, opts.page ?? 1);
+  const limit = Math.min(100, Math.max(1, opts.limit ?? 50));
+  const where = { senderId: universityId };
+
+  const [items, total] = await Promise.all([
+    prisma.teamInvite.findMany({
+      where,
+      include: { team: { select: { id: true, name: true } }, receiver: { select: publicStudentCardSelect } },
+      orderBy: { createdAt: 'desc' },
+      skip: (page - 1) * limit,
+      take: limit,
+    }),
+    prisma.teamInvite.count({ where }),
+  ]);
+
+  return { items, total, page, totalPages: Math.max(1, Math.ceil(total / limit)) };
 }
 
-export async function listMyReceivedInvites(universityId: string) {
-  return prisma.teamInvite.findMany({
-    where: { receiverId: universityId },
-    include: { team: { select: { id: true, name: true, maxMembers: true } }, sender: { select: publicStudentCardSelect } },
-    orderBy: { createdAt: 'desc' },
-  });
+export async function listMyReceivedInvites(universityId: string, opts: { page?: number; limit?: number } = {}) {
+  const page = Math.max(1, opts.page ?? 1);
+  const limit = Math.min(100, Math.max(1, opts.limit ?? 50));
+  const where = { receiverId: universityId };
+
+  const [items, total] = await Promise.all([
+    prisma.teamInvite.findMany({
+      where,
+      include: { team: { select: { id: true, name: true, maxMembers: true } }, sender: { select: publicStudentCardSelect } },
+      orderBy: { createdAt: 'desc' },
+      skip: (page - 1) * limit,
+      take: limit,
+    }),
+    prisma.teamInvite.count({ where }),
+  ]);
+
+  return { items, total, page, totalPages: Math.max(1, Math.ceil(total / limit)) };
 }
 
 export async function removeMember(teamId: string, targetUniversityId: string, requesterId: string) {

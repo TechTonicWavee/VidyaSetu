@@ -1,0 +1,226 @@
+
+// API Route: POST /api/spi/recalculate
+// Recalculates a student's SPI score using real Prisma data and SPI engines.
+
+import type { NextRequest } from 'next/server'
+import { prisma } from '@/lib/prisma'
+
+// These sit in the shared (non-TypeScript) lib/spi/ module outside frontend/ and
+// backend/, so calls into them are cast at the boundary rather than typed through.
+import calcGitHubScore from '@/../lib/spi/sources/githubScore'
+import calcLeetCodeScore from '@/../lib/spi/sources/leetcodeScore'
+import calcResumeScore from '@/../lib/spi/sources/resume'
+import calculateSPI from '@/../lib/spi/orchestrator/calculateSPI'
+import { AuthError, requireAuth, requireOwnResource } from '../../../../lib/auth/verifyAccessToken'
+
+export const dynamic = 'force-dynamic'
+
+// ======================================================
+// POST /api/spi/recalculate
+// Body:
+// {
+//   "universityId": "202401100200243"
+// }
+// ======================================================
+
+export async function POST(request: NextRequest) {
+  try {
+    const body = await request.json()
+    const { universityId } = body
+
+    // Validate input
+    if (
+      !universityId ||
+      typeof universityId !== 'string' ||
+      !universityId.trim()
+    ) {
+      return Response.json(
+        {
+          success: false,
+          error: 'Missing required field: universityId',
+        },
+        {
+          status: 400,
+        }
+      )
+    }
+
+    // [Krrish/auth] Same ownership check as /api/student/profile — this is called
+    // at the end of the Profile save flow.
+    const auth = requireAuth(request)
+    requireOwnResource(auth, universityId)
+
+    // Fetch Student + CodingProfile
+    const student = await prisma.student.findUnique({
+      where: {
+        universityId,
+      },
+      include: {
+        codingProfile: true,
+      },
+    })
+
+    if (!student) {
+      return Response.json(
+        {
+          success: false,
+          error: 'Student not found',
+          universityId,
+        },
+        {
+          status: 404,
+        }
+      )
+    }
+
+    const codingProfile = student.codingProfile
+
+    if (!codingProfile) {
+      return Response.json(
+        {
+          success: false,
+          error: 'CodingProfile not found for this student',
+          universityId,
+        },
+        {
+          status: 404,
+        }
+      )
+    }
+
+    // Track missing evidence
+    const missingEvidence: string[] = []
+
+    if (!codingProfile.githubStats) {
+      missingEvidence.push('GitHub')
+    }
+
+    if (!codingProfile.leetcodeStats) {
+      missingEvidence.push('LeetCode')
+    }
+
+    if (!student.resumeParsed) {
+      missingEvidence.push('Resume')
+    }
+
+    // Run GitHub evidence engine
+    const githubResult = calcGitHubScore({
+      year: student.year,
+      githubStats: codingProfile.githubStats,
+    } as any)
+
+    // Run LeetCode evidence engine
+    const leetcodeResult = calcLeetCodeScore({
+      year: student.year,
+      leetcodeStats: codingProfile.leetcodeStats,
+    } as any)
+
+    // Run Resume evidence engine
+    const resumeResult = calcResumeScore({
+      year: student.year,
+      resumeParsed: student.resumeParsed,
+    } as any)
+
+    // Calculate SPI
+    const spiResult = calculateSPI({
+      github: githubResult,
+      leetcode: leetcodeResult,
+      resume: resumeResult,
+    } as any)
+
+    // Save SPI back to Student table
+    await prisma.student.update({
+      where: {
+        universityId,
+      },
+      data: {
+        spiScore: spiResult.spi,
+      },
+    })
+
+    // Return SPI response
+    return Response.json(
+      {
+        success: true,
+
+        universityId: student.universityId,
+
+        studentName: student.fullName,
+
+        spi: spiResult.spi,
+
+        evidenceCoverage: spiResult.evidenceCoverage,
+
+        missingEvidence,
+
+        dimensions: spiResult.dimensions,
+
+        github: githubResult,
+
+        leetcode: leetcodeResult,
+
+        resume: resumeResult,
+      },
+      {
+        status: 200,
+      }
+    )
+  } catch (error) {
+    if (error instanceof AuthError) {
+      return Response.json({ success: false, error: error.message }, { status: error.status })
+    }
+    console.error('SPI Recalculation Error:', error)
+
+    return Response.json(
+      {
+        success: false,
+        error: 'Internal server error',
+        message: error instanceof Error ? error.message : String(error),
+      },
+      {
+        status: 500,
+      }
+    )
+  }
+}
+
+// ======================================================
+// GET /api/spi/recalculate
+// Documentation Endpoint
+// ======================================================
+
+export async function GET() {
+  return Response.json({
+    message: 'SPI Recalculation API',
+
+    method: 'POST',
+
+    endpoint: '/api/spi/recalculate',
+
+    body: {
+      universityId: 'string (required)',
+    },
+
+    description:
+      'Recalculates a student SPI score using available evidence.',
+
+    engines: [
+      'GitHub Evidence Engine',
+      'LeetCode Evidence Engine',
+      'SPI Orchestrator',
+    ],
+
+    response: {
+      success: 'boolean',
+      universityId: 'string',
+      studentName: 'string',
+      spi: 'number',
+      evidenceCoverage: 'number',
+      missingEvidence: 'string[]',
+      dimensions: 'object',
+      github: 'object',
+      leetcode: 'object',
+    },
+  })
+}
+
