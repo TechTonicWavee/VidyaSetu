@@ -114,6 +114,16 @@ const SECTION_ALIASES: Record<string, string[]> = {
     'student leadership',
     'volunteer experience',
     'community involvement',
+    'co-curricular activities',
+    'co-curricular',
+    'co curricular activities',
+    'co curricular',
+    'extra-curricular activities',
+    'extracurricular activities',
+    'extracurriculars',
+    'activities',
+    'co-curricular activities & achievements',
+    'activities & achievements',
   ],
 
   summary: [
@@ -180,12 +190,46 @@ function detectHeading(line: string): string | null {
  *                                     before the first heading is stored
  *                                     under the key "__preamble__".
  */
+/**
+ * Injects newlines before known section headings in a flat single-line string.
+ *
+ * Some PDF extractors return text as a single long line with spaces but no \n.
+ * We detect known canonical heading names preceded by a word boundary and inject
+ * a newline so detectHeading() can operate normally.
+ */
+function injectNewlinesBeforeHeadings(text: string): string {
+  // Build regex alternation from all known aliases, sorted longest-first to
+  // avoid shorter aliases shadowing longer ones (e.g. "skills" vs "technical skills")
+  const allAliases = Array.from(ALIAS_LOOKUP.keys())
+    .sort((a, b) => b.length - a.length)
+    .map(a => a.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))  // escape regex special chars
+
+  const pattern = new RegExp(
+    `(?<=[a-zA-Z0-9.,);]\\s{0,5})(${allAliases.join('|')})(?=\\s)`,
+    'gi'
+  )
+
+  return text.replace(pattern, '\n$1')
+}
+
 export function extractSections(text: string): Record<string, string> {
   if (!text || typeof text !== 'string') {
     return {}
   }
 
-  const lines = text.split(/\r?\n/)
+  // ── Fallback: if the text has very few newlines relative to its length,
+  //    it was likely emitted as a single blob.  Inject newlines before known
+  //    section headings so detectHeading() works on each line correctly.
+  const newlineCount = (text.match(/\n/g) || []).length
+  const lineRatio = newlineCount / text.length   // ~0 means flat string
+  let processedText = text
+  if (lineRatio < 0.005) {
+    // Fewer than 1 newline per 200 chars → inline blob
+    console.log('[extractSections] Detected flat text blob, injecting section breaks...')
+    processedText = injectNewlinesBeforeHeadings(text)
+  }
+
+  const lines = processedText.split(/\r?\n/)
 
   const sections: Record<string, string[]> = {}       // { sectionName: [lines] }
   let currentSection = '__preamble__'
@@ -219,7 +263,7 @@ export function extractSections(text: string): Record<string, string> {
     }
   }
 
-  console.log('Sections Extracted')
+  console.log('Sections Extracted:', Object.keys(result))
   return result
 }
 

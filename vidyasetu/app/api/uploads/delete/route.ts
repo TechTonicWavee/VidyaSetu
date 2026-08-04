@@ -15,6 +15,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: 'publicId is required' }, { status: 400 });
     }
 
+    if (publicId.startsWith('local_')) {
+      return NextResponse.json({ success: true });
+    }
+
     // Ownership guard: every public_id we hand out is namespaced vidyasetu/{universityId}/...
     if (!publicId.startsWith(`vidyasetu/${auth.universityId}/`)) {
       return NextResponse.json({ success: false, error: 'You do not own this asset' }, { status: 403 });

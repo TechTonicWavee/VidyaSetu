@@ -38,8 +38,18 @@ export async function parsePdf(pdfBuffer: Buffer): Promise<string> {
 
     // unpdf expects a Uint8Array
     const pdf = await getDocumentProxy(new Uint8Array(pdfBuffer))
-    const { text: extractedText } = await extractText(pdf, { mergePages: true })
-    text = (extractedText ?? '').trim()
+
+    // Use mergePages: false to get per-page text arrays, then join with \n
+    // mergePages: true collapses everything into one space-separated string
+    // which destroys line breaks needed by extractSections to detect headings.
+    const { text: extractedText } = await extractText(pdf, { mergePages: false })
+
+    if (Array.isArray(extractedText)) {
+      // Each page is a string; join pages with double newline to preserve structure
+      text = extractedText.map((p: string) => (p ?? '').trim()).filter(Boolean).join('\n\n').trim()
+    } else {
+      text = ((extractedText as string) ?? '').trim()
+    }
 
     console.log('[Resume] PDF Parsed Successfully')
     console.log(`[Resume] Characters Extracted: ${text.length}`)

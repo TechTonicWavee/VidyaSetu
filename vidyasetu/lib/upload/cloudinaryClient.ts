@@ -51,32 +51,19 @@ interface SignatureResponse {
   error?: string;
 }
 
-export async function uploadToCloudinary(
+async function uploadToLocal(
   folder: UploadFolder,
   file: File,
   onProgress?: (percent: number) => void,
 ): Promise<UploadResult> {
-  const validationError = validateFile(folder, file);
-  if (validationError) throw new Error(validationError);
-
-  const sigRes = await authedFetch('/api/uploads/signature', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ folder }),
-  });
-  const sig: SignatureResponse = await sigRes.json();
-  if (!sig.success) throw new Error(sig.error || 'Failed to prepare upload');
-
   const formData = new FormData();
   formData.append('file', file);
-  formData.append('api_key', sig.apiKey);
-  formData.append('timestamp', String(sig.timestamp));
-  formData.append('signature', sig.signature);
-  formData.append('folder', sig.folder);
+  formData.append('folder', folder);
+  formData.append('fileName', file.name);
 
   return new Promise<UploadResult>((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', `https://api.cloudinary.com/v1_1/${sig.cloudName}/auto/upload`);
+    xhr.open('POST', '/api/upload');
 
     xhr.upload.onprogress = (e) => {
       if (e.lengthComputable && onProgress) onProgress(Math.round((e.loaded / e.total) * 100));
@@ -85,39 +72,86 @@ export async function uploadToCloudinary(
     xhr.onload = () => {
       try {
         const data = JSON.parse(xhr.responseText);
-        if (xhr.status >= 200 && xhr.status < 300) {
+        if (xhr.status >= 200 && xhr.status < 300 && data.success) {
           resolve({
-            secureUrl: data.secure_url,
-            publicId: data.public_id,
-            resourceType: data.resource_type,
-            bytes: data.bytes,
-            format: data.format,
+            secureUrl: data.url,
+            publicId: `local_${Date.now()}_${file.name.replace(/[^a-zA-Z0-9._-]/g, '_')}`,
+            resourceType: file.type.startsWith('image/') ? 'image' : 'raw',
+            bytes: file.size,
+            format: file.name.split('.').pop() || '',
           });
         } else {
-          const rawMessage: string = data?.error?.message || '';
-          // Cloudinary returns these specific messages when the storage account itself is
-          // disabled/suspended or the API key's permissions were restricted — that's an
-          // account-configuration problem, not something the user (or a retry) can fix.
-          const isAccountIssue =
-            xhr.status === 403 ||
-            /disabled/i.test(rawMessage) ||
-            /missing permissions/i.test(rawMessage);
-          reject(
-            new Error(
-              isAccountIssue
-                ? 'File uploads are temporarily unavailable. Please try again later or contact support.'
-                : rawMessage || `Upload failed (${xhr.status})`,
-            ),
-          );
+          reject(new Error(data.error || `Upload failed (${xhr.status})`));
         }
       } catch {
-        reject(new Error('Upload failed — invalid response from Cloudinary'));
+        reject(new Error('Upload failed — invalid response from server'));
       }
     };
 
-    xhr.onerror = () => reject(new Error('Network error during upload'));
+    xhr.onerror = () => reject(new Error('Network error during local upload'));
     xhr.send(formData);
   });
+}
+
+export async function uploadToCloudinary(
+  folder: UploadFolder,
+  file: File,
+  onProgress?: (percent: number) => void,
+): Promise<UploadResult> {
+  const validationError = validateFile(folder, file);
+  if (validationError) throw new Error(validationError);
+
+  try {
+    const sigRes = await authedFetch('/api/uploads/signature', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ folder }),
+    });
+    const sig: SignatureResponse = await sigRes.json();
+    if (!sig.success) throw new Error(sig.error || 'Failed to prepare upload');
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('api_key', sig.apiKey);
+    formData.append('timestamp', String(sig.timestamp));
+    formData.append('signature', sig.signature);
+    formData.append('folder', sig.folder);
+
+    return await new Promise<UploadResult>((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', `https://api.cloudinary.com/v1_1/${sig.cloudName}/auto/upload`);
+
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable && onProgress) onProgress(Math.round((e.loaded / e.total) * 100));
+      };
+
+      xhr.onload = () => {
+        try {
+          const data = JSON.parse(xhr.responseText);
+          if (xhr.status >= 200 && xhr.status < 300) {
+            resolve({
+              secureUrl: data.secure_url,
+              publicId: data.public_id,
+              resourceType: data.resource_type,
+              bytes: data.bytes,
+              format: data.format,
+            });
+          } else {
+            const rawMessage: string = data?.error?.message || '';
+            reject(new Error(rawMessage || `Cloudinary upload failed (${xhr.status})`));
+          }
+        } catch {
+          reject(new Error('Upload failed — invalid response from Cloudinary'));
+        }
+      };
+
+      xhr.onerror = () => reject(new Error('Network error during Cloudinary upload'));
+      xhr.send(formData);
+    });
+  } catch (cloudinaryError) {
+    console.warn('[uploadToCloudinary] Direct Cloudinary upload failed, falling back to local server storage:', cloudinaryError);
+    return uploadToLocal(folder, file, onProgress);
+  }
 }
 
 /** Deletes a previously uploaded asset server-side (after a successful replacement) to avoid orphans. */

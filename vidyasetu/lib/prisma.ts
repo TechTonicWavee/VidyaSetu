@@ -5,7 +5,16 @@ declare global {
   var __vidyasetuPrisma: PrismaClient | undefined
 }
 
-export const prisma = globalThis.__vidyasetuPrisma ?? new PrismaClient()
+function makePrismaClient() {
+  return new PrismaClient({
+    log: [
+      { emit: 'stdout', level: 'warn' },
+      { emit: 'stdout', level: 'error' },
+    ],
+  })
+}
+
+export const prisma = globalThis.__vidyasetuPrisma ?? makePrismaClient()
 
 if (process.env.NODE_ENV !== 'production') {
   globalThis.__vidyasetuPrisma = prisma

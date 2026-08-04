@@ -93,6 +93,52 @@ function cleanText(text: string): string {
     .trim()
 }
 
+function parseSkills(text: string): string[] {
+  if (!text || typeof text !== 'string') return []
+
+  // Clean lines by stripping category headers like "Languages:", "AI and ML:"
+  const cleanedLines = text
+    .split(/\r?\n/)
+    .map((line) => line.replace(/^[\w\s&/]+:\s*/i, '').trim())
+    .filter(Boolean)
+    .join('\n')
+
+  return textToArray(cleanedLines, true)
+}
+
+function parseProjects(text: string): string[] {
+  if (!text || typeof text !== 'string') return []
+
+  const lines = text
+    .split(/\r?\n/)
+    .map((l) => l.trim())
+    .filter(Boolean)
+
+  const projects: string[] = []
+  let currentProject: string[] = []
+
+  for (const line of lines) {
+    const isBullet = /^[•\-*▪▸►→]/.test(line)
+    const cleanLine = line.replace(/^[•\-*▪▸►→]+\s*/, '').trim()
+
+    if (!cleanLine) continue
+
+    // A non-bullet line starting after we already collected a project block starts a new project
+    if (!isBullet && currentProject.length > 0 && currentProject.some((l) => /^[•\-*▪▸►→]/.test(l))) {
+      projects.push(currentProject.join(' '))
+      currentProject = [line]
+    } else {
+      currentProject.push(line)
+    }
+  }
+
+  if (currentProject.length > 0) {
+    projects.push(currentProject.join(' '))
+  }
+
+  return projects.length > 0 ? projects.map(p => p.replace(/[•\-*▪▸►→]\s*/g, ' ').replace(/\s+/g, ' ').trim()) : textToArray(text)
+}
+
 // ── Main export ────────────────────────────────────────────────────────────
 
 /**
@@ -124,11 +170,10 @@ export function normalizeResume(rawSections: Record<string, string>): ResumeJson
   resume.summary = cleanText(rawSections.summary ?? '')
 
   // ── Array sections ────────────────────────────────────────────────────────
-  // skills: split on commas too, since "Python, JS, React" is one line
-  resume.skills         = textToArray(rawSections.skills         ?? '', true)
+  resume.skills         = parseSkills(rawSections.skills ?? '')
   resume.education      = textToArray(rawSections.education      ?? '')
-  resume.projects       = textToArray(rawSections.projects       ?? '')
-  resume.experience     = textToArray(rawSections.experience     ?? '')
+  resume.projects       = parseProjects(rawSections.projects     ?? '')
+  resume.experience     = parseProjects(rawSections.experience   ?? '')
   resume.certifications = textToArray(rawSections.certifications ?? '')
   resume.achievements   = textToArray(rawSections.achievements   ?? '')
   resume.leadership     = textToArray(rawSections.leadership     ?? '')

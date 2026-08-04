@@ -25,10 +25,10 @@ export async function POST(request: NextRequest) {
       })
     }
 
-    if (file.size > 5 * 1024 * 1024) {
+    if (file.size > 10 * 1024 * 1024) {
       return Response.json({ 
         success: false, 
-        error: 'File size must be under 5MB' 
+        error: 'File size must be under 10MB' 
       })
     }
 

@@ -25,6 +25,9 @@
  * @throws {Error} If the URL is missing, the request fails, or the server
  *                 returns a non-2xx status.
  */
+import fs from 'fs/promises'
+import path from 'path'
+
 export async function fetchResume(resumeUrl: string): Promise<Buffer> {
   // ── Validate input ────────────────────────────────────────────────────────
   if (!resumeUrl || typeof resumeUrl !== 'string' || !resumeUrl.trim()) {
@@ -32,7 +35,27 @@ export async function fetchResume(resumeUrl: string): Promise<Buffer> {
     throw new Error('[fetchResume] resumeUrl is required and must be a non-empty string.')
   }
 
-  const url = resumeUrl.trim()
+  const rawUrl = resumeUrl.trim()
+
+  // ── Direct local disk read for local uploads ──────────────────────────────
+  if (rawUrl.startsWith('/')) {
+    try {
+      const localPath = path.join(process.cwd(), 'public', rawUrl)
+      const fileBuffer = await fs.readFile(localPath)
+      if (fileBuffer && fileBuffer.length > 0) {
+        console.log('[fetchResume] Resume loaded directly from local disk:', localPath)
+        return fileBuffer
+      }
+    } catch (diskErr) {
+      console.warn('[fetchResume] Could not read local file from disk, attempting HTTP fetch:', diskErr)
+    }
+  }
+
+  let url = rawUrl
+  if (url.startsWith('/')) {
+    const origin = process.env.NEXT_PUBLIC_APP_URL || process.env.FRONTEND_ORIGIN || 'http://localhost:3000'
+    url = `${origin}${url}`
+  }
   console.log('Downloading Resume...')
 
   // ── Fetch the PDF ─────────────────────────────────────────────────────────
