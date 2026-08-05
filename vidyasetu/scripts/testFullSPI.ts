@@ -8,6 +8,7 @@ import calculateSPI from '../../lib/spi/orchestrator/calculateSPI.js'
 // Sample student data
 const studentName = 'Priyanshu Sharma'
 const year = 2
+const admissionYear = 2025  // Year 2 student admitted July 2025
 
 const sampleGitHub = {
   totalContributions: 150,
@@ -44,6 +45,7 @@ const sampleCertifications = [
     platform: 'AWS',
     skills: ['Cloud', 'AWS'],
     credentialId: 'AWS-123456',
+    certificateUrl: 'https://aws.training/verify/AWS-123456',  // PDF/verification URL — required for scoring
     verificationUrl: 'https://aws.training/verify/AWS-123456',
     recipientName: 'Priyanshu Sharma',
   },
@@ -52,16 +54,17 @@ const sampleCertifications = [
     platform: 'Google',
     skills: ['Data Analytics', 'SQL'],
     credentialId: 'GDA-9988',
+    certificateUrl: 'https://coursera.org/verify/GDA-9988',    // PDF/verification URL — required for scoring
     verificationUrl: 'https://coursera.org/verify/GDA-9988',
     recipientName: 'Priyanshu Sharma',
   },
 ]
 
 // 1. Run 4 Evidence Engines
-const githubResult = calcGitHubScore({ year, githubStats: sampleGitHub } as any)
-const leetcodeResult = calcLeetCodeScore({ year, leetcodeStats: sampleLeetCode } as any)
-const resumeResult = calcResumeScore({ year, resumeParsed: sampleResume } as any)
-const certsResult = calcCertificationsScore({ year, certifications: sampleCertifications, studentName } as any)
+const githubResult  = calcGitHubScore({ year, admissionYear, githubStats: sampleGitHub } as any)
+const leetcodeResult = calcLeetCodeScore({ year, admissionYear, leetcodeStats: sampleLeetCode } as any)
+const resumeResult  = calcResumeScore({ year, admissionYear, resumeParsed: sampleResume } as any)
+const certsResult   = calcCertificationsScore({ year, admissionYear, certifications: sampleCertifications, studentName } as any)
 
 // 2. Orchestrate Combined SPI Score
 const spiResult = calculateSPI({
@@ -95,3 +98,4 @@ Object.entries(spiResult.dimensions).forEach(([dim, data]: [string, any]) => {
     console.log(`🔹 ${dim.padEnd(20)} : ${data.score.toFixed(2)} pts (Weight: ${data.weight * 100}%)`)
   }
 })
+console.log(`🔹 Certs No-PDF Count  : ${certsResult.metadata?.noPdfCertificates ?? 0}  (blocked by PDF gate)`)
