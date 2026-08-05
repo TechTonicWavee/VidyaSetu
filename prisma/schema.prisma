@@ -132,17 +132,21 @@ model Extracurricular {
 }
 
 model Internship {
-  id           String    @id @default(uuid())
-  universityId String
-  company      String?
-  role         String?
-  startDate    DateTime?
-  endDate      DateTime?
-  techStack    String[]
-  description  String?
-  offerLetterUrl String?
+  id                       String    @id @default(uuid())
+  universityId             String
+  company                  String?
+  role                     String?
+  startDate                DateTime?
+  endDate                  DateTime?
+  techStack                String[]
+  description              String?
+  offerLetterUrl           String?
+  completionCertificateUrl String?
+  isPaid                   Boolean   @default(false)
+  stipendAmount            Float?    @default(0)
+  recipientName            String?
 
-  student      Student   @relation(fields: [universityId], references: [universityId])
+  student                  Student   @relation(fields: [universityId], references: [universityId])
 
   @@map("internships")
 }

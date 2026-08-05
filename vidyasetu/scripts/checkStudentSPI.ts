@@ -4,6 +4,7 @@ import calcGitHubScore from '../../lib/spi/sources/githubScore.js'
 import calcLeetCodeScore from '../../lib/spi/sources/leetcodeScore.js'
 import calcResumeScore from '../../lib/spi/sources/resume.js'
 import calcCertificationsScore from '../../lib/spi/sources/certifications.js'
+import calcInternshipsScore from '../../lib/spi/sources/internships.js'
 import calculateSPI from '../../lib/spi/orchestrator/calculateSPI.js'
 
 const prisma = new PrismaClient()
@@ -16,6 +17,7 @@ async function main() {
     include: {
       codingProfile: true,
       certifications: true,
+      internships: true,
     },
   })
 
@@ -52,6 +54,7 @@ async function main() {
 
     const cp = student.codingProfile
     const activeCertifications = student.certifications || []
+    const activeInternships = student.internships || []
 
     // 1. Run GitHub Evidence Engine
     const githubResult = calcGitHubScore({
@@ -82,12 +85,21 @@ async function main() {
       studentName: student.fullName,
     } as any)
 
-    // 5. Orchestrate Combined SPI Score
+    // 5. Run Internships Evidence Engine
+    const internshipsResult = await calcInternshipsScore({
+      year: effectiveYear,
+      admissionYear,
+      internships: activeInternships,
+      studentName: student.fullName,
+    } as any)
+
+    // 6. Orchestrate Combined SPI Score
     const spiResult = calculateSPI({
       github: githubResult,
       leetcode: leetcodeResult,
       resume: resumeResult,
       certifications: certsResult,
+      internships: internshipsResult,
     } as any)
 
     console.log(`🎯 OVERALL SPI SCORE   : ${spiResult.spi} / 100`)
@@ -99,7 +111,8 @@ async function main() {
     console.log(`🐙 GitHub Engine Score         : ${githubResult.score} / 10  (Semester ${githubResult.semester})`)
     console.log(`🧩 LeetCode Engine Score       : ${leetcodeResult.score} / 10  (Semester ${leetcodeResult.semester})`)
     console.log(`📄 Resume Engine Score         : ${resumeResult.score} / 10  (Maturity: ${resumeResult.metadata?.maturityLevel || 'N/A'})`)
-    console.log(`📜 Certifications Engine Score : ${certsResult.score} / 10  (Valid Certs: ${certsResult.metadata?.validCertificates || 0}/${certsResult.metadata?.totalCertificates || 0})\n`)
+    console.log(`📜 Certifications Engine Score : ${certsResult.score} / 10  (Valid Certs: ${certsResult.metadata?.validCertificates || 0}/${certsResult.metadata?.totalCertificates || 0})`)
+    console.log(`💼 Internships Engine Score    : ${internshipsResult.score} / 10  (Valid Internships: ${internshipsResult.metadata?.validInternships || 0}/${internshipsResult.metadata?.totalInternships || 0})\n`)
 
     console.log('----------------------------------------------------')
     console.log('               DIMENSION BREAKDOWN                  ')

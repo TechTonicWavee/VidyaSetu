@@ -164,6 +164,20 @@ interface EditableExtracurricular {
   achievement: string
 }
 
+interface EditableInternship {
+  id: string
+  company: string
+  role: string
+  startDate: string
+  endDate: string
+  techStack: string[]
+  description: string
+  offerLetterUrl: string
+  completionCertificateUrl: string
+  isPaid: boolean
+  stipendAmount: number
+}
+
 export default function ProfileEditPage() {
   const router = useRouter()
   const { student: authStudent } = useAuth()
@@ -174,6 +188,7 @@ export default function ProfileEditPage() {
     resume: false,
     projects: false,
     certifications: false,
+    internships: false,
     hackathons: false,
     extracurriculars: false,
   })
@@ -210,6 +225,7 @@ export default function ProfileEditPage() {
   // List sections
   const [projects, setProjects] = useState<EditableProject[]>([])
   const [certifications, setCertifications] = useState<EditableCertification[]>([])
+  const [internships, setInternships] = useState<EditableInternship[]>([])
   const [hackathons, setHackathons] = useState<EditableHackathon[]>([])
   const [extracurriculars, setExtracurriculars] = useState<EditableExtracurricular[]>([])
 
@@ -275,6 +291,21 @@ export default function ProfileEditPage() {
                   verificationUrl: c.verificationUrl || '',
                   score: c.score != null ? c.score : null,
                   tier: c.tier || null,
+                })))
+              }
+              if (s.internships?.length) {
+                setInternships(s.internships.map((i: any) => ({
+                  id: i.id,
+                  company: i.company || '',
+                  role: i.role || '',
+                  startDate: i.startDate ? i.startDate.substring(0, 10) : '',
+                  endDate: i.endDate ? i.endDate.substring(0, 10) : '',
+                  techStack: i.techStack || [],
+                  description: i.description || '',
+                  offerLetterUrl: i.offerLetterUrl || '',
+                  completionCertificateUrl: i.completionCertificateUrl || '',
+                  isPaid: Boolean(i.isPaid),
+                  stipendAmount: i.stipendAmount || 0,
                 })))
               }
               if (s.hackathons?.length) {
@@ -377,6 +408,7 @@ export default function ProfileEditPage() {
           },
           projects: projects,
           certifications: certifications,
+          internships: internships,
           hackathons: hackathons,
           extracurriculars: extracurriculars,
         }),
@@ -428,6 +460,7 @@ export default function ProfileEditPage() {
   // ── Add/remove helpers ─────────────────────────────────────────────────────
   const [newProject, setNewProject] = useState<Omit<EditableProject, 'id'>>({ title: '', description: '', techStack: [], github: '', liveDemo: '', status: 'Completed', type: 'Personal', screenshotUrl: '', screenshotPublicId: null })
   const [newCert, setNewCert] = useState<Omit<EditableCertification, 'id'>>({ name: '', platform: 'Coursera', dateCompleted: '', skills: [], certificateUrl: '', certificatePublicId: null, credentialId: '', verificationUrl: '' })
+  const [newIntern, setNewIntern] = useState<Omit<EditableInternship, 'id'>>({ company: '', role: '', startDate: '', endDate: '', techStack: [], description: '', offerLetterUrl: '', completionCertificateUrl: '', isPaid: false, stipendAmount: 0 })
   const [newHack, setNewHack] = useState<Omit<EditableHackathon, 'id'>>({ name: '', organizer: '', date: '', position: '', teamSize: '', projectBuilt: '' })
   const [newExtra, setNewExtra] = useState<Omit<EditableExtracurricular, 'id'>>({ name: '', role: '', year: '', achievement: '' })
 
@@ -444,6 +477,13 @@ export default function ProfileEditPage() {
     setNewCert({ name: '', platform: 'Coursera', dateCompleted: '', skills: [], certificateUrl: '', certificatePublicId: null, credentialId: '', verificationUrl: '' })
   }
   const removeCert = (id: string) => setCertifications(certifications.filter(c => c.id !== id))
+
+  const addInternship = () => {
+    if (!newIntern.company.trim()) return
+    setInternships([...internships, { ...newIntern, id: `tmp_${Date.now()}` }])
+    setNewIntern({ company: '', role: '', startDate: '', endDate: '', techStack: [], description: '', offerLetterUrl: '', completionCertificateUrl: '', isPaid: false, stipendAmount: 0 })
+  }
+  const removeInternship = (id: string) => setInternships(internships.filter(i => i.id !== id))
 
   const addHackathon = () => {
     if (!newHack.name.trim()) return
@@ -1162,6 +1202,176 @@ export default function ProfileEditPage() {
     </div>
   )
 
+  const internshipsJSX = (
+    <div className="space-y-4">
+      <div className="flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-lg px-4 py-2.5 text-xs text-blue-700">
+        <Info size={14} className="flex-shrink-0" />
+        Internships are evaluated based on Role Rigor, Duration, Stipend Tier Bonus, and Verified Document Attachments. They directly contribute to your Kinesthetic (20%) and Creativity (10%) SPI dimensions.
+      </div>
+
+      {internships.map(item => {
+        const hasDoc = Boolean(item.offerLetterUrl || item.completionCertificateUrl)
+
+        return (
+          <div key={item.id} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+            <div className="flex justify-between items-start mb-2">
+              <div>
+                <div className="flex items-center flex-wrap gap-2 mb-1">
+                  <h4 className="font-semibold text-navy">{item.company}</h4>
+                  <span className="text-xs bg-blue-100 text-blue-800 border border-blue-200 px-2 py-0.5 rounded-full font-medium">
+                    {item.role}
+                  </span>
+                  {item.isPaid ? (
+                    <span className="text-xs bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded-full font-medium">
+                      💰 Paid (₹{item.stipendAmount?.toLocaleString()}/mo)
+                    </span>
+                  ) : (
+                    <span className="text-xs bg-gray-100 text-gray-700 border border-gray-300 px-2 py-0.5 rounded-full font-medium">
+                      Unpaid
+                    </span>
+                  )}
+                  {hasDoc ? (
+                    <span className="text-xs bg-green-100 text-green-800 border border-green-300 px-2 py-0.5 rounded-full font-medium flex items-center gap-1">
+                      <CheckCircle size={12} /> 📄 Document Verified
+                    </span>
+                  ) : (
+                    <span className="text-xs bg-red-50 text-red-600 border border-red-200 px-2 py-0.5 rounded-full font-medium">
+                      ⚠️ No Document (0 pts)
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-gray-500">
+                  {item.startDate ? `From: ${item.startDate}` : ''} {item.endDate ? `To: ${item.endDate}` : '· Present'}
+                </p>
+              </div>
+              <button onClick={() => removeInternship(item.id)} className="text-red-500 hover:bg-red-50 p-2 rounded transition-colors">
+                <Trash2 size={18} />
+              </button>
+            </div>
+
+            {item.description && <p className="text-sm text-gray-600 mb-2">{item.description}</p>}
+
+            {item.techStack && item.techStack.length > 0 && (
+              <div className="flex flex-wrap gap-1 mt-2">
+                {item.techStack.map((tech, i) => (
+                  <span key={i} className="text-xs bg-blue-50 text-primary px-2 py-1 rounded">{tech}</span>
+                ))}
+              </div>
+            )}
+          </div>
+        )
+      })}
+
+      <div className="bg-white border border-gray-200 rounded-lg p-4">
+        <h4 className="font-semibold text-navy mb-3">Add New Internship</h4>
+        <div className="grid grid-cols-2 gap-2 mb-2">
+          <input
+            type="text"
+            value={newIntern.company}
+            onChange={e => setNewIntern({ ...newIntern, company: e.target.value })}
+            placeholder="Company / Organization name *"
+            className="px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
+          />
+          <input
+            type="text"
+            value={newIntern.role}
+            onChange={e => setNewIntern({ ...newIntern, role: e.target.value })}
+            placeholder="Role (e.g. Full Stack Engineering Intern)"
+            className="px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
+          />
+        </div>
+
+        <div className="grid grid-cols-2 gap-2 mb-2">
+          <div>
+            <label className="text-xs font-medium text-gray-500 block mb-1">Start Date</label>
+            <input
+              type="date"
+              value={newIntern.startDate}
+              onChange={e => setNewIntern({ ...newIntern, startDate: e.target.value })}
+              className="w-full px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
+            />
+          </div>
+          <div>
+            <label className="text-xs font-medium text-gray-500 block mb-1">End Date (leave blank if current)</label>
+            <input
+              type="date"
+              value={newIntern.endDate}
+              onChange={e => setNewIntern({ ...newIntern, endDate: e.target.value })}
+              className="w-full px-3 py-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-2 gap-2 mb-2 items-center bg-gray-50 p-2.5 rounded border border-gray-200">
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="isPaidCheck"
+              checked={newIntern.isPaid}
+              onChange={e => setNewIntern({ ...newIntern, isPaid: e.target.checked, stipendAmount: e.target.checked ? newIntern.stipendAmount : 0 })}
+              className="w-4 h-4 text-primary rounded"
+            />
+            <label htmlFor="isPaidCheck" className="text-sm font-semibold text-navy cursor-pointer select-none">
+              Paid Internship 💰
+            </label>
+          </div>
+          {newIntern.isPaid && (
+            <div>
+              <input
+                type="number"
+                value={newIntern.stipendAmount || ''}
+                onChange={e => setNewIntern({ ...newIntern, stipendAmount: Number(e.target.value) })}
+                placeholder="Stipend (₹ / month)"
+                min="0"
+                className="w-full px-3 py-1.5 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy bg-white"
+              />
+            </div>
+          )}
+        </div>
+
+        <input
+          type="text"
+          value={newIntern.techStack ? newIntern.techStack.join(', ') : ''}
+          onChange={e => setNewIntern({ ...newIntern, techStack: e.target.value.split(',').map(s => s.trim()).filter(s => s) })}
+          placeholder="Tech stack (comma-separated, e.g. React, Python, AWS)"
+          className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
+        />
+
+        <textarea
+          value={newIntern.description}
+          onChange={e => setNewIntern({ ...newIntern, description: e.target.value })}
+          placeholder="Key responsibilities / accomplishments"
+          className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm resize-none text-navy"
+          rows={2}
+        />
+
+        <div className="grid grid-cols-2 gap-2 mb-2">
+          <FileUploadField
+            folder="certificates"
+            label="Upload Offer Letter PDF *"
+            currentUrl={newIntern.offerLetterUrl}
+            onUploaded={({ url }) => setNewIntern({ ...newIntern, offerLetterUrl: url })}
+            onRemoved={() => setNewIntern({ ...newIntern, offerLetterUrl: '' })}
+          />
+          <FileUploadField
+            folder="certificates"
+            label="Upload Completion Cert PDF *"
+            currentUrl={newIntern.completionCertificateUrl}
+            onUploaded={({ url }) => setNewIntern({ ...newIntern, completionCertificateUrl: url })}
+            onRemoved={() => setNewIntern({ ...newIntern, completionCertificateUrl: '' })}
+          />
+        </div>
+
+        <button
+          onClick={addInternship}
+          className="w-full px-3 py-2 bg-primary text-white rounded text-sm font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+        >
+          <Plus size={16} /> Add Internship
+        </button>
+      </div>
+    </div>
+  )
+
   const hackathonsJSX = (
     <div className="space-y-4">
       <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-lg px-4 py-2.5 text-xs text-amber-700">
@@ -1349,6 +1559,10 @@ export default function ProfileEditPage() {
 
             <CollapsibleSection title="Certifications" icon={Badge} isOpen={expandedSections.certifications} onToggle={() => toggleSection('certifications')} completionPercent={certifications.length > 0 ? 100 : 0} badge="Counts for SPI ✦">
               {certificationsJSX}
+            </CollapsibleSection>
+
+            <CollapsibleSection title="💼 Internships" icon={Briefcase} isOpen={expandedSections.internships} onToggle={() => toggleSection('internships')} completionPercent={internships.length > 0 ? 100 : 0} badge="Counts for SPI ✦">
+              {internshipsJSX}
             </CollapsibleSection>
 
             <CollapsibleSection title="Hackathons & Competitions" icon={Zap} isOpen={expandedSections.hackathons} onToggle={() => toggleSection('hackathons')} completionPercent={hackathons.length > 0 ? 100 : 0} badge="Saved · Future SPI">

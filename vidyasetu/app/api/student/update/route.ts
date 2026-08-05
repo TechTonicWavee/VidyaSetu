@@ -58,6 +58,19 @@ interface UpdateStudentBody {
     year?: string
     achievement?: string
   }[]
+  internships?: {
+    company?: string
+    role?: string
+    startDate?: string
+    endDate?: string
+    techStack?: string[]
+    description?: string
+    offerLetterUrl?: string
+    completionCertificateUrl?: string
+    isPaid?: boolean
+    stipendAmount?: number
+    recipientName?: string
+  }[]
 }
 
 // POST /api/student/update
@@ -77,6 +90,7 @@ export async function POST(request: NextRequest) {
       certifications:  certsData,
       hackathons:      hacksData,
       extracurriculars: extrasData,
+      internships:     internshipsData,
     } = body
 
     if (!universityId?.trim()) {
@@ -256,6 +270,29 @@ export async function POST(request: NextRequest) {
             role:        e.role?.trim()        || null,
             year:        e.year?.trim()        || null,
             achievement: e.achievement?.trim() || null,
+          }))
+        })
+      }
+    }
+
+    // ── 7. Replace Internships ────────────────────────────────────────────────
+    if (Array.isArray(internshipsData)) {
+      await prisma.internship.deleteMany({ where: { universityId } })
+      if (internshipsData.length > 0) {
+        await prisma.internship.createMany({
+          data: internshipsData.map(i => ({
+            universityId,
+            company:                  i.company?.trim()                  || 'Untitled Company',
+            role:                     i.role?.trim()                     || 'Intern',
+            startDate:                i.startDate                        ? new Date(i.startDate) : null,
+            endDate:                  i.endDate                          ? new Date(i.endDate) : null,
+            techStack:                Array.isArray(i.techStack)         ? i.techStack : [],
+            description:              i.description?.trim()              || null,
+            offerLetterUrl:           i.offerLetterUrl                   || null,
+            completionCertificateUrl: i.completionCertificateUrl         || null,
+            isPaid:                   Boolean(i.isPaid),
+            stipendAmount:            i.stipendAmount ? Number(i.stipendAmount) : 0,
+            recipientName:            i.recipientName?.trim()            || null,
           }))
         })
       }

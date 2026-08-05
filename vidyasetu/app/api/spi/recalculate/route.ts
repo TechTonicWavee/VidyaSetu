@@ -7,6 +7,7 @@ import calcGitHubScore from '@/../lib/spi/sources/githubScore'
 import calcLeetCodeScore from '@/../lib/spi/sources/leetcodeScore'
 import calcResumeScore from '@/../lib/spi/sources/resume'
 import calcCertificationsScore from '@/../lib/spi/sources/certifications'
+import calcInternshipsScore from '@/../lib/spi/sources/internships'
 import { evaluateCertificate } from '@/../lib/spi/evaluators/certificateEvaluators'
 import calculateSPI from '@/../lib/spi/orchestrator/calculateSPI'
 import { AuthError, requireAuth, requireOwnResource } from '../../../../lib/auth/verifyAccessToken'
@@ -28,12 +29,13 @@ export async function POST(request: NextRequest) {
     const auth = requireAuth(request)
     requireOwnResource(auth, universityId)
 
-    // Fetch Student + CodingProfile + Certifications
+    // Fetch Student + CodingProfile + Certifications + Internships
     const student = await prisma.student.findUnique({
       where: { universityId },
       include: {
         codingProfile: true,
         certifications: true,
+        internships: true,
       },
     })
 
@@ -94,10 +96,9 @@ export async function POST(request: NextRequest) {
     if (!codingProfile.leetcodeStats) missingEvidence.push('LeetCode')
     if (!student.resumeParsed) missingEvidence.push('Resume')
     if (!activeCertifications || activeCertifications.length === 0) missingEvidence.push('Certifications')
+    if (!student.internships || student.internships.length === 0) missingEvidence.push('Internships')
 
     // ── Dynamic Academic Stage from admissionYear ─────────────────────────────
-    // If admissionYear is available, compute the precise year dynamically.
-    // Otherwise fall back to the stored student.year value.
     let effectiveYear = student.year ?? 1
     let admissionYear: number | null = (student as any).admissionYear ?? null
 
@@ -137,12 +138,20 @@ export async function POST(request: NextRequest) {
       studentName: student.fullName,
     } as any)
 
+    const internshipsResult = await calcInternshipsScore({
+      year: effectiveYear,
+      admissionYear,
+      internships: student.internships || [],
+      studentName: student.fullName,
+    } as any)
+
     // Calculate SPI
     const spiResult = calculateSPI({
       github: githubResult,
       leetcode: leetcodeResult,
       resume: resumeResult,
       certifications: certsResult,
+      internships: internshipsResult,
     } as any)
 
     // Save SPI and updated year back to Student table
