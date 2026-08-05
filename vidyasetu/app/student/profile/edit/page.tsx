@@ -140,6 +140,10 @@ interface EditableCertification {
   skills: string[]
   certificateUrl: string
   certificatePublicId: string | null
+  credentialId?: string
+  verificationUrl?: string
+  score?: number | null
+  tier?: string | null
 }
 
 interface EditableHackathon {
@@ -267,6 +271,10 @@ export default function ProfileEditPage() {
                   skills: c.skills || [],
                   certificateUrl: c.certificateUrl || '',
                   certificatePublicId: c.certificatePublicId || null,
+                  credentialId: c.credentialId || '',
+                  verificationUrl: c.verificationUrl || '',
+                  score: c.score != null ? c.score : null,
+                  tier: c.tier || null,
                 })))
               }
               if (s.hackathons?.length) {
@@ -419,7 +427,7 @@ export default function ProfileEditPage() {
 
   // ── Add/remove helpers ─────────────────────────────────────────────────────
   const [newProject, setNewProject] = useState<Omit<EditableProject, 'id'>>({ title: '', description: '', techStack: [], github: '', liveDemo: '', status: 'Completed', type: 'Personal', screenshotUrl: '', screenshotPublicId: null })
-  const [newCert, setNewCert] = useState<Omit<EditableCertification, 'id'>>({ name: '', platform: 'Coursera', dateCompleted: '', skills: [], certificateUrl: '', certificatePublicId: null })
+  const [newCert, setNewCert] = useState<Omit<EditableCertification, 'id'>>({ name: '', platform: 'Coursera', dateCompleted: '', skills: [], certificateUrl: '', certificatePublicId: null, credentialId: '', verificationUrl: '' })
   const [newHack, setNewHack] = useState<Omit<EditableHackathon, 'id'>>({ name: '', organizer: '', date: '', position: '', teamSize: '', projectBuilt: '' })
   const [newExtra, setNewExtra] = useState<Omit<EditableExtracurricular, 'id'>>({ name: '', role: '', year: '', achievement: '' })
 
@@ -433,7 +441,7 @@ export default function ProfileEditPage() {
   const addCertification = () => {
     if (!newCert.name.trim()) return
     setCertifications([...certifications, { ...newCert, id: `tmp_${Date.now()}` }])
-    setNewCert({ name: '', platform: 'Coursera', dateCompleted: '', skills: [], certificateUrl: '', certificatePublicId: null })
+    setNewCert({ name: '', platform: 'Coursera', dateCompleted: '', skills: [], certificateUrl: '', certificatePublicId: null, credentialId: '', verificationUrl: '' })
   }
   const removeCert = (id: string) => setCertifications(certifications.filter(c => c.id !== id))
 
@@ -971,31 +979,113 @@ export default function ProfileEditPage() {
 
   const certificationsJSX = (
     <div className="space-y-4">
-      <div className="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-lg px-4 py-2.5 text-xs text-amber-700">
+      <div className="flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-lg px-4 py-2.5 text-xs text-blue-700">
         <Info size={14} className="flex-shrink-0" />
-        Certifications are saved to your profile. They will contribute to SPI in a future update.
+        Certifications are evaluated using the 4-Factor Model (Issuer Credibility, Assessment Rigor, Relevance, Verifiability) and directly contribute to your SPI score.
       </div>
 
-      {certifications.map(cert => (
-        <div key={cert.id} className="bg-white border border-gray-200 rounded-lg p-4">
-          <div className="flex justify-between items-start mb-2">
-            <div>
-              <h4 className="font-semibold text-navy">{cert.name}</h4>
-              <p className="text-xs text-gray-500">{cert.platform}{cert.dateCompleted ? ` · ${cert.dateCompleted}` : ''}</p>
+      {certifications.map(cert => {
+        const isVerifiedBadge = Boolean(
+          cert.verificationUrl &&
+          (cert.verificationUrl.includes('credly.com') || cert.verificationUrl.includes('aws.amazon.com/verification') || cert.verificationUrl.includes('learn.microsoft.com') || cert.verificationUrl.includes('coursera.org/verify') || cert.verificationUrl.includes('accredible.com'))
+        )
+        const isVerifiableLink = Boolean(cert.verificationUrl || cert.credentialId)
+        const hasFile = Boolean(cert.certificateUrl)
+
+        return (
+          <div key={cert.id} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+            <div className="flex justify-between items-start mb-2">
+              <div>
+                <div className="flex items-center flex-wrap gap-2 mb-1">
+                  <h4 className="font-semibold text-navy">{cert.name}</h4>
+                  {cert.tier && (
+                    <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+                      cert.tier === 'Tier 1' ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
+                      cert.tier === 'Tier 2' ? 'bg-blue-100 text-blue-800 border border-blue-300' :
+                      cert.tier === 'Tier 3' ? 'bg-amber-100 text-amber-800 border border-amber-300' :
+                      'bg-gray-100 text-gray-700 border border-gray-300'
+                    }`}>
+                      {cert.tier} {cert.score != null ? `(${cert.score}/20)` : ''}
+                    </span>
+                  )}
+                  {/* Authenticity Badge */}
+                  {isVerifiedBadge ? (
+                    <span className="text-xs bg-green-100 text-green-800 border border-green-300 px-2 py-0.5 rounded-full font-medium flex items-center gap-1">
+                      <CheckCircle size={12} /> 🛡️ Verified Badge
+                    </span>
+                  ) : isVerifiableLink ? (
+                    <span className="text-xs bg-sky-100 text-sky-800 border border-sky-300 px-2 py-0.5 rounded-full font-medium flex items-center gap-1">
+                      <CheckCircle size={12} /> 🔗 Verifiable Link
+                    </span>
+                  ) : hasFile ? (
+                    <span className="text-xs bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full font-medium">
+                      📄 File Attached
+                    </span>
+                  ) : (
+                    <span className="text-xs bg-red-50 text-red-600 border border-red-200 px-2 py-0.5 rounded-full font-medium">
+                      ⚠️ Unverified
+                    </span>
+                  )}
+                </div>
+                <p className="text-xs text-gray-500">{cert.platform}{cert.dateCompleted ? ` · ${cert.dateCompleted}` : ''}</p>
+              </div>
+              <button onClick={() => removeCert(cert.id)} className="text-red-500 hover:bg-red-50 p-2 rounded transition-colors">
+                <Trash2 size={18} />
+              </button>
             </div>
-            <button onClick={() => removeCert(cert.id)} className="text-red-500 hover:bg-red-50 p-2 rounded">
-              <Trash2 size={18} />
-            </button>
+
+            {/* Recruiter Verification Details */}
+            <div className="my-2 p-2.5 bg-gray-50 rounded border border-gray-100 text-xs space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="font-medium text-gray-700">Credential ID:</span>
+                <span className={cert.credentialId ? 'font-mono text-gray-800 bg-white px-1.5 py-0.5 rounded border border-gray-200' : 'text-gray-400 italic'}>
+                  {cert.credentialId || 'None provided'}
+                </span>
+              </div>
+
+              {cert.verificationUrl ? (
+                <div className="flex items-center justify-between pt-1">
+                  <span className="font-medium text-gray-700">Verification URL:</span>
+                  <a
+                    href={cert.verificationUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-primary hover:underline flex items-center gap-1 font-medium bg-blue-50 text-blue-700 px-2 py-0.5 rounded border border-blue-200"
+                  >
+                    <ExternalLink size={12} /> 🧪 Recruiter 1-Click Test
+                  </a>
+                </div>
+              ) : (
+                <div className="flex items-center justify-between pt-1">
+                  <span className="font-medium text-gray-700">Verification URL:</span>
+                  <span className="text-gray-400 italic">None provided (Add Credly/AWS link below)</span>
+                </div>
+              )}
+            </div>
+
+            {/* Authenticity Checklist */}
+            <div className="flex flex-wrap gap-2 text-[11px] mb-2 pt-1 border-t border-gray-100">
+              <span className={`px-2 py-0.5 rounded ${cert.credentialId ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-gray-100 text-gray-500'}`}>
+                {cert.credentialId ? '✓ Credential ID' : '✕ Missing ID'}
+              </span>
+              <span className={`px-2 py-0.5 rounded ${cert.verificationUrl ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-gray-100 text-gray-500'}`}>
+                {cert.verificationUrl ? '✓ Direct Verification Link' : '✕ Missing Link'}
+              </span>
+              <span className={`px-2 py-0.5 rounded ${(cert.credentialId && cert.verificationUrl) ? 'bg-emerald-50 text-emerald-800 font-medium border border-emerald-200' : 'bg-gray-100 text-gray-500'}`}>
+                {(cert.credentialId && cert.verificationUrl) ? '⚡ Fast-Check Ready (< 30s)' : '⚠️ Action Needed'}
+              </span>
+            </div>
+
+            {cert.skills && cert.skills.length > 0 && (
+              <div className="flex flex-wrap gap-1 mt-2">
+                {cert.skills.map((skill, i) => (
+                  <span key={i} className="text-xs bg-green-50 text-green-700 px-2 py-1 rounded">{skill}</span>
+                ))}
+              </div>
+            )}
           </div>
-          {cert.skills && cert.skills.length > 0 && (
-            <div className="flex flex-wrap gap-1">
-              {cert.skills.map((skill, i) => (
-                <span key={i} className="text-xs bg-green-50 text-green-700 px-2 py-1 rounded">{skill}</span>
-              ))}
-            </div>
-          )}
-        </div>
-      ))}
+        )
+      })}
 
       <div className="bg-white border border-gray-200 rounded-lg p-4">
         <h4 className="font-semibold text-navy mb-3">Add New Certification</h4>
@@ -1003,7 +1093,7 @@ export default function ProfileEditPage() {
           type="text"
           value={newCert.name}
           onChange={e => setNewCert({ ...newCert, name: e.target.value })}
-          placeholder="Certification name *"
+          placeholder="Certification name * (e.g. AWS Certified Solutions Architect)"
           className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
         />
         <select
@@ -1011,13 +1101,18 @@ export default function ProfileEditPage() {
           onChange={e => setNewCert({ ...newCert, platform: e.target.value })}
           className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
         >
+          <option>AWS</option>
+          <option>Google</option>
+          <option>Microsoft</option>
           <option>Coursera</option>
+          <option>DeepLearning.AI</option>
+          <option>CompTIA</option>
+          <option>Cisco</option>
+          <option>Oracle</option>
+          <option>IBM</option>
           <option>NPTEL</option>
           <option>Udemy</option>
           <option>LinkedIn Learning</option>
-          <option>Google</option>
-          <option>AWS</option>
-          <option>Microsoft</option>
           <option>Other</option>
         </select>
         <input
@@ -1028,15 +1123,29 @@ export default function ProfileEditPage() {
         />
         <input
           type="text"
+          value={newCert.credentialId || ''}
+          onChange={e => setNewCert({ ...newCert, credentialId: e.target.value })}
+          placeholder="Credential ID (optional)"
+          className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
+        />
+        <input
+          type="url"
+          value={newCert.verificationUrl || ''}
+          onChange={e => setNewCert({ ...newCert, verificationUrl: e.target.value })}
+          placeholder="Verification URL / Credly link (optional)"
+          className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
+        />
+        <input
+          type="text"
           value={newCert.skills ? newCert.skills.join(', ') : ''}
           onChange={e => setNewCert({ ...newCert, skills: e.target.value.split(',').map(s => s.trim()).filter(s => s) })}
-          placeholder="Skills covered (comma-separated)"
+          placeholder="Skills covered (comma-separated, e.g. Cloud, Machine Learning)"
           className="w-full px-3 py-2 mb-2 rounded border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary text-sm text-navy"
         />
         <div className="mb-2">
           <FileUploadField
             folder="certificates"
-            label="Upload certificate"
+            label="Upload certificate PDF / image"
             currentUrl={newCert.certificateUrl}
             currentPublicId={newCert.certificatePublicId}
             onUploaded={({ url, publicId }) => setNewCert({ ...newCert, certificateUrl: url, certificatePublicId: publicId })}
@@ -1238,7 +1347,7 @@ export default function ProfileEditPage() {
               {projectsJSX}
             </CollapsibleSection>
 
-            <CollapsibleSection title="Certifications" icon={Badge} isOpen={expandedSections.certifications} onToggle={() => toggleSection('certifications')} completionPercent={certifications.length > 0 ? 100 : 0} badge="Saved · Future SPI">
+            <CollapsibleSection title="Certifications" icon={Badge} isOpen={expandedSections.certifications} onToggle={() => toggleSection('certifications')} completionPercent={certifications.length > 0 ? 100 : 0} badge="Counts for SPI ✦">
               {certificationsJSX}
             </CollapsibleSection>
 

@@ -173,6 +173,7 @@ async function fetchLeetCodeStats(username?: string | null) {
 
 interface FormSubmitBody {
   universityId: string
+  admissionYear?: number | null   // e.g. 2024 → admitted July 2024
   coding_profiles?: {
     github?: string
     leetcode?: string
@@ -206,12 +207,24 @@ export async function POST(request: NextRequest) {
 
   const {
     universityId,
+    admissionYear = null,
     coding_profiles = {},
     resumeUrl = null,
     certifications = [],
     extracurriculars = [],
     internships = [],
   } = body
+
+  // ── Compute dynamic academic year from admissionYear ──────────────────────
+  let effectiveYear: number | null = null
+  if (admissionYear) {
+    const now = new Date()
+    const currentYear  = now.getFullYear()
+    const currentMonth = now.getMonth() + 1
+    const yearsElapsed = currentYear - admissionYear
+    const rawYear = currentMonth >= 7 ? yearsElapsed + 1 : yearsElapsed
+    effectiveYear = Math.min(4, Math.max(1, rawYear))
+  }
 
   console.log('\n═══════════════════════════════════════════')
   console.log(`[Form Submit] universityId: ${universityId}`)
@@ -229,6 +242,8 @@ export async function POST(request: NextRequest) {
         formStatus: 'submitted',
         formSubmittedAt: new Date(),
         resumeUrl: resumeUrl ?? null,
+        ...(admissionYear   ? { admissionYear }                : {}),
+        ...(effectiveYear   ? { year: effectiveYear }          : {}),
       },
     })
     console.log('[Step 1] Student updated:', student.universityId, '| formStatus:', student.formStatus)

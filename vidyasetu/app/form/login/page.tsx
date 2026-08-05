@@ -16,6 +16,23 @@ export default function FormLogin() {
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
+  const [admissionYear, setAdmissionYear] = useState('')
+  const [admissionMonth, setAdmissionMonth] = useState('7')
+
+  // Compute academic year & semester from admission inputs (for live preview)
+  const computeStage = (year: string, month: string) => {
+    const y = parseInt(year, 10)
+    if (!y || y < 2018 || y > 2030) return null
+    const now = new Date()
+    const currentMonth = now.getMonth() + 1
+    const yearsElapsed = now.getFullYear() - y
+    const effectiveYear = currentMonth >= 7
+      ? Math.min(4, Math.max(1, yearsElapsed + 1))
+      : Math.min(4, Math.max(1, yearsElapsed))
+    const semester = currentMonth >= 7 ? effectiveYear * 2 - 1 : effectiveYear * 2
+    return { effectiveYear, semester }
+  }
+  const stage = computeStage(admissionYear, admissionMonth)
 
   const handleVerify = async () => {
     if (!universityId || !kietEmail.trim()) {
@@ -67,7 +84,12 @@ export default function FormLogin() {
       const res = await fetch('/api/auth/set-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ universityId, password })
+        body: JSON.stringify({
+          universityId,
+          password,
+          admissionYear: admissionYear ? parseInt(admissionYear, 10) : null,
+          admissionMonth: admissionMonth ? parseInt(admissionMonth, 10) : null,
+        })
       })
       const data = await res.json()
       if (!data.success) {
@@ -205,6 +227,55 @@ export default function FormLogin() {
                   onChange={e => setConfirmPassword(e.target.value)}
                   className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400"
                 />
+              </div>
+
+              {/* ── Admission Details ─────────────────────────────────── */}
+              <div className="pt-2 border-t border-gray-100">
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Admission Details</p>
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-sm font-semibold text-gray-700 block mb-1">Admission Year</label>
+                    <select
+                      value={admissionYear}
+                      onChange={e => setAdmissionYear(e.target.value)}
+                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 bg-white"
+                    >
+                      <option value="">Select year</option>
+                      {[2022, 2023, 2024, 2025, 2026].map(y => (
+                        <option key={y} value={y}>{y}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-sm font-semibold text-gray-700 block mb-1">Admission Month</label>
+                    <select
+                      value={admissionMonth}
+                      onChange={e => setAdmissionMonth(e.target.value)}
+                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 bg-white"
+                    >
+                      <option value="7">July</option>
+                      <option value="1">January</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Live academic stage preview */}
+                {stage ? (
+                  <div className="mt-3 flex items-center gap-2 bg-blue-50 border border-blue-100 rounded-xl px-4 py-2.5">
+                    <span className="text-blue-500 text-base">🎓</span>
+                    <div>
+                      <p className="text-blue-700 text-sm font-semibold">
+                        Year {stage.effectiveYear} &bull; Semester {stage.semester}
+                      </p>
+                      <p className="text-blue-400 text-xs">Your current academic stage (auto-computed)</p>
+                    </div>
+                  </div>
+                ) : admissionYear ? (
+                  <div className="mt-3 flex items-center gap-2 bg-red-50 border border-red-100 rounded-xl px-4 py-2.5">
+                    <span className="text-red-400 text-sm">⚠️</span>
+                    <p className="text-red-500 text-xs">Please select a valid admission year (2022–2026)</p>
+                  </div>
+                ) : null}
               </div>
             </div>
             <div className="mt-3 space-y-1">

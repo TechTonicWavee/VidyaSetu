@@ -108,7 +108,12 @@ model Certification {
   completionDate      DateTime?
   certificateUrl      String?
   certificatePublicId String?
+  credentialId        String?
+  verificationUrl     String?
   skills              String[]
+  score               Float?
+  tier                String?
+  breakdown           Json?
   createdAt           DateTime  @default(now())
 
   student Student @relation(fields: [universityId], references: [universityId])

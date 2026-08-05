@@ -12,9 +12,10 @@ model Student {
   id               String    @id @default(uuid())
   universityId     String    @unique
   fullName         String
-  dob              DateTime
+  dob              DateTime?
   branch           String?
   year             Int?
+  admissionYear    Int?      // e.g. 2024 → admitted July 2024 (auto-computed from admissionYear at runtime)
   section          String?
   email            String?
   phone            String?
@@ -80,16 +81,22 @@ model Project {
 }
 
 model Certification {
-  id             String    @id @default(uuid())
-  universityId   String
-  name           String
-  platform       String?
-  completionDate DateTime?
-  certificateUrl String?
-  skills         String[]
-  createdAt      DateTime  @default(now())
+  id                  String    @id @default(uuid())
+  universityId        String
+  name                String
+  platform            String?
+  completionDate      DateTime?
+  certificateUrl      String?
+  certificatePublicId String?
+  credentialId        String?
+  verificationUrl     String?
+  skills              String[]
+  score               Float?
+  tier                String?
+  breakdown           Json?
+  createdAt           DateTime  @default(now())
 
-  student        Student   @relation(fields: [universityId], references: [universityId])
+  student Student @relation(fields: [universityId], references: [universityId])
 
   @@map("certifications")
 }

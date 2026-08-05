@@ -15,6 +15,7 @@ model Student {
   dob              DateTime?
   branch           String?
   year             Int?
+  admissionYear    Int?      // Admission calendar year e.g. 2024 → admitted July 2024
   section          String?
   email            String?
   phone            String?
@@ -102,7 +103,12 @@ model Certification {
   completionDate      DateTime?
   certificateUrl      String?
   certificatePublicId String?
+  credentialId        String?
+  verificationUrl     String?
   skills              String[]
+  score               Float?
+  tier                String?
+  breakdown           Json?
   createdAt           DateTime  @default(now())
 
   student Student @relation(fields: [universityId], references: [universityId])

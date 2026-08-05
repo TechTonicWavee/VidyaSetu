@@ -2,6 +2,7 @@ import type { NextRequest } from 'next/server'
 import { Prisma }      from '@prisma/client'
 import { prisma }       from '@/lib/prisma'
 import { parseResume }  from '@/lib/resume/parser'
+import { evaluateCertificate } from '@/../lib/spi/evaluators/certificateEvaluators'
 import { AuthError, requireAuth, requireOwnResource } from '../../../../lib/auth/verifyAccessToken'
 import { destroyCloudinaryAsset } from '../../../../lib/server/cloudinary'
 
@@ -40,6 +41,8 @@ interface UpdateStudentBody {
     skills?: string[]
     certificateUrl?: string
     certificatePublicId?: string
+    credentialId?: string
+    verificationUrl?: string
   }[]
   hackathons?: {
     name?: string
@@ -196,15 +199,30 @@ export async function POST(request: NextRequest) {
       await prisma.certification.deleteMany({ where: { universityId } })
       if (certsData.length > 0) {
         await prisma.certification.createMany({
-          data: certsData.map(c => ({
-            universityId,
-            name:                c.name?.trim()          || 'Untitled',
-            platform:            c.platform?.trim()       || null,
-            completionDate:      c.dateCompleted ? new Date(c.dateCompleted) : null,
-            skills:              Array.isArray(c.skills) ? c.skills : [],
-            certificateUrl:      c.certificateUrl         || null,
-            certificatePublicId: c.certificatePublicId    || null,
-          }))
+          data: certsData.map(c => {
+            const evalResult = evaluateCertificate({
+              name: c.name,
+              platform: c.platform,
+              skills: c.skills,
+              certificateUrl: c.certificateUrl,
+              verificationUrl: c.verificationUrl,
+              credentialId: c.credentialId,
+            })
+            return {
+              universityId,
+              name:                c.name?.trim()          || 'Untitled',
+              platform:            c.platform?.trim()       || null,
+              completionDate:      c.dateCompleted ? new Date(c.dateCompleted) : null,
+              skills:              Array.isArray(c.skills) ? c.skills : [],
+              certificateUrl:      c.certificateUrl         || null,
+              certificatePublicId: c.certificatePublicId    || null,
+              credentialId:        c.credentialId?.trim()   || null,
+              verificationUrl:     c.verificationUrl?.trim()|| null,
+              score:               evalResult.totalScore,
+              tier:                evalResult.tier,
+              breakdown:           evalResult.factors as unknown as Prisma.InputJsonValue,
+            }
+          })
         })
       }
     }
