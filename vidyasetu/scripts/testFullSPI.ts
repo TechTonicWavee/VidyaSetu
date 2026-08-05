@@ -62,10 +62,10 @@ const sampleCertifications = [
 
 // 1. Run 4 Evidence Engines
 async function runTest() {
-  const githubResult  = calcGitHubScore({ year, admissionYear, githubStats: sampleGitHub } as any)
-  const leetcodeResult = calcLeetCodeScore({ year, admissionYear, leetcodeStats: sampleLeetCode } as any)
-  const resumeResult  = calcResumeScore({ year, admissionYear, resumeParsed: sampleResume } as any)
-  const certsResult   = await calcCertificationsScore({ year, admissionYear, certifications: sampleCertifications, studentName } as any)
+  const githubResult   = calcGitHubScore({ year, admissionYear, githubStats: sampleGitHub })
+  const leetcodeResult = calcLeetCodeScore({ year, admissionYear, leetcodeStats: sampleLeetCode })
+  const resumeResult   = calcResumeScore({ year, admissionYear, resumeParsed: sampleResume })
+  const certsResult    = await calcCertificationsScore({ year, admissionYear, certifications: sampleCertifications, studentName })
 
   // 2. Orchestrate Combined SPI Score
   const spiResult = calculateSPI({
@@ -73,7 +73,7 @@ async function runTest() {
     leetcode: leetcodeResult,
     resume: resumeResult,
     certifications: certsResult,
-  } as any)
+  })
 
   console.log('====================================================')
   console.log('         COMPLETE SPI SCORE CALCULATOR TEST         ')

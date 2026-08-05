@@ -61,21 +61,21 @@ async function main() {
       year: effectiveYear,
       admissionYear,
       githubStats: cp?.githubStats,
-    } as any)
+    })
 
     // 2. Run LeetCode Evidence Engine
     const leetcodeResult = calcLeetCodeScore({
       year: effectiveYear,
       admissionYear,
       leetcodeStats: cp?.leetcodeStats,
-    } as any)
+    })
 
     // 3. Run Resume Evidence Engine
     const resumeResult = calcResumeScore({
       year: effectiveYear,
       admissionYear,
       resumeParsed: student.resumeParsed,
-    } as any)
+    })
 
     // 4. Run Certifications Evidence Engine
     const certsResult = await calcCertificationsScore({
@@ -83,7 +83,7 @@ async function main() {
       admissionYear,
       certifications: activeCertifications,
       studentName: student.fullName,
-    } as any)
+    })
 
     // 5. Run Internships Evidence Engine
     const internshipsResult = await calcInternshipsScore({
@@ -91,7 +91,7 @@ async function main() {
       admissionYear,
       internships: activeInternships,
       studentName: student.fullName,
-    } as any)
+    })
 
     // 6. Orchestrate Combined SPI Score
     const spiResult = calculateSPI({
@@ -100,7 +100,7 @@ async function main() {
       resume: resumeResult,
       certifications: certsResult,
       internships: internshipsResult,
-    } as any)
+    })
 
     console.log(`🎯 OVERALL SPI SCORE   : ${spiResult.spi} / 100`)
     console.log(`📊 EVIDENCE COVERAGE   : ${spiResult.evidenceCoverage}%\n`)

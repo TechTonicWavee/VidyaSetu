@@ -117,33 +117,33 @@ export async function POST(request: NextRequest) {
       year: effectiveYear,
       admissionYear,
       githubStats: codingProfile.githubStats,
-    } as any)
+    })
 
     const leetcodeResult = calcLeetCodeScore({
       year: effectiveYear,
       admissionYear,
       leetcodeStats: codingProfile.leetcodeStats,
-    } as any)
+    })
 
     const resumeResult = calcResumeScore({
       year: effectiveYear,
       admissionYear,
       resumeParsed: student.resumeParsed,
-    } as any)
+    })
 
     const certsResult = await calcCertificationsScore({
       year: effectiveYear,
       admissionYear,
       certifications: activeCertifications,
       studentName: student.fullName,
-    } as any)
+    })
 
     const internshipsResult = await calcInternshipsScore({
       year: effectiveYear,
       admissionYear,
       internships: student.internships || [],
       studentName: student.fullName,
-    } as any)
+    })
 
     // Calculate SPI
     const spiResult = calculateSPI({
@@ -152,7 +152,7 @@ export async function POST(request: NextRequest) {
       resume: resumeResult,
       certifications: certsResult,
       internships: internshipsResult,
-    } as any)
+    })
 
     // Save SPI and updated year back to Student table
     await prisma.student.update({

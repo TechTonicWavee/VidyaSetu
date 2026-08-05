@@ -15,7 +15,7 @@ async function main() {
   console.log('Skills count:', (student.resumeParsed as any)?.skills?.length)
   console.log('Projects count:', (student.resumeParsed as any)?.projects?.length)
 
-  const result = (calcResumeScore as any)({
+  const result = calcResumeScore({
     year: student.year,
     resumeParsed: student.resumeParsed,
   })

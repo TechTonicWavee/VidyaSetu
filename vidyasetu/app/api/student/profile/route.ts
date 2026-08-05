@@ -42,7 +42,7 @@ export async function GET(request: NextRequest) {
     const resumeResult = calcResumeScore({
       year: student.year,
       resumeParsed: student.resumeParsed,
-    } as any) as any
+    })
 
     return Response.json({
       success: true,
