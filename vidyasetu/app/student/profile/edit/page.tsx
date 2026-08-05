@@ -589,7 +589,8 @@ export default function ProfileEditPage() {
       }
 
       if (resumePublicId) {
-        deleteCloudinaryAsset(resumePublicId, 'image').catch(() => {})
+        const rType = /\.(docx?|zip|pdf)$/i.test(resumeUrl) ? 'raw' : 'image'
+        deleteCloudinaryAsset(resumePublicId, rType as 'image' | 'raw').catch(() => {})
       }
 
       // Clear local states

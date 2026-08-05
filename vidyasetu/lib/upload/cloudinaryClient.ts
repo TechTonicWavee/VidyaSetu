@@ -61,7 +61,6 @@ async function uploadToLocal(
   formData.append('folder', folder);
   formData.append('fileName', file.name);
 
-  return new Promise<UploadResult>((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', '/api/upload');
 
@@ -117,9 +116,11 @@ export async function uploadToCloudinary(
     formData.append('signature', sig.signature);
     formData.append('folder', sig.folder);
 
+    const resourceType = file.type === 'application/pdf' ? 'raw' : 'auto';
+
     return await new Promise<UploadResult>((resolve, reject) => {
       const xhr = new XMLHttpRequest();
-      xhr.open('POST', `https://api.cloudinary.com/v1_1/${sig.cloudName}/auto/upload`);
+      xhr.open('POST', `https://api.cloudinary.com/v1_1/${sig.cloudName}/${resourceType}/upload`);
 
       xhr.upload.onprogress = (e) => {
         if (e.lengthComputable && onProgress) onProgress(Math.round((e.loaded / e.total) * 100));
