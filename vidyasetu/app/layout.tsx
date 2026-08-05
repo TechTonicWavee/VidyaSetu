@@ -5,6 +5,19 @@ import { KeyboardShortcutProvider } from '@/components/KeyboardShortcuts'
 import { DemoProvider } from '@/components/DemoContext'
 import { ThemeProvider } from '@/components/ThemeProvider'
 
+if (typeof console !== 'undefined') {
+  const originalWarn = console.warn;
+  console.warn = (...args) => {
+    if (
+      typeof args[0] === 'string' &&
+      args[0].includes('The width(-1) and height(-1) of chart should be greater than 0')
+    ) {
+      return;
+    }
+    originalWarn(...args);
+  };
+}
+
 export const metadata = {
   title: 'VidyaSetu — AI-Powered Student Intelligence Platform',
   description: 'Multi-role AI-powered web application for engineering colleges in India. Track Student Potential Index, career paths, and institutional analytics.',
