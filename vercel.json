@@ -1,0 +1,6 @@
+{
+  "buildCommand": "cd vidyasetu && npx prisma generate && npm run build",
+  "outputDirectory": "vidyasetu/.next",
+  "installCommand": "cd vidyasetu && npm install",
+  "framework": "nextjs"
+}

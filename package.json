@@ -1,5 +1,11 @@
 {
-  "type": "module",
+  "name": "vidyasetu-root",
+  "private": true,
+  "scripts": {
+    "dev": "cd vidyasetu && npm run dev",
+    "build": "cd vidyasetu && npx prisma generate && npm run build",
+    "start": "cd vidyasetu && npm run start"
+  },
   "dependencies": {
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^5.22.0",
