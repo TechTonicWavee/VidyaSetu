@@ -214,7 +214,7 @@ function StudentDrawer({ student, risk, onClose, notes, onSaveNote, onFlag }: St
             <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2 flex items-center gap-1.5">
               <TrendingUp size={12} /> Score Trend (4 Assessments)
             </p>
-            <ResponsiveContainer width="100%" height={120}>
+            <ResponsiveContainer minWidth={1} minHeight={1} width="100%" height={120}>
               <LineChart data={chartData}>
                 <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" />
                 <XAxis dataKey="name" tick={{ fontSize: 10 }} />
@@ -232,7 +232,7 @@ function StudentDrawer({ student, risk, onClose, notes, onSaveNote, onFlag }: St
             <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-2 flex items-center gap-1.5">
               <Target size={12} /> Skill Profile
             </p>
-            <ResponsiveContainer width="100%" height={180}>
+            <ResponsiveContainer minWidth={1} minHeight={1} width="100%" height={180}>
               <RadarChart data={radarData}>
                 <PolarGrid stroke="#E5E7EB" />
                 <PolarAngleAxis dataKey="skill" tick={{ fontSize: 9 }} />
@@ -606,7 +606,7 @@ export default function FacultyStudentIntelligence() {
                 <BarChart size={14} /> Section vs Dept Average
               </h2>
               <p className="text-xs text-gray-400 mb-4">{FACULTY_PROFILE.section.code} compared to department</p>
-              <ResponsiveContainer width="100%" height={180}>
+              <ResponsiveContainer minWidth={1} minHeight={1} width="100%" height={180}>
                 <ReBarChart data={benchData} barSize={14}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#F3F4F6" />
                   <XAxis dataKey="metric" tick={{ fontSize: 10 }} />

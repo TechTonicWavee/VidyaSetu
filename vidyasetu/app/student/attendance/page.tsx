@@ -352,7 +352,7 @@ export default function AttendanceView() {
             <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-8">
               <h2 className="text-xl font-bold text-navy mb-8">Monthly Attendance Trend</h2>
               <div className="h-80 w-full">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer minWidth={1} minHeight={1} width="100%" height="100%">
                   <LineChart data={trendData}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F3F4F6" />
                     <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 10, fontWeight: 700, fill: '#9CA3AF' }} dy={10} />

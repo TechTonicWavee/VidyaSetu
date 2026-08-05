@@ -356,7 +356,7 @@ export default function CurriculumGapAnalysis() {
                   <div className="lg:col-span-4 flex flex-col items-center justify-center bg-gray-50 rounded-xl border border-gray-200 p-6">
                     <h4 className="font-bold text-navy text-sm mb-4 w-full">What the data shows</h4>
                     <div className="w-full h-[200px]">
-                      <ResponsiveContainer width="100%" height="100%">
+                      <ResponsiveContainer minWidth={1} minHeight={1} width="100%" height="100%">
                         <BarChart data={gap1Data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                           <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
                           <XAxis dataKey="year" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} dy={5} />
@@ -429,7 +429,7 @@ export default function CurriculumGapAnalysis() {
                   
                   <div className="lg:col-span-4 flex flex-col items-center justify-center p-4">
                     <div className="w-full h-[120px]">
-                      <ResponsiveContainer width="100%" height="100%">
+                      <ResponsiveContainer minWidth={1} minHeight={1} width="100%" height="100%">
                         <BarChart data={gap2Data} margin={{ top: 0, right: 0, left: -30, bottom: 0 }}>
                           <XAxis dataKey="year" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#6b7280' }} dy={5} />
                           <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#6b7280' }} domain={[0, 100]} />

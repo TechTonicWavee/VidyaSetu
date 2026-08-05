@@ -60,7 +60,7 @@ async function uploadToLocal(
   formData.append('file', file);
   formData.append('folder', folder);
   formData.append('fileName', file.name);
-
+  return new Promise<UploadResult>((resolve, reject) => {
     const xhr = new XMLHttpRequest();
     xhr.open('POST', '/api/upload');
 

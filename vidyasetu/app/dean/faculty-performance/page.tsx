@@ -591,7 +591,7 @@ export default function FacultyPerformanceDeepDive() {
 
                 <div className="flex-1 flex flex-col md:flex-row items-center justify-center gap-8 mb-6">
                   <div className="w-[200px] h-[200px]">
-                    <ResponsiveContainer width="100%" height="100%">
+                    <ResponsiveContainer minWidth={1} minHeight={1} width="100%" height="100%">
                       <PieChart>
                         <Pie
                           data={pieData}
@@ -651,7 +651,7 @@ export default function FacultyPerformanceDeepDive() {
                 </h2>
 
                 <div className="h-[200px] w-full mb-6 flex-1">
-                  <ResponsiveContainer width="100%" height="100%">
+                  <ResponsiveContainer minWidth={1} minHeight={1} width="100%" height="100%">
                     <AreaChart
                       data={areaTrendData}
                       margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
@@ -961,7 +961,7 @@ export default function FacultyPerformanceDeepDive() {
                     </p>
 
                     <div className="h-[150px] w-full bg-white rounded-lg p-3 border border-teal-100">
-                      <ResponsiveContainer width="100%" height="100%">
+                      <ResponsiveContainer minWidth={1} minHeight={1} width="100%" height="100%">
                         <RechartsLineChart
                           data={facultyImprovementChartData}
                           margin={{ top: 10, right: 10, left: -25, bottom: 0 }}

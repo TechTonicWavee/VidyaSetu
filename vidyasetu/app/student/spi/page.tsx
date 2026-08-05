@@ -325,7 +325,7 @@ export default function SPIDeepDivePage() {
               <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col items-center">
                 <h2 className="text-lg font-bold text-navy mb-2 self-start">Your SPI Component Balance</h2>
                 <div className="w-full flex-1 min-h-[250px]">
-                  <ResponsiveContainer width="100%" height="100%">
+                  <ResponsiveContainer minWidth={1} minHeight={1} width="100%" height="100%">
                     <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
                       <PolarGrid stroke="#e5e7eb" />
                       <PolarAngleAxis dataKey="subject" tick={{ fill: '#4b5563', fontSize: 10, fontWeight: 600 }} />

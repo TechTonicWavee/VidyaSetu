@@ -1048,7 +1048,7 @@ export default function PolicySimulation() {
                         <p className="text-xs text-gray-400 mb-4">
                           Placement readiness before vs after
                         </p>
-                        <ResponsiveContainer width="100%" height={180}>
+                        <ResponsiveContainer minWidth={1} minHeight={1} width="100%" height={180}>
                           <BarChart
                             data={
                               compareMode && compareB
@@ -1137,7 +1137,7 @@ export default function PolicySimulation() {
                             </div>
                           </div>
                         </div>
-                        <ResponsiveContainer width="100%" height={210}>
+                        <ResponsiveContainer minWidth={1} minHeight={1} width="100%" height={210}>
                           <RadarChart
                             data={radarData}
                             margin={{
@@ -1194,7 +1194,7 @@ export default function PolicySimulation() {
                           Forecast
                         </span>
                       </div>
-                      <ResponsiveContainer width="100%" height={180}>
+                      <ResponsiveContainer minWidth={1} minHeight={1} width="100%" height={180}>
                         <LineChart
                           data={result.trend}
                           margin={{ top: 5, right: 10, left: -20, bottom: 0 }}

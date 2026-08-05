@@ -175,7 +175,7 @@ export default function RankingsPage() {
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col">
           <h3 className="text-lg font-bold text-navy mb-4">Rank Trend Over Time</h3>
           <div className="flex-1 min-h-[250px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer minWidth={1} minHeight={1} width="100%" height="100%">
               <LineChart data={data.trendChart} margin={{ top: 20, right: 20, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
                 <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fill: '#6b7280', fontSize: 12 }} dy={10} />
@@ -193,7 +193,7 @@ export default function RankingsPage() {
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col">
           <h3 className="text-lg font-bold text-navy mb-4">How you compare to your {scope} avg</h3>
           <div className="flex-1 min-h-[250px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer minWidth={1} minHeight={1} width="100%" height="100%">
               <BarChart layout="vertical" data={data.barChart} margin={{ top: 0, right: 20, left: 30, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="#f3f4f6" />
                 <XAxis type="number" domain={[0, 100]} hide />

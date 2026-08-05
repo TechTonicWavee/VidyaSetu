@@ -304,7 +304,7 @@ export default function StudentIntelligence() {
             <div className="xl:col-span-2 bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
               <h2 className="font-bold text-sm text-[#0D1B2A] mb-1">Student Distribution</h2>
               <p className="text-xs text-gray-400 mb-4">Category breakdown of {filtered.length} students</p>
-              <ResponsiveContainer width="100%" height={220}>
+              <ResponsiveContainer minWidth={1} minHeight={1} width="100%" height={220}>
                 <PieChart>
                   <Pie data={distribution.filter(d => d.count > 0)} dataKey="count" nameKey="label"
                     cx="50%" cy="50%" innerRadius={55} outerRadius={90} paddingAngle={2}>
@@ -430,7 +430,7 @@ export default function StudentIntelligence() {
                       <div className="flex items-center gap-3">
                         {categoryRadar.length > 0 && (
                           <div style={{ width: 120, height: 80 }}>
-                            <ResponsiveContainer width="100%" height="100%">
+                            <ResponsiveContainer minWidth={1} minHeight={1} width="100%" height="100%">
                               <RadarChart data={categoryRadar} outerRadius="70%">
                                 <PolarGrid stroke="#e5e7eb" />
                                 <PolarAngleAxis dataKey="skill" tick={{ fontSize: 8, fill: '#9ca3af' }} />
@@ -713,7 +713,7 @@ export default function StudentIntelligence() {
                     {/* Skill Radar */}
                     <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm flex flex-col items-center justify-center">
                       <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Skill Radar</p>
-                      <ResponsiveContainer width="100%" height={220}>
+                      <ResponsiveContainer minWidth={1} minHeight={1} width="100%" height={220}>
                         <RadarChart data={radarData} outerRadius="70%">
                           <PolarGrid stroke="#e5e7eb" />
                           <PolarAngleAxis dataKey="skill" tick={{ fontSize: 10, fill: '#6b7280' }} />
@@ -803,7 +803,7 @@ export default function StudentIntelligence() {
           <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
             <h2 className="font-bold text-sm text-[#0D1B2A] mb-1">Avg. Scores by Category</h2>
             <p className="text-xs text-gray-400 mb-5">Composite, Academic & Attendance averages per segment</p>
-            <ResponsiveContainer width="100%" height={240}>
+            <ResponsiveContainer minWidth={1} minHeight={1} width="100%" height={240}>
               <BarChart
                 data={distribution.filter(d => d.count > 0).map(d => {
                   const cats = filtered.filter(s => s.category === d.id)

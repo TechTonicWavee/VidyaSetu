@@ -266,7 +266,7 @@ export default function PlacementReadinessPage() {
                 <p className="text-sm text-gray-500">Where you are vs where you need to be for Tier 2 companies</p>
               </div>
               <div className="p-6 h-[350px]">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer minWidth={1} minHeight={1} width="100%" height="100%">
                   <BarChart data={skillData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
                     <XAxis dataKey="domain" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#6b7280' }} dy={10} interval={0} angle={-25} textAnchor="end" height={60} />

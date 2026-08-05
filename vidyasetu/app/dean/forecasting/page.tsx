@@ -399,7 +399,7 @@ export default function DeanForecastingPage() {
                 {/* Pie Chart */}
                 <div className="p-6 lg:w-1/2 flex flex-col justify-center items-center">
                   <div className="h-64 w-full">
-                    <ResponsiveContainer width="100%" height="100%">
+                    <ResponsiveContainer minWidth={1} minHeight={1} width="100%" height="100%">
                       <PieChart>
                         <Pie
                           data={pieData}
@@ -648,7 +648,7 @@ export default function DeanForecastingPage() {
               </div>
 
               <div className="p-6 h-[400px]">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer minWidth={1} minHeight={1} width="100%" height="100%">
                   <BarChart
                     data={forecastChartData}
                     margin={{ top: 20, right: 30, left: 20, bottom: 5 }}

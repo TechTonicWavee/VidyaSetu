@@ -536,7 +536,7 @@ export default function FacultyStudentProfile() {
                           </div>
                         </div>
                         <div className="h-[100px] w-full mt-4">
-                          <ResponsiveContainer width="100%" height={100}>
+                          <ResponsiveContainer minWidth={1} minHeight={1} width="100%" height={100}>
                             <LineChart
                               data={dbmsTrend}
                               margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
@@ -623,7 +623,7 @@ export default function FacultyStudentProfile() {
                           </div>
                         </div>
                         <div className="h-[100px] w-full mt-4">
-                          <ResponsiveContainer width="100%" height={100}>
+                          <ResponsiveContainer minWidth={1} minHeight={1} width="100%" height={100}>
                             <LineChart
                               data={osTrend}
                               margin={{ top: 5, right: 20, bottom: 5, left: 0 }}
@@ -793,7 +793,7 @@ export default function FacultyStudentProfile() {
                       </div>
                       <div className="p-5 flex flex-col items-center">
                         <div className="h-[200px] w-full max-w-[250px]">
-                          <ResponsiveContainer width="100%" height={200}>
+                          <ResponsiveContainer minWidth={1} minHeight={1} width="100%" height={200}>
                             <RadarChart
                               cx="50%"
                               cy="50%"
@@ -1055,7 +1055,7 @@ export default function FacultyStudentProfile() {
                       </div>
                       <div className="p-5 flex justify-center">
                         <div className="h-[350px] w-full max-w-[400px]">
-                          <ResponsiveContainer width="100%" height={350}>
+                          <ResponsiveContainer minWidth={1} minHeight={1} width="100%" height={350}>
                             <RadarChart
                               cx="50%"
                               cy="50%"

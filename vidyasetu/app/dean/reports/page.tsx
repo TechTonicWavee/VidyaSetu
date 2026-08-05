@@ -498,7 +498,7 @@ export default function DeanReports() {
                 </div>
                 <TrendingUp size={16} className="text-green-500" />
               </div>
-              <ResponsiveContainer width="100%" height={200}>
+              <ResponsiveContainer minWidth={1} minHeight={1} width="100%" height={200}>
                 <RechartsLineChart
                   data={passRateData}
                   margin={{ top: 4, right: 8, left: -10, bottom: 0 }}
@@ -545,7 +545,7 @@ export default function DeanReports() {
                 </div>
                 <BarChart3 size={16} className="text-blue-500" />
               </div>
-              <ResponsiveContainer width="100%" height={200}>
+              <ResponsiveContainer minWidth={1} minHeight={1} width="100%" height={200}>
                 <RechartsLineChart
                   data={semesterTrend}
                   margin={{ top: 4, right: 8, left: -10, bottom: 0 }}
@@ -651,7 +651,7 @@ export default function DeanReports() {
               <h2 className="font-semibold text-[#0D1B2A] text-sm mb-4">
                 Risk Distribution
               </h2>
-              <ResponsiveContainer width="100%" height={180}>
+              <ResponsiveContainer minWidth={1} minHeight={1} width="100%" height={180}>
                 <PieChart>
                   <Pie
                     data={riskDistribution}
