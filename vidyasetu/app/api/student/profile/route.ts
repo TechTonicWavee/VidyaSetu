@@ -40,9 +40,9 @@ export async function GET(request: NextRequest) {
     }
 
     const resumeResult = calcResumeScore({
-      year: student.year,
-      resumeParsed: student.resumeParsed,
-    })
+      year: student.year || 1,
+      resumeParsed: student.resumeParsed as any,
+    }) as { score: number } | null
 
     return Response.json({
       success: true,
