@@ -71,18 +71,21 @@ console.log('----------------------------------------------------')
 console.log('           OVERALL CERTIFICATIONS ENGINE            ')
 console.log('----------------------------------------------------')
 
-const engineResult = calcCertificationsScore({
-  year: 2,
-  certifications: sampleCertificates,
-  studentName,
-})
+async function runTest() {
+  const engineResult = await calcCertificationsScore({
+    year: 2,
+    certifications: sampleCertificates,
+    studentName,
+  })
 
-console.log(`Engine 0-10 Score : ${engineResult.score} / 10`)
-console.log(`Semester          : ${engineResult.semester}`)
-console.log(`Semester Targets  :`, JSON.stringify(engineResult.targets))
-console.log(`Total Certs Count : ${engineResult.metadata.totalCertificates}`)
-console.log(`Valid Certs Count : ${engineResult.metadata.validCertificates}`)
-console.log(`Mismatched Certs  : ${engineResult.metadata.mismatchedCertificates}`)
-console.log(`Tier Breakdown    : Tier1=${engineResult.metadata.tier1Count}, Tier2=${engineResult.metadata.tier2Count}, Tier3=${engineResult.metadata.tier3Count}, Tier4=${engineResult.metadata.tier4Count}`)
-console.log('Top 3 Valid Certs :', JSON.stringify(engineResult.metadata.topCertificates, null, 2))
+  console.log(`Engine 0-10 Score : ${engineResult.score} / 10`)
+  console.log(`Semester          : ${engineResult.semester}`)
+  console.log(`Semester Targets  :`, JSON.stringify(engineResult.targets))
+  console.log(`Total Certs Count : ${engineResult.metadata.totalCertificates}`)
+  console.log(`Valid Certs Count : ${engineResult.metadata.validCertificates}`)
+  console.log(`Mismatched Certs  : ${engineResult.metadata.mismatchedCertificates}`)
+  console.log(`Tier Breakdown    : Tier1=${engineResult.metadata.tier1Count}, Tier2=${engineResult.metadata.tier2Count}, Tier3=${engineResult.metadata.tier3Count}, Tier4=${engineResult.metadata.tier4Count}`)
+  console.log('Top 3 Valid Certs :', JSON.stringify(engineResult.metadata.topCertificates, null, 2))
+}
 
+runTest()

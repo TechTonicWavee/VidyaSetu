@@ -75,7 +75,7 @@ async function main() {
     } as any)
 
     // 4. Run Certifications Evidence Engine
-    const certsResult = calcCertificationsScore({
+    const certsResult = await calcCertificationsScore({
       year: effectiveYear,
       admissionYear,
       certifications: activeCertifications,

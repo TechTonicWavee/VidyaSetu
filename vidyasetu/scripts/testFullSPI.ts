@@ -61,41 +61,45 @@ const sampleCertifications = [
 ]
 
 // 1. Run 4 Evidence Engines
-const githubResult  = calcGitHubScore({ year, admissionYear, githubStats: sampleGitHub } as any)
-const leetcodeResult = calcLeetCodeScore({ year, admissionYear, leetcodeStats: sampleLeetCode } as any)
-const resumeResult  = calcResumeScore({ year, admissionYear, resumeParsed: sampleResume } as any)
-const certsResult   = calcCertificationsScore({ year, admissionYear, certifications: sampleCertifications, studentName } as any)
+async function runTest() {
+  const githubResult  = calcGitHubScore({ year, admissionYear, githubStats: sampleGitHub } as any)
+  const leetcodeResult = calcLeetCodeScore({ year, admissionYear, leetcodeStats: sampleLeetCode } as any)
+  const resumeResult  = calcResumeScore({ year, admissionYear, resumeParsed: sampleResume } as any)
+  const certsResult   = await calcCertificationsScore({ year, admissionYear, certifications: sampleCertifications, studentName } as any)
 
-// 2. Orchestrate Combined SPI Score
-const spiResult = calculateSPI({
-  github: githubResult,
-  leetcode: leetcodeResult,
-  resume: resumeResult,
-  certifications: certsResult,
-} as any)
+  // 2. Orchestrate Combined SPI Score
+  const spiResult = calculateSPI({
+    github: githubResult,
+    leetcode: leetcodeResult,
+    resume: resumeResult,
+    certifications: certsResult,
+  } as any)
 
-console.log('====================================================')
-console.log('         COMPLETE SPI SCORE CALCULATOR TEST         ')
-console.log('====================================================\n')
+  console.log('====================================================')
+  console.log('         COMPLETE SPI SCORE CALCULATOR TEST         ')
+  console.log('====================================================\n')
 
-console.log(`Student           : ${studentName} (Year ${year})`)
-console.log(`Final SPI Score   : 🎯 ${spiResult.spi} / 100`)
-console.log(`Evidence Coverage : 📊 ${spiResult.evidenceCoverage}%\n`)
+  console.log(`Student           : ${studentName} (Year ${year})`)
+  console.log(`Final SPI Score   : 🎯 ${spiResult.spi} / 100`)
+  console.log(`Evidence Coverage : 📊 ${spiResult.evidenceCoverage}%\n`)
 
-console.log('----------------------------------------------------')
-console.log('            INDIVIDUAL ENGINE SCORES (0-10)          ')
-console.log('----------------------------------------------------')
-console.log(`🐙 GitHub Engine Score         : ${githubResult.score} / 10`)
-console.log(`🧩 LeetCode Engine Score       : ${leetcodeResult.score} / 10`)
-console.log(`📄 Resume Engine Score         : ${resumeResult.score} / 10`)
-console.log(`📜 Certifications Engine Score : ${certsResult.score} / 10\n`)
+  console.log('----------------------------------------------------')
+  console.log('            INDIVIDUAL ENGINE SCORES (0-10)          ')
+  console.log('----------------------------------------------------')
+  console.log(`🐙 GitHub Engine Score         : ${githubResult.score} / 10`)
+  console.log(`🧩 LeetCode Engine Score       : ${leetcodeResult.score} / 10`)
+  console.log(`📄 Resume Engine Score         : ${resumeResult.score} / 10`)
+  console.log(`📜 Certifications Engine Score : ${certsResult.score} / 10\n`)
 
-console.log('----------------------------------------------------')
-console.log('               DIMENSION BREAKDOWN                  ')
-console.log('----------------------------------------------------')
-Object.entries(spiResult.dimensions).forEach(([dim, data]: [string, any]) => {
-  if (data.weight > 0) {
-    console.log(`🔹 ${dim.padEnd(20)} : ${data.score.toFixed(2)} pts (Weight: ${data.weight * 100}%)`)
-  }
-})
-console.log(`🔹 Certs No-PDF Count  : ${certsResult.metadata?.noPdfCertificates ?? 0}  (blocked by PDF gate)`)
+  console.log('----------------------------------------------------')
+  console.log('               DIMENSION BREAKDOWN                  ')
+  console.log('----------------------------------------------------')
+  Object.entries(spiResult.dimensions).forEach(([dim, data]: [string, any]) => {
+    if (data.weight > 0) {
+      console.log(`🔹 ${dim.padEnd(20)} : ${data.score.toFixed(2)} pts (Weight: ${data.weight * 100}%)`)
+    }
+  })
+  console.log(`🔹 Certs No-PDF Count  : ${certsResult.metadata?.noPdfCertificates ?? 0}  (blocked by PDF gate)`)
+}
+
+runTest()

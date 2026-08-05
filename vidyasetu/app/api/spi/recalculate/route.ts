@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
       resumeParsed: student.resumeParsed,
     } as any)
 
-    const certsResult = calcCertificationsScore({
+    const certsResult = await calcCertificationsScore({
       year: effectiveYear,
       admissionYear,
       certifications: activeCertifications,
