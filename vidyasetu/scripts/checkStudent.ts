@@ -13,7 +13,7 @@ async function main() {
     console.log(`resumeParsed JSON:`, JSON.stringify(s.resumeParsed, null, 2))
     
     if (s.resumeParsed) {
-      const res = calcResumeScore({ year: s.year, resumeParsed: s.resumeParsed })
+      const res = calcResumeScore({ year: s.year ?? 1, resumeParsed: s.resumeParsed })
       console.log(`\ncalcResumeScore RESULT:`, JSON.stringify(res, null, 2))
     } else {
       console.log(`No resumeParsed stored in DB for ${s.fullName}`)

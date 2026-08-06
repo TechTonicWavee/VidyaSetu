@@ -16,7 +16,7 @@ async function main() {
   console.log('Projects count:', (student.resumeParsed as any)?.projects?.length)
 
   const result = calcResumeScore({
-    year: student.year,
+    year: student.year ?? 1,
     resumeParsed: student.resumeParsed,
   })
 
