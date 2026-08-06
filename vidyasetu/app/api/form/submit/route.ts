@@ -10,13 +10,17 @@ export const dynamic = 'force-dynamic'
 async function fetchGitHubStats(username?: string | null) {
   if (!username?.trim()) return null
   try {
+    const token = process.env.GITHUB_TOKEN
+    const authHeaders: Record<string, string> = { Accept: 'application/vnd.github+json' }
+    if (token) authHeaders['Authorization'] = `Bearer ${token}`
+
     const [userRes, reposRes] = await Promise.all([
       fetch(`https://api.github.com/users/${username}`, {
-        headers: { Accept: 'application/vnd.github+json' },
+        headers: authHeaders,
         next: { revalidate: 0 },
       }),
       fetch(`https://api.github.com/users/${username}/repos?per_page=100`, {
-        headers: { Accept: 'application/vnd.github+json' },
+        headers: authHeaders,
         next: { revalidate: 0 },
       }),
     ])
@@ -25,19 +29,25 @@ async function fetchGitHubStats(username?: string | null) {
     const user = await userRes.json()
 
     let totalStars = 0
+    let lastRepoActivity: string | null = null
     const languageSet = new Set()
     if (reposRes.ok) {
       const repos = await reposRes.json()
       for (const repo of repos) {
         totalStars += repo.stargazers_count ?? 0
         if (repo.language) languageSet.add(repo.language)
+        // Track most recent repo push date for Activity score
+        if (repo.pushed_at && (!lastRepoActivity || repo.pushed_at > lastRepoActivity)) {
+          lastRepoActivity = repo.pushed_at
+        }
       }
     }
+    // Use most recent repo push, fallback to user profile updated_at
+    const lastActivityDate: string | null = lastRepoActivity ?? user.updated_at ?? null
 
     // ── GitHub GraphQL: total contributions ───────────────────────────────────
     let totalContributions = null
     try {
-      const token = process.env.GITHUB_TOKEN
       if (token) {
         const gqlRes = await fetch('https://api.github.com/graphql', {
           method: 'POST',
@@ -75,6 +85,7 @@ async function fetchGitHubStats(username?: string | null) {
       totalStars,
       languages: [...languageSet],
       totalContributions,
+      lastActivityDate,
       fetchedAt: new Date().toISOString(),
     }
   } catch (err) {
