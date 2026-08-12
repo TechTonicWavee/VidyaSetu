@@ -22,6 +22,7 @@ out/
 
 # Next.js Auto-generated Types
 frontend/next-env.d.ts
+next-env.d.ts
 
 # Temp Uploads
 **/public/uploads/temp/
@@ -33,6 +34,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+build.log
 
 # Large Dump / Generated Files
 structure.txt
@@ -56,3 +58,4 @@ Thumbs.db
 
 # Vercel
 .vercel
+/generated/prisma
