@@ -1,6 +1,6 @@
 import type { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
-import calcResumeScore from '@/../lib/spi/sources/resume'
+import calcResumeScore from '@/lib/spi/sources/resume'
 import { AuthError, requireAuth, requireOwnResource } from '../../../../lib/auth/verifyAccessToken'
 
 export const dynamic = 'force-dynamic'
