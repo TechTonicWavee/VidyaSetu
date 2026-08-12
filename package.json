@@ -2,9 +2,10 @@
   "name": "vidyasetu-root",
   "private": true,
   "scripts": {
-    "dev": "cd vidyasetu && npm run dev",
-    "build": "cd vidyasetu && npx prisma generate && npm run build",
-    "start": "cd vidyasetu && npm run start"
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "build": "cd frontend && npx prisma generate && npm run build",
+    "start": "cd frontend && npm run start"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.8.0",
