@@ -148,6 +148,7 @@ interface EditableCertification {
   verificationUrl?: string
   score?: number | null
   tier?: string | null
+  isFromResume?: boolean
 }
 
 interface EditableHackathon {
@@ -295,6 +296,7 @@ export default function ProfileEditPage() {
                   verificationUrl: c.verificationUrl || '',
                   score: c.score != null ? c.score : null,
                   tier: c.tier || null,
+                  isFromResume: c.isFromResume || false,
                 })))
               }
               if (s.internships?.length) {
@@ -1042,6 +1044,11 @@ export default function ProfileEditPage() {
               <div>
                 <div className="flex items-center flex-wrap gap-2 mb-1">
                   <h4 className="font-semibold text-content">{cert.name}</h4>
+                  {cert.isFromResume && (
+                    <span className="text-xs bg-purple-100 text-purple-700 border border-purple-200 px-2 py-0.5 rounded-full font-medium flex items-center gap-1" title="Parsed automatically from your resume. Upload the official certificate below to validate.">
+                      ✨ Parsed from Resume
+                    </span>
+                  )}
                   {cert.tier && (
                     <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
                       cert.tier === 'Tier 1' ? 'bg-emerald-100 text-emerald-800 border border-emerald-300' :
@@ -1119,6 +1126,24 @@ export default function ProfileEditPage() {
                 {(cert.credentialId && cert.verificationUrl) ? 'âš¡ Fast-Check Ready (< 30s)' : 'âš ï¸ Action Needed'}
               </span>
             </div>
+
+            {!hasFile && (
+              <div className="mt-2 bg-purple-50 p-3 rounded border border-purple-200">
+                <p className="text-xs text-purple-700 font-medium mb-2">Upload your official certificate to validate and include this in your SPI score.</p>
+                <FileUploadField
+                  folder="certificates"
+                  label=""
+                  currentUrl={cert.certificateUrl}
+                  currentPublicId={cert.certificatePublicId}
+                  onUploaded={({ url, publicId }) => {
+                     setCertifications(certifications.map(c => c.id === cert.id ? { ...c, certificateUrl: url, certificatePublicId: publicId } : c))
+                  }}
+                  onRemoved={() => {
+                     setCertifications(certifications.map(c => c.id === cert.id ? { ...c, certificateUrl: '', certificatePublicId: null } : c))
+                  }}
+                />
+              </div>
+            )}
 
             {cert.skills && cert.skills.length > 0 && (
               <div className="flex flex-wrap gap-1 mt-2">

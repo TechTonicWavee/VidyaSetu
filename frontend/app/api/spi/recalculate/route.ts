@@ -55,19 +55,24 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // ── Auto-sync from resumeParsed.certifications if DB table is empty ───────
+    // ── Auto-sync from resumeParsed.certifications ───────
     let activeCertifications = student.certifications || []
-    if (activeCertifications.length === 0 && Array.isArray((student.resumeParsed as any)?.certifications)) {
+    if (Array.isArray((student.resumeParsed as any)?.certifications)) {
       const rawCerts: string[] = (student.resumeParsed as any).certifications
       if (rawCerts.length > 0) {
-        console.log(`[spi/recalculate] Auto-importing ${rawCerts.length} resume certifications for ${universityId}`)
+        const existingNames = activeCertifications.map(c => c.name.toLowerCase().trim())
+        let addedNew = false
+
         for (const certStr of rawCerts) {
           if (!certStr || typeof certStr !== 'string') continue
           const parts = certStr.split(/–|-|\|/)
           const name = parts[0]?.trim() || certStr.trim()
+          
+          if (existingNames.includes(name.toLowerCase().trim())) continue
+          
           const platform = parts[1]?.trim() || 'Coursera'
-
           const evalResult = evaluateCertificate({ name, platform })
+          
           await prisma.certification.create({
             data: {
               universityId,
@@ -77,15 +82,21 @@ export async function POST(request: NextRequest) {
               score: evalResult.totalScore,
               tier: evalResult.tier,
               breakdown: evalResult.factors as any,
+              isFromResume: true,
             }
           })
+          addedNew = true
+          existingNames.push(name.toLowerCase().trim())
         }
-        // Reload certifications from DB
-        const refreshedStudent = await prisma.student.findUnique({
-          where: { universityId },
-          select: { certifications: true }
-        })
-        activeCertifications = refreshedStudent?.certifications || []
+
+        if (addedNew) {
+          // Reload certifications from DB
+          const refreshedStudent = await prisma.student.findUnique({
+            where: { universityId },
+            select: { certifications: true }
+          })
+          activeCertifications = refreshedStudent?.certifications || []
+        }
       }
     }
 
@@ -144,6 +155,22 @@ export async function POST(request: NextRequest) {
       internships: student.internships || [],
       studentName: student.fullName,
     })
+
+    // ── Cache Parsed Recipient Names ──────────────────────────────────────────
+    if (certsResult && Array.isArray(certsResult.breakdown)) {
+      for (const evaluatedCert of certsResult.breakdown) {
+        if (!evaluatedCert.id) continue;
+        const dbCert = activeCertifications.find(c => c.id === evaluatedCert.id)
+        if (!dbCert) continue;
+
+        if (evaluatedCert.recipientName && dbCert.recipientName !== evaluatedCert.recipientName) {
+           await prisma.certification.update({
+             where: { id: dbCert.id },
+             data: { recipientName: evaluatedCert.recipientName }
+           })
+        }
+      }
+    }
 
     // Calculate SPI
     const spiResult = calculateSPI({
