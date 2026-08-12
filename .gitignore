@@ -1,0 +1,58 @@
+# Dependencies
+node_modules/
+**/node_modules/
+.pnpm-store/
+
+# Local Environment Variables & Secrets
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# Build & Compilation Outputs
+frontend/.next/
+backend/dist/
+.next/
+dist/
+build/
+out/
+*.tsbuildinfo
+
+# Next.js Auto-generated Types
+frontend/next-env.d.ts
+
+# Temp Uploads
+**/public/uploads/temp/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Large Dump / Generated Files
+structure.txt
+folder_structure.txt
+build.txt
+
+# Operating System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE and Editor Settings
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Vercel
+.vercel
