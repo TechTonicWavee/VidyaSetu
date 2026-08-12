@@ -4,8 +4,11 @@
   "scripts": {
     "dev:frontend": "cd frontend && npm run dev",
     "dev:backend": "cd backend && npm run dev",
-    "build": "cd frontend && npx prisma generate && npm run build",
-    "start": "cd frontend && npm run start"
+    "build:frontend": "cd frontend && npx prisma generate && npm run build",
+    "start:frontend": "cd frontend && npm run start",
+    "dev:vidyasetu": "cd vidyasetu && npm run dev",
+    "build:vidyasetu": "cd vidyasetu && npx prisma generate && npm run build",
+    "start:vidyasetu": "cd vidyasetu && npm run start"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.8.0",
