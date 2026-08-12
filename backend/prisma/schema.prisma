@@ -1,9 +1,3 @@
-// MIRROR of frontend/prisma/schema.prisma — that file is the canonical
-// source of truth and owns all migrations. This copy exists only so the
-// backend package can `prisma generate` its own client against the same
-// DB. Run migrations from frontend/, then re-copy this file and
-// `npm run prisma:generate` here after any schema change.
-
 generator client {
   provider = "prisma-client-js"
 }
