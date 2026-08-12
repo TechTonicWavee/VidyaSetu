@@ -4,7 +4,7 @@ import targets from '../config/targets.js'
 import { inferSemester } from './leetcodeScore.js'
 import { evaluateCertificate } from '../evaluators/certificateEvaluators.js'
 import { roundToTwo } from '../utils/helpers.js'
-import { parseCertificateName } from '../../certificate/parseCertificateName.js'
+import { parseCertificateName } from '../../certificate/parseCertificateName'
 
 /**
  * Main Certifications SPI Evidence Engine
