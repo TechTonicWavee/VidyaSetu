@@ -1,5 +1,5 @@
 import { prisma } from '../lib/prisma'
-import calcResumeScore from '../../lib/spi/sources/resume.js'
+import calcResumeScore from '../lib/spi/sources/resume.js'
 
 async function main() {
   const students = await prisma.student.findMany()

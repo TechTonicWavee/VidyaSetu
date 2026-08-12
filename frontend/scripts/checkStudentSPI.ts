@@ -1,11 +1,11 @@
 import 'dotenv/config'
 import { PrismaClient } from '@prisma/client'
-import calcGitHubScore from '../../lib/spi/sources/githubScore.js'
-import calcLeetCodeScore from '../../lib/spi/sources/leetcodeScore.js'
-import calcResumeScore from '../../lib/spi/sources/resume.js'
-import calcCertificationsScore from '../../lib/spi/sources/certifications.js'
-import calcInternshipsScore from '../../lib/spi/sources/internships.js'
-import calculateSPI from '../../lib/spi/orchestrator/calculateSPI.js'
+import calcGitHubScore from '../lib/spi/sources/githubScore.js'
+import calcLeetCodeScore from '../lib/spi/sources/leetcodeScore.js'
+import calcResumeScore from '../lib/spi/sources/resume.js'
+import calcCertificationsScore from '../lib/spi/sources/certifications.js'
+import calcInternshipsScore from '../lib/spi/sources/internships.js'
+import calculateSPI from '../lib/spi/orchestrator/calculateSPI.js'
 
 const prisma = new PrismaClient()
 
