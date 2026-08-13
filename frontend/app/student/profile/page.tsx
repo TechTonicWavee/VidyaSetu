@@ -62,6 +62,15 @@ function EmptyCard({ icon: Icon, title, subtitle }: { icon: typeof BookOpen; tit
   )
 }
 
+// Safely pull a string[] section out of the (untyped) parsed-resume JSON.
+function resumeList(resumeParsed: unknown, key: string): string[] {
+  const rp = resumeParsed as Record<string, unknown> | null | undefined
+  const val = rp?.[key]
+  return Array.isArray(val)
+    ? val.filter((x): x is string => typeof x === 'string' && x.trim().length > 0)
+    : []
+}
+
 export default function StudentProfile() {
   const router = useRouter()
   const { student: authStudent } = useAuth()
@@ -95,7 +104,13 @@ export default function StudentProfile() {
   }
 
   const initials = student?.fullName ? getInitials(student.fullName) : 'S'
-  const projectsCount = student?.projects?.length ?? 0
+  // Resume-parsed fallbacks (shown when the structured DB tables are empty).
+  const resumeProjects = resumeList(student?.resumeParsed, 'projects')
+  const resumeActivities = [
+    ...resumeList(student?.resumeParsed, 'leadership'),
+    ...resumeList(student?.resumeParsed, 'achievements'),
+  ]
+  const projectsCount = (student?.projects?.length ?? 0) || resumeProjects.length
   const spiValue = student?.spiScore != null ? Number(student.spiScore).toFixed(1) : '—'
   const branchAndYear = student?.branch && student?.year
     ? `${student.branch} · ${student.year} Year${student.section ? ` · Section ${student.section}` : ''}`
@@ -275,8 +290,20 @@ export default function StudentProfile() {
                     </div>
                   ))}
                 </div>
+              ) : resumeProjects.length > 0 ? (
+                <div className="space-y-3">
+                  {resumeProjects.map((proj, i) => (
+                    <div key={i} className="border border-line rounded-xl p-4 bg-surface">
+                      <div className="flex items-start justify-between gap-2 mb-1">
+                        <Folder size={16} className="text-brand shrink-0 mt-0.5" />
+                        <Badge tone="purple">From Resume</Badge>
+                      </div>
+                      <p className="text-sm text-content-2">{proj}</p>
+                    </div>
+                  ))}
+                </div>
               ) : (
-                <EmptyCard icon={Folder} title="No Projects Uploaded" subtitle="Go to Edit Profile to add your project details." />
+                <EmptyCard icon={Folder} title="No Projects Uploaded" subtitle="Add projects in Edit Profile, or upload a resume to auto-detect them." />
               )}
             </Card>
             <Card>
@@ -311,8 +338,20 @@ export default function StudentProfile() {
                   </div>
                 ))}
               </div>
+            ) : resumeActivities.length > 0 ? (
+              <div className="space-y-3">
+                {resumeActivities.map((item, i) => (
+                  <div key={i} className="p-4 rounded-xl border border-line bg-surface-2">
+                    <div className="flex items-start justify-between gap-2 mb-1">
+                      <Award size={15} className="text-brand shrink-0 mt-0.5" />
+                      <Badge tone="purple">From Resume</Badge>
+                    </div>
+                    <p className="text-sm text-content-2">{item}</p>
+                  </div>
+                ))}
+              </div>
             ) : (
-              <EmptyCard icon={Award} title="No extracurricular activities uploaded" />
+              <EmptyCard icon={Award} title="No extracurricular activities yet" subtitle="Upload a resume with leadership/achievements to auto-detect them." />
             )}
           </Card>
           <Card>
@@ -320,7 +359,7 @@ export default function StudentProfile() {
             <div className="grid grid-cols-2 gap-4">
               {[
                 { label: 'Hackathons', value: String(student?.hackathons?.length ?? 0) },
-                { label: 'Activities', value: String(student?.extracurriculars?.length ?? 0) },
+                { label: 'Activities', value: String((student?.extracurriculars?.length ?? 0) || resumeActivities.length) },
               ].map(({ label, value }) => (
                 <div key={label} className="p-4 rounded-xl bg-surface-2 border border-line text-center">
                   <p className="text-3xl font-bold text-content mb-1">{value}</p>
@@ -361,19 +400,16 @@ export default function StudentProfile() {
 
       {/* ── TAB: ALERTS & NOTES ──────────────────────────── */}
       {activeTab === 'Alerts & Notes' && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 animate-fade-in">
-          <div className="space-y-4">
-            <h2 className="text-base font-bold text-content">Active Alerts</h2>
-            <Card>
-              <EmptyCard icon={AlertCircle} title="No Active Alerts" />
-            </Card>
-          </div>
-          <div className="space-y-4">
-            <h2 className="text-base font-bold text-content">Faculty Notes</h2>
-            <Card>
-              <EmptyCard icon={FileText} title="No Notes from Faculty" />
-            </Card>
-          </div>
+        <div className="animate-fade-in">
+          <Card>
+            <div className="h-56 flex items-center justify-center">
+              <EmptyCard
+                icon={Clock}
+                title="Upcoming Feature"
+                subtitle="Alerts and faculty notes are coming soon."
+              />
+            </div>
+          </Card>
         </div>
       )}
 
