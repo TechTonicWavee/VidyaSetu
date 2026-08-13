@@ -4,7 +4,7 @@ import { useState } from 'react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
 } from 'recharts';
-import { Award, TrendingUp, Users } from 'lucide-react';
+import { Award, TrendingUp, Users, Target } from 'lucide-react';
 import { useAuth } from '@/lib/auth/AuthProvider';
 import { useAsyncData } from '@/lib/hooks/useAsyncData';
 import { getRankings, type RankingScope } from '@/lib/data';
@@ -110,7 +110,33 @@ export default function RankingsPage() {
         </div>
       )}
       {error && <ErrorState onRetry={reload} />}
-      {data && !loading && <ScopeView scope={data[scope]} />}
+      {data && !loading && (
+        <>
+          <ScopeView scope={data[scope]} />
+          {data.improvementAreas.length > 0 && (
+            <div className="mt-6">
+              <Card>
+                <h3 className="font-semibold text-content flex items-center gap-2">
+                  <Target size={18} className="text-brand" /> Improvement Areas
+                </h3>
+                <p className="text-xs text-muted mt-0.5 mb-3">
+                  What top performers in your branch have that you don&apos;t — analysed from real profiles.
+                </p>
+                <ul className="space-y-2">
+                  {data.improvementAreas.map((area, i) => (
+                    <li key={i} className="flex gap-3 rounded-lg px-3 py-2.5 bg-surface-2 border border-line">
+                      <span className="shrink-0 mt-0.5 h-fit text-[11px] font-bold text-brand bg-brand-soft rounded px-2 py-0.5">
+                        {area.category}
+                      </span>
+                      <p className="text-sm text-content-2">{area.message}</p>
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }

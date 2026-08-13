@@ -14,9 +14,16 @@ export interface RankingScope {
   batchAvg: number;
   leaderboard: RankingLeaderboardEntry[];
 }
+export interface RankingImprovementArea {
+  category: string;
+  message: string;
+  yours: number;
+  benchmark: number;
+}
 export interface RankingData {
   section: RankingScope;
   branch: RankingScope;
+  improvementAreas: RankingImprovementArea[];
   updatedAt: string;
 }
 
