@@ -1,6 +1,7 @@
 import { Prisma } from '@prisma/client';
 import { prisma } from '../prisma';
 import { AppError } from './appError';
+import { DOMAINS } from '../constants/domains';
 import { publicStudentCardSelect, publicStudentDetailSelect } from './publicStudent';
 
 // Ported from the standalone backend's src/services/directory.service.ts.
@@ -57,10 +58,16 @@ export async function listDomains() {
     where: { formStatus: 'submitted', domain: { not: null } },
     _count: { domain: true },
   });
-  return rows
-    .filter((r) => r.domain)
-    .map((r) => ({ domain: r.domain as string, count: r._count.domain }))
-    .sort((a, b) => b.count - a.count);
+  const counts = new Map<string, number>();
+  for (const r of rows) {
+    if (r.domain) counts.set(r.domain, r._count.domain);
+  }
+  // Surface every domain in the system (master list) plus any DB-only ones,
+  // so all domains are always available as filters even with zero students.
+  const all = new Set<string>([...DOMAINS, ...counts.keys()]);
+  return Array.from(all)
+    .map((domain) => ({ domain, count: counts.get(domain) ?? 0 }))
+    .sort((a, b) => b.count - a.count || a.domain.localeCompare(b.domain));
 }
 
 export async function getStudentProfile(universityId: string) {

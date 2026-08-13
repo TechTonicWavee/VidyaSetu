@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Search, Users, CheckCircle, Plus } from 'lucide-react';
 import getInitials from '@/lib/getInitials';
 import { useAuth } from '../../../lib/auth/AuthProvider';
@@ -22,6 +22,7 @@ export default function DomainDirectoryPage() {
 
   const [domains, setDomains] = useState<DomainCount[]>([]);
   const [activeDomain, setActiveDomain] = useState<string | null>(null);
+  const [allStudentsTotal, setAllStudentsTotal] = useState(0);
   const [searchInput, setSearchInput] = useState('');
   const [search, setSearch] = useState('');
 
@@ -60,6 +61,7 @@ export default function DomainDirectoryPage() {
       .then((result) => {
         setItems(result.items);
         setTotalPages(result.totalPages);
+        if (!activeDomain && !search) setAllStudentsTotal(result.total);
         setError('');
       })
       .catch((err) => setError(err instanceof ApiError ? err.message : 'Failed to load directory.'))
@@ -79,8 +81,6 @@ export default function DomainDirectoryPage() {
       setLoadingMore(false);
     }
   }
-
-  const totalStudents = useMemo(() => domains.reduce((sum, d) => sum + d.count, 0), [domains]);
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 animate-fade-in">
@@ -115,7 +115,7 @@ export default function DomainDirectoryPage() {
         >
           <Users size={14} />
           All Students
-          <span className={cn('text-xs font-bold', activeDomain === null ? 'text-brand-fg/70' : 'text-muted')}>{totalStudents}</span>
+          <span className={cn('text-xs font-bold', activeDomain === null ? 'text-brand-fg/70' : 'text-muted')}>{allStudentsTotal}</span>
         </button>
         {domains.map((d) => (
           <button
