@@ -1,23 +1,18 @@
-// ── Rankings ────────────────────────────────────────────────
-export interface RankingDomain {
-  id: string;
-  name: string;
-  iconKey: string;
+// ── Rankings (SPI-based, DB-backed) ─────────────────────────
+export interface RankingLeaderboardEntry {
   rank: number;
-  scoreLabel: string;
-  trend: string;
-  trendDir: 'up' | 'down';
-  desc: string;
-  tone: 'blue' | 'teal' | 'purple' | 'green' | 'amber' | 'brand';
-  badge?: string;
+  universityId: string;
+  name: string;
+  score: number;
+  isYou: boolean;
 }
 export interface RankingScope {
   total: number;
   overall: number;
   percentile: number;
-  domains: RankingDomain[];
-  trend: { month: string; rank: number }[];
-  bars: { domain: string; you: number; avg: number }[];
+  yourScore: number;
+  batchAvg: number;
+  leaderboard: RankingLeaderboardEntry[];
 }
 export interface RankingData {
   section: RankingScope;
