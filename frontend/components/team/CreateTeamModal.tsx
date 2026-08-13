@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import { createTeam, type Team } from '../../lib/api/teams';
 import { ApiError } from '../../lib/api/client';
+import { DOMAINS } from '../../lib/constants/domains';
 import { useToast } from '../ToastContext';
 import Modal from '../ui/Modal';
 
@@ -95,24 +96,28 @@ export default function CreateTeamModal({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-1.5">Domain</label>
-            <input
-              type="text"
+            <select
               value={domain}
               onChange={(e) => setDomain(e.target.value)}
-              placeholder="E.g. Web Development"
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400"
-            />
+              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400"
+            >
+              <option value="">Select a domain</option>
+              {DOMAINS.map((d) => (
+                <option key={d} value={d}>{d}</option>
+              ))}
+            </select>
           </div>
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-1.5">Max Members</label>
-            <input
-              type="number"
-              min={2}
-              max={20}
+            <select
               value={maxMembers}
               onChange={(e) => setMaxMembers(Number(e.target.value))}
-              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400"
-            />
+              className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400"
+            >
+              {Array.from({ length: 9 }, (_, i) => i + 2).map((n) => (
+                <option key={n} value={n}>{n}</option>
+              ))}
+            </select>
           </div>
         </div>
       </div>
