@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Activity, Users, Award, Book, Code, Zap, Clock, TrendingUp } from 'lucide-react';
+import { Activity, Users, Award, Book, Code, Zap, Clock, TrendingUp, Loader2 } from 'lucide-react';
 import {
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip,
 } from 'recharts';
@@ -34,6 +34,7 @@ export default function SPIPage() {
   const { student } = useAuth();
   const [spiScore, setSpiScore] = useState(0);
   const [spiLoading, setSpiLoading] = useState(true);
+  const [recalculating, setRecalculating] = useState(false);
   const [studentData, setStudentData] = useState<SpiStudentData | null>(null);
   const [dims, setDims] = useState({
     technicalDepth: 0, logicalReasoning: 0, initiative: 0,
@@ -43,11 +44,22 @@ export default function SPIPage() {
   useEffect(() => {
     if (!student?.universityId) { setSpiLoading(false); return; }
 
+    // 1) Instant: render the stored profile + SPI score straight from the DB.
+    //    This is a fast single read, so the page shows immediately.
     authedFetch(`/api/student/profile?universityId=${student.universityId}`)
       .then((r) => r.json())
-      .then((d) => { if (d?.success && d.student) setStudentData(d.student); })
-      .catch(() => {});
+      .then((d) => {
+        if (d?.success && d.student) {
+          setStudentData(d.student);
+          if (typeof d.student.spiScore === 'number') setSpiScore(d.student.spiScore);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setSpiLoading(false));
 
+    // 2) Background: recompute a fresh SPI + dimensions (this parses certs,
+    //    scores GitHub/LeetCode, etc.) WITHOUT blocking the initial render.
+    setRecalculating(true);
     authedFetch('/api/spi/recalculate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -71,7 +83,7 @@ export default function SPIPage() {
         }
       })
       .catch(() => {})
-      .finally(() => setSpiLoading(false));
+      .finally(() => setRecalculating(false));
   }, [student?.universityId]);
 
   let milestoneText = 'Tier 1 Ready!';
@@ -121,7 +133,14 @@ export default function SPIPage() {
 
   return (
     <div>
-      <PageHeader title="SPI Score" description="A single score capturing your complete academic and personal potential." icon={<TrendingUp size={22} />} />
+      <PageHeader
+        title="SPI Score"
+        description="A single score capturing your complete academic and personal potential."
+        icon={<TrendingUp size={22} />}
+        actions={recalculating ? (
+          <span className="flex items-center gap-1.5 text-xs text-muted"><Loader2 size={13} className="animate-spin" /> Updating…</span>
+        ) : undefined}
+      />
 
       <div className="space-y-6 animate-fade-in">
         {/* Hero */}
