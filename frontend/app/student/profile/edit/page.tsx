@@ -63,7 +63,7 @@ function validatePlatformValue(key: string, value: string): string | null {
   if (!value) return null
   const rule = PLATFORM_USERNAME_RULES[key]
   if (!rule) return null
-  if (!rule.pattern.test(value)) return `Invalid username â€” ${rule.hint}.`
+  if (!rule.pattern.test(value)) return `Invalid username — ${rule.hint}.`
   return null
 }
 
@@ -216,12 +216,12 @@ export default function ProfileEditPage() {
   // Session state
   const [universityId, setUniversityId] = useState('')
 
-  // Basic Info â€” name/email are read-only from DB
+  // Basic Info — name/email are read-only from DB
   const [basicInfo, setBasicInfo] = useState({
     name: '', phone: '', email: '',
   })
 
-  // Coding profiles â€” only the 4 pilot platforms
+  // Coding profiles — only the 4 pilot platforms
   const [codingProfiles, setCodingProfiles] = useState({
     github: '', leetcode: '', codeforces: '', linkedinUrl: ''
   })
@@ -234,7 +234,7 @@ export default function ProfileEditPage() {
   const [hackathons, setHackathons] = useState<EditableHackathon[]>([])
   const [extracurriculars, setExtracurriculars] = useState<EditableExtracurricular[]>([])
 
-  // â”€â”€ Load session + profile data on mount â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Load session + profile data on mount ──────────────────────────────────
   useEffect(() => {
     if (!authStudent) return
     try {
@@ -268,7 +268,7 @@ export default function ProfileEditPage() {
                   linkedinUrl: s.codingProfile.linkedinUrl || '',
                 })
               }
-              // Map DB records to UI state â€” normalise field names
+              // Map DB records to UI state — normalise field names
               if (s.projects?.length) {
                 setProjects(s.projects.map((p: any) => ({
                   id: p.id,
@@ -349,7 +349,7 @@ export default function ProfileEditPage() {
     setExpandedSections(prev => ({ ...prev, [section]: !prev[section] }))
   }
 
-  // â”€â”€ Profile completion bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Profile completion bar ─────────────────────────────────────────────────
   const profileCompletion = Math.round(
     (basicInfo.phone ? 10 : 0) +
     (codingProfiles.github ? 25 : 0) +
@@ -361,7 +361,7 @@ export default function ProfileEditPage() {
     Math.min(extracurriculars.length, 1) * 5
   )
 
-  // â”€â”€ Global save: validate â†’ update student/CP â†’ save lists â†’ fetch stats â†’ SPI â”€â”€
+  // ── Global save: validate → update student/CP → save lists → fetch stats → SPI ──
   const handleSaveAll = async () => {
     setValidationError('')
     if (!universityId) {
@@ -369,7 +369,7 @@ export default function ProfileEditPage() {
       return
     }
 
-    // Validation â€” normalize + check format for every filled platform field,
+    // Validation — normalize + check format for every filled platform field,
     // then require GitHub and LeetCode specifically (they count toward SPI).
     const normalizedProfiles: Record<string, string> = {}
     const nextPlatformErrors: Record<string, string | null> = {}
@@ -396,7 +396,7 @@ export default function ProfileEditPage() {
 
     setSaving(true)
 
-    // Step 1: Update Student (phone only â€” name/email are read-only) + CodingProfile + Lists
+    // Step 1: Update Student (phone only — name/email are read-only) + CodingProfile + Lists
     try {
       const updateRes = await authedFetch('/api/student/update', {
         method: 'POST',
@@ -463,7 +463,7 @@ export default function ProfileEditPage() {
     setTimeout(() => router.push('/student'), 2000)
   }
 
-  // â”€â”€ Add/remove helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Add/remove helpers ─────────────────────────────────────────────────────
   const [newProject, setNewProject] = useState<Omit<EditableProject, 'id'>>({ title: '', description: '', techStack: [], github: '', liveDemo: '', status: 'Completed', type: 'Personal', screenshotUrl: '', screenshotPublicId: null })
   const [newCert, setNewCert] = useState<Omit<EditableCertification, 'id'>>({ name: '', platform: 'Coursera', dateCompleted: '', skills: [], certificateUrl: '', certificatePublicId: null, credentialId: '', verificationUrl: '' })
   const [newIntern, setNewIntern] = useState<Omit<EditableInternship, 'id'>>({ company: '', role: '', startDate: '', endDate: '', techStack: [], description: '', offerLetterUrl: '', completionCertificateUrl: '', isPaid: false, stipendAmount: 0 })
@@ -505,7 +505,7 @@ export default function ProfileEditPage() {
   }
   const removeExtra = (id: string) => setExtracurriculars(extracurriculars.filter(e => e.id !== id))
 
-  // â”€â”€ Resume Handlers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── Resume Handlers ────────────────────────────────────────────────────────
   const handleResumeFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
@@ -537,7 +537,7 @@ export default function ProfileEditPage() {
 
       if (previousPublicId) {
         deleteCloudinaryAsset(previousPublicId, uploaded.resourceType).catch(() => {
-          // best-effort â€” an orphaned old resume isn't worth failing the UI over
+          // best-effort — an orphaned old resume isn't worth failing the UI over
         })
       }
 
@@ -643,7 +643,7 @@ export default function ProfileEditPage() {
     }
   }
 
-  // â”€â”€ JSX blocks â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+  // ── JSX blocks ─────────────────────────────────────────────────────────────
 
   const resumeJSX = (
     <div className="space-y-4">
@@ -848,7 +848,7 @@ export default function ProfileEditPage() {
       <div className="flex items-start gap-3 bg-blue-50 border border-blue-200 rounded-lg p-4">
         <Info size={18} className="text-blue-600 flex-shrink-0 mt-0.5" />
         <div className="text-sm">
-          <p className="font-semibold text-blue-800 mb-1">SPI Calculation â€” Pilot Phase</p>
+          <p className="font-semibold text-blue-800 mb-1">SPI Calculation — Pilot Phase</p>
           <p className="text-blue-700">
             Currently, only <strong>GitHub</strong> and <strong>LeetCode</strong> contribute to your SPI score.
             Other platforms are saved for future SPI updates. Both fields marked <strong>*</strong> are required.
@@ -870,11 +870,11 @@ export default function ProfileEditPage() {
               <label className="block text-sm font-medium text-content">{field.label}</label>
               {field.key === 'github' || field.key === 'leetcode' ? (
                 <span className="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full font-medium">
-                  Counts for SPI âœ¦
+                  Counts for SPI ✦
                 </span>
               ) : (
                 <span className="text-xs bg-amber-50 text-amber-600 border border-amber-200 px-2 py-0.5 rounded-full">
-                  Saved Â· Future SPI
+                  Saved · Future SPI
                 </span>
               )}
             </div>
@@ -922,7 +922,7 @@ export default function ProfileEditPage() {
           <div className="flex justify-between items-start mb-3">
             <div>
               <h4 className="font-semibold text-content">{project.title}</h4>
-              <p className="text-xs text-muted">{project.type} Â· {project.status}</p>
+              <p className="text-xs text-muted">{project.type} · {project.status}</p>
             </div>
             <button onClick={() => removeProject(project.id)} className="text-red-500 hover:bg-red-50 p-2 rounded">
               <Trash2 size={18} />
@@ -1062,15 +1062,15 @@ export default function ProfileEditPage() {
                   {/* Authenticity Badge */}
                   {isVerifiedBadge ? (
                     <span className="text-xs bg-green-100 text-green-800 border border-green-300 px-2 py-0.5 rounded-full font-medium flex items-center gap-1">
-                      <CheckCircle size={12} /> ðŸ›¡ï¸ Verified Badge
+                      <CheckCircle size={12} /> Verified Badge
                     </span>
                   ) : isVerifiableLink ? (
                     <span className="text-xs bg-sky-100 text-sky-800 border border-sky-300 px-2 py-0.5 rounded-full font-medium flex items-center gap-1">
-                      <CheckCircle size={12} /> ðŸ”— Verifiable Link
+                      <CheckCircle size={12} /> 🔗 Verifiable Link
                     </span>
                   ) : hasFile ? (
                     <span className="text-xs bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full font-medium">
-                      ðŸ“„ File Attached
+                      📄 File Attached
                     </span>
                   ) : (
                     <span className="text-xs bg-red-50 text-red-600 border border-red-200 px-2 py-0.5 rounded-full font-medium">
@@ -1078,7 +1078,7 @@ export default function ProfileEditPage() {
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-muted">{cert.platform}{cert.dateCompleted ? ` Â· ${cert.dateCompleted}` : ''}</p>
+                <p className="text-xs text-muted">{cert.platform}{cert.dateCompleted ? ` · ${cert.dateCompleted}` : ''}</p>
               </div>
               <button onClick={() => removeCert(cert.id)} className="text-red-500 hover:bg-red-50 p-2 rounded transition-colors">
                 <Trash2 size={18} />
@@ -1103,7 +1103,7 @@ export default function ProfileEditPage() {
                     rel="noreferrer"
                     className="text-brand hover:underline flex items-center gap-1 font-medium bg-blue-50 text-blue-700 px-2 py-0.5 rounded border border-blue-200"
                   >
-                    <ExternalLink size={12} /> ðŸ§ª Recruiter 1-Click Test
+                    <ExternalLink size={12} /> 🧪 Recruiter 1-Click Test
                   </a>
                 </div>
               ) : (
@@ -1117,13 +1117,13 @@ export default function ProfileEditPage() {
             {/* Authenticity Checklist */}
             <div className="flex flex-wrap gap-2 text-[11px] mb-2 pt-1 border-t border-line">
               <span className={`px-2 py-0.5 rounded ${cert.credentialId ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-surface-3 text-gray-500'}`}>
-                {cert.credentialId ? 'âœ“ Credential ID' : 'âœ• Missing ID'}
+                {cert.credentialId ? '✓ Credential ID' : '✕ Missing ID'}
               </span>
               <span className={`px-2 py-0.5 rounded ${cert.verificationUrl ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-surface-3 text-gray-500'}`}>
-                {cert.verificationUrl ? 'âœ“ Direct Verification Link' : 'âœ• Missing Link'}
+                {cert.verificationUrl ? '✓ Direct Verification Link' : '✕ Missing Link'}
               </span>
               <span className={`px-2 py-0.5 rounded ${(cert.credentialId && cert.verificationUrl) ? 'bg-emerald-50 text-emerald-800 font-medium border border-emerald-200' : 'bg-surface-3 text-gray-500'}`}>
-                {(cert.credentialId && cert.verificationUrl) ? 'âš¡ Fast-Check Ready (< 30s)' : 'âš ï¸ Action Needed'}
+                {(cert.credentialId && cert.verificationUrl) ? '⚡ Fast-Check Ready (< 30s)' : 'âš ï¸ Action Needed'}
               </span>
             </div>
 
@@ -1252,7 +1252,7 @@ export default function ProfileEditPage() {
                   </span>
                   {item.isPaid ? (
                     <span className="text-xs bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded-full font-medium">
-                      ðŸ’° Paid (â‚¹{item.stipendAmount?.toLocaleString()}/mo)
+                      💰 Paid (₹{item.stipendAmount?.toLocaleString()}/mo)
                     </span>
                   ) : (
                     <span className="text-xs bg-surface-3 text-content border border-line px-2 py-0.5 rounded-full font-medium">
@@ -1261,7 +1261,7 @@ export default function ProfileEditPage() {
                   )}
                   {hasDoc ? (
                     <span className="text-xs bg-green-100 text-green-800 border border-green-300 px-2 py-0.5 rounded-full font-medium flex items-center gap-1">
-                      <CheckCircle size={12} /> ðŸ“„ Document Verified
+                      <CheckCircle size={12} /> 📄 Document Verified
                     </span>
                   ) : (
                     <span className="text-xs bg-red-50 text-red-600 border border-red-200 px-2 py-0.5 rounded-full font-medium">
@@ -1270,7 +1270,7 @@ export default function ProfileEditPage() {
                   )}
                 </div>
                 <p className="text-xs text-muted">
-                  {item.startDate ? `From: ${item.startDate}` : ''} {item.endDate ? `To: ${item.endDate}` : 'Â· Present'}
+                  {item.startDate ? `From: ${item.startDate}` : ''} {item.endDate ? `To: ${item.endDate}` : '· Present'}
                 </p>
               </div>
               <button onClick={() => removeInternship(item.id)} className="text-red-500 hover:bg-red-50 p-2 rounded transition-colors">
@@ -1341,7 +1341,7 @@ export default function ProfileEditPage() {
               className="w-4 h-4 text-brand rounded"
             />
             <label htmlFor="isPaidCheck" className="text-sm font-semibold text-content cursor-pointer select-none">
-              Paid Internship ðŸ’°
+              Paid Internship 💰
             </label>
           </div>
           {newIntern.isPaid && (
@@ -1350,7 +1350,7 @@ export default function ProfileEditPage() {
                 type="number"
                 value={newIntern.stipendAmount || ''}
                 onChange={e => setNewIntern({ ...newIntern, stipendAmount: Number(e.target.value) })}
-                placeholder="Stipend (â‚¹ / month)"
+                placeholder="Stipend (₹ / month)"
                 min="0"
                 className="w-full px-3 py-1.5 rounded border border-line focus:outline-none focus:ring-2 focus:ring-brand/40 text-sm text-content bg-white"
               />
@@ -1413,7 +1413,7 @@ export default function ProfileEditPage() {
           <div className="flex justify-between items-start mb-2">
             <div>
               <h4 className="font-semibold text-content">{hack.name}</h4>
-              <p className="text-xs text-muted">{hack.organizer}{hack.date ? ` Â· ${hack.date}` : ''}</p>
+              <p className="text-xs text-muted">{hack.organizer}{hack.date ? ` · ${hack.date}` : ''}</p>
             </div>
             <button onClick={() => removeHack(hack.id)} className="text-red-500 hover:bg-red-50 p-2 rounded">
               <Trash2 size={18} />
@@ -1495,7 +1495,7 @@ export default function ProfileEditPage() {
           <div className="flex justify-between items-start mb-2">
             <div>
               <h4 className="font-semibold text-content">{extra.name}</h4>
-              <p className="text-xs text-muted">{extra.role}{extra.year ? ` Â· ${extra.year}` : ''}</p>
+              <p className="text-xs text-muted">{extra.role}{extra.year ? ` · ${extra.year}` : ''}</p>
             </div>
             <button onClick={() => removeExtra(extra.id)} className="text-red-500 hover:bg-red-50 p-2 rounded">
               <Trash2 size={18} />
@@ -1578,27 +1578,27 @@ export default function ProfileEditPage() {
               {codingPlatformsJSX}
             </CollapsibleSection>
 
-            <CollapsibleSection title="ðŸ“„ Resume" icon={FileText} isOpen={expandedSections.resume} onToggle={() => toggleSection('resume')} completionPercent={resumeUrl ? 100 : 0} badge={resumeUrl ? "Counts for SPI âœ¦" : undefined}>
+            <CollapsibleSection title="📄 Resume" icon={FileText} isOpen={expandedSections.resume} onToggle={() => toggleSection('resume')} completionPercent={resumeUrl ? 100 : 0} badge={resumeUrl ? "Counts for SPI ✦" : undefined}>
               {resumeJSX}
             </CollapsibleSection>
 
-            <CollapsibleSection title="Projects" icon={Folder} isOpen={expandedSections.projects} onToggle={() => toggleSection('projects')} completionPercent={projects.length > 0 ? 100 : 0} badge="Saved Â· Future SPI">
+            <CollapsibleSection title="Projects" icon={Folder} isOpen={expandedSections.projects} onToggle={() => toggleSection('projects')} completionPercent={projects.length > 0 ? 100 : 0} badge="Saved · Future SPI">
               {projectsJSX}
             </CollapsibleSection>
 
-            <CollapsibleSection title="Certifications" icon={Badge} isOpen={expandedSections.certifications} onToggle={() => toggleSection('certifications')} completionPercent={certifications.length > 0 ? 100 : 0} badge="Counts for SPI âœ¦">
+            <CollapsibleSection title="Certifications" icon={Badge} isOpen={expandedSections.certifications} onToggle={() => toggleSection('certifications')} completionPercent={certifications.length > 0 ? 100 : 0} badge="Counts for SPI ✦">
               {certificationsJSX}
             </CollapsibleSection>
 
-            <CollapsibleSection title="ðŸ’¼ Internships" icon={Briefcase} isOpen={expandedSections.internships} onToggle={() => toggleSection('internships')} completionPercent={internships.length > 0 ? 100 : 0} badge="Counts for SPI âœ¦">
+            <CollapsibleSection title="💼 Internships" icon={Briefcase} isOpen={expandedSections.internships} onToggle={() => toggleSection('internships')} completionPercent={internships.length > 0 ? 100 : 0} badge="Counts for SPI ✦">
               {internshipsJSX}
             </CollapsibleSection>
 
-            <CollapsibleSection title="Hackathons & Competitions" icon={Zap} isOpen={expandedSections.hackathons} onToggle={() => toggleSection('hackathons')} completionPercent={hackathons.length > 0 ? 100 : 0} badge="Saved Â· Future SPI">
+            <CollapsibleSection title="Hackathons & Competitions" icon={Zap} isOpen={expandedSections.hackathons} onToggle={() => toggleSection('hackathons')} completionPercent={hackathons.length > 0 ? 100 : 0} badge="Saved · Future SPI">
               {hackathonsJSX}
             </CollapsibleSection>
 
-            <CollapsibleSection title="Extracurriculars" icon={Award} isOpen={expandedSections.extracurriculars} onToggle={() => toggleSection('extracurriculars')} completionPercent={extracurriculars.length > 0 ? 100 : 0} badge="Saved Â· Future SPI">
+            <CollapsibleSection title="Extracurriculars" icon={Award} isOpen={expandedSections.extracurriculars} onToggle={() => toggleSection('extracurriculars')} completionPercent={extracurriculars.length > 0 ? 100 : 0} badge="Saved · Future SPI">
               {extracurricularsJSX}
             </CollapsibleSection>
 
