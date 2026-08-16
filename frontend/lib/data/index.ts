@@ -7,7 +7,7 @@
  * (see the `// TODO: replace with apiGet(...)` markers). Page components never
  * change — they already `await` these functions exactly like a real API.
  */
-import { rankingsMock } from './mock/rankings';
+import { apiGet } from '../api/client';
 import { skillRadarMock } from './mock/skillRadar';
 import { careerMock } from './mock/career';
 import { placementMock } from './mock/placement';
@@ -35,10 +35,9 @@ function mock<T>(data: T): Promise<T> {
   });
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function getRankings(_universityId?: string): Promise<RankingData> {
-  // TODO: replace with apiGet<RankingData>(`/api/student/rankings`)
-  return mock(rankingsMock);
+  // Real, DB-backed SPI rankings (section + branch scopes).
+  return apiGet<RankingData>('/api/student/rankings');
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

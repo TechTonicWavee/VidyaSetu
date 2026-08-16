@@ -1,5 +1,5 @@
 import 'dotenv/config'
-import calcInternshipsScore from '../../lib/spi/sources/internships.js'
+import calcInternshipsScore from '../lib/spi/sources/internships.js'
 
 async function runTest() {
   console.log('====================================================')

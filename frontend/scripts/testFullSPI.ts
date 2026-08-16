@@ -1,9 +1,9 @@
 import 'dotenv/config'
-import calcGitHubScore from '../../lib/spi/sources/githubScore.js'
-import calcLeetCodeScore from '../../lib/spi/sources/leetcodeScore.js'
-import calcResumeScore from '../../lib/spi/sources/resume.js'
-import calcCertificationsScore from '../../lib/spi/sources/certifications.js'
-import calculateSPI from '../../lib/spi/orchestrator/calculateSPI.js'
+import calcGitHubScore from '../lib/spi/sources/githubScore.js'
+import calcLeetCodeScore from '../lib/spi/sources/leetcodeScore.js'
+import calcResumeScore from '../lib/spi/sources/resume.js'
+import calcCertificationsScore from '../lib/spi/sources/certifications.js'
+import calculateSPI from '../lib/spi/orchestrator/calculateSPI.js'
 
 // Sample student data
 const studentName = 'Priyanshu Sharma'

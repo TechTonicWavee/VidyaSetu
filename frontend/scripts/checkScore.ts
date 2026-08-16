@@ -1,6 +1,6 @@
 import 'dotenv/config'
 import { PrismaClient } from '@prisma/client'
-import calcResumeScore from '../../lib/spi/sources/resume.js'
+import calcResumeScore from '../lib/spi/sources/resume.js'
 
 const prisma = new PrismaClient()
 

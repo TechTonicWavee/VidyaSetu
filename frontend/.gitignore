@@ -1,0 +1,48 @@
+# Dependencies
+/node_modules
+.pnpm-store/
+
+# Next.js build output
+/.next/
+/out/
+/build
+
+# Next.js auto-generated types
+next-env.d.ts
+
+# TypeScript
+*.tsbuildinfo
+
+# Local env & secrets
+.env
+.env.*
+!.env.example
+
+# Prisma generated client (if custom output is used)
+/generated/prisma
+
+# Temp uploads
+public/uploads/temp/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Vercel
+.vercel
+
+# OS files
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+ehthumbs.db
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo

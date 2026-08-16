@@ -2,91 +2,83 @@
 
 import { useState } from 'react';
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  BarChart, Bar, Legend,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
 } from 'recharts';
-import { Award, TrendingUp, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { Award, TrendingUp, Users, Target } from 'lucide-react';
 import { useAuth } from '@/lib/auth/AuthProvider';
 import { useAsyncData } from '@/lib/hooks/useAsyncData';
 import { getRankings, type RankingScope } from '@/lib/data';
-import { icon as lucide } from '@/lib/utils/lucide';
 import {
-  PageHeader, Card, StatCard, Badge, Tabs, ChartCard, ChartTooltip, CHART,
+  PageHeader, Card, StatCard, Tabs, ChartCard, ChartTooltip, CHART,
   ErrorState, CardSkeleton,
 } from '@/components/ui';
 
-const TONE_ICON: Record<string, string> = {
-  blue: 'bg-info-soft text-info',
-  teal: 'bg-success-soft text-success',
-  purple: 'bg-brand-soft text-brand',
-  green: 'bg-success-soft text-success',
-  amber: 'bg-warning-soft text-warning',
-  brand: 'bg-brand-soft text-brand',
-};
-
 function ScopeView({ scope }: { scope: RankingScope }) {
+  const compare = [
+    { label: 'You', value: scope.yourScore },
+    { label: 'Batch Avg', value: scope.batchAvg },
+  ];
+
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <StatCard label="Overall Rank" value={`#${scope.overall}`} icon={Award} tone="brand" hint={`out of ${scope.total} students`} />
-        <StatCard label="Percentile" value={`Top ${scope.percentile}%`} icon={TrendingUp} tone="green" hint="Higher is better" />
-        <StatCard label="Batch Size" value={scope.total} icon={Award} tone="blue" hint="Peers in this scope" />
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
-        {scope.domains.map((d) => {
-          const Icon = lucide(d.iconKey);
-          return (
-            <Card key={d.id} hover>
-              <div className="flex items-start justify-between">
-                <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${TONE_ICON[d.tone]}`}>
-                  <Icon size={19} />
-                </div>
-                {d.badge && <Badge tone="brand">{d.badge}</Badge>}
-              </div>
-              <h3 className="font-semibold text-content mt-3">{d.name}</h3>
-              <p className="text-xs text-muted mt-0.5">{d.desc}</p>
-              <div className="flex items-end justify-between mt-4">
-                <div>
-                  <p className="text-2xl font-bold text-content tabular-nums">#{d.rank}</p>
-                  <p className="text-xs text-muted">{d.scoreLabel}</p>
-                </div>
-                <span className={`inline-flex items-center gap-0.5 text-xs font-semibold ${d.trendDir === 'up' ? 'text-success' : 'text-danger'}`}>
-                  {d.trendDir === 'up' ? <ArrowUpRight size={13} /> : <ArrowDownRight size={13} />}
-                  {d.trend}
-                </span>
-              </div>
-            </Card>
-          );
-        })}
+        <StatCard label="Percentile" value={`Top ${scope.percentile}%`} icon={TrendingUp} tone="green" hint="By SPI score" />
+        <StatCard label="Batch Size" value={scope.total} icon={Users} tone="blue" hint="Peers in this scope" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <ChartCard title="Rank trend" subtitle="Lower is better" height={260}>
+        <ChartCard title="Your SPI vs batch average" subtitle="Higher is better" height={260}>
           <ResponsiveContainer>
-            <LineChart data={scope.trend} margin={{ top: 8, right: 12, bottom: 0, left: -18 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke={CHART.grid} />
-              <XAxis dataKey="month" stroke={CHART.axis} fontSize={12} />
-              <YAxis reversed stroke={CHART.axis} fontSize={12} />
-              <Tooltip content={<ChartTooltip />} />
-              <Line type="monotone" dataKey="rank" stroke={CHART.brand} strokeWidth={3} dot={{ r: 4 }} />
-            </LineChart>
-          </ResponsiveContainer>
-        </ChartCard>
-
-        <ChartCard title="You vs batch average" subtitle="Domain scores" height={260}>
-          <ResponsiveContainer>
-            <BarChart data={scope.bars} margin={{ top: 8, right: 12, bottom: 0, left: -18 }}>
+            <BarChart data={compare} margin={{ top: 8, right: 12, bottom: 0, left: -18 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={CHART.grid} vertical={false} />
-              <XAxis dataKey="domain" stroke={CHART.axis} fontSize={11} />
-              <YAxis stroke={CHART.axis} fontSize={12} />
+              <XAxis dataKey="label" stroke={CHART.axis} fontSize={12} />
+              <YAxis stroke={CHART.axis} fontSize={12} domain={[0, 100]} />
               <Tooltip content={<ChartTooltip />} />
-              <Legend wrapperStyle={{ fontSize: 12 }} />
-              <Bar dataKey="you" name="You" fill={CHART.brand} radius={[4, 4, 0, 0]} />
-              <Bar dataKey="avg" name="Batch Avg" fill={CHART.blue} radius={[4, 4, 0, 0]} />
+              <Bar dataKey="value" name="SPI" radius={[4, 4, 0, 0]}>
+                <Cell fill={CHART.brand} />
+                <Cell fill={CHART.blue} />
+              </Bar>
             </BarChart>
           </ResponsiveContainer>
         </ChartCard>
+
+        <Card>
+          <h3 className="font-semibold text-content">Leaderboard</h3>
+          <p className="text-xs text-muted mt-0.5 mb-3">Top students by SPI in this scope</p>
+          <ul className="space-y-1.5">
+            {scope.leaderboard.map((entry) => (
+              <li
+                key={entry.universityId}
+                className={`flex items-center gap-3 rounded-lg px-3 py-2 ${
+                  entry.isYou ? 'bg-brand-soft border border-brand/30' : 'bg-surface-2'
+                }`}
+              >
+                <span className={`w-7 h-7 shrink-0 rounded-full flex items-center justify-center text-xs font-bold tabular-nums ${
+                  entry.rank === 1 ? 'bg-warning-soft text-warning' : 'bg-surface-3 text-content'
+                }`}>
+                  {entry.rank}
+                </span>
+                <span className="flex-1 text-sm font-medium text-content truncate">
+                  {entry.name}{entry.isYou && <span className="text-brand"> (You)</span>}
+                </span>
+                <span className="text-sm font-semibold text-content tabular-nums">{entry.score}</span>
+              </li>
+            ))}
+            {scope.leaderboard.length === 0 && (
+              <li className="text-sm text-muted px-3 py-2">No ranked students yet.</li>
+            )}
+          </ul>
+          {!scope.leaderboard.some((e) => e.isYou) && scope.overall > 0 && (
+            <div className="mt-3 flex items-center gap-3 rounded-lg px-3 py-2 bg-brand-soft border border-brand/30">
+              <span className="w-7 h-7 shrink-0 rounded-full flex items-center justify-center text-xs font-bold tabular-nums bg-surface-3 text-content">
+                {scope.overall}
+              </span>
+              <span className="flex-1 text-sm font-medium text-content truncate">You</span>
+              <span className="text-sm font-semibold text-content tabular-nums">{scope.yourScore}</span>
+            </div>
+          )}
+        </Card>
       </div>
     </div>
   );
@@ -101,7 +93,7 @@ export default function RankingsPage() {
     <div>
       <PageHeader
         title="Rankings"
-        description="Where you stand across academic and non-academic domains."
+        description="Where you stand across your section and branch — ranked by SPI score."
         icon={<Award size={22} />}
         actions={
           <Tabs
@@ -118,7 +110,33 @@ export default function RankingsPage() {
         </div>
       )}
       {error && <ErrorState onRetry={reload} />}
-      {data && !loading && <ScopeView scope={data[scope]} />}
+      {data && !loading && (
+        <>
+          <ScopeView scope={data[scope]} />
+          {data.improvementAreas.length > 0 && (
+            <div className="mt-6">
+              <Card>
+                <h3 className="font-semibold text-content flex items-center gap-2">
+                  <Target size={18} className="text-brand" /> Improvement Areas
+                </h3>
+                <p className="text-xs text-muted mt-0.5 mb-3">
+                  What top performers in your branch have that you don&apos;t — analysed from real profiles.
+                </p>
+                <ul className="space-y-2">
+                  {data.improvementAreas.map((area, i) => (
+                    <li key={i} className="flex gap-3 rounded-lg px-3 py-2.5 bg-surface-2 border border-line">
+                      <span className="shrink-0 mt-0.5 h-fit text-[11px] font-bold text-brand bg-brand-soft rounded px-2 py-0.5">
+                        {area.category}
+                      </span>
+                      <p className="text-sm text-content-2">{area.message}</p>
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 }

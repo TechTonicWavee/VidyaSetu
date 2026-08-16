@@ -4,7 +4,7 @@ import targets from '../config/targets.js'
 import { inferSemester } from './leetcodeScore.js'
 import { evaluateCertificate } from '../evaluators/certificateEvaluators.js'
 import { roundToTwo } from '../utils/helpers.js'
-import { parseCertificateName } from '../../certificate/parseCertificateName.js'
+import { parseCertificateName } from '../../certificate/parseCertificateName'
 
 /**
  * Main Certifications SPI Evidence Engine
@@ -123,14 +123,18 @@ export async function calcCertificationsScore({ year = 1, certifications = [], s
       let recipientName = cert.recipientName || null
 
       // Attempt to parse recipient name from PDF if not already explicitly set
-      if (!recipientName && cert.certificateUrl) {
+      if (recipientName === '[UNPARSABLE]') {
+        recipientName = null // We already tried and failed before, restore to null for evaluator
+      } else if (!recipientName && cert.certificateUrl) {
         try {
           const parsed = await parseCertificateName(cert.certificateUrl)
           if (parsed) {
             recipientName = parsed
+          } else {
+            recipientName = '[UNPARSABLE]'
           }
         } catch {
-          // ignore parse errors and proceed with evaluation
+          recipientName = '[UNPARSABLE]'
         }
       }
 

@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const glob = require('glob');
 
-const files = glob.sync('/home/krrish/Desktop/TechTonicWavee/CSE/frontend/app/student/**/page.js');
+const files = glob.sync(path.join(__dirname, 'app/student/**/page.js'));
 
 files.forEach((file: string) => {
   let content = fs.readFileSync(file, 'utf8');

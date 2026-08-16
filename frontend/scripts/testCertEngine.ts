@@ -1,6 +1,6 @@
 import 'dotenv/config'
-import { evaluateCertificate } from '../../lib/spi/evaluators/certificateEvaluators.js'
-import { calcCertificationsScore } from '../../lib/spi/sources/certifications.js'
+import { evaluateCertificate } from '../lib/spi/evaluators/certificateEvaluators.js'
+import { calcCertificationsScore } from '../lib/spi/sources/certifications.js'
 
 const studentName = 'Priyanshu Sharma'
 

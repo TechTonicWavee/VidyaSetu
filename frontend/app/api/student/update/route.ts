@@ -2,7 +2,7 @@ import type { NextRequest } from 'next/server'
 import { Prisma }      from '@prisma/client'
 import { prisma }       from '@/lib/prisma'
 import { parseResume }  from '@/lib/resume/parser'
-import { evaluateCertificate } from '@/../lib/spi/evaluators/certificateEvaluators'
+import { evaluateCertificate } from '@/lib/spi/evaluators/certificateEvaluators'
 import { AuthError, requireAuth, requireOwnResource } from '../../../../lib/auth/verifyAccessToken'
 import { destroyCloudinaryAsset } from '../../../../lib/server/cloudinary'
 

@@ -290,7 +290,7 @@ export default function FacultyCOAttainment() {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
               <div>
                 <h1 className="text-3xl font-bold text-navy mb-1">CO Attainment Tracker</h1>
-                <p className="text-gray-500 text-sm max-w-2xl">Track Course Outcome attainment in real time across all your subjects â€” NBA requires 75% attainment on all COs</p>
+                <p className="text-gray-500 text-sm max-w-2xl">Track Course Outcome attainment in real time across all your subjects — NBA requires 75% attainment on all COs</p>
               </div>
               <div className="px-4 py-1.5 bg-blue-100 text-blue-800 font-bold text-sm rounded-full border border-blue-200 flex items-center gap-2 shadow-sm">
                 NBA Target: 75%
@@ -364,7 +364,7 @@ export default function FacultyCOAttainment() {
               </div>
 
               <div className="p-6">
-                <h3 className="font-bold text-navy text-lg mb-4">CO Attainment â€” {activeTab}</h3>
+                <h3 className="font-bold text-navy text-lg mb-4">CO Attainment — {activeTab}</h3>
                 
                 {/* TABLE */}
                 <div className="overflow-x-auto mb-6 rounded-xl border border-gray-200">
@@ -459,7 +459,7 @@ export default function FacultyCOAttainment() {
 
             {/* BOTTOM CHART SECTION */}
             <div className="bg-white shadow-sm border border-gray-200 rounded-2xl overflow-hidden p-6">
-              <h3 className="font-bold text-navy text-lg mb-6">CO Attainment Overview â€” All Subjects</h3>
+              <h3 className="font-bold text-navy text-lg mb-6">CO Attainment Overview — All Subjects</h3>
               <div className="h-[400px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
