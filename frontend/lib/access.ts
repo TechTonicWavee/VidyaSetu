@@ -26,8 +26,6 @@ export const STUDENT_ALLOWED_MENU_ITEMS = [
 
 export const RESTRICTED_ROUTES = [
   '/admin',
-  '/faculty',
-  '/dean',
   '/parent'
 ]
 
