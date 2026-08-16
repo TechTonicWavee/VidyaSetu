@@ -1,249 +1,463 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
-import { FileText, Printer, Eye, Palette, Link2, Mail, Phone, Globe } from 'lucide-react';
+/**
+ * /student/resume — Resume Builder Page
+ *
+ * Full execution flow (see flow.md):
+ *
+ * Phase 1 — Page Load:
+ *   useEffect fetches /api/student/profile → gets JSON data
+ *
+ * Phase 2 — Template Generation:
+ *   buildJakeResume(data) → produces a LaTeX string → setCurrentTex()
+ *
+ * Phase 3 — Editing Loop:
+ *   Monaco Editor (LatexEditor) shows the LaTeX.
+ *   onChange → setCurrentTex (immediate) + debouncedCompile (1.5s delay)
+ *
+ * Phase 4 — Compilation (API Proxy):
+ *   compilePdf() POSTs the LaTeX to /api/student/resume-pdf.
+ *   Our Next.js backend forwards it to latexonline.cc and pipes back the PDF.
+ *
+ * Phase 5 — PDF Display:
+ *   Browser converts binary response → Blob → Object URL → <iframe src>
+ *   Old blob URLs are revoked to prevent memory leaks.
+ *
+ * Decisions made:
+ *   - 'use client' required: Monaco, useState, useEffect, debounce all need browser.
+ *   - Debounce 1.5s: prevents spamming latexonline.cc on every keystroke.
+ *   - Proxy API route: bypasses CORS restrictions on latexonline.cc.
+ */
+
+import { useEffect, useRef, useState, useCallback } from 'react';
+import dynamic from 'next/dynamic';
+import debounce from 'lodash.debounce';
+import {
+  FileText, Download, RefreshCw, Code2, Eye, AlertCircle,
+  Loader2, CheckCircle2, Clock, ChevronDown
+} from 'lucide-react';
 import { useAuth } from '@/lib/auth/AuthProvider';
 import { authedFetch } from '@/lib/api/sameOriginFetch';
-import { PageHeader, Card, Button, Badge, ProgressBar } from '@/components/ui';
-import { cn } from '@/lib/utils/cn';
+import { PageHeader, Button, Badge } from '@/components/ui';
+import { buildJakeResume, StudentData } from '@/components/resume/templates/jake';
+import PdfPreview from '@/components/resume/PdfPreview';
 
-interface ProfileResp {
-  fullName: string;
-  branch: string | null;
-  year: number | null;
-  section: string | null;
-  email: string | null;
-  phone: string | null;
-  codingProfile: { github: string | null; linkedinUrl: string | null; leetcode: string | null } | null;
-  projects: { id: string; title: string; description: string | null; techStack: string[] }[];
-  certifications: { name?: string; platform?: string; skills?: string[] }[];
-  extracurriculars: { society: string | null; role: string | null; achievement: string | null }[];
-}
+// Lazy-load Monaco so it doesn't block the initial page render.
+// Decision 3 (decision.md): Monaco is large; Next.js lazy-loads it automatically.
+const LatexEditor = dynamic(() => import('@/components/resume/LatexEditor'), {
+  ssr: false,
+  loading: () => (
+    <div className="flex items-center justify-center bg-[#1e1e2e] rounded-lg border border-[var(--border)] h-full">
+      <Loader2 size={28} className="animate-spin text-[var(--brand)]" />
+    </div>
+  ),
+});
 
-const SECTIONS = [
-  { id: 'summary', label: 'Summary' },
-  { id: 'skills', label: 'Technical Skills' },
-  { id: 'projects', label: 'Projects' },
-  { id: 'certifications', label: 'Certifications' },
-  { id: 'extra', label: 'Extracurriculars' },
-];
-
-const ACCENTS = ['#5B21B6', '#2563EB', '#0D9488', '#DB2777', '#111827'];
-
-// Sample content shown when the profile API/DB is unavailable, so the builder
-// is always usable and printable.
-const SAMPLE: ProfileResp = {
+// ---------------------------------------------------------------------------
+// Sample data — shown when no profile data is available (not signed in, API error, etc.)
+// ---------------------------------------------------------------------------
+const SAMPLE_STUDENT: StudentData = {
   fullName: 'Your Name',
   branch: 'Computer Science & Engineering',
   year: 3,
   section: 'A',
   email: 'you@kiet.edu',
   phone: '+91 90000 00000',
-  codingProfile: { github: 'your-github', linkedinUrl: 'https://linkedin.com/in/you', leetcode: 'your-lc' },
+  codingProfile: {
+    github: 'your-github',
+    linkedinUrl: 'https://linkedin.com/in/you',
+    leetcode: 'your-lc',
+  },
   projects: [
-    { id: 'p1', title: 'VidyaSetu Portal', description: 'Full-stack student ERP with SPI analytics and team formation.', techStack: ['Next.js', 'TypeScript', 'PostgreSQL', 'Prisma'] },
-    { id: 'p2', title: 'Realtime Chat App', description: 'WebSocket chat with auth and presence.', techStack: ['React', 'Node', 'Socket.IO'] },
+    {
+      id: 'p1',
+      title: 'VidyaSetu Portal',
+      description: 'Full-stack student ERP with SPI analytics, team formation, and resume building features.',
+      techStack: ['Next.js', 'TypeScript', 'PostgreSQL', 'Prisma', 'TailwindCSS'],
+    },
+    {
+      id: 'p2',
+      title: 'Realtime Chat Application',
+      description: 'WebSocket-based chat application with authentication and user presence indicators.',
+      techStack: ['React', 'Node.js', 'Socket.IO', 'MongoDB'],
+    },
   ],
   certifications: [
-    { name: 'Cloud Practitioner', platform: 'AWS', skills: ['Cloud', 'EC2', 'S3'] },
-    { name: 'Meta Frontend', platform: 'Coursera', skills: ['React', 'CSS'] },
+    { name: 'AWS Cloud Practitioner', platform: 'Amazon Web Services', skills: ['Cloud', 'EC2', 'S3', 'IAM'] },
+    { name: 'Meta Frontend Developer', platform: 'Coursera', skills: ['React', 'CSS', 'JavaScript'] },
   ],
   extracurriculars: [
-    { society: 'Coding Club', role: 'Core Member', achievement: 'Organised 4 workshops for 200+ students' },
+    { society: 'Coding Club', role: 'Core Member', achievement: 'Organised 4 technical workshops for 200+ students' },
   ],
 };
 
+// ---------------------------------------------------------------------------
+// View mode type
+// ---------------------------------------------------------------------------
+type ViewMode = 'split' | 'editor' | 'preview';
+
+// ---------------------------------------------------------------------------
+// Component
+// ---------------------------------------------------------------------------
 export default function ResumePage() {
   const { student } = useAuth();
-  const [data, setData] = useState<ProfileResp | null>(null);
-  const [enabled, setEnabled] = useState<Record<string, boolean>>(
-    Object.fromEntries(SECTIONS.map((s) => [s.id, true])),
-  );
-  const [accent, setAccent] = useState(ACCENTS[0]);
 
-  useEffect(() => {
-    if (!student?.universityId) {
-      setData(SAMPLE);
-      return;
+  // Current LaTeX source being edited
+  const [currentTex, setCurrentTex] = useState<string>('');
+  // Blob URL of the most recently compiled PDF
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+  // Compilation state
+  const [isCompiling, setIsCompiling] = useState(false);
+  const [compileError, setCompileError] = useState<string | null>(null);
+  // Whether the initial profile data is loading
+  const [isFetchingData, setIsFetchingData] = useState(true);
+  // Which data source was used
+  const [usingSample, setUsingSample] = useState(false);
+  // Last compilation time
+  const [lastCompiledAt, setLastCompiledAt] = useState<Date | null>(null);
+  // View mode
+  const [viewMode, setViewMode] = useState<ViewMode>('split');
+
+  // Keep a ref to the previous blob URL so we can revoke it (memory cleanup).
+  // Phase 5 (flow.md): URL.revokeObjectURL prevents memory leaks.
+  const prevBlobUrl = useRef<string | null>(null);
+
+  // ---------------------------------------------------------------------------
+  // Phase 4: The actual compilation function — POSTs LaTeX to our proxy route.
+  // ---------------------------------------------------------------------------
+  const compilePdf = useCallback(async (texCode: string) => {
+    if (!texCode.trim()) return;
+
+    setIsCompiling(true);
+    setCompileError(null);
+
+    try {
+      const response = await fetch('/api/student/resume-pdf', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tex: texCode }),
+      });
+
+      if (!response.ok) {
+        let errMsg = `Server error ${response.status}`;
+        try {
+          const errJson = await response.json();
+          errMsg = errJson?.error ?? errMsg;
+        } catch {
+          // ignore parse error
+        }
+        throw new Error(errMsg);
+      }
+
+      // Phase 5: convert the binary PDF response into a Blob, then a URL.
+      const blob = await response.blob();
+      const newUrl = URL.createObjectURL(blob);
+
+      // Revoke the previous URL to free memory.
+      if (prevBlobUrl.current) {
+        URL.revokeObjectURL(prevBlobUrl.current);
+      }
+      prevBlobUrl.current = newUrl;
+
+      setPdfUrl(newUrl);
+      setLastCompiledAt(new Date());
+    } catch (err) {
+      setCompileError(err instanceof Error ? err.message : String(err));
+    } finally {
+      setIsCompiling(false);
     }
-    authedFetch(`/api/student/profile?universityId=${student.universityId}`)
-      .then((r) => r.json())
-      .then((d) => {
-        if (d?.success && d.student) setData(d.student as ProfileResp);
-        else setData(SAMPLE);
-      })
-      .catch(() => setData(SAMPLE));
+  }, []);
+
+  // Decision 4 (decision.md): Debounce — wait until user stops typing for 1.5s
+  // before sending a compile request. Prevents spamming latexonline.cc.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedCompile = useCallback(
+    debounce((tex: string) => {
+      compilePdf(tex);
+    }, 1500),
+    [compilePdf]
+  );
+
+  // Cleanup debounce on unmount
+  useEffect(() => {
+    return () => {
+      debouncedCompile.cancel();
+      if (prevBlobUrl.current) {
+        URL.revokeObjectURL(prevBlobUrl.current);
+      }
+    };
+  }, [debouncedCompile]);
+
+  // ---------------------------------------------------------------------------
+  // Phase 1: Fetch student profile on mount.
+  // Phase 2: Build LaTeX template from the fetched data.
+  // ---------------------------------------------------------------------------
+  useEffect(() => {
+    async function loadProfile() {
+      setIsFetchingData(true);
+
+      if (!student?.universityId) {
+        // No authenticated user — show sample data so the builder is always usable.
+        setUsingSample(true);
+        const tex = buildJakeResume(SAMPLE_STUDENT);
+        setCurrentTex(tex);
+        setIsFetchingData(false);
+        // Trigger first compile with the sample data
+        compilePdf(tex);
+        return;
+      }
+
+      try {
+        const response = await authedFetch(
+          `/api/student/profile?universityId=${student.universityId}`
+        );
+        const json = await response.json();
+
+        if (json?.success && json.student) {
+          // Phase 2: Pass profile data through the Jake template builder.
+          const studentData: StudentData = json.student;
+          const tex = buildJakeResume(studentData);
+          setCurrentTex(tex);
+          setUsingSample(false);
+          compilePdf(tex);
+        } else {
+          // Fallback to sample if profile not found/populated
+          setUsingSample(true);
+          const tex = buildJakeResume(SAMPLE_STUDENT);
+          setCurrentTex(tex);
+          compilePdf(tex);
+        }
+      } catch {
+        setUsingSample(true);
+        const tex = buildJakeResume(SAMPLE_STUDENT);
+        setCurrentTex(tex);
+        compilePdf(tex);
+      } finally {
+        setIsFetchingData(false);
+      }
+    }
+
+    loadProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [student?.universityId]);
 
-  const skills = useMemo(() => {
-    if (!data) return [];
-    const fromCerts = data.certifications?.flatMap((c) => c.skills ?? []) ?? [];
-    const fromProjects = data.projects?.flatMap((p) => p.techStack ?? []) ?? [];
-    return Array.from(new Set([...fromProjects, ...fromCerts])).slice(0, 18);
-  }, [data]);
+  // ---------------------------------------------------------------------------
+  // Phase 3: Editor onChange handler — immediate state update + debounced compile
+  // ---------------------------------------------------------------------------
+  function handleEditorChange(newTex: string) {
+    setCurrentTex(newTex);
+    // Decision 4: fire the debounced compile, not compilePdf directly.
+    debouncedCompile(newTex);
+  }
 
-  const completeness = useMemo(() => {
-    if (!data) return 0;
-    let score = 40;
-    if (data.projects?.length) score += 20;
-    if (data.certifications?.length) score += 15;
-    if (skills.length) score += 15;
-    if (data.extracurriculars?.length) score += 10;
-    return Math.min(100, score);
-  }, [data, skills]);
+  // Manual re-compile (bypass debounce)
+  function handleManualCompile() {
+    debouncedCompile.cancel();
+    compilePdf(currentTex);
+  }
 
-  const d = data ?? SAMPLE;
+  // Download the PDF
+  function handleDownload() {
+    if (!pdfUrl) return;
+    const link = document.createElement('a');
+    link.href = pdfUrl;
+    link.download = 'resume.pdf';
+    link.click();
+  }
+
+  // ---------------------------------------------------------------------------
+  // Render
+  // ---------------------------------------------------------------------------
+  const editorHeight = 'calc(100vh - 200px)';
 
   return (
-    <div>
+    <div className="flex flex-col h-full">
       <PageHeader
         title="Resume Builder"
-        description="Built from your verified profile — toggle sections, pick an accent, then export to PDF."
+        description="LaTeX-powered resume builder — your profile auto-fills the template. Edit the code, see the live PDF."
         icon={<FileText size={22} />}
-        actions={<Button icon={Printer} onClick={() => window.print()}>Download / Print</Button>}
+        actions={
+          <>
+            {/* Compilation status badge */}
+            {isCompiling ? (
+              <Badge tone="blue">
+                <Loader2 size={11} className="animate-spin mr-1" />
+                Compiling…
+              </Badge>
+            ) : compileError ? (
+              <Badge tone="red">
+                <AlertCircle size={11} className="mr-1" />
+                Error
+              </Badge>
+            ) : lastCompiledAt ? (
+              <Badge tone="green">
+                <CheckCircle2 size={11} className="mr-1" />
+                Ready
+              </Badge>
+            ) : null}
+
+            {/* View mode toggle */}
+            <div className="flex items-center rounded-lg border border-[var(--border)] overflow-hidden text-sm">
+              <ViewModeButton
+                active={viewMode === 'editor'}
+                onClick={() => setViewMode('editor')}
+                icon={<Code2 size={14} />}
+                label="Editor"
+              />
+              <ViewModeButton
+                active={viewMode === 'split'}
+                onClick={() => setViewMode('split')}
+                icon={<ChevronDown size={14} className="rotate-[-90deg]" />}
+                label="Split"
+              />
+              <ViewModeButton
+                active={viewMode === 'preview'}
+                onClick={() => setViewMode('preview')}
+                icon={<Eye size={14} />}
+                label="Preview"
+              />
+            </div>
+
+            <Button
+              variant="ghost"
+              icon={RefreshCw}
+              onClick={handleManualCompile}
+              disabled={isCompiling || !currentTex}
+              title="Force re-compile now"
+            >
+              Compile
+            </Button>
+
+            <Button
+              icon={Download}
+              onClick={handleDownload}
+              disabled={!pdfUrl}
+            >
+              Download PDF
+            </Button>
+          </>
+        }
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-6">
-        {/* Controls */}
-        <div className="space-y-4 no-print">
-          <Card>
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="font-semibold text-content flex items-center gap-2"><Eye size={16} /> Sections</h3>
-            </div>
-            <div className="space-y-2">
-              {SECTIONS.map((s) => (
-                <label key={s.id} className="flex items-center justify-between cursor-pointer">
-                  <span className="text-sm text-content-2">{s.label}</span>
-                  <input
-                    type="checkbox"
-                    checked={enabled[s.id]}
-                    onChange={() => setEnabled((e) => ({ ...e, [s.id]: !e[s.id] }))}
-                    className="w-4 h-4 accent-[var(--brand)]"
-                  />
-                </label>
-              ))}
-            </div>
-          </Card>
-
-          <Card>
-            <h3 className="font-semibold text-content flex items-center gap-2 mb-3"><Palette size={16} /> Accent</h3>
-            <div className="flex gap-2">
-              {ACCENTS.map((c) => (
-                <button
-                  key={c}
-                  onClick={() => setAccent(c)}
-                  aria-label={`Accent ${c}`}
-                  className={cn('w-8 h-8 rounded-full border-2 transition-transform', accent === c ? 'border-content scale-110' : 'border-transparent')}
-                  style={{ background: c }}
-                />
-              ))}
-            </div>
-          </Card>
-
-          <Card>
-            <div className="flex justify-between text-sm mb-2">
-              <span className="text-content-2 font-medium">Completeness</span>
-              <span className="font-bold text-content">{completeness}%</span>
-            </div>
-            <ProgressBar value={completeness} tone={completeness >= 80 ? 'green' : 'amber'} />
-            <p className="text-xs text-muted mt-2">Add projects, certifications and activities to strengthen your resume.</p>
-          </Card>
+      {/* Sample data warning */}
+      {usingSample && !isFetchingData && (
+        <div className="mb-4 flex items-start gap-3 rounded-lg border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-400">
+          <AlertCircle size={16} className="mt-0.5 shrink-0" />
+          <span>
+            Showing <strong>sample data</strong>. Sign in with a completed profile to auto-fill your real resume.
+          </span>
         </div>
+      )}
 
-        {/* Preview */}
-        <Card padded={false} className="overflow-hidden">
-          <div id="resume-print" className="bg-white text-[#111827] p-8 sm:p-10" style={{ fontFamily: 'Georgia, serif' }}>
-            {/* Header */}
-            <div className="border-b-2 pb-4" style={{ borderColor: accent }}>
-              <h1 className="text-3xl font-bold" style={{ color: accent }}>{d.fullName}</h1>
-              <p className="text-sm text-gray-600 mt-1">
-                {[d.branch, d.year ? `${d.year}rd Year` : null, d.section ? `Section ${d.section}` : null].filter(Boolean).join(' · ')}
-              </p>
-              <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2 text-xs text-gray-600">
-                {d.email && <span className="flex items-center gap-1"><Mail size={12} /> {d.email}</span>}
-                {d.phone && <span className="flex items-center gap-1"><Phone size={12} /> {d.phone}</span>}
-                {d.codingProfile?.github && <span className="flex items-center gap-1"><Link2 size={12} /> {d.codingProfile.github}</span>}
-                {d.codingProfile?.linkedinUrl && <span className="flex items-center gap-1"><Link2 size={12} /> LinkedIn</span>}
-                {d.codingProfile?.leetcode && <span className="flex items-center gap-1"><Globe size={12} /> {d.codingProfile.leetcode}</span>}
+      {/* Info bar */}
+      {lastCompiledAt && !compileError && (
+        <div className="mb-3 flex items-center gap-2 text-xs text-[var(--muted)]">
+          <Clock size={11} />
+          Last compiled {lastCompiledAt.toLocaleTimeString()} · Auto-compiles 1.5s after you stop typing
+        </div>
+      )}
+
+      {/* Main split layout */}
+      {isFetchingData ? (
+        <div className="flex flex-1 items-center justify-center">
+          <div className="flex flex-col items-center gap-3 text-[var(--content-2)]">
+            <Loader2 size={36} className="animate-spin text-[var(--brand)]" />
+            <p className="text-sm">Loading your profile…</p>
+          </div>
+        </div>
+      ) : (
+        <div
+          className={`grid gap-4 flex-1 ${
+            viewMode === 'split'
+              ? 'grid-cols-1 lg:grid-cols-2'
+              : viewMode === 'editor'
+              ? 'grid-cols-1'
+              : 'grid-cols-1'
+          }`}
+          style={{ minHeight: editorHeight }}
+        >
+          {/* Left pane: Monaco Editor */}
+          {(viewMode === 'split' || viewMode === 'editor') && (
+            <div className="flex flex-col min-h-0 h-full">
+              <div className="flex items-center justify-between mb-2 px-1 shrink-0">
+                <span className="text-xs font-semibold text-[var(--content-2)] flex items-center gap-1.5">
+                  <Code2 size={12} />
+                  LaTeX Source
+                </span>
+                <span className="text-xs text-[var(--muted)]">
+                  {currentTex.split('\n').length} lines
+                </span>
+              </div>
+              <div className="flex-1 min-h-0 relative">
+                <div className="absolute inset-0">
+                  <LatexEditor
+                    value={currentTex}
+                    onChange={handleEditorChange}
+                    height="100%"
+                  />
+                </div>
               </div>
             </div>
+          )}
 
-            {enabled.summary && (
-              <ResumeSection title="Summary" accent={accent}>
-                <p className="text-sm text-gray-700 leading-relaxed">
-                  Motivated {d.branch ?? 'engineering'} student with hands-on project experience and a consistent record of
-                  building and shipping software. Seeking opportunities to apply and grow full-stack and problem-solving skills.
-                </p>
-              </ResumeSection>
-            )}
-
-            {enabled.skills && skills.length > 0 && (
-              <ResumeSection title="Technical Skills" accent={accent}>
-                <div className="flex flex-wrap gap-2">
-                  {skills.map((s) => (
-                    <span key={s} className="text-xs px-2 py-0.5 rounded border" style={{ borderColor: accent, color: accent }}>{s}</span>
-                  ))}
+          {/* Right pane: PDF Preview */}
+          {(viewMode === 'split' || viewMode === 'preview') && (
+            <div className="flex flex-col min-h-0 h-full">
+              <div className="flex items-center justify-between mb-2 px-1 shrink-0">
+                <span className="text-xs font-semibold text-[var(--content-2)] flex items-center gap-1.5">
+                  <Eye size={12} />
+                  PDF Preview
+                </span>
+                {isCompiling && (
+                  <span className="text-xs text-[var(--brand)] flex items-center gap-1">
+                    <Loader2 size={10} className="animate-spin" />
+                    Compiling…
+                  </span>
+                )}
+              </div>
+              <div className="flex-1 min-h-0 relative">
+                <div className="absolute inset-0">
+                  <PdfPreview
+                    pdfUrl={pdfUrl}
+                    isLoading={isCompiling && !pdfUrl}
+                    error={compileError}
+                    height="100%"
+                  />
                 </div>
-              </ResumeSection>
-            )}
-
-            {enabled.projects && d.projects?.length > 0 && (
-              <ResumeSection title="Projects" accent={accent}>
-                <div className="space-y-3">
-                  {d.projects.map((p) => (
-                    <div key={p.id}>
-                      <p className="font-semibold text-sm text-gray-800">{p.title}</p>
-                      {p.description && <p className="text-sm text-gray-600">{p.description}</p>}
-                      {p.techStack?.length > 0 && <p className="text-xs text-gray-500 mt-0.5">{p.techStack.join(' · ')}</p>}
-                    </div>
-                  ))}
-                </div>
-              </ResumeSection>
-            )}
-
-            {enabled.certifications && d.certifications?.length > 0 && (
-              <ResumeSection title="Certifications" accent={accent}>
-                <ul className="space-y-1">
-                  {d.certifications.map((c, i) => (
-                    <li key={i} className="text-sm text-gray-700">
-                      <span className="font-medium">{c.name}</span>{c.platform ? ` — ${c.platform}` : ''}
-                    </li>
-                  ))}
-                </ul>
-              </ResumeSection>
-            )}
-
-            {enabled.extra && d.extracurriculars?.length > 0 && (
-              <ResumeSection title="Extracurriculars" accent={accent}>
-                <ul className="space-y-1">
-                  {d.extracurriculars.map((e, i) => (
-                    <li key={i} className="text-sm text-gray-700">
-                      <span className="font-medium">{e.role}</span>{e.society ? `, ${e.society}` : ''}
-                      {e.achievement ? ` — ${e.achievement}` : ''}
-                    </li>
-                  ))}
-                </ul>
-              </ResumeSection>
-            )}
-          </div>
-        </Card>
-      </div>
-
-      {!student?.universityId && (
-        <p className="text-xs text-muted mt-3 no-print">
-          <Badge tone="amber">Sample</Badge>{' '}
-          Showing sample content — your real profile data will populate this once you&apos;re signed in with a submitted profile.
-        </p>
+              </div>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );
 }
 
-function ResumeSection({ title, accent, children }: { title: string; accent: string; children: React.ReactNode }) {
+// ---------------------------------------------------------------------------
+// Helper component for view mode toggle buttons
+// ---------------------------------------------------------------------------
+function ViewModeButton({
+  active,
+  onClick,
+  icon,
+  label,
+}: {
+  active: boolean;
+  onClick: () => void;
+  icon: React.ReactNode;
+  label: string;
+}) {
   return (
-    <div className="mt-5">
-      <h2 className="text-sm font-bold uppercase tracking-wide mb-2" style={{ color: accent }}>{title}</h2>
-      {children}
-    </div>
+    <button
+      onClick={onClick}
+      className={`flex items-center gap-1.5 px-3 py-1.5 text-xs transition-colors ${
+        active
+          ? 'bg-[var(--brand)] text-white'
+          : 'bg-transparent text-[var(--content-2)] hover:bg-[var(--surface-2)]'
+      }`}
+    >
+      {icon}
+      {label}
+    </button>
   );
 }
