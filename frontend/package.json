@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
-    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/adapter-pg": "^5.22.0",
     "@prisma/client": "^5.22.0",
     "@supabase/supabase-js": "^2.108.1",
     "@types/lodash.debounce": "^4.0.9",
