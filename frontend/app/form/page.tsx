@@ -7,7 +7,7 @@ import {
   Upload, FileText, Trash2, Plus, X, Award, Briefcase,
   Users, Loader2, PartyPopper, AlertCircle, Tag, ExternalLink, RefreshCw
 } from 'lucide-react'
-import { uploadToCloudinary } from '@/lib/upload/cloudinaryClient'
+import { uploadToCloudinary, type UploadFolder } from '@/lib/upload/cloudinaryClient'
 
 // ─── Data shapes ──────────────────────────────────────────────────────────────
 
@@ -241,7 +241,7 @@ function FileUploadZone({
 
     try {
       const result = await uploadToCloudinary(
-        folder as 'resume' | 'certificates' | 'internships', 
+        folder as UploadFolder, 
         file, 
         () => {}
       )

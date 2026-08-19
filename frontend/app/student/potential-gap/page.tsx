@@ -7,7 +7,7 @@ import { getPotentialGap, type GapItem } from '@/lib/data';
 import { PageHeader, Card, Badge, ProgressBar, ErrorState, CardSkeleton } from '@/components/ui';
 import { cn } from '@/lib/utils/cn';
 
-const TONE: Record<GapItem['tone'], 'red' | 'amber' | 'blue'> = { red: 'red', amber: 'amber', blue: 'brand' };
+const TONE: Record<GapItem['tone'], 'red' | 'amber' | 'blue'> = { red: 'red', amber: 'amber', blue: 'blue' };
 
 export default function PotentialGapPage() {
   const { student } = useAuth();

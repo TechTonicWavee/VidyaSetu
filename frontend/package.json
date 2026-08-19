@@ -14,7 +14,6 @@
     "@prisma/adapter-pg": "^5.22.0",
     "@prisma/client": "^5.22.0",
     "@supabase/supabase-js": "^2.108.1",
-    "@types/lodash.debounce": "^4.0.9",
     "bcryptjs": "^3.0.3",
     "dotenv": "^17.4.2",
     "glob": "^13.0.6",
@@ -32,6 +31,7 @@
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.7",
+    "@types/lodash.debounce": "^4.0.9",
     "@types/node": "^22.10.5",
     "@types/pg": "^8.21.0",
     "@types/react": "^18.3.18",

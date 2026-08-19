@@ -9,15 +9,17 @@ export function ChartCard({
   action,
   children,
   height = 300,
+  className,
 }: {
   title: string;
   subtitle?: string;
   action?: ReactNode;
   children: ReactNode;
   height?: number;
+  className?: string;
 }) {
   return (
-    <Card>
+    <Card className={className}>
       <div className="flex items-start justify-between gap-3 mb-4">
         <div>
           <h3 className="font-semibold text-content">{title}</h3>
