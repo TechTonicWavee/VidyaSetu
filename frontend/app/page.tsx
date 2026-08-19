@@ -48,10 +48,10 @@ const stats = [
 ]
 
 const roles = [
-  { label: 'Dean', sub: 'Institutional Overview', color: '#5B21B6', icon: Building, path: '/dean' },
-  { label: 'Faculty', sub: 'Classroom Analytics', color: '#0F766E', icon: BookOpen, path: '/faculty' },
-  { label: 'Student', sub: 'Progress Tracking', color: '#1A56DB', icon: User, path: '/student' },
-  { label: 'Parent', sub: 'Real-time Updates', color: '#D97706', icon: Heart, path: '/parent' },
+  { label: 'Student', sub: 'Progress Tracking', color: 'var(--brand)', icon: User, path: '/student' },
+  { label: 'Faculty', sub: 'Classroom Analytics', color: 'var(--info)', icon: BookOpen, path: '/faculty' },
+  { label: 'Dean', sub: 'Institutional Overview', color: 'var(--brand)', icon: Building, path: '/dean' },
+  { label: 'Admin', sub: 'System Configuration', color: 'var(--warning)', icon: Settings, path: '/admin' },
 ]
 
 export default function LandingPage() {
@@ -72,7 +72,7 @@ export default function LandingPage() {
             />
             <div className="h-6 w-px bg-gray-200 flex-shrink-0 hidden sm:block" />
             <div className="w-7 h-7 rounded-full flex items-center justify-center text-white font-bold text-[11px] shadow-sm hidden sm:flex"
-              style={{ background: '#1A56DB' }}>VS</div>
+              style={{ background: 'var(--brand-gradient)' }}>VS</div>
             <span className="font-bold text-[14px] text-slate-800 tracking-tight hidden sm:block">VidyaSetu</span>
           </div>
           <div className="flex items-center gap-2">
@@ -85,7 +85,7 @@ export default function LandingPage() {
             <button
               onClick={() => router.push('/login')}
               className="flex items-center gap-1.5 px-4 py-2 rounded-full text-[13px] font-semibold text-white transition-transform hover:scale-105 active:scale-95 shadow-sm"
-              style={{ background: '#1A56DB' }}
+              style={{ background: 'var(--brand-gradient)' }}
             >
               Get Started <ArrowRight size={14} />
             </button>
@@ -101,7 +101,7 @@ export default function LandingPage() {
         
         <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[72px] font-extrabold leading-[1.05] tracking-tighter text-slate-900 mb-5 max-w-4xl animate-fade-up" style={{ animationDelay: '0.2s' }}>
           Department analytics, <br />
-          <span className="text-[#1A56DB]">simplified.</span>
+          <span className="text-brand">simplified.</span>
         </h1>
         
         <p className="text-base sm:text-lg md:text-xl text-slate-500 font-medium leading-relaxed max-w-2xl mb-8 animate-fade-up" style={{ animationDelay: '0.3s' }}>
@@ -111,8 +111,8 @@ export default function LandingPage() {
         <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto animate-fade-up" style={{ animationDelay: '0.4s' }}>
           <button
             onClick={() => router.push('/login')}
-            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-full text-white font-semibold text-[14.5px] transition-all hover:shadow-[0_8px_25px_rgba(26,86,219,0.3)] hover:-translate-y-0.5 active:translate-y-0"
-            style={{ background: '#1A56DB' }}
+            className="w-full sm:w-auto flex items-center justify-center gap-2 px-6 py-3 rounded-full text-white font-semibold text-[14.5px] transition-all hover:shadow-[0_8px_25px_rgba(59,108,185,0.3)] hover:-translate-y-0.5 active:translate-y-0"
+            style={{ background: 'var(--brand-gradient)' }}
           >
             Access Dashboard <ArrowRight size={16} />
           </button>
@@ -130,7 +130,7 @@ export default function LandingPage() {
         <div className="bg-white rounded-[1.5rem] p-6 border border-gray-200 shadow-[0_4px_20px_rgb(0,0,0,0.02)] flex flex-col md:flex-row justify-around items-center gap-6 divide-y md:divide-y-0 md:divide-x divide-gray-100 animate-fade-up" style={{ animationDelay: '0.5s' }}>
           {stats.map((s, i) => (
             <div key={i} className="flex flex-col items-center text-center w-full py-2 md:py-0">
-              <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-[#1A56DB] mb-2.5">
+              <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-brand mb-2.5">
                 <s.icon size={18} strokeWidth={2.5} />
               </div>
               <p className="text-[32px] font-extrabold text-slate-900 tracking-tight mb-0.5">{s.value}</p>
@@ -154,9 +154,9 @@ export default function LandingPage() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {features.map((f, i) => (
-              <div key={i} className="group p-6 bg-[#FAFAFA] rounded-2xl border border-gray-200 hover:border-[#1A56DB] hover:shadow-[0_4px_20px_rgba(26,86,219,0.06)] transition-all duration-300">
+              <div key={i} className="group p-6 bg-[#FAFAFA] rounded-2xl border border-gray-200 hover:border-brand hover:shadow-[0_4px_20px_rgba(59,108,185,0.06)] transition-all duration-300">
                 <div className="flex items-center gap-4 mb-4">
-                  <div className="w-10 h-10 rounded-xl bg-white border border-gray-200 shadow-sm flex items-center justify-center text-slate-600 group-hover:text-[#1A56DB] group-hover:scale-110 transition-transform flex-shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-white border border-gray-200 shadow-sm flex items-center justify-center text-slate-600 group-hover:text-brand group-hover:scale-110 transition-transform flex-shrink-0">
                     <f.icon size={20} strokeWidth={2} />
                   </div>
                   <h3 className="font-bold text-[16px] text-slate-900 leading-tight">{f.title}</h3>
@@ -189,10 +189,10 @@ export default function LandingPage() {
               <div className="mb-4" style={{ color: r.color }}>
                 <r.icon size={26} strokeWidth={1.5} />
               </div>
-              <p className="font-bold text-slate-900 text-[15px] group-hover:text-[#1A56DB] transition-colors">{r.label} Portal</p>
+              <p className="font-bold text-slate-900 text-[15px] group-hover:text-brand transition-colors">{r.label} Portal</p>
               <p className="text-[12.5px] text-slate-500 font-medium mt-1 mb-5 text-left">{r.sub}</p>
               
-              <div className="mt-auto w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-slate-400 group-hover:border-[#1A56DB] group-hover:bg-[#1A56DB] group-hover:text-white transition-all self-end">
+              <div className="mt-auto w-8 h-8 rounded-full border border-gray-200 flex items-center justify-center text-slate-400 group-hover:border-brand group-hover:bg-brand group-hover:text-white transition-all self-end">
                 <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
               </div>
             </button>
@@ -224,7 +224,7 @@ export default function LandingPage() {
       <footer className="bg-[#FAFAFA] border-t border-gray-200 py-8 px-6">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2 text-slate-900 font-bold tracking-tight">
-            <div className="w-5 h-5 flex items-center justify-center bg-[#1A56DB] text-white rounded text-[9px]">VS</div>
+            <div className="w-5 h-5 flex items-center justify-center text-white rounded text-[9px]" style={{ background: 'var(--brand-gradient)' }}>VS</div>
             <span className="text-[14px]">VidyaSetu</span>
           </div>
           <p className="text-[12.5px] text-slate-400 font-medium">

@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Users, Plus, Clock, X, Check, Search, UserPlus2 } from 'lucide-react';
+import { Users, Plus, Clock, X, Check, Search, UserPlus2, ArrowRight } from 'lucide-react';
 import getInitials from '@/lib/getInitials';
 import { useAuth } from '../../../lib/auth/AuthProvider';
 import { useSocket } from '../../../lib/socket/SocketProvider';
@@ -117,88 +117,111 @@ export default function MyTeamPage() {
 
   if (loading) {
     return (
-      <div className="max-w-6xl mx-auto space-y-6 animate-pulse">
-        <div className="h-8 w-48 bg-surface-2 rounded" />
-        <div className="h-40 bg-surface-2 rounded-2xl border border-line" />
-        <div className="h-40 bg-surface-2 rounded-2xl border border-line" />
+      <div className="max-w-6xl mx-auto space-y-6 animate-pulse pb-10">
+        <div className="h-10 w-64 bg-surface-2 rounded-xl" />
+        <div className="h-56 bg-surface-2 rounded-3xl border border-line" />
+        <div className="h-40 bg-surface-2 rounded-3xl border border-line" />
       </div>
     );
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6 animate-fade-in">
+    <div className="max-w-6xl mx-auto space-y-8 animate-fade-in pb-10">
       <PageHeader
         title="My Team"
         description="Your project teams, invites and collaboration space."
         icon={<Users size={22} />}
         actions={
-          <div className="flex gap-2">
-            <Button variant="secondary" icon={UserPlus2} onClick={() => setActiveTab('find')}>
+          <div className="flex gap-3">
+            <Button variant="secondary" icon={UserPlus2} onClick={() => setActiveTab('find')} className="bg-surface hover:bg-surface-2 shadow-sm">
               Find a Team
             </Button>
-            <Button icon={Plus} onClick={() => setShowCreate(true)}>
+            <Button icon={Plus} onClick={() => setShowCreate(true)} className="shadow-lg shadow-brand/20">
               Create Team
             </Button>
           </div>
         }
       />
 
-      <Tabs
-        tabs={[
-          { id: 'mine', label: 'My Teams', count: teams.length },
-          { id: 'find', label: 'Find a Team' },
-        ]}
-        active={activeTab}
-        onChange={(id) => setActiveTab(id as 'mine' | 'find')}
-        className="mb-0"
-      />
+      <div className="bg-surface p-2 rounded-2xl border border-line/50 shadow-sm inline-flex items-center gap-2 overflow-x-auto max-w-full">
+        <button
+          onClick={() => setActiveTab('mine')}
+          className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2 ${activeTab === 'mine' ? 'bg-brand text-white shadow-md shadow-brand/20' : 'bg-transparent text-content-2 hover:bg-surface-2'}`}
+        >
+          My Teams
+          {teams.length > 0 && (
+            <span className={cn("px-2 py-0.5 rounded-md text-[10px]", activeTab === 'mine' ? 'bg-white/20 text-white' : 'bg-surface-3 text-content')}>
+              {teams.length}
+            </span>
+          )}
+        </button>
+        <button
+          onClick={() => setActiveTab('find')}
+          className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'find' ? 'bg-brand text-white shadow-md shadow-brand/20' : 'bg-transparent text-content-2 hover:bg-surface-2'}`}
+        >
+          Find a Team
+        </button>
+      </div>
 
       {activeTab === 'mine' ? (
         <>
           {/* Team Grid */}
           {teams.length === 0 ? (
-            <Card className="text-center py-12">
-              <div className="w-14 h-14 rounded-2xl bg-brand-soft flex items-center justify-center mx-auto mb-4">
-                <Users size={24} className="text-brand" />
+            <Card className="text-center py-16 border-dashed border-2 bg-surface-2/30">
+              <div className="w-20 h-20 rounded-full bg-brand/10 flex items-center justify-center mx-auto mb-5 shadow-inner">
+                <Users size={32} className="text-brand" />
               </div>
-              <h3 className="font-bold text-content text-lg mb-1.5">No teams yet</h3>
-              <p className="text-muted text-sm mb-5">Create a team, or find one with an open slot in the &quot;Find a Team&quot; tab.</p>
-              <Button icon={Plus} onClick={() => setShowCreate(true)}>Create Your First Team</Button>
+              <h3 className="font-black text-content text-2xl tracking-tight mb-2">No teams yet</h3>
+              <p className="text-muted text-sm mb-8 max-w-md mx-auto leading-relaxed">Create a team to start collaborating on projects, or find an existing team with open slots in the &quot;Find a Team&quot; tab.</p>
+              <Button icon={Plus} onClick={() => setShowCreate(true)} className="shadow-lg shadow-brand/20">Create Your First Team</Button>
             </Card>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {teams.map((team) => {
                 const isLeader = team.leaderId === student?.universityId;
                 return (
                   <Link
                     key={team.id}
                     href={`/student/my-team/${team.id}`}
-                    className="block"
+                    className="block group"
                   >
-                    <Card className="hover:shadow-card-hover transition-shadow h-full">
-                      <div className="flex justify-between items-start mb-4">
+                    <Card className="h-full relative overflow-hidden transition-all duration-300 hover:shadow-xl hover:-translate-y-1.5 border-line/40">
+                      <div className="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r from-brand to-brand-accent opacity-70 group-hover:opacity-100 transition-opacity" />
+                      
+                      <div className="flex justify-between items-start mb-5 pt-2">
                         <div>
-                          <h3 className="font-bold text-content text-base">{team.name}</h3>
-                          {team.domain && <p className="text-brand text-xs font-semibold mt-0.5">{team.domain}</p>}
+                          <h3 className="font-black text-content text-xl tracking-tight group-hover:text-brand transition-colors">{team.name}</h3>
+                          {team.domain && <Badge tone="gray" className="mt-2 text-[10px] tracking-widest uppercase">{team.domain}</Badge>}
                         </div>
-                        {isLeader && <Badge tone="purple">Leader</Badge>}
+                        {isLeader && <Badge tone="brand" className="shadow-sm shadow-brand/20">Leader</Badge>}
                       </div>
-                      {team.description && <p className="text-muted text-sm mb-4 line-clamp-2">{team.description}</p>}
-                      <div className="flex items-center justify-between mt-auto pt-4 border-t border-line">
-                        <div className="flex -space-x-2">
-                          {team.members.slice(0, 5).map((m) => (
-                            <div
-                              key={m.id}
-                              title={m.student.fullName}
-                              className="w-8 h-8 rounded-full bg-brand-soft text-brand text-xs font-bold flex items-center justify-center ring-2 ring-surface"
-                            >
-                              {getInitials(m.student.fullName)}
-                            </div>
-                          ))}
+                      
+                      {team.description ? (
+                        <p className="text-muted text-sm mb-6 line-clamp-2 leading-relaxed">{team.description}</p>
+                      ) : (
+                        <p className="text-muted/50 italic text-sm mb-6">No description provided.</p>
+                      )}
+                      
+                      <div className="flex items-center justify-between mt-auto pt-4 border-t border-line/50">
+                        <div className="flex items-center gap-3">
+                          <div className="flex -space-x-3">
+                            {team.members.slice(0, 5).map((m) => (
+                              <div
+                                key={m.id}
+                                title={m.student.fullName}
+                                className="w-10 h-10 rounded-full bg-brand/10 text-brand text-xs font-bold flex items-center justify-center ring-4 ring-surface shadow-sm border border-brand/20 transition-transform group-hover:scale-105"
+                              >
+                                {getInitials(m.student.fullName)}
+                              </div>
+                            ))}
+                          </div>
+                          <span className="text-xs font-bold text-muted ml-1">
+                            <span className="text-content">{team.members.length}</span> / {team.maxMembers}
+                          </span>
                         </div>
-                        <span className="text-xs font-semibold text-muted">
-                          {team.members.length}/{team.maxMembers} members
-                        </span>
+                        <div className="w-8 h-8 rounded-full bg-surface-2 flex items-center justify-center text-muted group-hover:bg-brand/10 group-hover:text-brand transition-colors">
+                          <ArrowRight size={16} />
+                        </div>
                       </div>
                     </Card>
                   </Link>
@@ -208,25 +231,31 @@ export default function MyTeamPage() {
           )}
 
           {/* Invites Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 pt-2">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 pt-4">
             {/* Sent Invites */}
             <div>
-              <h3 className="text-base font-bold text-content mb-3">Invites You Sent</h3>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="p-1.5 rounded-md bg-brand/10 text-brand"><Users size={16} /></div>
+                <h3 className="text-lg font-black text-content tracking-tight">Invites You Sent</h3>
+              </div>
+              
               {sentInvites.length === 0 ? (
-                <Card><p className="text-sm text-muted py-4 text-center">No pending invites sent.</p></Card>
+                <div className="p-6 text-center border-2 border-dashed border-line/50 rounded-2xl bg-surface-2/30">
+                   <p className="text-sm font-medium text-muted">No pending invites sent.</p>
+                </div>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {sentInvites.map((invite) => (
-                    <Card key={invite.id} className="relative overflow-hidden pr-4">
-                      <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand rounded-l-2xl" />
-                      <div className="flex justify-between items-center gap-3 pl-3">
-                        <div>
-                          <p className="font-semibold text-content text-sm">
+                    <Card key={invite.id} className="relative overflow-hidden group hover:border-brand/30 transition-colors">
+                      <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-brand" />
+                      <div className="flex justify-between items-center gap-4 pl-4">
+                        <div className="min-w-0 flex-1">
+                          <p className="font-bold text-content text-sm truncate">
                             {invite.type === 'join_request'
                               ? `Requested to join: ${invite.team?.name ?? ''}`
                               : `To: ${invite.receiver?.fullName ?? invite.receiverId}`}
                           </p>
-                          <p className="text-xs text-muted mt-0.5">
+                          <p className="text-xs text-muted font-medium mt-1 truncate">
                             {invite.type === 'join_request' ? 'Awaiting leader approval' : invite.team?.name} · {formatRelativeTime(invite.createdAt)}
                           </p>
                         </div>
@@ -236,7 +265,7 @@ export default function MyTeamPage() {
                           icon={X}
                           loading={pendingAction[invite.id]}
                           onClick={() => handleCancel(invite.id)}
-                          className="text-danger hover:bg-danger-soft flex-shrink-0"
+                          className="text-danger hover:bg-danger/10 hover:text-danger flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity focus:opacity-100"
                         >
                           Cancel
                         </Button>
@@ -249,48 +278,59 @@ export default function MyTeamPage() {
 
             {/* Received Invites */}
             <div>
-              <h3 className="text-base font-bold text-content mb-3">Invites You Received</h3>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="p-1.5 rounded-md bg-success/10 text-success"><UserPlus2 size={16} /></div>
+                <h3 className="text-lg font-black text-content tracking-tight">Invites You Received</h3>
+              </div>
+              
               {receivedInvites.length === 0 ? (
-                <Card><p className="text-sm text-muted py-4 text-center">No pending invites.</p></Card>
+                <div className="p-6 text-center border-2 border-dashed border-line/50 rounded-2xl bg-surface-2/30">
+                   <p className="text-sm font-medium text-muted">No pending invites.</p>
+                </div>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-4">
                   {receivedInvites.map((invite) => (
-                    <Card key={invite.id} className="relative overflow-hidden">
-                      <div className={cn('absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl', invite.type === 'join_request' ? 'bg-info' : 'bg-success')} />
-                      <div className="pl-3">
-                        <div className="flex justify-between items-start mb-1">
-                          <p className="font-semibold text-content text-sm">
-                            {invite.type === 'join_request'
-                              ? `${invite.sender?.fullName ?? invite.senderId} wants to join`
-                              : `From: ${invite.sender?.fullName ?? invite.senderId}`}
-                          </p>
-                          <span className="text-xs text-muted flex items-center gap-1">
-                            <Clock size={11} /> {formatRelativeTime(invite.createdAt)}
+                    <Card key={invite.id} className="relative overflow-hidden hover:shadow-md transition-shadow border-line/50">
+                      <div className={cn('absolute left-0 top-0 bottom-0 w-1.5', invite.type === 'join_request' ? 'bg-info' : 'bg-success')} />
+                      <div className="pl-4">
+                        <div className="flex justify-between items-start mb-2">
+                          <div>
+                            <p className="font-black text-content text-base leading-tight">
+                              {invite.type === 'join_request'
+                                ? `${invite.sender?.fullName ?? invite.senderId} wants to join`
+                                : `From: ${invite.sender?.fullName ?? invite.senderId}`}
+                            </p>
+                            <p className="text-xs font-bold text-muted mt-1 uppercase tracking-wider">{invite.team?.name}</p>
+                          </div>
+                          <span className="text-[10px] font-bold text-muted flex items-center gap-1 bg-surface-2 px-2 py-1 rounded">
+                            <Clock size={12} /> {formatRelativeTime(invite.createdAt)}
                           </span>
                         </div>
-                        <p className="text-xs text-muted mb-2">{invite.team?.name}</p>
+                        
                         {invite.message && (
-                          <div className="bg-surface-2 border border-line p-2.5 rounded-lg text-xs text-content-2 italic mb-3">
-                            &ldquo;{invite.message}&rdquo;
+                          <div className="bg-surface-2 border border-line/50 p-3 rounded-xl text-sm text-content-2 italic mb-4 relative">
+                            <div className="absolute top-2 left-2 text-muted/30 text-2xl font-serif">"</div>
+                            <span className="relative z-10 pl-3">{invite.message}</span>
                           </div>
                         )}
-                        <div className="flex gap-2">
+                        
+                        <div className="flex gap-3 mt-4">
                           <Button
                             size="sm"
                             icon={Check}
                             loading={pendingAction[invite.id]}
                             onClick={() => handleAccept(invite)}
-                            className="flex-1"
+                            className="flex-1 shadow-sm shadow-success/20 bg-success hover:bg-success-600 text-white border-0"
                           >
                             {invite.type === 'join_request' ? 'Approve' : 'Accept'}
                           </Button>
                           <Button
                             size="sm"
-                            variant="ghost"
+                            variant="secondary"
                             icon={X}
                             disabled={pendingAction[invite.id]}
                             onClick={() => handleDecline(invite.id)}
-                            className="flex-1 text-danger hover:bg-danger-soft"
+                            className="flex-1 text-danger hover:bg-danger/10 border-danger/20 hover:border-danger/40"
                           >
                             Decline
                           </Button>
@@ -385,84 +425,87 @@ function FindTeamPanel() {
   }
 
   return (
-    <div className="space-y-5">
-      <div className="relative max-w-sm">
-        <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+    <div className="space-y-6">
+      <div className="relative max-w-md">
+        <Search size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" />
         <input
           type="text"
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           placeholder="Search teams by name…"
-          className="w-full pl-9 pr-4 py-2.5 text-sm rounded-xl border border-line bg-surface shadow-sm focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition"
+          className="w-full pl-11 pr-4 py-3 text-sm rounded-2xl border border-line bg-surface shadow-sm focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand transition"
         />
       </div>
 
       {loading ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="h-44 bg-surface-2 rounded-2xl animate-pulse border border-line" />
+            <div key={i} className="h-52 bg-surface-2 rounded-3xl animate-pulse border border-line" />
           ))}
         </div>
       ) : items.length === 0 ? (
-        <Card className="py-12 text-center">
-          <div className="w-14 h-14 rounded-2xl bg-brand-soft flex items-center justify-center mx-auto mb-4">
-            <UserPlus2 size={24} className="text-brand" />
+        <Card className="py-16 text-center border-dashed border-2 bg-surface-2/30">
+          <div className="w-16 h-16 rounded-full bg-brand/10 flex items-center justify-center mx-auto mb-4">
+            <UserPlus2 size={28} className="text-brand" />
           </div>
-          <h3 className="font-bold text-content text-base mb-1.5">
-            {search ? `No open teams match &ldquo;${search}&rdquo;` : 'No open teams right now'}
+          <h3 className="font-black text-content text-xl mb-2 tracking-tight">
+            {search ? `No open teams match "${search}"` : 'No open teams right now'}
           </h3>
-          <p className="text-muted text-sm max-w-xs mx-auto">
+          <p className="text-muted text-sm max-w-sm mx-auto leading-relaxed">
             {search
               ? 'Try a different search, or create your own team.'
               : 'Every team with a spare slot will show up here — check back soon, or create your own.'}
           </p>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {items.map((team) => (
-            <Card key={team.id} className="flex flex-col">
-              <div className="flex justify-between items-start mb-2">
-                <h3 className="font-bold text-content text-base leading-tight">{team.name}</h3>
-                <span className="text-[10px] font-bold text-muted ml-2 flex-shrink-0">
+            <Card key={team.id} className="flex flex-col group hover:-translate-y-1.5 hover:shadow-xl transition-all duration-300 border-line/40">
+              <div className="flex justify-between items-start mb-3">
+                <h3 className="font-black text-content text-lg leading-tight tracking-tight group-hover:text-brand transition-colors">{team.name}</h3>
+                <Badge tone="gray" className="flex-shrink-0 font-bold">
                   {team.members.length}/{team.maxMembers}
-                </span>
+                </Badge>
               </div>
-              {team.domain && <p className="text-brand text-xs font-semibold mb-1.5">{team.domain}</p>}
-              {team.description && <p className="text-muted text-xs mb-3 line-clamp-2">{team.description}</p>}
-              <div className="flex -space-x-2 mt-auto pt-3 mb-3">
-                {team.members.slice(0, 5).map((m) => (
-                  <div
-                    key={m.id}
-                    title={m.student.fullName}
-                    className="w-7 h-7 rounded-full bg-brand-soft text-brand text-[10px] font-bold flex items-center justify-center ring-2 ring-surface"
+              {team.domain && <p className="text-brand text-xs font-bold uppercase tracking-widest mb-2">{team.domain}</p>}
+              {team.description && <p className="text-muted text-sm mb-4 line-clamp-2 leading-relaxed flex-1">{team.description}</p>}
+              
+              <div className="mt-auto">
+                <div className="flex -space-x-2.5 mb-5">
+                  {team.members.slice(0, 5).map((m) => (
+                    <div
+                      key={m.id}
+                      title={m.student.fullName}
+                      className="w-9 h-9 rounded-full bg-brand/10 text-brand text-xs font-bold flex items-center justify-center ring-4 ring-surface border border-brand/20 transition-transform group-hover:scale-105"
+                    >
+                      {getInitials(m.student.fullName)}
+                    </div>
+                  ))}
+                </div>
+                {team.hasPendingRequestFromMe ? (
+                  <button disabled className="w-full py-2.5 bg-surface-2 text-muted font-bold text-sm rounded-xl border border-line cursor-not-allowed">
+                    Request Sent
+                  </button>
+                ) : (
+                  <Button
+                    size="sm"
+                    icon={UserPlus2}
+                    loading={requesting[team.id]}
+                    onClick={() => handleRequestToJoin(team)}
+                    className="w-full py-2.5 shadow-sm hover:shadow-md"
                   >
-                    {getInitials(m.student.fullName)}
-                  </div>
-                ))}
+                    Request to Join
+                  </Button>
+                )}
               </div>
-              {team.hasPendingRequestFromMe ? (
-                <button disabled className="w-full py-2 bg-surface-2 text-muted font-semibold text-sm rounded-xl border border-line cursor-not-allowed">
-                  Request Sent
-                </button>
-              ) : (
-                <Button
-                  size="sm"
-                  icon={UserPlus2}
-                  loading={requesting[team.id]}
-                  onClick={() => handleRequestToJoin(team)}
-                  className="w-full"
-                >
-                  Request to Join
-                </Button>
-              )}
             </Card>
           ))}
         </div>
       )}
 
       {!loading && page < totalPages && (
-        <div className="flex justify-center pb-4">
-          <Button variant="secondary" loading={loadingMore} onClick={loadMore}>
+        <div className="flex justify-center pb-8 pt-4">
+          <Button variant="secondary" loading={loadingMore} onClick={loadMore} className="bg-surface hover:bg-surface-2 shadow-sm">
             Load More Teams
           </Button>
         </div>
