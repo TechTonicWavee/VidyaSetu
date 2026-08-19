@@ -10,25 +10,8 @@ import { getDashboardExtras } from '@/lib/data';
 import { icon as lucide } from '@/lib/utils/lucide';
 import { Card, StatCard, Badge, CardSkeleton } from '@/components/ui';
 import { cn } from '@/lib/utils/cn';
-<<<<<<< HEAD
 import { useSocket } from '@/lib/socket/SocketProvider';
-
-const QUICK_ACTIONS = [
-  { label: 'View full profile', icon: User, path: '/student/profile' },
-  { label: 'Find teammates', icon: Users, path: '/student/my-team' },
-  { label: 'Build resume', icon: FileText, path: '/student/resume' },
-];
-
-const TONE_CLASS: Record<string, string> = {
-  brand: 'bg-brand-soft text-brand',
-  green: 'bg-success-soft text-success',
-  amber: 'bg-warning-soft text-warning',
-  blue: 'bg-info-soft text-info',
-};
-=======
 import { SpiProgressionChart } from './SpiProgressionChart';
-
->>>>>>> f40ee7c6699960598851f31281e93064bef0e316
 
 function greeting() {
   const h = new Date().getHours();

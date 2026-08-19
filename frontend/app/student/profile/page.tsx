@@ -163,7 +163,7 @@ export default function StudentProfile() {
                   </div>
                 </div>
                  <Button
-                   variant="outline"
+                   variant="ghost"
                    icon={Edit2}
                    onClick={() => router.push('/student/profile/edit')}
                    className="rounded-xl shadow-sm bg-surface"
@@ -172,7 +172,7 @@ export default function StudentProfile() {
                  </Button>
                  {student?.resumeUrl && (
                    <Button
-                     variant="outline"
+                     variant="ghost"
                      icon={FileText}
                      onClick={() => window.open(student.resumeUrl ?? '', '_blank')}
                      className="rounded-xl shadow-sm bg-surface"
