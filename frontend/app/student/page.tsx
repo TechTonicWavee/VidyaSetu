@@ -12,10 +12,10 @@ import { getDashboardExtras } from '@/lib/data';
 import { icon as lucide } from '@/lib/utils/lucide';
 import { Card, StatCard, ProgressRing, Badge, CardSkeleton } from '@/components/ui';
 import { cn } from '@/lib/utils/cn';
+import { useSocket } from '@/lib/socket/SocketProvider';
 
 const QUICK_ACTIONS = [
   { label: 'View full profile', icon: User, path: '/student/profile' },
-  { label: 'Explore career paths', icon: Route, path: '/student/career' },
   { label: 'Find teammates', icon: Users, path: '/student/my-team' },
   { label: 'Build resume', icon: FileText, path: '/student/resume' },
 ];
@@ -37,11 +37,33 @@ function greeting() {
 export default function StudentDashboard() {
   const router = useRouter();
   const { student } = useAuth();
+  const { socket } = useSocket();
   const firstName = student?.name?.split(' ')[0] ?? 'Student';
 
   const [spi, setSpi] = useState<number | null>(null);
   const [spiLoading, setSpiLoading] = useState(true);
   const { data: extras, loading: extrasLoading } = useAsyncData(() => getDashboardExtras(student?.universityId), [student?.universityId]);
+
+  const [liveActivity, setLiveActivity] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (extras?.activity) setLiveActivity(extras.activity);
+  }, [extras?.activity]);
+
+  useEffect(() => {
+    if (!socket) return;
+    const onNew = (notification: any) => {
+      const newActivity = {
+        id: notification.id,
+        iconKey: notification.type === 'team_invite' ? 'Users' : 'Zap',
+        text: notification.title,
+        time: 'Just now',
+      };
+      setLiveActivity((prev) => [newActivity, ...prev].slice(0, 5));
+    };
+    socket.on('notification:new', onNew);
+    return () => { socket.off('notification:new', onNew); };
+  }, [socket]);
 
   useEffect(() => {
     if (!student?.universityId) {
@@ -118,7 +140,7 @@ export default function StudentDashboard() {
               <div className="space-y-3">{[0, 1, 2].map((i) => <div key={i} className="h-12 rounded-xl bg-surface-2 animate-pulse" />)}</div>
             ) : (
               <div className="space-y-1">
-                {extras?.activity.map((a) => {
+                {liveActivity.map((a) => {
                   const Icon = lucide(a.iconKey);
                   return (
                     <div key={a.id} className="flex items-center gap-3 py-2.5 border-b border-line last:border-0">

@@ -95,8 +95,10 @@ export default function NotificationsPage() {
         await declineInvite(inviteId);
         addToast('Invite declined.', 'success');
       }
-      setInviteState((s) => ({ ...s, [inviteId]: action === 'accept' ? 'accepted' : 'declined' }));
-      handleMarkRead(notificationId);
+      
+      // Remove notification from screen like LinkedIn
+      setItems((list) => list.filter(n => n.id !== notificationId));
+      await markReadShared(notificationId);
     } catch (err) {
       setInviteState((s) => ({ ...s, [inviteId]: 'error' }));
       const msg = err instanceof ApiError ? err.message : 'Failed to respond to invite.';

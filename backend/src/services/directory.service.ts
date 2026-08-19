@@ -14,7 +14,6 @@ interface DirectoryFilters {
 
 export async function listDirectory(filters: DirectoryFilters) {
   const where: Prisma.StudentWhereInput = {
-    formStatus: 'submitted',
     ...(filters.domain ? { domain: filters.domain } : {}),
     ...(filters.year ? { year: filters.year } : {}),
     ...(filters.section ? { section: filters.section } : {}),
@@ -53,7 +52,7 @@ export async function listDirectory(filters: DirectoryFilters) {
 export async function listDomains() {
   const rows = await prisma.student.groupBy({
     by: ['domain'],
-    where: { formStatus: 'submitted', domain: { not: null } },
+    where: { domain: { not: null } },
     _count: { domain: true },
   });
   return rows

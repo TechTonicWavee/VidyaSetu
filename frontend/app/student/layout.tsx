@@ -25,14 +25,12 @@ const NAV_GROUPS: StudentNavGroup[] = [
     items: [
       { id: 'profile', label: 'My Profile', icon: User, path: '/student/profile' },
       { id: 'spi', label: 'SPI Score', icon: TrendingUp, path: '/student/spi' },
-      { id: 'skill', label: 'Skill Radar', icon: Activity, path: '/student/skill-radar' },
       { id: 'rankings', label: 'Rankings', icon: Award, path: '/student/rankings' },
     ],
   },
   {
     heading: 'Growth',
     items: [
-      { id: 'career', label: 'Career Path', icon: Route, path: '/student/career' },
       { id: 'placement', label: 'Placement Readiness', icon: Target, path: '/student/placement' },
       { id: 'resume', label: 'Resume Builder', icon: FileText, path: '/student/resume' },
       { id: 'ai', label: 'AI Advisor', icon: Bot, path: '/student/ai-advisor' },
@@ -43,7 +41,6 @@ const NAV_GROUPS: StudentNavGroup[] = [
     items: [
       { id: 'attendance', label: 'Attendance', icon: CalendarCheck, path: '/student/attendance' },
       { id: 'assignments', label: 'Assignments', icon: BookOpen, path: '/student/assignments' },
-      { id: 'extra', label: 'Extracurriculars', icon: Trophy, path: '/student/extracurricular' },
     ],
   },
   {

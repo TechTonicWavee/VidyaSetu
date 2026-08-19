@@ -7,6 +7,7 @@ import {
   Upload, FileText, Trash2, Plus, X, Award, Briefcase,
   Users, Loader2, PartyPopper, AlertCircle, Tag, ExternalLink, RefreshCw
 } from 'lucide-react'
+import { uploadToCloudinary } from '@/lib/upload/cloudinaryClient'
 
 // ─── Data shapes ──────────────────────────────────────────────────────────────
 
@@ -238,30 +239,14 @@ function FileUploadZone({
 
     setUploading(true)
 
-    const extension = file.name.split('.').pop() || 'pdf'
-    let fileName = `${fileNamePrefix}.${extension}`
-    if (useUniqueName) {
-      fileName = `${fileNamePrefix}-${index}-${Date.now()}.${extension}`
-    }
-
-    const formData = new FormData()
-    formData.append('file', file)
-    formData.append('universityId', universityId || 'unknown')
-    formData.append('folder', folder)
-    formData.append('fileName', fileName)
-
     try {
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
-      })
-      const json = await res.json()
-      if (json.success) {
-        onUploadSuccess(json.url, file.name)
-        setError(null)
-      } else {
-        setError(json.error || 'Upload failed')
-      }
+      const result = await uploadToCloudinary(
+        folder as 'resume' | 'certificates' | 'internships', 
+        file, 
+        () => {}
+      )
+      onUploadSuccess(result.secureUrl, file.name)
+      setError(null)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Upload failed')
     } finally {

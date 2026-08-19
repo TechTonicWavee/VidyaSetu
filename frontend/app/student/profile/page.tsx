@@ -124,31 +124,44 @@ export default function StudentProfile() {
         <div className="px-8 py-10 flex flex-col md:flex-row items-center justify-between gap-8">
 
           {/* Left */}
-          <div className="flex flex-col md:flex-row items-center md:items-start gap-6 text-center md:text-left">
+          <div className="flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
             <div className="w-20 h-20 rounded-2xl flex items-center justify-center text-white font-bold text-3xl shadow-lg border border-white/10 flex-shrink-0 bg-brand">
               {initials}
             </div>
             <div>
-              <div className="flex flex-col sm:flex-row sm:items-center gap-3 mb-2">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-center md:justify-start gap-3 mb-2">
                 <h1 className="text-3xl font-bold text-white">{loading ? '…' : (student?.fullName ?? 'Student')}</h1>
-                <Button
-                  size="sm"
-                  variant="ghost"
-                  icon={Edit2}
-                  onClick={() => router.push('/student/profile/edit')}
-                  className="border border-white/20 text-white/80 hover:text-white hover:bg-white/10"
-                >
-                  Edit Profile
-                </Button>
-                <select
-                  value={teamStatus}
-                  onChange={handleStatusChange}
-                  className="bg-white/10 text-white border border-white/20 rounded-lg text-xs font-semibold px-2 py-1 outline-none cursor-pointer hover:bg-white/20 transition"
-                >
-                  {TEAM_STATUSES.map(s => (
-                    <option key={s} value={s} className="text-black bg-white">{s}</option>
-                  ))}
-                </select>
+                <div className="flex items-center gap-3">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    icon={Edit2}
+                    onClick={() => router.push('/student/profile/edit')}
+                    className="border border-white/20 text-white/80 hover:text-white hover:bg-white/10"
+                  >
+                    Edit Profile
+                  </Button>
+                  {student?.resumeUrl && (
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      icon={FileText}
+                      onClick={() => window.open(student.resumeUrl ?? '', '_blank')}
+                      className="border border-white/20 text-white/80 hover:text-white hover:bg-white/10"
+                    >
+                      View Resume
+                    </Button>
+                  )}
+                  <select
+                    value={teamStatus}
+                    onChange={handleStatusChange}
+                    className="bg-white/10 text-white border border-white/20 rounded-lg text-xs font-semibold px-2 py-1.5 outline-none cursor-pointer hover:bg-white/20 transition"
+                  >
+                    {TEAM_STATUSES.map(s => (
+                      <option key={s} value={s} className="text-black bg-white">{s}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
               <p className="text-white/60 text-sm mb-3">{branchAndYear}</p>
               <div className="flex flex-wrap justify-center md:justify-start gap-2">
