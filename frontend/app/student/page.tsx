@@ -10,8 +10,8 @@ import { getDashboardExtras } from '@/lib/data';
 import { icon as lucide } from '@/lib/utils/lucide';
 import { Card, StatCard, Badge, CardSkeleton } from '@/components/ui';
 import { cn } from '@/lib/utils/cn';
+import { useSocket } from '@/lib/socket/SocketProvider';
 import { SpiProgressionChart } from './SpiProgressionChart';
-
 
 function greeting() {
   const h = new Date().getHours();
@@ -23,6 +23,7 @@ function greeting() {
 export default function StudentDashboard() {
   const router = useRouter();
   const { student } = useAuth();
+  const { socket } = useSocket();
   const firstName = student?.name?.split(' ')[0] ?? 'Student';
 
   const [spi, setSpi] = useState<number | null>(null);
@@ -39,6 +40,27 @@ export default function StudentDashboard() {
   const toggleTodo = (id: string) => {
     setTodos((prev) => prev.map((t) => (t.id === id ? { ...t, done: !t.done } : t)));
   };
+
+  const [liveActivity, setLiveActivity] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (extras?.activity) setLiveActivity(extras.activity);
+  }, [extras?.activity]);
+
+  useEffect(() => {
+    if (!socket) return;
+    const onNew = (notification: any) => {
+      const newActivity = {
+        id: notification.id,
+        iconKey: notification.type === 'team_invite' ? 'Users' : 'Zap',
+        text: notification.title,
+        time: 'Just now',
+      };
+      setLiveActivity((prev) => [newActivity, ...prev].slice(0, 5));
+    };
+    socket.on('notification:new', onNew);
+    return () => { socket.off('notification:new', onNew); };
+  }, [socket]);
 
   useEffect(() => {
     if (!student?.universityId) {
@@ -190,7 +212,7 @@ export default function StudentDashboard() {
               <div className="space-y-4">{[0, 1, 2].map((i) => <div key={i} className="h-14 rounded-xl bg-surface-2 animate-pulse" />)}</div>
             ) : (
               <div className="space-y-4">
-                {extras?.activity.map((a) => {
+                {liveActivity.map((a) => {
                   const Icon = lucide(a.iconKey);
                   return (
                     <div key={a.id} className="group flex items-center gap-4 py-3 px-4 rounded-2xl hover:bg-surface-2 transition-colors border border-transparent hover:border-line">

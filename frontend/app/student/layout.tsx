@@ -25,7 +25,6 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { id: 'profile', label: 'My Profile', icon: User, href: '/student/profile' },
       { id: 'spi', label: 'SPI Score', icon: TrendingUp, href: '/student/spi' },
-      { id: 'skill', label: 'Skill Radar', icon: Activity, href: '/student/skill-radar' },
       { id: 'rankings', label: 'Rankings', icon: Award, href: '/student/rankings' },
     ],
   },
@@ -42,7 +41,6 @@ const NAV_GROUPS: NavGroup[] = [
     items: [
       { id: 'attendance', label: 'Attendance', icon: CalendarCheck, href: '/student/attendance' },
       { id: 'assignments', label: 'Assignments', icon: BookOpen, href: '/student/assignments' },
-      { id: 'extra', label: 'Extracurriculars', icon: Trophy, href: '/student/extracurricular' },
     ],
   },
   {

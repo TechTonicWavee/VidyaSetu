@@ -89,8 +89,8 @@ export default function StudentTopbar({ title, onOpenMobile }: { title: string; 
           </button>
 
           {notifOpen && (
-            <div className="absolute right-0 mt-2 w-80 bg-surface border border-line rounded-2xl shadow-card-hover overflow-hidden animate-scale-in">
-              <div className="flex items-center justify-between px-4 py-3 border-b border-line">
+            <div className="absolute right-0 mt-2 w-96 bg-surface border border-line rounded-2xl shadow-card-hover overflow-hidden animate-scale-in">
+              <div className="flex items-center justify-between px-4 py-3 bg-surface-2 border-b border-line">
                 <p className="font-semibold text-content text-sm">Notifications</p>
                 {unreadCount > 0 && (
                   <button onClick={markAllRead} className="text-xs font-medium text-brand hover:underline inline-flex items-center gap-1">
@@ -98,21 +98,26 @@ export default function StudentTopbar({ title, onOpenMobile }: { title: string; 
                   </button>
                 )}
               </div>
-              <div className="max-h-80 overflow-y-auto">
+              <div className="max-h-[350px] overflow-y-auto">
                 {recent.length === 0 ? (
-                  <p className="px-4 py-8 text-center text-sm text-muted">You&apos;re all caught up.</p>
+                  <div className="flex flex-col items-center justify-center py-10">
+                    <Bell size={24} className="text-muted mb-2 opacity-50" />
+                    <p className="text-sm text-muted">You&apos;re all caught up.</p>
+                  </div>
                 ) : (
                   recent.slice(0, 6).map((n) => (
                     <div
                       key={n.id}
-                      className={cn('px-4 py-3 border-b border-line last:border-0 hover:bg-surface-2 transition-colors', !n.read && 'bg-brand-soft/40')}
+                      className={cn('px-4 py-3.5 border-b border-line last:border-0 hover:bg-surface-2 transition-colors', !n.read && 'bg-brand-soft/20')}
                     >
-                      <div className="flex items-start gap-2">
-                        {!n.read && <span className="mt-1.5 w-2 h-2 rounded-full bg-brand flex-shrink-0" />}
-                        <div className={cn('min-w-0', n.read && 'pl-4')}>
-                          <p className="text-sm font-medium text-content truncate">{n.title}</p>
-                          {n.body && <p className="text-xs text-muted line-clamp-2">{n.body}</p>}
-                          <p className="text-[11px] text-muted mt-0.5">{formatRelativeTime(n.createdAt)}</p>
+                      <div className="flex items-start gap-3">
+                        <div className="w-2 flex-shrink-0 flex justify-center mt-1.5">
+                          {!n.read && <span className="w-2 h-2 rounded-full bg-brand" />}
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <p className={cn('text-sm truncate', !n.read ? 'font-semibold text-content' : 'font-medium text-content-2')}>{n.title}</p>
+                          {n.body && <p className="text-xs text-muted line-clamp-2 mt-0.5 leading-relaxed">{n.body}</p>}
+                          <p className="text-[11px] font-medium text-muted mt-1.5 uppercase tracking-wide">{formatRelativeTime(n.createdAt)}</p>
                         </div>
                       </div>
                     </div>
