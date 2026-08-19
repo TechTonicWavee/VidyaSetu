@@ -3,7 +3,7 @@
 import { useMemo, useState, type ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
 import {
-  Home, User, TrendingUp, Activity, Award, Route, Target, FileText, Bot,
+  Home, User, TrendingUp, Activity, Award, Target, FileText, Bot,
   CalendarCheck, BookOpen, Trophy, Lightbulb, ListChecks, Users, Grid, Bell,
 } from 'lucide-react';
 
@@ -11,56 +11,56 @@ import { STUDENT_PILOT_MODE, STUDENT_ALLOWED_MENU_ITEMS } from '@/lib/access';
 import { AuthProvider, useAuth } from '@/lib/auth/AuthProvider';
 import { SocketProvider } from '@/lib/socket/SocketProvider';
 import { NotificationsProvider, useNotifications } from '@/lib/notifications/NotificationsProvider';
-import StudentSidebar, { type StudentNavGroup } from '@/components/student/StudentSidebar';
-import StudentTopbar from '@/components/student/StudentTopbar';
+import AppShell from '@/components/ui/AppShell';
+import { type NavGroup } from '@/components/ui/AppShell';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 
-const NAV_GROUPS: StudentNavGroup[] = [
+const NAV_GROUPS: NavGroup[] = [
   {
     heading: 'Overview',
-    items: [{ id: 'dashboard', label: 'Dashboard', icon: Home, path: '/student' }],
+    items: [{ id: 'dashboard', label: 'Dashboard', icon: Home, href: '/student' }],
   },
   {
     heading: 'My Standing',
     items: [
-      { id: 'profile', label: 'My Profile', icon: User, path: '/student/profile' },
-      { id: 'spi', label: 'SPI Score', icon: TrendingUp, path: '/student/spi' },
-      { id: 'rankings', label: 'Rankings', icon: Award, path: '/student/rankings' },
+      { id: 'profile', label: 'My Profile', icon: User, href: '/student/profile' },
+      { id: 'spi', label: 'SPI Score', icon: TrendingUp, href: '/student/spi' },
+      { id: 'rankings', label: 'Rankings', icon: Award, href: '/student/rankings' },
     ],
   },
   {
     heading: 'Growth',
     items: [
-      { id: 'placement', label: 'Placement Readiness', icon: Target, path: '/student/placement' },
-      { id: 'resume', label: 'Resume Builder', icon: FileText, path: '/student/resume' },
-      { id: 'ai', label: 'AI Advisor', icon: Bot, path: '/student/ai-advisor' },
+      { id: 'placement', label: 'Placement Readiness', icon: Target, href: '/student/placement' },
+      { id: 'resume', label: 'Resume Builder', icon: FileText, href: '/student/resume' },
+      { id: 'ai', label: 'AI Advisor', icon: Bot, href: '/student/ai-advisor' },
     ],
   },
   {
     heading: 'Academics',
     items: [
-      { id: 'attendance', label: 'Attendance', icon: CalendarCheck, path: '/student/attendance' },
-      { id: 'assignments', label: 'Assignments', icon: BookOpen, path: '/student/assignments' },
+      { id: 'attendance', label: 'Attendance', icon: CalendarCheck, href: '/student/attendance' },
+      { id: 'assignments', label: 'Assignments', icon: BookOpen, href: '/student/assignments' },
     ],
   },
   {
     heading: 'Insights',
     items: [
-      { id: 'gap', label: 'Potential Gap', icon: Lightbulb, path: '/student/potential-gap' },
-      { id: 'plan', label: 'Action Plan', icon: ListChecks, path: '/student/action-plan' },
+      { id: 'gap', label: 'Potential Gap', icon: Lightbulb, href: '/student/potential-gap' },
+      { id: 'plan', label: 'Action Plan', icon: ListChecks, href: '/student/action-plan' },
     ],
   },
   {
     heading: 'Community',
     items: [
-      { id: 'team', label: 'My Team', icon: Users, path: '/student/my-team' },
-      { id: 'directory', label: 'Domain Directory', icon: Grid, path: '/student/directory' },
-      { id: 'notifs', label: 'Notifications', icon: Bell, path: '/student/notifications', badgeKey: 'notifications' },
+      { id: 'team', label: 'My Team', icon: Users, href: '/student/my-team' },
+      { id: 'directory', label: 'Domain Directory', icon: Grid, href: '/student/directory' },
+      { id: 'notifs', label: 'Notifications', icon: Bell, href: '/student/notifications', badge: 'notifications' },
     ],
   },
 ];
 
-function useFilteredGroups(): StudentNavGroup[] {
+function useFilteredGroups(): NavGroup[] {
   return useMemo(() => {
     if (!STUDENT_PILOT_MODE) return NAV_GROUPS;
     return NAV_GROUPS.map((g) => ({
@@ -70,20 +70,17 @@ function useFilteredGroups(): StudentNavGroup[] {
   }, []);
 }
 
-function pageTitle(pathname: string | null, groups: StudentNavGroup[]): string {
+function pageTitle(pathname: string | null, groups: NavGroup[]): string {
   if (!pathname) return 'Dashboard';
   const all = groups.flatMap((g) => g.items);
   const match = all
-    .filter((i) => (i.path === '/student' ? pathname === '/student' : pathname.startsWith(i.path)))
-    .sort((a, b) => b.path.length - a.path.length)[0];
+    .filter((i) => (i.href === '/student' ? pathname === '/student' : pathname.startsWith(i.href)))
+    .sort((a, b) => b.href.length - a.href.length)[0];
   return match?.label ?? 'Dashboard';
 }
 
 function StudentShell({ children }: { children: ReactNode }) {
   const { student, loading } = useAuth();
-  const { unreadCount } = useNotifications();
-  const pathname = usePathname();
-  const [mobileOpen, setMobileOpen] = useState(false);
   const groups = useFilteredGroups();
 
   if (loading || !student) {
@@ -97,25 +94,10 @@ function StudentShell({ children }: { children: ReactNode }) {
     );
   }
 
-  const title = pageTitle(pathname, groups);
-
   return (
-    <div className="flex h-screen bg-bg overflow-hidden">
-      <StudentSidebar
-        groups={groups}
-        unreadCount={unreadCount}
-        mobileOpen={mobileOpen}
-        onCloseMobile={() => setMobileOpen(false)}
-      />
-      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
-        <StudentTopbar title={title} onOpenMobile={() => setMobileOpen(true)} />
-        <main className="flex-1 overflow-y-auto">
-          <div className="max-w-[1400px] mx-auto p-4 sm:p-6 lg:p-8">
-            <ErrorBoundary>{children}</ErrorBoundary>
-          </div>
-        </main>
-      </div>
-    </div>
+    <AppShell navGroups={groups} showSidebar={true}>
+      <ErrorBoundary>{children}</ErrorBoundary>
+    </AppShell>
   );
 }
 

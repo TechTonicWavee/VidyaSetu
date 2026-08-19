@@ -39,6 +39,7 @@ module.exports = {
           700: "var(--brand-700)",
           soft: "var(--brand-soft)",
           fg: "var(--brand-fg)",
+          accent: "var(--brand-accent)",
         },
         success: { DEFAULT: "var(--success)", soft: "var(--success-soft)" },
         warning: { DEFAULT: "var(--warning)", soft: "var(--warning-soft)" },
@@ -54,6 +55,9 @@ module.exports = {
       },
       borderRadius: {
         xl2: "1rem",
+      },
+      backgroundImage: {
+        "brand-gradient": "var(--brand-gradient)",
       },
     },
   },

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Activity, Users, Award, Book, Code, Zap, Clock, TrendingUp, Loader2 } from 'lucide-react';
+import { Activity, Users, Award, Book, Code, Zap, Clock, TrendingUp, Loader2, Sparkles, Target } from 'lucide-react';
 import {
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip,
 } from 'recharts';
@@ -27,7 +27,7 @@ interface ActionItem {
   eff: string;
   time: string;
   badge?: string;
-  badgeTone?: 'red' | 'blue';
+  badgeTone?: 'red' | 'brand';
 }
 
 export default function SPIPage() {
@@ -44,8 +44,6 @@ export default function SPIPage() {
   useEffect(() => {
     if (!student?.universityId) { setSpiLoading(false); return; }
 
-    // 1) Instant: render the stored profile + SPI score straight from the DB.
-    //    This is a fast single read, so the page shows immediately.
     authedFetch(`/api/student/profile?universityId=${student.universityId}`)
       .then((r) => r.json())
       .then((d) => {
@@ -57,8 +55,6 @@ export default function SPIPage() {
       .catch(() => {})
       .finally(() => setSpiLoading(false));
 
-    // 2) Background: recompute a fresh SPI + dimensions (this parses certs,
-    //    scores GitHub/LeetCode, etc.) WITHOUT blocking the initial render.
     setRecalculating(true);
     authedFetch('/api/spi/recalculate', {
       method: 'POST',
@@ -114,7 +110,7 @@ export default function SPIPage() {
     actions.push({ impact: '+5.0', title: 'Solve 50 LeetCode problems', how: 'Easy/medium questions boost your logical reasoning index.', dim: 'Logical Reasoning', eff: 'Medium', time: '2 weeks' });
   }
   if (!studentData?.codingProfile?.github) {
-    actions.push({ impact: '+15.0', title: 'Link GitHub account', how: 'Link GitHub in Edit Profile to sync repository evidence.', dim: 'Technical Depth', eff: 'Low', time: '5 mins', badge: 'Highest Impact', badgeTone: 'blue' });
+    actions.push({ impact: '+15.0', title: 'Link GitHub account', how: 'Link GitHub in Edit Profile to sync repository evidence.', dim: 'Technical Depth', eff: 'Low', time: '5 mins', badge: 'Highest Impact', badgeTone: 'brand' });
   } else if ((studentData?.codingProfile?.githubRepos ?? 0) < 5) {
     actions.push({ impact: '+8.0', title: 'Commit projects on GitHub', how: 'Upload and maintain active codebases on GitHub.', dim: 'Technical Depth', eff: 'Medium', time: '1 week' });
   }
@@ -127,45 +123,67 @@ export default function SPIPage() {
   for (const f of fillers) { if (actions.length >= 5) break; actions.push(f); }
 
   const TONE_ICON: Record<string, string> = {
-    blue: 'bg-info-soft text-info', teal: 'bg-success-soft text-success',
-    purple: 'bg-brand-soft text-brand', green: 'bg-success-soft text-success', amber: 'bg-warning-soft text-warning',
+    blue: 'bg-info/10 text-info', teal: 'bg-teal-500/10 text-teal-500',
+    purple: 'bg-brand/10 text-brand', green: 'bg-success/10 text-success', amber: 'bg-warning/10 text-warning',
   };
 
   return (
-    <div>
+    <div className="pb-10">
       <PageHeader
         title="SPI Score"
         description="A single score capturing your complete academic and personal potential."
         icon={<TrendingUp size={22} />}
         actions={recalculating ? (
-          <span className="flex items-center gap-1.5 text-xs text-muted"><Loader2 size={13} className="animate-spin" /> Updating…</span>
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand/5 text-brand text-sm font-medium border border-brand/20">
+            <Loader2 size={16} className="animate-spin" />
+            <span>Updating...</span>
+          </div>
         ) : undefined}
       />
 
-      <div className="space-y-6 animate-fade-in">
-        {/* Hero */}
-        <Card className="bg-gradient-to-br from-brand-soft to-transparent">
-          <div className="flex flex-col lg:flex-row items-center gap-8">
-            <ProgressRing value={spiScore} label={spiLoading ? '…' : String(Math.round(spiScore))} sublabel="out of 100" size={150} stroke={12} />
+      <div className="space-y-8 animate-fade-in">
+        {/* Hero Section */}
+        <Card className="relative overflow-hidden border-0 shadow-lg bg-surface">
+          {/* Background decorative gradients */}
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand/5 rounded-full blur-[100px] pointer-events-none translate-x-1/3 -translate-y-1/3" />
+          <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-info/5 rounded-full blur-[80px] pointer-events-none -translate-x-1/3 translate-y-1/3" />
+
+          <div className="relative z-10 flex flex-col lg:flex-row items-center gap-10 p-2 sm:p-6">
+            <div className="relative flex-shrink-0">
+               <div className="absolute inset-0 bg-brand/20 blur-3xl rounded-full scale-75 animate-pulse" />
+               <ProgressRing value={spiScore} label={spiLoading ? '…' : String(Math.round(spiScore))} sublabel="out of 100" size={180} stroke={14} />
+            </div>
+            
             <div className="flex-1 w-full">
-              <div className="flex items-center gap-2 flex-wrap">
-                <Badge tone={spiScore >= 60 ? 'green' : 'gray'}>Tier 3 · 60</Badge>
-                <Badge tone={spiScore >= 75 ? 'green' : 'amber'}>Tier 2 · 75</Badge>
-                <Badge tone={spiScore >= 85 ? 'green' : 'gray'}>Tier 1 · 85</Badge>
+              <div className="flex items-center gap-3 flex-wrap">
+                <Badge tone={spiScore >= 60 ? 'green' : 'gray'} className="px-3 py-1 font-semibold text-xs shadow-sm">Tier 3 · 60</Badge>
+                <Badge tone={spiScore >= 75 ? 'green' : 'gray'} className={cn("px-3 py-1 font-semibold text-xs shadow-sm", spiScore < 75 && "opacity-60")}>Tier 2 · 75</Badge>
+                <Badge tone={spiScore >= 85 ? 'brand' : 'gray'} className={cn("px-3 py-1 font-semibold text-xs shadow-sm", spiScore < 85 && "opacity-60")}>Tier 1 · 85</Badge>
               </div>
-              <p className="text-lg font-semibold text-content mt-3">{milestoneText}</p>
-              <p className="text-sm text-muted mt-1">
-                Your SPI is computed from real evidence — GitHub, LeetCode, resume, certifications and internships.
-              </p>
-              <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 mt-5">
+              <div className="mt-5">
+                <h2 className="text-3xl font-black text-content tracking-tight">{milestoneText}</h2>
+                <p className="text-base text-muted mt-2 max-w-2xl leading-relaxed">
+                  Your SPI is computed dynamically from real evidence — GitHub repositories, LeetCode performance, resume quality, certifications, and internships.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-5 gap-4 mt-8">
                 {boxes.map((b) => (
-                  <div key={b.title} className="bg-surface rounded-xl border border-line p-3 text-center">
-                    <div className={cn('w-8 h-8 rounded-lg flex items-center justify-center mx-auto mb-2', TONE_ICON[b.tone])}>
-                      <b.icon size={15} />
+                  <div key={b.title} className="group relative rounded-2xl p-[1px] transition-all duration-300 hover:shadow-2xl hover:shadow-brand/20 hover:-translate-y-1 overflow-hidden bg-gradient-to-b from-line-strong/80 via-line/20 to-transparent">
+                    {/* Inner glowing effect on hover */}
+                    <div className="absolute inset-0 bg-gradient-to-b from-brand/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                    
+                    <div className="relative h-full bg-surface-2/90 backdrop-blur-md group-hover:bg-surface rounded-[15px] p-4 text-center transition-colors">
+                      <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-3 transition-transform group-hover:scale-110 duration-300 shadow-sm relative', TONE_ICON[b.tone])}>
+                        <div className="absolute inset-0 bg-current opacity-20 blur-md rounded-xl" />
+                        <b.icon size={18} className="stroke-[2] relative z-10" />
+                      </div>
+                      <p className="text-xs font-semibold text-content leading-tight min-h-[32px]">{b.title}</p>
+                      <div className="mt-2 flex flex-col items-center">
+                        <span className="text-[10px] text-muted font-bold uppercase tracking-wider">Wt {b.wt}</span>
+                        <span className="text-base font-black text-content mt-0.5">{b.cont.toFixed(1)} <span className="text-[10px] text-muted font-medium">pts</span></span>
+                      </div>
                     </div>
-                    <p className="text-[11px] font-medium text-content leading-tight min-h-[28px]">{b.title}</p>
-                    <p className="text-[10px] text-muted mt-1">Wt {b.wt}</p>
-                    <p className="text-sm font-bold text-content mt-0.5">{b.cont.toFixed(1)} pts</p>
                   </div>
                 ))}
               </div>
@@ -173,47 +191,74 @@ export default function SPIPage() {
           </div>
         </Card>
 
-        {/* Radar + journey */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          <ChartCard title="Component balance" subtitle="Normalised dimension scores" height={280}>
-            <ResponsiveContainer>
-              <RadarChart data={radarData} outerRadius="72%">
-                <PolarGrid stroke={CHART.grid} />
-                <PolarAngleAxis dataKey="subject" tick={{ fill: CHART.axis, fontSize: 11 }} />
+        {/* Radar + Journey */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <ChartCard title="Component Balance" subtitle="Normalised dimension scores" height={320} className="shadow-md border-line/50 hover:border-line transition-colors">
+            <ResponsiveContainer width="100%" height="100%">
+              <RadarChart data={radarData} outerRadius="68%">
+                <PolarGrid stroke={CHART.grid} className="opacity-50" />
+                <PolarAngleAxis dataKey="subject" tick={{ fill: CHART.axis, fontSize: 12, fontWeight: 500 }} />
                 <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
-                <Tooltip content={<ChartTooltip />} />
-                <Radar name="You" dataKey="A" stroke={CHART.brand} strokeWidth={2} fill={CHART.brand} fillOpacity={0.35} />
+                <Tooltip content={<ChartTooltip />} cursor={{ fill: 'rgba(0,0,0,0.05)' }} />
+                <Radar name="You" dataKey="A" stroke={CHART.brand} strokeWidth={3} fill="url(#brandGradient)" fillOpacity={1} />
+                <defs>
+                  <linearGradient id="brandGradient" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor={CHART.brand} stopOpacity={0.6}/>
+                    <stop offset="95%" stopColor={CHART.brand} stopOpacity={0.1}/>
+                  </linearGradient>
+                </defs>
               </RadarChart>
             </ResponsiveContainer>
           </ChartCard>
 
-          <Card className="lg:col-span-2 flex flex-col items-center justify-center text-center min-h-[280px]">
-            <TrendingUp size={26} className="text-muted mb-2" />
-            <p className="text-sm font-medium text-content">SPI journey coming soon</p>
-            <p className="text-xs text-muted mt-1 max-w-xs">Your historical SPI trend will populate over future semesters as evidence accumulates.</p>
+          <Card className="lg:col-span-2 relative flex flex-col items-center justify-center text-center min-h-[320px] overflow-hidden border-dashed border-2 border-line/50 bg-surface/30 hover:bg-surface/50 transition-colors">
+            <div className="w-16 h-16 rounded-2xl bg-surface border border-line shadow-sm flex items-center justify-center mb-4 text-muted relative z-10 transition-transform hover:scale-105 duration-300">
+              <TrendingUp size={32} className="stroke-[1.5]" />
+            </div>
+            <h3 className="text-lg font-bold text-content relative z-10">SPI Journey Coming Soon</h3>
+            <p className="text-sm text-muted mt-2 max-w-md relative z-10 leading-relaxed">
+              Your historical SPI trend will populate over future semesters as you accumulate more evidence and continuous evaluations.
+            </p>
+            <div className="mt-6 relative z-10">
+               <Badge tone="gray" className="px-3 py-1.5 font-medium"><Sparkles size={14} className="mr-1.5 inline text-brand" /> Feature in development</Badge>
+            </div>
           </Card>
         </div>
 
-        {/* Action plan */}
-        <section>
-          <h2 className="text-sm font-semibold uppercase tracking-wide text-muted mb-3">Your improvement plan</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        {/* Action Plan */}
+        <section className="mt-10">
+          <div className="flex items-center gap-2.5 mb-6">
+            <div className="p-2 rounded-lg bg-brand/10 text-brand">
+              <Target size={20} className="stroke-[2]" />
+            </div>
+            <h2 className="text-xl font-black tracking-tight text-content">Your Improvement Plan</h2>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5">
             {actions.map((act, i) => (
-              <Card key={i} className={cn('relative flex flex-col', i === 0 && 'ring-1 ring-brand/30 border-brand/40')}>
-                {act.badge && (
-                  <span className="mb-2"><Badge tone={act.badgeTone === 'red' ? 'red' : 'brand'}>{act.badge}</Badge></span>
-                )}
-                <div>
-                  <span className="text-2xl font-black text-brand tracking-tight">{act.impact}</span>
-                  <span className="text-[10px] text-muted font-semibold uppercase block mt-0.5">SPI points</span>
+              <Card key={i} className={cn('relative flex flex-col group hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 border-line/40 overflow-hidden', i === 0 && 'ring-2 ring-brand/40 border-transparent shadow-lg shadow-brand/10 bg-gradient-to-b from-brand/[0.03] to-transparent')}>
+                {i === 0 && <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-brand to-brand-accent" />}
+                
+                <div className="flex justify-between items-start mb-4">
+                  <div>
+                    <span className="text-3xl font-black text-brand tracking-tighter drop-shadow-sm">{act.impact}</span>
+                    <span className="text-[10px] text-muted font-bold uppercase tracking-widest block mt-1">SPI points</span>
+                  </div>
+                  {act.badge && (
+                    <Badge tone={act.badgeTone === 'red' ? 'red' : 'brand'} className="shadow-sm">{act.badge}</Badge>
+                  )}
                 </div>
-                <h3 className="font-semibold text-content text-sm mt-3">{act.title}</h3>
-                <p className="text-xs text-muted mt-1 flex-1">{act.how}</p>
-                <div className="pt-3 border-t border-line mt-3 space-y-1.5">
-                  <p className="text-[10px] font-semibold text-muted uppercase truncate">{act.dim}</p>
-                  <div className="flex justify-between text-xs text-muted">
-                    <span className="flex items-center gap-1"><Zap size={12} className={act.eff === 'High' ? 'text-danger' : act.eff === 'Medium' ? 'text-warning' : 'text-success'} /> {act.eff}</span>
-                    <span className="flex items-center gap-1"><Clock size={12} /> {act.time}</span>
+                
+                <h3 className="font-bold text-content text-base mb-2 group-hover:text-brand transition-colors leading-snug">{act.title}</h3>
+                <p className="text-sm text-muted leading-relaxed flex-1">{act.how}</p>
+                
+                <div className="pt-4 mt-4 border-t border-line/50 space-y-2">
+                  <div className="flex items-center gap-1.5">
+                    <div className="w-1.5 h-1.5 rounded-full bg-brand/50" />
+                    <p className="text-xs font-semibold text-content uppercase tracking-wider truncate">{act.dim}</p>
+                  </div>
+                  <div className="flex justify-between items-center text-xs font-medium text-muted bg-surface-2 px-2.5 py-2 rounded-md">
+                    <span className="flex items-center gap-1.5"><Zap size={14} className={act.eff === 'High' ? 'text-danger fill-danger/20' : act.eff === 'Medium' ? 'text-warning fill-warning/20' : 'text-success fill-success/20'} /> {act.eff} Effort</span>
+                    <span className="flex items-center gap-1.5"><Clock size={14} className="text-muted" /> {act.time}</span>
                   </div>
                 </div>
               </Card>

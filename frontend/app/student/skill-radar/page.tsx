@@ -41,7 +41,7 @@ export default function SkillRadarPage() {
             </Card>
 
             <ChartCard title="Skill profile" subtitle="You vs batch average" height={280}>
-              <ResponsiveContainer>
+              <ResponsiveContainer width="100%" height="100%">
                 <RadarChart data={data.dimensions}>
                   <PolarGrid stroke={CHART.grid} />
                   <PolarAngleAxis dataKey="label" tick={{ fill: CHART.axis, fontSize: 11 }} />
@@ -73,7 +73,7 @@ export default function SkillRadarPage() {
           </div>
 
           <ChartCard title="Growth trend" subtitle="Composite skill score over time" height={240}>
-            <ResponsiveContainer>
+            <ResponsiveContainer width="100%" height="100%">
               <LineChart data={data.growth} margin={{ top: 8, right: 12, bottom: 0, left: -18 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke={CHART.grid} />
                 <XAxis dataKey="month" stroke={CHART.axis} fontSize={12} />

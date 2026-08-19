@@ -14,7 +14,7 @@ export function PageHeader({
   icon?: ReactNode;
 }) {
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 animate-fade-in">
+    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
       <div className="flex items-center gap-3 min-w-0">
         {icon && (
           <div className="w-11 h-11 rounded-2xl bg-brand-soft text-brand flex items-center justify-center flex-shrink-0">
