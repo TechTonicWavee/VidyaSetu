@@ -48,50 +48,10 @@ const navLinks = [
 ];
 
 const statCards = [
-  {
-    label: "My Students",
-    value: "243",
-    sub: "Across 4 subjects",
-    subColor: "text-indigo-600",
-    icon: Users,
-    iconBg: "bg-indigo-100",
-    iconColor: "#4338CA",
-    accent: "stat-indigo",
-    border: "border-l-4 border-l-indigo-500",
-  },
-  {
-    label: "Active Alerts",
-    value: "5",
-    sub: "3 high priority",
-    subColor: "text-red-600",
-    icon: AlertTriangle,
-    iconBg: "bg-red-100",
-    iconColor: "#DC2626",
-    accent: "stat-amber", // Reusing amber style but keeping red icon
-    border: "border-l-4 border-l-red-500",
-  },
-  {
-    label: "Avg Class SPI",
-    value: "67",
-    sub: "+2 from last month",
-    subColor: "text-indigo-600",
-    icon: TrendingUp,
-    iconBg: "bg-indigo-100",
-    iconColor: "#4338CA",
-    accent: "stat-indigo",
-    border: "border-l-4 border-l-indigo-500",
-  },
-  {
-    label: "CO Attainment",
-    value: "74%",
-    sub: "Target is 75%",
-    subColor: "text-amber-600",
-    icon: Target,
-    iconBg: "bg-amber-100",
-    iconColor: "#D97706",
-    accent: "stat-amber",
-    border: "border-l-4 border-l-amber-500",
-  },
+  { label: "My Students", value: "243", sub: "Across 4 subjects", icon: Users, tone: 'brand' as const },
+  { label: "Active Alerts", value: "5", sub: "3 high priority", icon: AlertTriangle, tone: 'danger' as const },
+  { label: "Avg Class SPI", value: "67", sub: "+2 from last month", icon: TrendingUp, tone: 'blue' as const },
+  { label: "CO Attainment", value: "74%", sub: "Target is 75%", icon: Target, tone: 'amber' as const },
 ];
 
 const studentsNeedingAttention = [
@@ -139,289 +99,208 @@ const subjectHealth = [
   { name: "Data Structures", avg: 72, co: 81, risk: 3 },
 ];
 
+import { PageHeader, StatCard, Card, Badge } from "@/components/ui";
+
 export default function FacultyDashboard() {
   const router = useRouter();
 
   return (
-    <div className="flex flex-col h-screen bg-[#F3F4F6] overflow-hidden font-sans">
-      {/* MAIN CONTENT */}
-      <header className="bg-white border-b border-gray-100 px-6 py-3 flex items-center gap-4 flex-shrink-0 shadow-sm">
-          <div className="flex items-center gap-2 mr-4">
-            <div
-              className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs"
-              style={{ background: "#4338CA" }}
-            >
-              EA
-            </div>
-            <span className="font-bold text-navy text-sm hidden sm:block">
-              Educator Analytics OS
-            </span>
-          </div>
-          <div className="flex-1 max-w-md relative">
-            <Search
-              size={15}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-            />
-            <input
-              type="text"
-              placeholder="Search students, subjects, features..."
-              className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-300 transition"
-            />
-          </div>
-          <div className="flex-1" />
-          <div className="relative">
-            <button className="relative p-2 rounded-lg hover:bg-gray-100 transition text-gray-500">
-              <Bell size={19} />
-              <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
-                5
-              </span>
-            </button>
-          </div>
-          <div className="flex items-center gap-2 cursor-pointer group">
-            <div
-              className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs"
-              style={{
-                background: "linear-gradient(135deg, #4338CA, #7C3AED)",
-              }}
-            >
-              {FACULTY_PROFILE.initials}
-            </div>
-            <ChevronDown
-              size={14}
-              className="text-gray-400 group-hover:text-gray-600 transition"
-            />
-          </div>
-        </header>
+    <div className="space-y-6">
+      <PageHeader
+        title={`Good morning, ${FACULTY_PROFILE.name}`}
+        description="Friday, 9 May 2026 — You have 2 classes today"
+      />
 
-        <main className="flex-1 overflow-y-auto p-6">
-          <div className="mb-6 animate-fade-in">
-            <h1 className="text-2xl font-bold text-navy">
-              Good morning, {FACULTY_PROFILE.name}
-            </h1>
-            <p className="text-gray-500 text-sm mt-1">
-              Friday, 9 May 2026 — You have 2 classes today
-            </p>
-          </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+        {statCards.map((card, i) => (
+          <StatCard
+            key={i}
+            label={card.label}
+            value={card.value}
+            hint={card.sub}
+            icon={card.icon}
+            tone={card.tone}
+          />
+        ))}
+      </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
-            {statCards.map((card, i) => (
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+        {/* Students Needing Attention */}
+        <Card>
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="font-semibold text-content">
+              Students Needing Attention
+            </h3>
+            <Badge tone="red">Priority List</Badge>
+          </div>
+          <div className="space-y-3">
+            {studentsNeedingAttention.map((s, idx) => (
               <div
-                key={i}
-                className={`card ${card.accent} ${card.border} animate-fade-in`}
-                style={{ animationDelay: `${i * 0.07}s` }}
+                key={idx}
+                className="flex items-center justify-between p-3 rounded-xl border border-line bg-surface-2 hover:border-brand-soft transition-colors group cursor-pointer"
+                onClick={() => router.push("/faculty/student/profile")}
               >
-                <div className="flex items-center justify-between mb-3">
-                  <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                    {card.label}
-                  </p>
+                <div className="flex items-center gap-3">
                   <div
-                    className={`w-8 h-8 rounded-lg ${card.iconBg} flex items-center justify-center`}
-                  >
-                    <card.icon size={16} color={card.iconColor} />
+                    className={`w-2 h-2 rounded-full ${s.severity === "HIGH" ? "bg-danger" : "bg-warning"}`}
+                  />
+                  <div>
+                    <p className="text-sm font-bold text-content">
+                      {s.name}{" "}
+                      <span className="text-muted font-normal text-xs">
+                        · {s.roll}
+                      </span>
+                    </p>
+                    <p className="text-xs text-muted">
+                      {s.subject} · {s.issue}
+                    </p>
                   </div>
                 </div>
-                <p className="text-2xl font-bold text-navy mb-1">
-                  {card.value}
-                </p>
-                <p className={`text-xs font-medium ${card.subColor}`}>
-                  {card.sub}
-                </p>
+                <span className="text-xs font-bold text-brand opacity-0 group-hover:opacity-100 transition-opacity">
+                  View Profile
+                </span>
               </div>
             ))}
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-            {/* Students Needing Attention */}
-            <div
-              className="card rounded-2xl shadow-sm border border-gray-100 animate-fade-in"
-              style={{ animationDelay: "0.2s" }}
-            >
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="font-bold text-navy text-base">
-                  Students Needing Attention
-                </h2>
-                <span className="bg-red-100 text-red-600 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
-                  Priority List
+          <button
+            onClick={() => router.push("/faculty/alerts")}
+            className="w-full mt-4 py-2 text-xs font-bold text-muted hover:text-content transition border-t border-line pt-4 uppercase tracking-widest"
+          >
+            View All Alerts
+          </button>
+        </Card>
+
+        {/* Subject Performance */}
+        <Card>
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="font-semibold text-content">
+              Subject Performance
+            </h3>
+            <TrendingUp size={16} className="text-brand" />
+          </div>
+          <div className="space-y-5">
+            {subjectHealth.map((sub, idx) => (
+              <div
+                key={idx}
+                className="cursor-pointer group"
+                onClick={() => router.push("/faculty/analytics")}
+              >
+                <div className="flex justify-between items-center mb-1.5">
+                  <span className="text-sm font-bold text-content group-hover:text-brand transition-colors">
+                    {sub.name}
+                  </span>
+                  <span className="text-xs font-bold text-muted">
+                    {sub.avg}% Avg
+                  </span>
+                </div>
+                <div className="w-full bg-surface-3 rounded-full h-1.5 overflow-hidden">
+                  <div
+                    className={`h-1.5 rounded-full ${sub.avg >= 75 ? "bg-success" : sub.avg >= 60 ? "bg-warning" : sub.avg >= 45 ? "bg-info" : "bg-danger"}`}
+                    style={{ width: `${sub.avg}%` }}
+                  />
+                </div>
+                <div className="flex justify-between mt-2">
+                  <div className="flex gap-3">
+                    <span className="text-[10px] text-muted uppercase font-bold tracking-tight">
+                      CO Attainment:{" "}
+                      <span className="text-content">{sub.co}%</span>
+                    </span>
+                  </div>
+                  <span
+                    className={`text-[10px] font-bold uppercase tracking-tight ${sub.risk > 10 ? "text-danger" : "text-muted"}`}
+                  >
+                    {sub.risk} Students at Risk
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Card>
+      </div>
+
+      {/* Moodle & Cyber Vidya Sync Section */}
+      <Card>
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="font-semibold text-content">
+            Moodle & Cyber Vidya Sync
+          </h3>
+          <div className="flex items-center gap-2">
+            <div className="w-2 h-2 bg-success rounded-full" />
+            <span className="text-xs font-bold text-success uppercase tracking-widest">
+              Systems Live
+            </span>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Moodle Column */}
+          <div className="p-5 rounded-2xl bg-warning-soft border border-warning flex gap-4">
+            <div className="w-12 h-12 bg-warning flex items-center justify-center rounded-xl text-white font-black text-xl flex-shrink-0 shadow-sm">
+              M
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="font-bold text-content text-sm">
+                  Moodle LMS — Connected
+                </h4>
+                <span className="text-[9px] font-black bg-surface px-1.5 py-0.5 rounded border border-warning text-warning uppercase">
+                  Syncing
                 </span>
               </div>
-              <div className="space-y-3">
-                {studentsNeedingAttention.map((s, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-center justify-between p-3 rounded-xl border border-gray-50 bg-gray-50/50 hover:border-gray-100 transition-colors group"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className={`w-2 h-2 rounded-full ${s.severity === "HIGH" ? "bg-red-500 animate-pulse" : "bg-amber-500"}`}
-                      />
-                      <div>
-                        <p className="text-sm font-bold text-navy">
-                          {s.name}{" "}
-                          <span className="text-gray-400 font-normal text-xs">
-                            · {s.roll}
-                          </span>
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {s.subject} · {s.issue}
-                        </p>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() =>
-                        router.push("/faculty/student/profile")
-                      }
-                      className="text-xs font-bold text-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity"
-                    >
-                      View Profile
-                    </button>
-                  </div>
-                ))}
-              </div>
-              <button
-                onClick={() => router.push("/faculty/alerts")}
-                className="w-full mt-4 py-2 text-xs font-bold text-gray-500 hover:text-navy transition border-t border-gray-50 pt-4 uppercase tracking-widest"
-              >
-                View All Alerts
+              <ul className="space-y-1.5">
+                <li className="text-xs text-content-2 flex items-center gap-2">
+                  <CheckCircle size={12} className="text-warning" /> 11
+                  assignments across 4 subjects
+                </li>
+                <li className="text-xs text-content-2 flex items-center gap-2">
+                  <CheckCircle size={12} className="text-warning" /> 2
+                  pending submissions flagged
+                </li>
+                <li className="text-xs text-content-2 flex items-center gap-2">
+                  <CheckCircle size={12} className="text-warning" /> 3
+                  new grades posted today
+                </li>
+              </ul>
+              <button onClick={() => window.open('http://lms.kiet.edu/moodle/', '_blank')} className="mt-4 text-[10px] font-black text-warning uppercase tracking-widest flex items-center gap-1 hover:gap-2 transition-all">
+                Open Moodle LMS <ChevronRight size={12} />
               </button>
             </div>
-
-            {/* Subject Performance */}
-            <div
-              className="card rounded-2xl shadow-sm border border-gray-100 animate-fade-in"
-              style={{ animationDelay: "0.3s" }}
-            >
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="font-bold text-navy text-base">
-                  Subject Performance
-                </h2>
-                <TrendingUp size={16} className="text-indigo-500" />
-              </div>
-              <div className="space-y-5">
-                {subjectHealth.map((sub, idx) => (
-                  <div
-                    key={idx}
-                    className="cursor-pointer group"
-                    onClick={() => router.push("/faculty/analytics")}
-                  >
-                    <div className="flex justify-between items-center mb-1.5">
-                      <span className="text-sm font-bold text-navy group-hover:text-indigo-600 transition-colors">
-                        {sub.name}
-                      </span>
-                      <span className="text-xs font-bold text-gray-500">
-                        {sub.avg}% Avg
-                      </span>
-                    </div>
-                    <div className="w-full bg-gray-100 rounded-full h-1.5 overflow-hidden">
-                      <div
-                        className={`h-1.5 rounded-full transition-all duration-1000 ${sub.avg >= 75 ? "bg-green-500" : sub.avg >= 60 ? "bg-yellow-400" : sub.avg >= 45 ? "bg-blue-500" : "bg-red-500"}`}
-                        style={{ width: `${sub.avg}%` }}
-                      />
-                    </div>
-                    <div className="flex justify-between mt-2">
-                      <div className="flex gap-3">
-                        <span className="text-[10px] text-gray-400 uppercase font-bold tracking-tight">
-                          CO Attainment:{" "}
-                          <span className="text-navy">{sub.co}%</span>
-                        </span>
-                      </div>
-                      <span
-                        className={`text-[10px] font-bold uppercase tracking-tight ${sub.risk > 10 ? "text-red-500" : "text-gray-400"}`}
-                      >
-                        {sub.risk} Students at Risk
-                      </span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
 
-          {/* Moodle & Cyber Vidya Sync Section */}
-          <div
-            className="mt-8 card rounded-2xl shadow-sm border border-gray-100 animate-fade-in"
-            style={{ animationDelay: "0.45s" }}
-          >
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="font-bold text-navy text-base">
-                Moodle & Cyber Vidya Sync
-              </h2>
-              <div className="flex items-center gap-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                <span className="text-xs font-bold text-green-600 uppercase tracking-widest">
-                  Systems Live
+          {/* Cyber Vidya Column */}
+          <div className="p-5 rounded-2xl bg-info-soft border border-info flex gap-4">
+            <div className="w-12 h-12 bg-info flex items-center justify-center rounded-xl text-white font-black text-xl flex-shrink-0 shadow-sm">
+              CV
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center justify-between mb-2">
+                <h4 className="font-bold text-content text-sm">
+                  Cyber Vidya — Connected
+                </h4>
+                <span className="text-[9px] font-black bg-surface px-1.5 py-0.5 rounded border border-info text-info uppercase">
+                  Syncing
                 </span>
               </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Moodle Column */}
-              <div className="p-5 rounded-2xl bg-orange-50/50 border border-orange-100 flex gap-4">
-                <div className="w-12 h-12 bg-[#f98012] flex items-center justify-center rounded-xl text-white font-black text-xl flex-shrink-0 shadow-sm">
-                  M
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-bold text-navy text-sm">
-                      Moodle LMS — Connected
-                    </h3>
-                    <span className="text-[9px] font-black bg-white px-1.5 py-0.5 rounded border border-orange-200 text-orange-600 uppercase">
-                      Syncing
-                    </span>
-                  </div>
-                  <ul className="space-y-1.5">
-                    <li className="text-xs text-gray-600 flex items-center gap-2">
-                      <CheckCircle size={12} className="text-orange-500" /> 11
-                      assignments across 4 subjects
-                    </li>
-                    <li className="text-xs text-gray-600 flex items-center gap-2">
-                      <CheckCircle size={12} className="text-orange-500" /> 2
-                      pending submissions flagged
-                    </li>
-                    <li className="text-xs text-gray-600 flex items-center gap-2">
-                      <CheckCircle size={12} className="text-orange-500" /> 3
-                      new grades posted today
-                    </li>
-                  </ul>
-                  <button onClick={() => window.open('http://lms.kiet.edu/moodle/', '_blank')} className="mt-4 text-[10px] font-black text-orange-600 uppercase tracking-widest flex items-center gap-1 hover:gap-2 transition-all">
-                    Open Moodle LMS <ChevronRight size={12} />
-                  </button>
-                </div>
-              </div>
-
-              {/* Cyber Vidya Column */}
-              <div className="p-5 rounded-2xl bg-indigo-50/50 border border-indigo-100 flex gap-4">
-                <div className="w-12 h-12 bg-indigo-600 flex items-center justify-center rounded-xl text-white font-black text-xl flex-shrink-0 shadow-sm">
-                  CV
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center justify-between mb-2">
-                    <h3 className="font-bold text-navy text-sm">
-                      Cyber Vidya — Connected
-                    </h3>
-                    <span className="text-[9px] font-black bg-white px-1.5 py-0.5 rounded border border-indigo-200 text-indigo-600 uppercase">
-                      Syncing
-                    </span>
-                  </div>
-                  <ul className="space-y-1.5">
-                    <li className="text-xs text-gray-600 flex items-center gap-2">
-                      <CheckCircle size={12} className="text-indigo-500" /> 4
-                      subjects tracked
-                    </li>
-                    <li className="text-xs text-gray-600 flex items-center gap-2">
-                      <CheckCircle size={12} className="text-indigo-500" /> 1
-                      student below 75% attendance
-                    </li>
-                    <li className="text-xs text-gray-600 flex items-center gap-2">
-                      <CheckCircle size={12} className="text-indigo-500" />{" "}
-                      Today's classes: 2 marked, 1 pending
-                    </li>
-                  </ul>
-                  <button onClick={() => window.open('https://kiet.cybervidya.net', '_blank')} className="mt-4 text-[10px] font-black text-indigo-600 uppercase tracking-widest flex items-center gap-1 hover:gap-2 transition-all">
-                    Open Cyber Vidya <ChevronRight size={12} />
-                  </button>
-                </div>
-              </div>
+              <ul className="space-y-1.5">
+                <li className="text-xs text-content-2 flex items-center gap-2">
+                  <CheckCircle size={12} className="text-info" /> 4
+                  subjects tracked
+                </li>
+                <li className="text-xs text-content-2 flex items-center gap-2">
+                  <CheckCircle size={12} className="text-info" /> 1
+                  student below 75% attendance
+                </li>
+                <li className="text-xs text-content-2 flex items-center gap-2">
+                  <CheckCircle size={12} className="text-info" />{" "}
+                  Today's classes: 2 marked, 1 pending
+                </li>
+              </ul>
+              <button onClick={() => window.open('https://kiet.cybervidya.net', '_blank')} className="mt-4 text-[10px] font-black text-info uppercase tracking-widest flex items-center gap-1 hover:gap-2 transition-all">
+                Open Cyber Vidya <ChevronRight size={12} />
+              </button>
             </div>
           </div>
-        </main>
+        </div>
+      </Card>
     </div>
   );
 }

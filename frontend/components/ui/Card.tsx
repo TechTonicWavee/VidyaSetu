@@ -14,7 +14,7 @@ export function Card({ hover = false, padded = true, className, children, ...pro
       className={cn(
         'bg-surface rounded-2xl border border-line shadow-card',
         padded && 'p-5',
-        hover && 'transition-all duration-200 hover:shadow-card-hover hover:-translate-y-0.5',
+        hover && 'hover:bg-surface-2 hover:border-line-strong',
         className,
       )}
       {...props}

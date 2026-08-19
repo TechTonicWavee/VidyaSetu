@@ -46,11 +46,11 @@ export default function Modal({
 
   return createPortal(
     <div
-      className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 animate-fade-in"
+      className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4"
       onClick={onClose}
     >
       <div
-        className={`bg-surface rounded-2xl shadow-2xl w-full ${WIDTHS[width]} max-h-[90vh] flex flex-col overflow-hidden animate-scale-in border border-line`}
+        className={`bg-surface rounded-2xl shadow-2xl w-full ${WIDTHS[width]} max-h-[90vh] flex flex-col overflow-hidden border border-line`}
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"

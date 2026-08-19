@@ -4,14 +4,18 @@ import type { LucideIcon } from 'lucide-react';
 import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 
-type Tone = 'brand' | 'green' | 'red' | 'amber' | 'blue';
+type Tone = 'brand' | 'green' | 'red' | 'amber' | 'blue' | 'info' | 'success' | 'warning' | 'danger';
 
 const ICON_TONES: Record<Tone, string> = {
   brand: 'bg-brand-soft text-brand',
   green: 'bg-success-soft text-success',
+  success: 'bg-success-soft text-success',
   red: 'bg-danger-soft text-danger',
+  danger: 'bg-danger-soft text-danger',
   amber: 'bg-warning-soft text-warning',
+  warning: 'bg-warning-soft text-warning',
   blue: 'bg-info-soft text-info',
+  info: 'bg-info-soft text-info',
 };
 
 export function StatCard({
@@ -34,7 +38,7 @@ export function StatCard({
   className?: string;
 }) {
   return (
-    <div className={cn('bg-surface rounded-2xl border border-line shadow-card p-5 transition-all duration-200 hover:shadow-card-hover hover:-translate-y-0.5', className)}>
+    <div className={cn('bg-surface rounded-2xl border border-line p-5', className)}>
       <div className="flex items-start justify-between">
         <p className="text-xs font-medium text-muted">{label}</p>
         {Icon && (

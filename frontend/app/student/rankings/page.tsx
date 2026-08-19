@@ -29,7 +29,7 @@ function ScopeView({ scope }: { scope: RankingScope }) {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <ChartCard title="Your SPI vs batch average" subtitle="Higher is better" height={260}>
-          <ResponsiveContainer>
+          <ResponsiveContainer width="100%" height="100%">
             <BarChart data={compare} margin={{ top: 8, right: 12, bottom: 0, left: -18 }}>
               <CartesianGrid strokeDasharray="3 3" stroke={CHART.grid} vertical={false} />
               <XAxis dataKey="label" stroke={CHART.axis} fontSize={12} />

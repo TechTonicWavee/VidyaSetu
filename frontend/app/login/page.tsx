@@ -16,10 +16,10 @@ const portals = [
     label: "Student",
     sub: "Access your academics, skills & career tools",
     icon: GraduationCap,
-    accentColor: "#1A56DB",
-    iconBg: "#EFF6FF",
-    iconColor: "#1A56DB",
-    gradient: "#1A56DB",
+    accentColor: "var(--brand)",
+    iconBg: "var(--brand-soft)",
+    iconColor: "var(--brand)",
+    gradient: "var(--brand-gradient)",
     path: "/student",
     loginTitle: "Student Login",
     loginSub: "Enter your student credentials to access your dashboard",
@@ -34,10 +34,10 @@ const portals = [
     label: "Faculty",
     sub: "Manage classes, analytics & student performance",
     icon: BookOpen,
-    accentColor: "#4338CA",
-    iconBg: "#EEF2FF",
-    iconColor: "#4338CA",
-    gradient: "#4338CA",
+    accentColor: "var(--info)",
+    iconBg: "var(--info-soft)",
+    iconColor: "var(--info)",
+    gradient: "var(--info)",
     path: "/faculty",
     loginTitle: "Faculty Login",
     loginSub: "Enter your faculty credentials to access your dashboard",
@@ -52,10 +52,10 @@ const portals = [
     label: "Dean",
     sub: "Department insights, forecasting & policy tools",
     icon: Building2,
-    accentColor: "#5B21B6",
-    iconBg: "#F5F3FF",
-    iconColor: "#5B21B6",
-    gradient: "#5B21B6",
+    accentColor: "var(--brand)",
+    iconBg: "var(--brand-soft)",
+    iconColor: "var(--brand)",
+    gradient: "var(--brand-gradient)",
     path: "/dean",
     loginTitle: "Dean Login",
     loginSub: "Enter your credentials to access the Dean portal",
@@ -66,31 +66,14 @@ const portals = [
     ],
   },
   {
-    id: "parent",
-    label: "Parent",
-    sub: "View your ward's progress, alerts & reports",
-    icon: Heart,
-    accentColor: "#D97706",
-    iconBg: "#FFFBEB",
-    iconColor: "#D97706",
-    gradient: "#D97706",
-    path: "/parent",
-    loginTitle: "Parent Login",
-    loginSub: "Enter credentials to view your ward's academic summary",
-    placeholder: "parent@example.com",
-    others: [
-      { label: "Student Portal", id: "student" },
-    ],
-  },
-  {
     id: "admin",
     label: "Admin",
     sub: "System configuration, users & SPI settings",
     icon: ShieldCheck,
-    accentColor: "#374151",
-    iconBg: "#F9FAFB",
-    iconColor: "#374151",
-    gradient: "#374151",
+    accentColor: "var(--warning)",
+    iconBg: "var(--warning-soft)",
+    iconColor: "var(--warning)",
+    gradient: "var(--warning)",
     path: "/admin",
     loginTitle: "Admin Login",
     loginSub: "Enter admin credentials to access the system dashboard",
@@ -291,14 +274,14 @@ function StudentLoginForm({ portal, onSwitchPortal, portals: allPortals }: { por
       </div>
 
       {/* ── Form area ── */}
-      <div className="bg-white rounded-b-2xl shadow-xl px-8 py-7">
+      <div className="bg-surface rounded-b-2xl border border-line border-t-0 p-8 shadow-sm">
 
         {/* STATE 1 — Login */}
         {authState === "login" && (
           <>
             {/* University ID */}
             <div className="mb-4">
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+              <label className="block text-sm font-semibold text-content mb-1.5">
                 University ID
               </label>
               <input
@@ -307,14 +290,14 @@ function StudentLoginForm({ portal, onSwitchPortal, portals: allPortals }: { por
                 onChange={(e) => setUniversityId(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleLogin()}
                 placeholder={portal.placeholder}
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 placeholder-gray-400 focus:outline-none transition"
+                className="w-full px-4 py-3 rounded-xl border border-line text-sm text-content bg-surface placeholder-muted focus:outline-none transition-colors"
                 {...inputFocusHandlers}
               />
             </div>
 
             {/* Password */}
             <div className="mb-4">
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+              <label className="block text-sm font-semibold text-content mb-1.5">
                 Password
               </label>
               <div className="relative">
@@ -324,36 +307,35 @@ function StudentLoginForm({ portal, onSwitchPortal, portals: allPortals }: { por
                   onChange={(e) => setPassword(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleLogin()}
                   placeholder="Enter your password"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 placeholder-gray-400 focus:outline-none transition pr-12"
+                  className="w-full px-4 py-3 rounded-xl border border-line text-sm text-content bg-surface placeholder-muted focus:outline-none transition-colors pr-12"
                   {...inputFocusHandlers}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPass((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-content transition-colors"
                 >
                   {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
             </div>
 
-            {/* Error banner */}
             {loginError && (
               <div
                 className={`mb-4 rounded-xl px-4 py-3 text-sm flex flex-col gap-1 ${
                   loginError.type === "blue"
-                    ? "bg-blue-50 text-blue-700 border border-blue-100"
-                    : "bg-red-50 text-red-600 border border-red-100"
+                    ? "bg-info-soft text-info border border-info"
+                    : "bg-danger-soft text-danger border border-danger"
                 }`}
               >
-                <span className="flex items-center gap-1.5">
+                <span className="flex items-center gap-1.5 font-medium">
                   <AlertCircle size={14} />
                   {loginError.message}
                 </span>
                 {loginError.link && (
                   <a
                     href={loginError.link}
-                    className="text-blue-600 underline font-medium text-xs"
+                    className="text-info underline font-medium text-xs ml-5"
                   >
                     {loginError.linkText}
                   </a>
@@ -377,10 +359,8 @@ function StudentLoginForm({ portal, onSwitchPortal, portals: allPortals }: { por
             <button
               onClick={handleLogin}
               disabled={loginLoading}
-              className="w-full py-3 rounded-xl text-white font-bold text-sm transition-all duration-150 mb-5 flex items-center justify-center gap-2 disabled:opacity-70"
+              className="btn-primary w-full justify-center mb-5"
               style={{ background: portal.gradient }}
-              onMouseEnter={(e) => { if (!loginLoading) e.currentTarget.style.opacity = "0.88"; }}
-              onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
             >
               {loginLoading ? (
                 <><Loader2 size={16} className="animate-spin" /> Signing in...</>
@@ -417,7 +397,7 @@ function StudentLoginForm({ portal, onSwitchPortal, portals: allPortals }: { por
         {authState === "forgot" && (
           <>
             <div className="mb-4">
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+              <label className="block text-sm font-semibold text-content mb-1.5">
                 University ID
               </label>
               <input
@@ -425,13 +405,13 @@ function StudentLoginForm({ portal, onSwitchPortal, portals: allPortals }: { por
                 value={forgotId}
                 onChange={(e) => setForgotId(e.target.value)}
                 placeholder="e.g. 2300970100001"
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 placeholder-gray-400 focus:outline-none transition"
+                className="w-full px-4 py-3 rounded-xl border border-line text-sm text-content bg-surface placeholder-muted focus:outline-none transition-colors"
                 {...inputFocusHandlers}
               />
             </div>
 
             <div className="mb-4">
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+              <label className="block text-sm font-semibold text-content mb-1.5">
                 Official KIET Email
               </label>
               <input
@@ -439,13 +419,13 @@ function StudentLoginForm({ portal, onSwitchPortal, portals: allPortals }: { por
                 value={forgotEmail}
                 onChange={(e) => setForgotEmail(e.target.value)}
                 placeholder="e.g. priyanshu.2428cse771@kiet.edu"
-                className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 placeholder-gray-400 focus:outline-none transition bg-white"
+                className="w-full px-4 py-3 rounded-xl border border-line text-sm text-content bg-surface placeholder-muted focus:outline-none transition-colors"
                 {...inputFocusHandlers}
               />
             </div>
 
             {forgotError && (
-              <div className="mb-4 rounded-xl px-4 py-3 text-sm bg-red-50 text-red-600 border border-red-100 flex items-center gap-1.5">
+              <div className="mb-4 rounded-xl px-4 py-3 text-sm bg-danger-soft text-danger border border-danger flex items-center gap-1.5 font-medium">
                 <AlertCircle size={14} /> {forgotError}
               </div>
             )}
@@ -453,7 +433,7 @@ function StudentLoginForm({ portal, onSwitchPortal, portals: allPortals }: { por
             <button
               onClick={handleVerifyEmail}
               disabled={forgotLoading}
-              className="w-full py-3 rounded-xl text-white font-bold text-sm transition-all duration-150 mb-5 flex items-center justify-center gap-2 disabled:opacity-70"
+              className="btn-primary w-full justify-center mb-5"
               style={{ background: portal.gradient }}
             >
               {forgotLoading ? (
@@ -478,24 +458,24 @@ function StudentLoginForm({ portal, onSwitchPortal, portals: allPortals }: { por
           <>
             {resetSuccess ? (
               <div className="flex flex-col items-center py-6 gap-3">
-                <div className="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center">
-                  <CheckCircle2 size={32} className="text-green-500" />
+                <div className="w-14 h-14 rounded-full bg-success-soft flex items-center justify-center">
+                  <CheckCircle2 size={32} className="text-success" />
                 </div>
-                <p className="text-green-700 font-semibold text-sm">Password reset successfully!</p>
-                <p className="text-gray-400 text-xs">Redirecting to login...</p>
+                <p className="text-success font-semibold text-sm">Password reset successfully!</p>
+                <p className="text-muted text-xs">Redirecting to login...</p>
               </div>
             ) : (
               <>
                 {/* Identity verified banner */}
-                <div className="mb-5 rounded-xl px-4 py-3 bg-green-50 border border-green-100 flex items-center gap-2">
-                  <CheckCircle2 size={16} className="text-green-500 flex-shrink-0" />
-                  <p className="text-green-700 text-sm font-medium">
+                <div className="mb-5 rounded-xl px-4 py-3 bg-success-soft border border-success flex items-center gap-2">
+                  <CheckCircle2 size={16} className="text-success flex-shrink-0" />
+                  <p className="text-success text-sm font-medium">
                     Identity verified! Hi {verifiedName}
                   </p>
                 </div>
 
                 <div className="mb-4">
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                  <label className="block text-sm font-semibold text-content mb-1.5">
                     New Password
                   </label>
                   <div className="relative">
@@ -504,13 +484,13 @@ function StudentLoginForm({ portal, onSwitchPortal, portals: allPortals }: { por
                       value={newPass}
                       onChange={(e) => setNewPass(e.target.value)}
                       placeholder="At least 8 characters"
-                      className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 placeholder-gray-400 focus:outline-none transition pr-12"
+                      className="w-full px-4 py-3 rounded-xl border border-line text-sm text-content bg-surface placeholder-muted focus:outline-none transition-colors pr-12"
                       {...inputFocusHandlers}
                     />
                     <button
                       type="button"
                       onClick={() => setShowNewPass((v) => !v)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-content transition-colors"
                     >
                       {showNewPass ? <EyeOff size={18} /> : <Eye size={18} />}
                     </button>
@@ -524,7 +504,7 @@ function StudentLoginForm({ portal, onSwitchPortal, portals: allPortals }: { por
                 </div>
 
                 <div className="mb-4">
-                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                  <label className="block text-sm font-semibold text-content mb-1.5">
                     Confirm Password
                   </label>
                   <input
@@ -532,13 +512,13 @@ function StudentLoginForm({ portal, onSwitchPortal, portals: allPortals }: { por
                     value={confirmPass}
                     onChange={(e) => setConfirmPass(e.target.value)}
                     placeholder="Repeat your new password"
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 placeholder-gray-400 focus:outline-none transition"
+                    className="w-full px-4 py-3 rounded-xl border border-line text-sm text-content bg-surface placeholder-muted focus:outline-none transition-colors"
                     {...inputFocusHandlers}
                   />
                 </div>
 
                 {resetError && (
-                  <div className="mb-4 rounded-xl px-4 py-3 text-sm bg-red-50 text-red-600 border border-red-100 flex items-center gap-1.5">
+                  <div className="mb-4 rounded-xl px-4 py-3 text-sm bg-danger-soft text-danger border border-danger flex items-center gap-1.5 font-medium">
                     <AlertCircle size={14} /> {resetError}
                   </div>
                 )}
@@ -546,7 +526,7 @@ function StudentLoginForm({ portal, onSwitchPortal, portals: allPortals }: { por
                 <button
                   onClick={handleResetPassword}
                   disabled={resetLoading}
-                  className="w-full py-3 rounded-xl text-white font-bold text-sm transition-all duration-150 mb-4 flex items-center justify-center gap-2 disabled:opacity-70"
+                  className="btn-primary w-full justify-center mb-4"
                   style={{ background: portal.gradient }}
                 >
                   {resetLoading ? (
@@ -574,8 +554,8 @@ function StudentLoginForm({ portal, onSwitchPortal, portals: allPortals }: { por
 
 function RuleItem({ met, text }: { met: boolean; text: string }) {
   return (
-    <div className={`flex items-center gap-2 text-xs ${met ? "text-green-600" : "text-gray-400"}`}>
-      <CheckCircle2 size={13} className={met ? "text-green-500" : "text-gray-300"} />
+    <div className={`flex items-center gap-2 text-xs ${met ? "text-success" : "text-muted"}`}>
+      <CheckCircle2 size={13} className={met ? "text-success" : "text-line-strong"} />
       {text}
     </div>
   );
@@ -610,36 +590,36 @@ function GenericLoginForm({ portal, onSwitchPortal, onBack }: { portal: (typeof 
         <p className="text-white/75 text-xs">{portal.loginSub}</p>
       </div>
 
-      <div className="bg-white rounded-b-2xl shadow-xl px-8 py-7">
+      <div className="bg-surface rounded-b-2xl border border-line border-t-0 p-8 shadow-sm">
         <div className="mb-4">
-          <label className="block text-sm font-semibold text-gray-700 mb-1.5">Email</label>
+          <label className="block text-sm font-semibold text-content mb-1.5">Email</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder={portal.placeholder}
-            className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 placeholder-gray-400 focus:outline-none transition"
+            className="w-full px-4 py-3 rounded-xl border border-line text-sm text-content bg-surface placeholder-muted focus:outline-none transition-colors"
             onFocus={(e) => { e.currentTarget.style.borderColor = accentColor; e.currentTarget.style.boxShadow = `0 0 0 3px ${accentColor}22`; }}
-            onBlur={(e) => { e.currentTarget.style.borderColor = "#e5e7eb"; e.currentTarget.style.boxShadow = "none"; }}
+            onBlur={(e) => { e.currentTarget.style.borderColor = "var(--line)"; e.currentTarget.style.boxShadow = "none"; }}
           />
         </div>
 
         <div className="mb-6">
-          <label className="block text-sm font-semibold text-gray-700 mb-1.5">Password</label>
+          <label className="block text-sm font-semibold text-content mb-1.5">Password</label>
           <div className="relative">
             <input
               type={showPass ? "text" : "password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm text-gray-800 placeholder-gray-400 focus:outline-none transition pr-12"
+              className="w-full px-4 py-3 rounded-xl border border-line text-sm text-content bg-surface placeholder-muted focus:outline-none transition-colors pr-12"
               onFocus={(e) => { e.currentTarget.style.borderColor = accentColor; e.currentTarget.style.boxShadow = `0 0 0 3px ${accentColor}22`; }}
-              onBlur={(e) => { e.currentTarget.style.borderColor = "#e5e7eb"; e.currentTarget.style.boxShadow = "none"; }}
+              onBlur={(e) => { e.currentTarget.style.borderColor = "var(--line)"; e.currentTarget.style.boxShadow = "none"; }}
             />
             <button
               type="button"
               onClick={() => setShowPass((v) => !v)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-content transition-colors"
             >
               {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
             </button>
@@ -648,10 +628,8 @@ function GenericLoginForm({ portal, onSwitchPortal, onBack }: { portal: (typeof 
 
         <button
           onClick={handleLogin}
-          className="w-full py-3 rounded-xl text-white font-bold text-sm transition-all duration-150 mb-5"
+          className="btn-primary w-full justify-center mb-5"
           style={{ background: portal.gradient }}
-          onMouseEnter={(e) => { e.currentTarget.style.opacity = "0.88"; }}
-          onMouseLeave={(e) => { e.currentTarget.style.opacity = "1"; }}
         >
           {portal.loginTitle.replace("Login", "Sign In")}
         </button>
@@ -693,36 +671,36 @@ export default function LoginPage() {
   // ── Portal selection screen ───────────────────────────────────────────────
   if (!selectedPortal) {
     return (
-      <div className="min-h-screen bg-gray-50 font-sans">
-        <header className="bg-white border-b border-gray-100 px-8 py-5 flex items-center gap-4 shadow-sm">
+      <div className="min-h-screen bg-bg font-sans">
+        <header className="bg-surface border-b border-line px-8 py-5 flex items-center gap-4">
           <img
             src="/kiet_logo.png"
             alt="KIET"
             className="h-12 w-auto flex-shrink-0 object-contain"
             onError={(e) => { e.currentTarget.style.display = 'none'; }}
           />
-          <div className="h-10 w-px bg-gray-200 flex-shrink-0" />
+          <div className="h-10 w-px bg-line flex-shrink-0" />
           <div
             className="w-11 h-11 rounded-xl flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
-            style={{ background: "linear-gradient(135deg,#1A56DB,#5B21B6)" }}
+            style={{ background: "var(--brand-gradient)" }}
           >
             VS
           </div>
           <div>
-            <p className="font-bold text-gray-900 text-base leading-tight">VidyaSetu</p>
-            <p className="text-sm text-gray-400 mt-0.5">CSE Department · KIET Group of Institutions</p>
+            <p className="font-bold text-content text-base leading-tight">VidyaSetu</p>
+            <p className="text-sm text-muted mt-0.5">CSE Department · KIET Group of Institutions</p>
           </div>
         </header>
 
         <main className="max-w-5xl mx-auto px-4 py-14">
           <div className="text-center mb-12">
-            <span className="inline-flex items-center gap-2 bg-indigo-50 text-indigo-600 text-xs font-bold px-4 py-1.5 rounded-full mb-4 uppercase tracking-wider border border-indigo-100">
+            <span className="inline-flex items-center gap-2 bg-brand-soft text-brand text-xs font-bold px-4 py-1.5 rounded-full mb-4 uppercase tracking-wider">
               <UserCheck size={13} /> Access Portal
             </span>
-            <h1 className="text-4xl font-extrabold text-gray-900 mb-3">
-              Choose Your <span style={{ color: "#4338CA" }}>Portal</span>
+            <h1 className="text-4xl font-extrabold text-content mb-3">
+              Choose Your <span style={{ color: "var(--brand)" }}>Portal</span>
             </h1>
-            <p className="text-gray-500 text-base max-w-md mx-auto">
+            <p className="text-content-2 text-base max-w-md mx-auto">
               Select your role to access personalised features and tools designed for your needs
             </p>
           </div>
@@ -733,21 +711,21 @@ export default function LoginPage() {
               return (
                 <div
                   key={p.id}
-                  className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-200 hover:-translate-y-1 p-7 flex flex-col items-center text-center group"
+                  className="bg-surface rounded-2xl border border-line hover:bg-surface-2 p-7 flex flex-col items-center text-center group cursor-pointer transition-colors"
+                  onClick={() => setSelectedPortal(p.id)}
                 >
                   <div
-                    className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5 transition-transform group-hover:scale-105"
+                    className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5"
                     style={{ background: p.iconBg }}
                   >
                     <Icon size={28} color={p.iconColor} strokeWidth={1.75} />
                   </div>
 
-                  <p className="font-bold text-gray-900 text-lg mb-1">{p.label}</p>
-                  <p className="text-gray-400 text-xs mb-6 leading-relaxed">{p.sub}</p>
+                  <p className="font-bold text-content text-lg mb-1">{p.label}</p>
+                  <p className="text-muted text-xs mb-6 leading-relaxed">{p.sub}</p>
 
                   <button
-                    onClick={() => { setSelectedPortal(p.id); }}
-                    className="w-full py-2.5 rounded-xl text-sm font-semibold border-2 transition-all duration-150"
+                    className="w-full py-2.5 rounded-xl text-sm font-semibold border-2 transition-colors"
                     style={{ borderColor: p.accentColor, color: p.accentColor }}
                     onMouseEnter={(e) => { e.currentTarget.style.background = p.accentColor; e.currentTarget.style.color = "#fff"; }}
                     onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = p.accentColor; }}
@@ -759,7 +737,7 @@ export default function LoginPage() {
             })}
           </div>
 
-          <p className="text-center text-xs text-gray-400 mt-12">
+          <p className="text-center text-xs text-muted mt-12">
             © 2026 VidyaSetu · CSE Department · KIET Group of Institutions
           </p>
         </main>
@@ -772,8 +750,7 @@ export default function LoginPage() {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center font-sans px-4 py-10"
-      style={{ background: "linear-gradient(135deg,#f8fafc 0%,#f1f5f9 50%,#e8edf5 100%)" }}
+      className="min-h-screen flex flex-col items-center justify-center font-sans px-4 py-10 bg-bg"
     >
       {portal.id === "student" ? (
         <StudentLoginForm
@@ -791,7 +768,7 @@ export default function LoginPage() {
 
       <button
         onClick={goBack}
-        className="mt-5 flex items-center gap-1.5 mx-auto text-xs text-gray-400 hover:text-gray-600 transition"
+        className="mt-5 flex items-center gap-1.5 mx-auto text-xs text-muted hover:text-content transition-colors"
       >
         <ArrowLeft size={13} /> Back to Portal Selection
       </button>

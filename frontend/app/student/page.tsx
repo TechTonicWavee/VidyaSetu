@@ -2,30 +2,16 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  User, TrendingUp, Users, FileText, Route, ArrowUpRight, Zap, CheckCircle2, Calendar,
-} from 'lucide-react';
+import { TrendingUp, ArrowUpRight, CheckCircle2, Calendar, Activity, Zap } from 'lucide-react';
 import { authedFetch } from '@/lib/api/sameOriginFetch';
 import { useAuth } from '@/lib/auth/AuthProvider';
 import { useAsyncData } from '@/lib/hooks/useAsyncData';
 import { getDashboardExtras } from '@/lib/data';
 import { icon as lucide } from '@/lib/utils/lucide';
-import { Card, StatCard, ProgressRing, Badge, CardSkeleton } from '@/components/ui';
+import { Card, StatCard, Badge, CardSkeleton } from '@/components/ui';
 import { cn } from '@/lib/utils/cn';
+import { SpiProgressionChart } from './SpiProgressionChart';
 
-const QUICK_ACTIONS = [
-  { label: 'View full profile', icon: User, path: '/student/profile' },
-  { label: 'Explore career paths', icon: Route, path: '/student/career' },
-  { label: 'Find teammates', icon: Users, path: '/student/my-team' },
-  { label: 'Build resume', icon: FileText, path: '/student/resume' },
-];
-
-const TONE_CLASS: Record<string, string> = {
-  brand: 'bg-brand-soft text-brand',
-  green: 'bg-success-soft text-success',
-  amber: 'bg-warning-soft text-warning',
-  blue: 'bg-info-soft text-info',
-};
 
 function greeting() {
   const h = new Date().getHours();
@@ -42,6 +28,17 @@ export default function StudentDashboard() {
   const [spi, setSpi] = useState<number | null>(null);
   const [spiLoading, setSpiLoading] = useState(true);
   const { data: extras, loading: extrasLoading } = useAsyncData(() => getDashboardExtras(student?.universityId), [student?.universityId]);
+  const [todos, setTodos] = useState<{ id: string; label: string; done: boolean }[]>([]);
+
+  useEffect(() => {
+    if (extras?.todos) {
+      setTodos(extras.todos);
+    }
+  }, [extras?.todos]);
+
+  const toggleTodo = (id: string) => {
+    setTodos((prev) => prev.map((t) => (t.id === id ? { ...t, done: !t.done } : t)));
+  };
 
   useEffect(() => {
     if (!student?.universityId) {
@@ -69,64 +66,141 @@ export default function StudentDashboard() {
   const date = new Date().toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
   return (
-    <div className="space-y-6">
-      {/* Greeting hero */}
-      <div className="rounded-2xl p-6 sm:p-8 text-white relative overflow-hidden" style={{ background: 'linear-gradient(135deg, var(--brand-700), var(--brand))' }}>
-        <div className="relative z-10">
-          <p className="text-white/70 text-sm">{date}</p>
-          <h1 className="text-2xl sm:text-3xl font-bold mt-1">{greeting()}, {firstName} 👋</h1>
-          <p className="text-white/80 text-sm mt-2 max-w-xl">
-            Here&apos;s your snapshot for today. Keep shipping projects and practising consistently to grow your SPI.
-          </p>
+    <div className="space-y-8 pb-8">
+      {/* Greeting hero - Polished & Advanced UI */}
+      <div className="rounded-3xl p-8 sm:p-10 relative overflow-hidden bg-brand shadow-lg border border-brand-600/30">
+        <div className="absolute inset-0 bg-brand-gradient opacity-90" />
+        
+        {/* Glassmorphic decorative orbs */}
+        <div className="absolute -right-16 -bottom-16 w-80 h-80 rounded-full bg-white/10 blur-3xl pointer-events-none" />
+        <div className="absolute right-48 -top-24 w-64 h-64 rounded-full bg-brand-700/40 blur-3xl pointer-events-none" />
+        <div className="absolute left-1/4 -bottom-10 w-40 h-40 rounded-full bg-info/20 blur-2xl pointer-events-none" />
+
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="max-w-2xl">
+            <p className="text-brand-soft/90 text-[13px] font-bold tracking-widest uppercase mb-1">{date}</p>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight drop-shadow-sm">
+              {greeting()}, {firstName} <span className="animate-wave inline-block origin-bottom-right">👋</span>
+            </h1>
+            <p className="text-brand-soft/90 text-base sm:text-lg mt-3 font-medium leading-relaxed">
+              Here&apos;s your snapshot for today. Keep shipping projects and practicing consistently to grow your SPI.
+            </p>
+          </div>
+          <div className="hidden lg:flex items-center justify-center w-24 h-24 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-xl shrink-0">
+            <Zap className="text-white w-10 h-10 drop-shadow-md" />
+          </div>
         </div>
-        <div className="absolute -right-8 -bottom-10 w-48 h-48 rounded-full bg-white/10" />
-        <div className="absolute right-16 -top-12 w-32 h-32 rounded-full bg-white/5" />
       </div>
 
-      {/* Stat cards */}
-      <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
-        <StatCard label="SPI Score" value={spiLoading ? '…' : spi != null ? spi.toFixed(1) : '—'} icon={TrendingUp} tone="brand" hint="out of 100" />
-        {extrasLoading
-          ? [0, 1, 2].map((i) => <CardSkeleton key={i} />)
-          : extras?.quickStats.map((s) => {
-              const Icon = lucide(s.iconKey);
-              return <StatCard key={s.label} label={s.label} value={s.value} icon={Icon} tone={s.tone} />;
-            })}
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left: SPI + activity */}
-        <div className="lg:col-span-2 space-y-6">
-          <Card>
-            <div className="flex flex-col sm:flex-row items-center gap-6">
-              <ProgressRing value={spi ?? 0} label={spiLoading ? '…' : spi != null ? String(Math.round(spi)) : '—'} sublabel="SPI / 100" size={130} />
-              <div className="flex-1 text-center sm:text-left">
-                <h3 className="font-semibold text-content">Student Potential Index</h3>
-                <p className="text-sm text-muted mt-1">
-                  Your SPI blends GitHub, DSA, resume, certifications and internships into a single growth signal.
-                </p>
-                <button onClick={() => router.push('/student/spi')} className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-brand hover:underline">
-                  See breakdown <ArrowUpRight size={15} />
-                </button>
+      {/* Metrics Section: 4 Corners + Middle Chart Layout */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* Left Column (2 Stats) */}
+        <div className="flex flex-col gap-6">
+          {extrasLoading ? (
+            <>
+              <CardSkeleton />
+              <CardSkeleton />
+            </>
+          ) : (
+            <>
+              {extras?.quickStats[0] && (
+                <StatCard 
+                  label={extras.quickStats[0].label} 
+                  value={extras.quickStats[0].value} 
+                  icon={lucide(extras.quickStats[0].iconKey)} 
+                  tone={extras.quickStats[0].tone} 
+                  className="flex-1"
+                />
+              )}
+              {extras?.quickStats[1] && (
+                <StatCard 
+                  label={extras.quickStats[1].label} 
+                  value={extras.quickStats[1].value} 
+                  icon={lucide(extras.quickStats[1].iconKey)} 
+                  tone={extras.quickStats[1].tone} 
+                  className="flex-1"
+                />
+              )}
+            </>
+          )}
+        </div>
+        
+        {/* Middle Column (SPI Chart) */}
+        <div className="lg:col-span-2">
+          <Card className="h-full flex flex-col p-6 shadow-sm border-line/60 hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="font-bold text-content text-lg flex items-center gap-2">
+                  <Activity className="text-brand w-5 h-5" />
+                  SPI Progression
+                </h3>
+                <p className="text-sm text-muted mt-0.5">Your performance over the last 8 months</p>
               </div>
+              <Badge tone="green" className="px-3 py-1 shadow-sm">+12% Growth</Badge>
+            </div>
+            <div className="flex-1 min-h-[160px] -ml-2">
+              <SpiProgressionChart />
             </div>
           </Card>
+        </div>
 
-          <Card>
-            <h3 className="font-semibold text-content mb-4">Recent activity</h3>
+        {/* Right Column (2 Stats) */}
+        <div className="flex flex-col gap-6">
+          {extrasLoading ? (
+            <>
+              <CardSkeleton />
+              <CardSkeleton />
+            </>
+          ) : (
+            <>
+              {extras?.quickStats[2] && (
+                <StatCard 
+                  label={extras.quickStats[2].label} 
+                  value={extras.quickStats[2].value} 
+                  icon={lucide(extras.quickStats[2].iconKey)} 
+                  tone={extras.quickStats[2].tone} 
+                  className="flex-1"
+                />
+              )}
+              {extras?.quickStats[3] && (
+                <StatCard 
+                  label={extras.quickStats[3].label} 
+                  value={extras.quickStats[3].value} 
+                  icon={lucide(extras.quickStats[3].iconKey)} 
+                  tone={extras.quickStats[3].tone} 
+                  className="flex-1"
+                />
+              )}
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Bottom Section: Activity, Todos, Events */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Left: Recent activity */}
+        <div className="lg:col-span-2">
+          <Card className="h-full p-6 shadow-sm border-line/60 hover:shadow-md transition-shadow">
+            <div className="flex items-center justify-between mb-6">
+              <h3 className="font-bold text-content text-lg">Recent activity</h3>
+              <button className="text-sm font-medium text-brand hover:text-brand-700 transition-colors">View all</button>
+            </div>
+            
             {extrasLoading ? (
-              <div className="space-y-3">{[0, 1, 2].map((i) => <div key={i} className="h-12 rounded-xl bg-surface-2 animate-pulse" />)}</div>
+              <div className="space-y-4">{[0, 1, 2].map((i) => <div key={i} className="h-14 rounded-xl bg-surface-2 animate-pulse" />)}</div>
             ) : (
-              <div className="space-y-1">
+              <div className="space-y-4">
                 {extras?.activity.map((a) => {
                   const Icon = lucide(a.iconKey);
                   return (
-                    <div key={a.id} className="flex items-center gap-3 py-2.5 border-b border-line last:border-0">
-                      <div className="w-9 h-9 rounded-xl bg-brand-soft text-brand flex items-center justify-center flex-shrink-0">
-                        <Icon size={16} />
+                    <div key={a.id} className="group flex items-center gap-4 py-3 px-4 rounded-2xl hover:bg-surface-2 transition-colors border border-transparent hover:border-line">
+                      <div className="w-11 h-11 rounded-xl bg-surface shadow-sm text-brand flex items-center justify-center flex-shrink-0 border border-line-strong group-hover:bg-brand-soft group-hover:border-brand/20 transition-colors">
+                        <Icon size={20} />
                       </div>
-                      <p className="text-sm text-content-2 flex-1">{a.text}</p>
-                      <span className="text-xs text-muted flex-shrink-0">{a.time}</span>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-semibold text-content mb-0.5">{a.text}</p>
+                        <p className="text-xs text-muted font-medium">{a.time}</p>
+                      </div>
                     </div>
                   );
                 })}
@@ -135,55 +209,41 @@ export default function StudentDashboard() {
           </Card>
         </div>
 
-        {/* Right: quick actions + todos + events */}
-        <div className="space-y-6">
-          <Card>
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="font-semibold text-content">Quick actions</h3>
-              <Zap size={16} className="text-warning" />
-            </div>
-            <div className="space-y-2">
-              {QUICK_ACTIONS.map((a) => (
-                <button
-                  key={a.label}
-                  onClick={() => router.push(a.path)}
-                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl bg-surface-2 hover:bg-brand-soft group transition-colors"
-                >
-                  <a.icon size={16} className="text-brand" />
-                  <span className="text-sm font-medium text-content-2 text-left flex-1">{a.label}</span>
-                  <ArrowUpRight size={14} className="text-muted group-hover:text-brand" />
-                </button>
-              ))}
-            </div>
-          </Card>
-
-          <Card>
-            <h3 className="font-semibold text-content mb-3">To-do this week</h3>
-            <div className="space-y-2">
-              {extras?.todos.map((t) => (
-                <div key={t.id} className="flex items-center gap-2.5">
-                  <span className={cn('w-4 h-4 rounded-md border-2 flex items-center justify-center flex-shrink-0', t.done ? 'bg-brand border-brand' : 'border-line-strong')}>
-                    {t.done && <CheckCircle2 size={11} className="text-white" />}
-                  </span>
-                  <span className={cn('text-sm', t.done ? 'line-through text-muted' : 'text-content-2')}>{t.label}</span>
-                </div>
-              ))}
-            </div>
-          </Card>
-
-          <Card>
-            <h3 className="font-semibold text-content mb-3">Upcoming</h3>
+        {/* Right: To-dos + Events */}
+        <div className="space-y-6 flex flex-col">
+          <Card className="flex-1 p-6 shadow-sm border-line/60 hover:shadow-md transition-shadow">
+            <h3 className="font-bold text-content text-lg mb-5">To-do this week</h3>
             <div className="space-y-3">
+              {todos.map((t) => (
+                <label 
+                  key={t.id} 
+                  className="flex items-start gap-3 p-3 rounded-xl hover:bg-surface-2 transition-colors cursor-pointer group"
+                  onClick={(e) => { e.preventDefault(); toggleTodo(t.id); }}
+                >
+                  <span className={cn('mt-0.5 w-5 h-5 rounded-[6px] border-2 flex items-center justify-center shrink-0 transition-colors', t.done ? 'bg-brand border-brand' : 'border-line-strong group-hover:border-brand/50')}>
+                    {t.done && <CheckCircle2 size={13} strokeWidth={3} className="text-white" />}
+                  </span>
+                  <span className={cn('text-[14px] font-medium leading-tight pt-0.5 transition-colors', t.done ? 'line-through text-muted' : 'text-content-2 group-hover:text-content')}>
+                    {t.label}
+                  </span>
+                </label>
+              ))}
+            </div>
+          </Card>
+
+          <Card className="flex-1 p-6 shadow-sm border-line/60 hover:shadow-md transition-shadow">
+            <h3 className="font-bold text-content text-lg mb-5">Upcoming</h3>
+            <div className="space-y-4">
               {extras?.events.map((e) => (
-                <div key={e.id} className="flex items-center gap-3">
-                  <div className="w-9 h-9 rounded-xl bg-surface-2 flex items-center justify-center flex-shrink-0">
-                    <Calendar size={15} className="text-muted" />
+                <div key={e.id} className="flex items-center gap-4 group">
+                  <div className="w-12 h-12 rounded-2xl bg-surface-2 flex flex-col items-center justify-center shrink-0 border border-line group-hover:border-brand/30 transition-colors">
+                    <span className="text-[10px] font-bold text-muted uppercase leading-none mb-1">{e.date.split(' ')[0]}</span>
+                    <span className="text-sm font-black text-content leading-none">{e.date.split(' ')[1]}</span>
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-content truncate">{e.title}</p>
-                    <p className="text-xs text-muted">{e.date}</p>
+                    <p className="text-[14px] font-bold text-content truncate mb-1 group-hover:text-brand transition-colors">{e.title}</p>
+                    <Badge tone="gray" className="text-[10px] px-2 py-0.5">{e.tag}</Badge>
                   </div>
-                  <Badge tone="gray">{e.tag}</Badge>
                 </div>
               ))}
             </div>
