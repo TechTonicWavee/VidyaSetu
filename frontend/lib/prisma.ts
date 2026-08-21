@@ -4,9 +4,9 @@ import { PrismaPg } from '@prisma/adapter-pg'
 
 declare global {
   // eslint-disable-next-line no-var
-  var __vidyasetuPrisma: PrismaClient | undefined
+  var __vidyasetuPrisma2: PrismaClient | undefined
   // eslint-disable-next-line no-var
-  var __vidyasetuPgPool: Pool | undefined
+  var __vidyasetuPgPool2: Pool | undefined
 }
 
 function makePrismaClient() {
@@ -14,11 +14,11 @@ function makePrismaClient() {
   const connectionString = process.env.DATABASE_URL
   
   // Re-use the pool across hot-reloads
-  if (!globalThis.__vidyasetuPgPool) {
-    globalThis.__vidyasetuPgPool = new Pool({ connectionString })
+  if (!globalThis.__vidyasetuPgPool2) {
+    globalThis.__vidyasetuPgPool2 = new Pool({ connectionString })
   }
   
-  const adapter = new PrismaPg(globalThis.__vidyasetuPgPool)
+  const adapter = new PrismaPg(globalThis.__vidyasetuPgPool2)
   
   return new PrismaClient({
     adapter,
@@ -30,9 +30,9 @@ function makePrismaClient() {
 }
 
 export const prisma =
-  globalThis.__vidyasetuPrisma ??
+  globalThis.__vidyasetuPrisma2 ??
   (console.log('INIT NEW PRISMA CLIENT WITH PG ADAPTER'), makePrismaClient())
 
 if (process.env.NODE_ENV !== 'production') {
-  globalThis.__vidyasetuPrisma = prisma
+  globalThis.__vidyasetuPrisma2 = prisma
 }

@@ -23,11 +23,13 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({ children, demoMode = false }: { children: ReactNode, demoMode?: boolean }) {
   const router = useRouter();
-  const [student, setStudent] = useState<StudentSession | null>(null);
-  const [token, setToken] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [student, setStudent] = useState<StudentSession | null>(
+    demoMode ? { universityId: 'DEMO', name: 'Demo User', branch: 'CSE', year: 4, section: 'A', avatarUrl: null } : null
+  );
+  const [token, setToken] = useState<string | null>(demoMode ? 'demo-token' : null);
+  const [loading, setLoading] = useState(!demoMode);
   const hydrated = useRef(false);
 
   // [Krrish/auth] localStorage.vs_student is no longer trusted for authentication — every
@@ -67,6 +69,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [router]);
 
   useEffect(() => {
+    if (demoMode) return;
     if (hydrated.current) return;
     hydrated.current = true;
 
@@ -96,7 +99,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setLoading(false);
       }
     })();
-  }, [router]);
+  }, [router, demoMode]);
 
   return (
     <AuthContext.Provider value={{ student, accessToken: token ?? getAccessToken(), loading, logout }}>

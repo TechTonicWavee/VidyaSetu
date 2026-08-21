@@ -10,45 +10,48 @@ datasource db {
 }
 
 model Student {
-  id               String    @id @default(uuid())
-  universityId     String    @unique
+  id               String            @id @default(uuid())
+  universityId     String            @unique
   fullName         String
   dob              DateTime?
   branch           String?
   year             Int?
-  admissionYear    Int?      // Admission calendar year e.g. 2024 → admitted July 2024
   section          String?
   email            String?
   phone            String?
   password         String?
-  isFirstLogin     Boolean   @default(true)
-  formStatus       String    @default("not_registered")
+  isFirstLogin     Boolean           @default(true)
+  formStatus       String            @default("not_registered")
   formProgress     Json?
   formSubmittedAt  DateTime?
   resumeUrl        String?
-  resumeParsed     Json?
-  resumeAnalyzedAt DateTime?
-  resumePublicId   String?
-  avatarUrl        String?
+  spiScore         Float?            @default(0)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  admissionYear    Int?
   avatarPublicId   String?
+  avatarUrl        String?
   domain           String?
-  spiScore         Float?    @default(0)
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
-
-  codingProfile    CodingProfile?
-  projects         Project[]
+  resumeAnalyzedAt DateTime?
+  resumeParsed     Json?
+  resumePublicId   String?
+  cgpa             Float?            @default(0)
+  attendance       Float?
+  classesAttended  Int?
+  classesTotal     Int?
+  semester         Int?
   certifications   Certification[]
-  hackathons       Hackathon[]
+  codingProfile    CodingProfile?
   extracurriculars Extracurricular[]
+  hackathons       Hackathon[]
   internships      Internship[]
-
-  teamsLed        Team[]         @relation("TeamLeader")
-  teamMemberships TeamMember[]
-  invitesSent     TeamInvite[]   @relation("InviteSender")
-  invitesReceived TeamInvite[]   @relation("InviteReceiver")
-  notifications   Notification[]
-  refreshTokens   RefreshToken[]
+  notifications    Notification[]
+  projects         Project[]
+  refreshTokens    RefreshToken[]
+  invitesReceived  TeamInvite[]      @relation("InviteReceiver")
+  invitesSent      TeamInvite[]      @relation("InviteSender")
+  teamMemberships  TeamMember[]
+  teamsLed         Team[]            @relation("TeamLeader")
 
   @@map("students")
 }
@@ -69,8 +72,7 @@ model CodingProfile {
   lastFetched    DateTime?
   githubStats    Json?
   leetcodeStats  Json?
-
-  student Student @relation(fields: [universityId], references: [universityId])
+  student        Student   @relation(fields: [universityId], references: [universityId])
 
   @@map("coding_profiles")
 }
@@ -85,13 +87,12 @@ model Project {
   teamSize           String?
   githubLink         String?
   liveLink           String?
-  screenshotUrl      String?
-  screenshotPublicId String?
   status             String?
   role               String?
   createdAt          DateTime @default(now())
-
-  student Student @relation(fields: [universityId], references: [universityId])
+  screenshotPublicId String?
+  screenshotUrl      String?
+  student            Student  @relation(fields: [universityId], references: [universityId])
 
   @@map("projects")
 }
@@ -103,16 +104,17 @@ model Certification {
   platform            String?
   completionDate      DateTime?
   certificateUrl      String?
-  certificatePublicId String?
-  credentialId        String?
-  verificationUrl     String?
   skills              String[]
+  createdAt           DateTime  @default(now())
+  certificatePublicId String?
+  breakdown           Json?
+  credentialId        String?
   score               Float?
   tier                String?
-  breakdown           Json?
-  createdAt           DateTime  @default(now())
-
-  student Student @relation(fields: [universityId], references: [universityId])
+  verificationUrl     String?
+  isFromResume        Boolean   @default(false)
+  recipientName       String?
+  student             Student   @relation(fields: [universityId], references: [universityId])
 
   @@map("certifications")
 }
@@ -128,8 +130,7 @@ model Hackathon {
   problemStatement String?
   solution         String?
   createdAt        DateTime  @default(now())
-
-  student Student @relation(fields: [universityId], references: [universityId])
+  student          Student   @relation(fields: [universityId], references: [universityId])
 
   @@map("hackathons")
 }
@@ -141,8 +142,7 @@ model Extracurricular {
   role         String?
   year         String?
   achievement  String?
-
-  student Student @relation(fields: [universityId], references: [universityId])
+  student      Student @relation(fields: [universityId], references: [universityId])
 
   @@map("extracurriculars")
 }
@@ -159,29 +159,25 @@ model Internship {
   offerLetterUrl           String?
   completionCertificateUrl String?
   isPaid                   Boolean   @default(false)
-  stipendAmount            Float?    @default(0)
   recipientName            String?
-
-  student Student @relation(fields: [universityId], references: [universityId])
+  stipendAmount            Float?    @default(0)
+  student                  Student   @relation(fields: [universityId], references: [universityId])
 
   @@map("internships")
 }
 
-// --- Krrish's modules: My Team / Domain Directory / Notifications / Auth ---
-
 model Team {
-  id          String   @id @default(uuid())
+  id          String       @id @default(uuid())
   name        String
   description String?
   domain      String?
   leaderId    String
-  maxMembers  Int      @default(4)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-
-  leader  Student      @relation("TeamLeader", fields: [leaderId], references: [universityId])
-  members TeamMember[]
-  invites TeamInvite[]
+  maxMembers  Int          @default(4)
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  invites     TeamInvite[]
+  members     TeamMember[]
+  leader      Student      @relation("TeamLeader", fields: [leaderId], references: [universityId])
 
   @@index([leaderId])
   @@map("teams")
@@ -193,9 +189,8 @@ model TeamMember {
   universityId String
   role         String   @default("member")
   joinedAt     DateTime @default(now())
-
-  team    Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  student Student @relation(fields: [universityId], references: [universityId])
+  team         Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  student      Student  @relation(fields: [universityId], references: [universityId])
 
   @@unique([teamId, universityId])
   @@index([universityId])
@@ -209,15 +204,12 @@ model TeamInvite {
   receiverId  String
   message     String?
   status      String    @default("pending")
-  // 'invite'       — a leader/member invites a student (receiver = invited student)
-  // 'join_request' — a student requests to join (sender = requesting student, receiver = team leader)
   type        String    @default("invite")
   createdAt   DateTime  @default(now())
   respondedAt DateTime?
-
-  team     Team    @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  sender   Student @relation("InviteSender", fields: [senderId], references: [universityId])
-  receiver Student @relation("InviteReceiver", fields: [receiverId], references: [universityId])
+  receiver    Student   @relation("InviteReceiver", fields: [receiverId], references: [universityId])
+  sender      Student   @relation("InviteSender", fields: [senderId], references: [universityId])
+  team        Team      @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
   @@index([teamId])
   @@index([senderId])
@@ -234,8 +226,7 @@ model Notification {
   payload      Json?
   read         Boolean  @default(false)
   createdAt    DateTime @default(now())
-
-  student Student @relation(fields: [universityId], references: [universityId])
+  student      Student  @relation(fields: [universityId], references: [universityId])
 
   @@index([universityId, read])
   @@map("notifications")
@@ -249,8 +240,7 @@ model RefreshToken {
   replacedBy   String?
   expiresAt    DateTime
   createdAt    DateTime @default(now())
-
-  student Student @relation(fields: [universityId], references: [universityId])
+  student      Student  @relation(fields: [universityId], references: [universityId])
 
   @@index([universityId])
   @@map("refresh_tokens")
