@@ -629,16 +629,28 @@ export default function ProfileEditPage() {
     if (!resumeUrl) return
     try {
       const response = await fetch(resumeUrl)
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`)
+      }
       const blob = await response.blob()
       const url = window.URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
-      a.download = 'resume.pdf'
+      
+      // Try to extract filename from URL, fallback to 'resume.pdf'
+      const filename = resumeUrl.split('/').pop() || 'resume.pdf'
+      a.download = filename
+      
       document.body.appendChild(a)
       a.click()
-      window.URL.revokeObjectURL(url)
-      document.body.removeChild(a)
+      
+      // Delay revocation to ensure download starts successfully
+      setTimeout(() => {
+        window.URL.revokeObjectURL(url)
+        document.body.removeChild(a)
+      }, 1000)
     } catch (err) {
+      console.error('Failed to download resume, opening in new tab:', err)
       window.open(resumeUrl, '_blank')
     }
   }
