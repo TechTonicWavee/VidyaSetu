@@ -705,27 +705,33 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {portals.map((p) => {
               const Icon = p.icon;
               return (
                 <div
                   key={p.id}
-                  className="bg-surface rounded-2xl border border-line hover:bg-surface-2 p-7 flex flex-col items-center text-center group cursor-pointer transition-colors"
+                  className="bg-surface rounded-3xl border border-line hover:border-transparent hover:shadow-2xl hover:shadow-black/5 dark:hover:shadow-white/5 p-7 flex flex-col items-center text-center group cursor-pointer transition-all duration-300 transform hover:-translate-y-2 relative overflow-hidden"
                   onClick={() => setSelectedPortal(p.id)}
                 >
+                  {/* Subtle background glow effect on hover */}
+                  <div 
+                    className="absolute inset-0 opacity-0 group-hover:opacity-[0.03] transition-opacity duration-300" 
+                    style={{ background: p.gradient }} 
+                  />
+                  
                   <div
-                    className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5"
+                    className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5 relative z-10 transition-transform duration-300 group-hover:scale-110 shadow-sm border border-black/5 dark:border-white/5"
                     style={{ background: p.iconBg }}
                   >
-                    <Icon size={28} color={p.iconColor} strokeWidth={1.75} />
+                    <Icon size={28} color={p.iconColor} strokeWidth={2} />
                   </div>
 
-                  <p className="font-bold text-content text-lg mb-1">{p.label}</p>
-                  <p className="text-muted text-xs mb-6 leading-relaxed">{p.sub}</p>
+                  <p className="font-bold text-content text-lg mb-2 relative z-10 transition-colors group-hover:text-brand">{p.label}</p>
+                  <p className="text-muted text-xs mb-8 leading-relaxed relative z-10 flex-grow flex items-start justify-center">{p.sub}</p>
 
                   <button
-                    className="w-full py-2.5 rounded-xl text-sm font-semibold border-2 transition-colors"
+                    className="w-full py-2.5 rounded-xl text-sm font-semibold border-2 transition-all duration-300 relative z-10 group-hover:shadow-md"
                     style={{ borderColor: p.accentColor, color: p.accentColor }}
                     onMouseEnter={(e) => { e.currentTarget.style.background = p.accentColor; e.currentTarget.style.color = "#fff"; }}
                     onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = p.accentColor; }}
