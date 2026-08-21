@@ -1,5 +1,10 @@
 import type { ReactNode } from 'react'
+import { Inter, Newsreader, JetBrains_Mono } from 'next/font/google'
 import './globals.css'
+
+const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap', adjustFontFallback: false })
+const newsreader = Newsreader({ subsets: ['latin'], variable: '--font-newsreader', display: 'swap', adjustFontFallback: false })
+const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jetbrains-mono', display: 'swap', adjustFontFallback: false })
 import { ToastProvider } from '@/components/ToastContext'
 import { KeyboardShortcutProvider } from '@/components/KeyboardShortcuts'
 import { DemoProvider } from '@/components/DemoContext'
@@ -24,17 +29,11 @@ const themeInitScript = `
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={`${inter.variable} ${newsreader.variable} ${jetbrainsMono.variable}`}>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-          rel="stylesheet"
-        />
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body style={{ fontFamily: "'Inter', sans-serif" }} className="page-fade-in bg-white dark:bg-navy transition-colors">
+      <body className="font-sans antialiased page-fade-in bg-bg text-content transition-colors">
         <ThemeProvider>
           <ToastProvider>
             <KeyboardShortcutProvider>

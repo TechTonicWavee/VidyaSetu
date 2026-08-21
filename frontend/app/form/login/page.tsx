@@ -147,38 +147,38 @@ export default function FormLogin() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 w-full max-w-md p-8">
+    <div className="min-h-screen bg-bg flex items-center justify-center p-4">
+      <div className="bg-surface rounded-2xl shadow-sm border border-line w-full max-w-md p-8">
         
         <div className="text-center mb-8">
-          <div className="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center text-white font-bold text-lg" style={{ background: '#1A56DB' }}>VS</div>
-          <h1 className="text-2xl font-bold" style={{ color: '#0D1B2A' }}>VidyaSetu</h1>
-          <p className="text-gray-500 text-sm mt-1">Student Profile Form</p>
+          <div className="w-12 h-12 rounded-xl mx-auto mb-3 flex items-center justify-center text-white font-bold text-lg bg-brand">VS</div>
+          <h1 className="font-serif text-2xl font-bold text-content">VidyaSetu</h1>
+          <p className="text-muted text-sm mt-1">Student Profile Form</p>
         </div>
 
         {state === 'verify' && (
           <div>
-            <h2 className="text-lg font-bold mb-1" style={{ color: '#0D1B2A' }}>Welcome</h2>
-            <p className="text-gray-500 text-sm mb-6">Enter your university credentials to continue</p>
+            <h2 className="font-serif text-lg font-bold mb-1 text-content">Welcome</h2>
+            <p className="text-muted text-sm mb-6">Enter your university credentials to continue</p>
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-semibold text-gray-700 block mb-1">University ID</label>
+                <label className="text-sm font-semibold text-content-2 block mb-1">University ID</label>
                 <input
                   type="text"
                   placeholder="e.g. 2200290100051"
                   value={universityId}
                   onChange={e => setUniversityId(e.target.value)}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400"
+                  className="w-full border border-line rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400"
                 />
               </div>
               <div>
-                <label className="text-sm font-semibold text-gray-700 block mb-1">Official KIET Email</label>
+                <label className="text-sm font-semibold text-content-2 block mb-1">Official KIET Email</label>
                 <input
                   type="email"
                   placeholder="e.g. priyanshu.2428cse771@kiet.edu"
                   value={kietEmail}
                   onChange={e => setKietEmail(e.target.value)}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400"
+                  className="w-full border border-line rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400"
                 />
               </div>
             </div>
@@ -186,8 +186,7 @@ export default function FormLogin() {
             <button
               onClick={handleVerify}
               disabled={loading}
-              className="w-full mt-6 py-3 rounded-xl text-white font-semibold text-sm flex items-center justify-center gap-2"
-              style={{ background: '#1A56DB' }}
+              className="w-full mt-6 py-3 rounded-xl text-white font-semibold text-sm flex items-center justify-center gap-2 bg-brand"
             >
               {loading && <Loader2 size={16} className="animate-spin" />}
               Verify Identity
@@ -198,47 +197,47 @@ export default function FormLogin() {
         {state === 'setPassword' && (
           <div>
             <div className="bg-green-50 border border-green-200 rounded-xl px-4 py-3 mb-6">
-              <p className="text-green-700 text-sm font-medium">Identity verified! Hi {studentName} 👋</p>
+              <p className="text-green-700 text-sm font-medium">Identity verified! Hi {studentName}</p>
             </div>
-            <h2 className="text-lg font-bold mb-1" style={{ color: '#0D1B2A' }}>Set Your Password</h2>
-            <p className="text-gray-500 text-sm mb-6">You will use this to come back and complete your form</p>
+            <h2 className="font-serif text-lg font-bold mb-1 text-content">Set Your Password</h2>
+            <p className="text-muted text-sm mb-6">You will use this to come back and complete your form</p>
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-semibold text-gray-700 block mb-1">New Password</label>
+                <label className="text-sm font-semibold text-content-2 block mb-1">New Password</label>
                 <div className="relative">
                   <input
                     type={showPassword ? 'text' : 'password'}
                     placeholder="Minimum 8 characters"
                     value={password}
                     onChange={e => setPassword(e.target.value)}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 pr-10"
+                    className="w-full border border-line rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 pr-10"
                   />
-                  <button onClick={() => setShowPassword(v => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                  <button onClick={() => setShowPassword(v => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted">
                     {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
               </div>
               <div>
-                <label className="text-sm font-semibold text-gray-700 block mb-1">Confirm Password</label>
+                <label className="text-sm font-semibold text-content-2 block mb-1">Confirm Password</label>
                 <input
                   type="password"
                   placeholder="Re-enter password"
                   value={confirmPassword}
                   onChange={e => setConfirmPassword(e.target.value)}
-                  className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400"
+                  className="w-full border border-line rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400"
                 />
               </div>
 
               {/* ── Admission Details ─────────────────────────────────── */}
-              <div className="pt-2 border-t border-gray-100">
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-3">Admission Details</p>
+              <div className="pt-2 border-t border-line">
+                <p className="text-xs font-semibold text-muted uppercase tracking-wide mb-3">Admission Details</p>
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-sm font-semibold text-gray-700 block mb-1">Admission Year</label>
+                    <label className="text-sm font-semibold text-content-2 block mb-1">Admission Year</label>
                     <select
                       value={admissionYear}
                       onChange={e => setAdmissionYear(e.target.value)}
-                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 bg-white"
+                      className="w-full border border-line rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 bg-surface"
                     >
                       <option value="">Select year</option>
                       {[2022, 2023, 2024, 2025, 2026].map(y => (
@@ -247,11 +246,11 @@ export default function FormLogin() {
                     </select>
                   </div>
                   <div>
-                    <label className="text-sm font-semibold text-gray-700 block mb-1">Admission Month</label>
+                    <label className="text-sm font-semibold text-content-2 block mb-1">Admission Month</label>
                     <select
                       value={admissionMonth}
                       onChange={e => setAdmissionMonth(e.target.value)}
-                      className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 bg-white"
+                      className="w-full border border-line rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 bg-surface"
                     >
                       <option value="7">July</option>
                       <option value="1">January</option>
@@ -262,7 +261,7 @@ export default function FormLogin() {
                 {/* Live academic stage preview */}
                 {stage ? (
                   <div className="mt-3 flex items-center gap-2 bg-blue-50 border border-blue-100 rounded-xl px-4 py-2.5">
-                    <span className="text-blue-500 text-base">🎓</span>
+                    <span className="text-blue-500 text-base"></span>
                     <div>
                       <p className="text-blue-700 text-sm font-semibold">
                         Year {stage.effectiveYear} &bull; Semester {stage.semester}
@@ -279,10 +278,10 @@ export default function FormLogin() {
               </div>
             </div>
             <div className="mt-3 space-y-1">
-              <p className={`text-xs flex items-center gap-1 ${password.length >= 8 ? 'text-green-600' : 'text-gray-400'}`}>
+              <p className={`text-xs flex items-center gap-1 ${password.length >= 8 ? 'text-green-600' : 'text-muted'}`}>
                 {password.length >= 8 ? '✓' : '○'} At least 8 characters
               </p>
-              <p className={`text-xs flex items-center gap-1 ${/\d/.test(password) ? 'text-green-600' : 'text-gray-400'}`}>
+              <p className={`text-xs flex items-center gap-1 ${/\d/.test(password) ? 'text-green-600' : 'text-muted'}`}>
                 {/\d/.test(password) ? '✓' : '○'} At least one number
               </p>
             </div>
@@ -290,8 +289,7 @@ export default function FormLogin() {
             <button
               onClick={handleSetPassword}
               disabled={loading}
-              className="w-full mt-6 py-3 rounded-xl text-white font-semibold text-sm flex items-center justify-center gap-2"
-              style={{ background: '#1A56DB' }}
+              className="w-full mt-6 py-3 rounded-xl text-white font-semibold text-sm flex items-center justify-center gap-2 bg-brand"
             >
               {loading && <Loader2 size={16} className="animate-spin" />}
               Set Password & Open Form
@@ -301,29 +299,29 @@ export default function FormLogin() {
 
         {state === 'login' && (
           <div>
-            <h2 className="text-lg font-bold mb-1" style={{ color: '#0D1B2A' }}>Welcome Back</h2>
-            <p className="text-gray-500 text-sm mb-6">Enter your password to continue your form</p>
+            <h2 className="font-serif text-lg font-bold mb-1 text-content">Welcome back</h2>
+            <p className="text-muted text-sm mb-6">Enter your password to continue your form</p>
             <div className="space-y-4">
               <div>
-                <label className="text-sm font-semibold text-gray-700 block mb-1">University ID</label>
+                <label className="text-sm font-semibold text-content-2 block mb-1">University ID</label>
                 <input
                   type="text"
                   value={universityId}
                   readOnly
-                  className="w-full border border-gray-100 rounded-xl px-4 py-3 text-sm bg-gray-50 text-gray-500"
+                  className="w-full border border-line rounded-xl px-4 py-3 text-sm bg-bg text-muted"
                 />
               </div>
               <div>
-                <label className="text-sm font-semibold text-gray-700 block mb-1">Password</label>
+                <label className="text-sm font-semibold text-content-2 block mb-1">Password</label>
                 <div className="relative">
                   <input
                     type={showPassword ? 'text' : 'password'}
                     placeholder="Enter your password"
                     value={password}
                     onChange={e => setPassword(e.target.value)}
-                    className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 pr-10"
+                    className="w-full border border-line rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-400 pr-10"
                   />
-                  <button onClick={() => setShowPassword(v => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                  <button onClick={() => setShowPassword(v => !v)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted">
                     {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
@@ -333,13 +331,12 @@ export default function FormLogin() {
             <button
               onClick={handleLogin}
               disabled={loading}
-              className="w-full mt-6 py-3 rounded-xl text-white font-semibold text-sm flex items-center justify-center gap-2"
-              style={{ background: '#1A56DB' }}
+              className="w-full mt-6 py-3 rounded-xl text-white font-semibold text-sm flex items-center justify-center gap-2 bg-brand"
             >
               {loading && <Loader2 size={16} className="animate-spin" />}
               Continue My Form
             </button>
-            <p className="text-center text-xs text-gray-400 mt-4">
+            <p className="text-center text-xs text-muted mt-4">
               Forgot password? Contact your class coordinator.
             </p>
           </div>
@@ -350,9 +347,9 @@ export default function FormLogin() {
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-3xl">✓</span>
             </div>
-            <h2 className="text-lg font-bold mb-2" style={{ color: '#0D1B2A' }}>Form Already Submitted</h2>
-            <p className="text-gray-500 text-sm mb-4">Hi {studentName}, you have already submitted your form.</p>
-            <p className="text-gray-500 text-sm">
+            <h2 className="font-serif text-lg font-bold mb-2" style={{ color: '#0D1B2A' }}>Form Already Submitted</h2>
+            <p className="text-muted text-sm mb-4">Hi {studentName}, you have already submitted your form.</p>
+            <p className="text-muted text-sm">
               Your VidyaSetu profile is being set up. Once the platform launches, you will receive access to your dashboard.
             </p>
           </div>

@@ -47,7 +47,9 @@ module.exports = {
         info: { DEFAULT: "var(--info)", soft: "var(--info-soft)" },
       },
       fontFamily: {
-        sans: ["Inter", "ui-sans-serif", "system-ui"],
+        sans: ["var(--font-inter)", "ui-sans-serif", "system-ui"],
+        serif: ["var(--font-newsreader)", "ui-serif", "Georgia"],
+        mono: ["var(--font-jetbrains-mono)", "ui-monospace", "SFMono-Regular"],
       },
       boxShadow: {
         card: "var(--shadow-sm)",

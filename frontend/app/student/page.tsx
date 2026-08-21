@@ -12,6 +12,7 @@ import { Card, StatCard, Badge, CardSkeleton } from '@/components/ui';
 import { cn } from '@/lib/utils/cn';
 import { useSocket } from '@/lib/socket/SocketProvider';
 import { SpiProgressionChart } from './SpiProgressionChart';
+import { PageHeader } from '@/components/ui/PageHeader';
 
 function greeting() {
   const h = new Date().getHours();
@@ -89,30 +90,15 @@ export default function StudentDashboard() {
 
   return (
     <div className="space-y-8 pb-8">
-      {/* Greeting hero - Polished & Advanced UI */}
-      <div className="rounded-3xl p-8 sm:p-10 relative overflow-hidden bg-brand shadow-lg border border-brand-600/30">
-        <div className="absolute inset-0 bg-brand-gradient opacity-90" />
-        
-        {/* Glassmorphic decorative orbs */}
-        <div className="absolute -right-16 -bottom-16 w-80 h-80 rounded-full bg-white/10 blur-3xl pointer-events-none" />
-        <div className="absolute right-48 -top-24 w-64 h-64 rounded-full bg-brand-700/40 blur-3xl pointer-events-none" />
-        <div className="absolute left-1/4 -bottom-10 w-40 h-40 rounded-full bg-info/20 blur-2xl pointer-events-none" />
-
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="max-w-2xl">
-            <p className="text-brand-soft/90 text-[13px] font-bold tracking-widest uppercase mb-1">{date}</p>
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight drop-shadow-sm">
-              {greeting()}, {firstName} <span className="animate-wave inline-block origin-bottom-right">👋</span>
-            </h1>
-            <p className="text-brand-soft/90 text-base sm:text-lg mt-3 font-medium leading-relaxed">
-              Here&apos;s your snapshot for today. Keep shipping projects and practicing consistently to grow your SPI.
-            </p>
-          </div>
-          <div className="hidden lg:flex items-center justify-center w-24 h-24 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 shadow-xl shrink-0">
-            <Zap className="text-white w-10 h-10 drop-shadow-md" />
-          </div>
-        </div>
-      </div>
+      <PageHeader 
+        title={`${greeting()}, ${firstName}`}
+        description="Here's your snapshot for today. Keep shipping projects and practicing consistently to grow your SPI."
+        actions={
+          <Badge tone="gray" className="px-3 py-1.5 font-mono uppercase tracking-widest text-[10px] bg-surface-2 border border-line text-muted shadow-sm">
+            {date}
+          </Badge>
+        }
+      />
 
       {/* Metrics Section: 4 Corners + Middle Chart Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">

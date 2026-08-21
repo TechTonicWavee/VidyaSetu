@@ -86,7 +86,7 @@ export default function AgentChat({ compact = true }: { compact?: boolean; showF
   if (compact) {
     return (
       <div className="bg-white rounded-xl border border-gray-200 p-4">
-        <h3 className="font-semibold text-gray-900 mb-4">🤖 AI Scheduling Agent</h3>
+        <h3 className="font-semibold text-gray-900 mb-4">AI Scheduling Agent</h3>
 
         {/* Quick chips */}
         <div className="flex flex-wrap gap-2 mb-4">

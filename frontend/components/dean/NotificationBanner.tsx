@@ -38,7 +38,7 @@ export default function NotificationBanner() {
   return (
     <div className={`${bgColor} ${textColor} p-4 rounded-lg flex items-center justify-between mb-6`}>
       <p className="font-medium">
-        📌 Reminder: <strong>{upcomingMeeting.title}</strong> on {upcomingMeeting.date} —{' '}
+        Reminder: <strong>{upcomingMeeting.title}</strong> on {upcomingMeeting.date} —{' '}
         {daysUntil === 0 ? 'Today' : daysUntil === 1 ? 'Tomorrow' : `${daysUntil} days away`}
       </p>
       <button
