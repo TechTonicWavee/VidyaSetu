@@ -2,33 +2,11 @@
 
 import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
-import { FACULTY_PROFILE } from '../../../lib/faculty/mock-data'
-import { 
-  Home, BookOpen, Bell, Users, MessageCircle, 
-  FileText, Settings, LogOut, Search, ChevronDown, 
-  CheckCircle, AlertCircle, Activity, 
-  Download, RefreshCw, Upload, AlertTriangle, FileUp, CheckCircle2,
-  ExternalLink, Brain, Clock, MoreHorizontal
-} from 'lucide-react'
-import { authedFetch } from '@/lib/api/sameOriginFetch'
-
-const navLinks = [
-  { id: 'dashboard',    label: 'Dashboard',            icon: Home,          badge: null,  path: '/faculty' },
-  { id: 'classes',      label: 'My Classes',           icon: BookOpen,      badge: null,  path: '/faculty/my-classes' },
-  { id: 'intelligence', label: 'Student Intelligence', icon: Brain,         badge: 'New', path: '/faculty/student-intelligence' },
-  { id: 'alerts',       label: 'Student Alerts',       icon: AlertCircle,   badge: '5',   path: '/faculty/alerts' },
-  { id: 'analytics',    label: 'Subject Analytics',    icon: Activity,      badge: null,  path: '/faculty/analytics' },
-  { id: 'profiles',     label: 'Student Profiles',     icon: Users,         badge: null,  path: '/faculty/student/profile' },
-  { id: 'co',           label: 'CO Attainment',        icon: CheckCircle,   badge: null,  path: '/faculty/co-attainment' },
-  { id: 'parent',       label: 'Parent Communication', icon: MessageCircle, badge: null,  path: '/faculty/parent-communication' },
-  { id: 'reports',      label: 'Reports',              icon: FileText,      badge: null,  path: '/faculty/reports' },
-  { id: 'assignments',  label: 'Assignments (Moodle)', icon: ExternalLink,  badge: null,  path: null, external: 'http://lms.kiet.edu/moodle/' },
-  { id: 'attendance',   label: 'Attendance Upload',    icon: Upload,        badge: null,  path: '/faculty/attendance' },
-]
+import { Upload, RefreshCw, FileUp, CheckCircle2, AlertTriangle } from 'lucide-react'
+import { apiFetch } from '@/lib/api/client'
 
 export default function FacultyAttendancePage() {
   const router = useRouter()
-  const [sidebarOpen, setSidebarOpen] = useState(true)
   
   const [year, setYear] = useState('2026-2027')
   const [semester, setSemester] = useState('')
@@ -64,22 +42,14 @@ export default function FacultyAttendancePage() {
       formData.append('file', file)
       formData.append('semester', semester)
       
-      // using standard fetch since it's an external backend endpoint
-      // wait, our backend is on what port? If it's a separate backend, authedFetch usually uses NEXT_PUBLIC_BACKEND_URL.
-      // Let's use authedFetch.
-      const res = await authedFetch('/api/attendance/preview', {
+      const data = await apiFetch<any>('/api/attendance/preview', {
         method: 'POST',
-        body: formData // do not set content-type, browser sets multipart/form-data
+        body: formData
       })
       
-      const data = await res.json()
-      if (data.success) {
-        setPreviewData(data.data)
-      } else {
-        setError(data.message || 'Failed to preview file.')
-      }
+      setPreviewData(data)
     } catch (err: any) {
-      setError(err.message || 'Network error occurred.')
+      setError(err.message || 'Failed to preview file.')
     } finally {
       setUploading(false)
     }
@@ -92,93 +62,24 @@ export default function FacultyAttendancePage() {
     setError('')
     
     try {
-      const res = await authedFetch('/api/attendance/confirm', {
+      const data = await apiFetch<any>('/api/attendance/confirm', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ rows: previewData.parsedRows })
       })
       
-      const data = await res.json()
-      if (data.success) {
-        setSuccess(`Successfully updated attendance for ${data.data.updatedCount} students.`)
-        setPreviewData(null)
-        setFile(null)
-        if (fileInputRef.current) fileInputRef.current.value = ''
-      } else {
-        setError(data.message || 'Failed to confirm upload.')
-      }
+      setSuccess(`Successfully updated attendance for ${data.updatedCount} students.`)
+      setPreviewData(null)
+      setFile(null)
+      if (fileInputRef.current) fileInputRef.current.value = ''
     } catch (err: any) {
-      setError(err.message || 'Network error occurred.')
+      setError(err.message || 'Failed to confirm upload.')
     } finally {
       setUploading(false)
     }
   }
 
   return (
-    <div className="flex h-screen bg-[#F3F4F6] overflow-hidden font-sans">
-      {/* SIDEBAR */}
-      <aside className={`${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'} flex-shrink-0 bg-white border-r border-gray-100 flex flex-col transition-all duration-300 shadow-sm`}>
-        <div className="p-5 border-b border-gray-50">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style={{ background: 'linear-gradient(135deg, #4338CA, #7C3AED)' }}>
-              {FACULTY_PROFILE.initials}
-            </div>
-            <div className="overflow-hidden">
-              <p className="font-semibold text-sm text-navy truncate">{FACULTY_PROFILE.name}</p>
-              <p className="text-xs text-gray-500 truncate">{FACULTY_PROFILE.department} · {FACULTY_PROFILE.subtitle}</p>
-            </div>
-          </div>
-        </div>
-
-        <nav className="flex-1 p-3 overflow-y-auto">
-          {navLinks.map(link => (
-            <button
-              key={link.id}
-              onClick={() => {
-                if (link.external) { window.open(link.external, '_blank'); return; }
-                if (link.path) router.push(link.path)
-              }}
-              className="nav-link w-full text-left mb-0.5 flex items-center p-2 rounded-lg gap-2 text-sm text-gray-600 hover:bg-gray-50"
-              style={link.id === 'attendance' && !link.external ? { background: '#EEF2FF', color: '#3730A3', fontWeight: 600 } : {}}
-            >
-              <link.icon size={17} />
-              <span className="flex-1">{link.label}</span>
-              {link.badge && (
-                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${link.badge === 'New' ? 'bg-indigo-100 text-indigo-700' : 'bg-red-500 text-white'}`}>
-                  {link.badge}
-                </span>
-              )}
-            </button>
-          ))}
-        </nav>
-
-        <div className="p-3 border-t border-gray-50">
-          <button onClick={() => router.push('/login')} className="nav-link w-full flex items-center p-2 rounded-lg gap-2 text-sm text-left text-red-500 hover:bg-red-50 hover:text-red-600">
-            <LogOut size={17} />
-            <span>Switch Role</span>
-          </button>
-        </div>
-      </aside>
-
-      {/* MAIN CONTENT */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="bg-white border-b border-gray-100 px-6 py-3 flex items-center gap-4 flex-shrink-0 shadow-sm">
-          <button onClick={() => setSidebarOpen(v => !v)} className="text-gray-400 hover:text-gray-700 transition">
-            <Settings size={20} />
-          </button>
-          <div className="flex items-center gap-2 mr-4">
-            <div className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs" style={{ background: '#4338CA' }}>EA</div>
-            <span className="font-bold text-navy text-sm hidden sm:block">Educator Analytics OS</span>
-          </div>
-          <div className="flex-1" />
-          <div className="flex items-center gap-2 cursor-pointer group">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs" style={{ background: 'linear-gradient(135deg, #4338CA, #7C3AED)' }}>{FACULTY_PROFILE.initials}</div>
-            <ChevronDown size={14} className="text-gray-400 group-hover:text-gray-600 transition" />
-          </div>
-        </header>
-
-        <main className="flex-1 overflow-y-auto p-6 bg-gray-50/30">
-          <div className="max-w-4xl mx-auto space-y-6">
+    <div className="max-w-4xl mx-auto space-y-6">
             <div>
               <h1 className="text-2xl font-bold text-navy">Attendance Upload</h1>
               <p className="text-gray-500 text-sm mt-1">Upload the .xlsx attendance report to sync with student dashboards.</p>
@@ -333,8 +234,5 @@ export default function FacultyAttendancePage() {
               </div>
             )}
           </div>
-        </main>
-      </div>
-    </div>
   )
 }

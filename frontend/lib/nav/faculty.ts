@@ -1,4 +1,4 @@
-import { Home, BookOpen, Brain, AlertCircle, Activity, Users, CheckCircle, MessageCircle, FileText, ExternalLink } from 'lucide-react';
+import { Home, BookOpen, Brain, AlertCircle, Activity, Users, CheckCircle, MessageCircle, FileText, ExternalLink, Upload } from 'lucide-react';
 
 export const FACULTY_NAV = [
   { id: 'dashboard', label: 'Dashboard', icon: Home, href: '/faculty' },
@@ -8,8 +8,8 @@ export const FACULTY_NAV = [
   { id: 'analytics', label: 'Subject Analytics', icon: Activity, href: '/faculty/analytics' },
   { id: 'profiles', label: 'Student Profiles', icon: Users, href: '/faculty/student/profile' },
   { id: 'co', label: 'CO Attainment', icon: CheckCircle, href: '/faculty/co-attainment' },
+  { id: 'attendance', label: 'Attendance Upload', icon: Upload, href: '/faculty/attendance' },
   { id: 'parent', label: 'Parent Comms', icon: MessageCircle, href: '/faculty/parent-communication' },
   { id: 'reports', label: 'Reports', icon: FileText, href: '/faculty/reports' },
   { id: 'moodle', label: 'Assignments (Moodle)', icon: ExternalLink, href: '', external: 'http://lms.kiet.edu/moodle/' },
-  { id: 'vidya', label: 'Attendance (Vidya)', icon: ExternalLink, href: '', external: 'https://kiet.cybervidya.net' },
 ];
