@@ -83,11 +83,11 @@ const ACADEMIC_YEARS = ['2022-23', '2023-24', '2024-25', '2025-26']
 
 const PLATFORM_FIELDS = [
   { key: 'github', label: 'GitHub', placeholder: 'e.g. john-doe', required: true, icon: <GitBranch size={18} /> },
-  { key: 'leetcode', label: 'LeetCode', placeholder: 'e.g. john_doe', required: false, icon: '🧩' },
-  { key: 'codechef', label: 'CodeChef', placeholder: 'e.g. johndoe123', required: false, icon: '👨‍🍳' },
-  { key: 'hackerrank', label: 'HackerRank', placeholder: 'e.g. john_doe', required: false, icon: '💻' },
-  { key: 'codeforces', label: 'Codeforces', placeholder: 'e.g. john.doe', required: false, icon: '⚡' },
-  { key: 'gfg', label: 'GeeksForGeeks', placeholder: 'e.g. johndoe', required: false, icon: '🌐' },
+  { key: 'leetcode', label: 'LeetCode', placeholder: 'e.g. john_doe', required: false },
+  { key: 'codechef', label: 'CodeChef', placeholder: 'e.g. johndoe123', required: false },
+  { key: 'hackerrank', label: 'HackerRank', placeholder: 'e.g. john_doe', required: false },
+  { key: 'codeforces', label: 'Codeforces', placeholder: 'e.g. john.doe', required: false },
+  { key: 'gfg', label: 'GeeksForGeeks', placeholder: 'e.g. johndoe', required: false },
   { key: 'linkedin', label: 'LinkedIn URL', placeholder: 'e.g. linkedin.com/in/johndoe', required: false, icon: <Link size={18} /> },
 ]
 

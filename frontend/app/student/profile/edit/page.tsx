@@ -814,7 +814,7 @@ export default function ProfileEditPage() {
             type="tel"
             value={basicInfo.phone || ''}
             onChange={e => setBasicInfo({ ...basicInfo, phone: e.target.value })}
-            className="w-full px-4 py-2.5 rounded-lg border border-line focus:outline-none focus:ring-2 focus:ring-brand/40 text-sm text-content"
+            className="w-full px-4 py-2.5 rounded-lg border border-line bg-surface focus:outline-none focus:ring-2 focus:ring-brand/40 text-sm text-content"
             placeholder="+91 98765 43210"
           />
         </div>
@@ -895,7 +895,7 @@ export default function ProfileEditPage() {
                   setCodingProfiles(prev => ({ ...prev, [field.key]: normalized }))
                   setPlatformErrors(prev => ({ ...prev, [field.key]: validatePlatformValue(field.key, normalized) }))
                 }}
-                className={`flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-lg border focus:outline-none focus:ring-2 focus:ring-brand/40 text-sm text-content ${(field.required && !codingProfiles[field.key]) || platformErrors[field.key] ? 'border-red-300' : 'border-gray-300'
+                className={`flex-1 min-w-0 block w-full px-3 py-2 rounded-none rounded-r-lg border bg-surface focus:outline-none focus:ring-2 focus:ring-brand/40 text-sm text-content ${(field.required && !codingProfiles[field.key]) || platformErrors[field.key] ? 'border-red-300' : 'border-line'
                   }`}
                 placeholder={field.placeholder}
               />
@@ -1046,7 +1046,7 @@ export default function ProfileEditPage() {
                   <h4 className="font-semibold text-content">{cert.name}</h4>
                   {cert.isFromResume && (
                     <span className="text-xs bg-purple-100 text-purple-700 border border-purple-200 px-2 py-0.5 rounded-full font-medium flex items-center gap-1" title="Parsed automatically from your resume. Upload the official certificate below to validate.">
-                      ✨ Parsed from Resume
+                      Parsed from Resume
                     </span>
                   )}
                   {cert.tier && (
@@ -1066,11 +1066,11 @@ export default function ProfileEditPage() {
                     </span>
                   ) : isVerifiableLink ? (
                     <span className="text-xs bg-sky-100 text-sky-800 border border-sky-300 px-2 py-0.5 rounded-full font-medium flex items-center gap-1">
-                      <CheckCircle size={12} /> 🔗 Verifiable Link
+                      <CheckCircle size={12} /> Verifiable Link
                     </span>
                   ) : hasFile ? (
                     <span className="text-xs bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full font-medium">
-                      📄 File Attached
+                      File Attached
                     </span>
                   ) : (
                     <span className="text-xs bg-red-50 text-red-600 border border-red-200 px-2 py-0.5 rounded-full font-medium">
@@ -1103,7 +1103,7 @@ export default function ProfileEditPage() {
                     rel="noreferrer"
                     className="text-brand hover:underline flex items-center gap-1 font-medium bg-blue-50 text-blue-700 px-2 py-0.5 rounded border border-blue-200"
                   >
-                    <ExternalLink size={12} /> 🧪 Recruiter 1-Click Test
+                    <ExternalLink size={12} /> Recruiter 1-Click Test
                   </a>
                 </div>
               ) : (
@@ -1118,12 +1118,13 @@ export default function ProfileEditPage() {
             <div className="flex flex-wrap gap-2 text-[11px] mb-2 pt-1 border-t border-line">
               <span className={`px-2 py-0.5 rounded ${cert.credentialId ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-surface-3 text-gray-500'}`}>
                 {cert.credentialId ? '✓ Credential ID' : '✕ Missing ID'}
+                {cert.credentialId ? 'Credential ID' : 'Missing ID'}
               </span>
               <span className={`px-2 py-0.5 rounded ${cert.verificationUrl ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-surface-3 text-gray-500'}`}>
-                {cert.verificationUrl ? '✓ Direct Verification Link' : '✕ Missing Link'}
+                {cert.verificationUrl ? 'Direct Verification Link' : 'Missing Link'}
               </span>
               <span className={`px-2 py-0.5 rounded ${(cert.credentialId && cert.verificationUrl) ? 'bg-emerald-50 text-emerald-800 font-medium border border-emerald-200' : 'bg-surface-3 text-gray-500'}`}>
-                {(cert.credentialId && cert.verificationUrl) ? '⚡ Fast-Check Ready (< 30s)' : 'âš ï¸ Action Needed'}
+                {(cert.credentialId && cert.verificationUrl) ? 'Fast-Check Ready (< 30s)' : 'Action Needed'}
               </span>
             </div>
 
@@ -1252,7 +1253,7 @@ export default function ProfileEditPage() {
                   </span>
                   {item.isPaid ? (
                     <span className="text-xs bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded-full font-medium">
-                      💰 Paid (₹{item.stipendAmount?.toLocaleString()}/mo)
+                      Paid (₹{item.stipendAmount?.toLocaleString()}/mo)
                     </span>
                   ) : (
                     <span className="text-xs bg-surface-3 text-content border border-line px-2 py-0.5 rounded-full font-medium">
@@ -1261,7 +1262,7 @@ export default function ProfileEditPage() {
                   )}
                   {hasDoc ? (
                     <span className="text-xs bg-green-100 text-green-800 border border-green-300 px-2 py-0.5 rounded-full font-medium flex items-center gap-1">
-                      <CheckCircle size={12} /> 📄 Document Verified
+                      <CheckCircle size={12} /> Document Verified
                     </span>
                   ) : (
                     <span className="text-xs bg-red-50 text-red-600 border border-red-200 px-2 py-0.5 rounded-full font-medium">
@@ -1341,7 +1342,7 @@ export default function ProfileEditPage() {
               className="w-4 h-4 text-brand rounded"
             />
             <label htmlFor="isPaidCheck" className="text-sm font-semibold text-content cursor-pointer select-none">
-              Paid Internship 💰
+              Paid Internship
             </label>
           </div>
           {newIntern.isPaid && (
@@ -1548,23 +1549,23 @@ export default function ProfileEditPage() {
 
 
   return (
-    <div className="bg-bg-base min-h-full">
+    <div className="bg-bg min-h-full">
       <div className="p-6 max-w-5xl mx-auto">
         <button
           onClick={() => router.push('/student/profile')}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-white hover:bg-surface-3 text-content rounded-lg text-sm font-medium border border-line transition shadow-sm mb-6"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-surface hover:bg-surface-2 text-content rounded-lg text-sm font-medium border border-line transition shadow-sm mb-6"
         >
           â† Back to Profile
         </button>
 
         {/* Profile Completion Bar */}
-          <div className="mb-6 bg-white rounded-lg border border-line p-4">
+          <div className="mb-6 bg-surface rounded-lg border border-line p-4">
             <div className="flex justify-between items-center mb-2">
               <h2 className="font-semibold text-content">Profile Completion</h2>
               <span className="text-sm font-bold text-brand">{Math.min(100, Math.round(profileCompletion))}%</span>
             </div>
-            <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-              <div className="h-full bg-green-500 transition-all" style={{ width: `${Math.min(100, profileCompletion)}%` }}></div>
+            <div className="w-full h-2 bg-surface-3 rounded-full overflow-hidden">
+              <div className="h-full bg-success transition-all" style={{ width: `${Math.min(100, profileCompletion)}%` }}></div>
             </div>
           </div>
 
@@ -1578,7 +1579,7 @@ export default function ProfileEditPage() {
               {codingPlatformsJSX}
             </CollapsibleSection>
 
-            <CollapsibleSection title="📄 Resume" icon={FileText} isOpen={expandedSections.resume} onToggle={() => toggleSection('resume')} completionPercent={resumeUrl ? 100 : 0} badge={resumeUrl ? "Counts for SPI ✦" : undefined}>
+            <CollapsibleSection title="Resume" icon={FileText} isOpen={expandedSections.resume} onToggle={() => toggleSection('resume')} completionPercent={resumeUrl ? 100 : 0} badge={resumeUrl ? "Counts for SPI ✦" : undefined}>
               {resumeJSX}
             </CollapsibleSection>
 
@@ -1590,7 +1591,7 @@ export default function ProfileEditPage() {
               {certificationsJSX}
             </CollapsibleSection>
 
-            <CollapsibleSection title="💼 Internships" icon={Briefcase} isOpen={expandedSections.internships} onToggle={() => toggleSection('internships')} completionPercent={internships.length > 0 ? 100 : 0} badge="Counts for SPI ✦">
+            <CollapsibleSection title="Internships" icon={Briefcase} isOpen={expandedSections.internships} onToggle={() => toggleSection('internships')} completionPercent={internships.length > 0 ? 100 : 0} badge="Counts for SPI ✦">
               {internshipsJSX}
             </CollapsibleSection>
 

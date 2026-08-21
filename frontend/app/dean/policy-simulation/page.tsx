@@ -1422,7 +1422,7 @@ export default function PolicySimulation() {
                             className="text-xs leading-relaxed"
                             style={{ color: "rgba(255,255,255,0.8)" }}
                           >
-                            👉 {result.recommendation}
+                            - {result.recommendation}
                           </p>
                         </div>
                       </div>

@@ -45,7 +45,7 @@ export default function AdminDashboard() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <PageHeader 
           title="System Overview — April 2026" 
-          description="🟢 All systems operational"
+          description="All systems operational"
         />
         <button className="btn-secondary flex items-center gap-2">
           <Play size={14} /> Run Diagnostics

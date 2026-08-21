@@ -1,7 +1,12 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-serif;
+  }
+}
 
 /* ============================================================
    Design tokens
@@ -10,40 +15,40 @@
    .dark overrides make every token-driven surface theme-correct.
    ============================================================ */
 :root {
-  --bg: #f4f5f7;
+  --bg: #fcfbf9;
   --surface: #ffffff;
-  --surface-2: #f9fafb;
-  --surface-3: #f3f4f6;
+  --surface-2: #f6f5f2;
+  --surface-3: #f0efeb;
 
-  --content: #0d1b2a;
-  --content-2: #374151;
-  --muted: #6b7280;
+  --content: #3a3632;
+  --content-2: #65605a;
+  --muted: #8b8681;
 
-  --line: #e5e7eb;
-  --line-strong: #d1d5db;
+  --line: #edeae3;
+  --line-strong: #dfdbd1;
 
-  --brand: #3b6cb9;
-  --brand-600: #2d589e;
-  --brand-700: #22447c;
-  --brand-soft: #e5f0fa;
+  --brand: #d16b47;
+  --brand-600: #be5d3c;
+  --brand-700: #a44d30;
+  --brand-soft: #faefe9;
   --brand-fg: #ffffff;
-  --brand-accent: #5a9bd8;
+  --brand-accent: #e28465;
   --brand-gradient: linear-gradient(135deg, var(--brand-accent), var(--brand));
 
-  --success: #16a34a;
-  --success-soft: #dcfce7;
-  --warning: #d97706;
-  --warning-soft: #fef3c7;
-  --danger: #dc2626;
-  --danger-soft: #fee2e2;
-  --info: #2563eb;
-  --info-soft: #dbeafe;
+  --success: #438f63;
+  --success-soft: #e5f3ea;
+  --warning: #c98e3b;
+  --warning-soft: #fcf4e8;
+  --danger: #c25959;
+  --danger-soft: #fbecec;
+  --info: #5684a8;
+  --info-soft: #eef3f7;
 
-  --shadow-sm: 0 1px 4px rgba(0,0,0,0.07), 0 0 0 1px rgba(0,0,0,0.04);
-  --shadow-md: 0 8px 28px rgba(0,0,0,0.10), 0 0 0 1px rgba(0,0,0,0.04);
+  --shadow-sm: none;
+  --shadow-md: none;
 
-  --sidebar-bg: #0d1226;
-  --sidebar-border: rgba(139,92,246,0.16);
+  --sidebar-bg: #ffffff;
+  --sidebar-border: #edeae3;
 }
 
 .dark {
@@ -102,13 +107,9 @@
 
 html, body {
   height: 100%;
-  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
-  background-color: var(--bg);
-  color: var(--content);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-
 }
 
 /* ── Scrollbar ─────────────────────────────────────────── */
@@ -133,8 +134,8 @@ html, body {
 /* ── Card ──────────────────────────────────────────────── */
 .card {
   background: var(--surface);
-  border-radius: 16px;
-  padding: 20px;
+  border-radius: 24px;
+  padding: 32px;
   border: 1px solid var(--line);
 }
 .card:hover {
@@ -142,8 +143,8 @@ html, body {
 }
 .card-flat {
   background: var(--surface);
-  border-radius: 16px;
-  padding: 20px;
+  border-radius: 24px;
+  padding: 32px;
   box-shadow: 0 0 0 1px var(--line);
 }
 
@@ -300,9 +301,12 @@ html, body {
   align-items: center;
   gap: 4px;
   padding: 2px 8px;
-  font-size: 11.5px;
+  font-size: 10.5px;
   font-weight: 600;
   border-radius: 99px;
+  font-family: var(--font-jetbrains-mono), monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 .badge-green  { background: var(--success-soft); color: var(--success); }
 .badge-red    { background: var(--danger-soft);  color: var(--danger); }

@@ -162,25 +162,15 @@ export default function StudentProfile() {
                     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
                   </div>
                 </div>
-                 <Button
-                   variant="ghost"
-                   icon={Edit2}
-                   onClick={() => router.push('/student/profile/edit')}
-                   className="rounded-xl shadow-sm bg-surface"
-                 >
-                   Edit
-                 </Button>
-                 {student?.resumeUrl && (
-                   <Button
-                     variant="ghost"
-                     icon={FileText}
-                     onClick={() => window.open(student.resumeUrl ?? '', '_blank')}
-                     className="rounded-xl shadow-sm bg-surface"
-                   >
-                     View Resume
-                   </Button>
-                 )}
-              </div>
+                <Button
+                  variant="secondary"
+                  icon={Edit2}
+                  onClick={() => router.push('/student/profile/edit')}
+                  className="rounded-xl shadow-sm bg-surface"
+                >
+                  Edit
+                </Button>
+             </div>
           </div>
           
           {/* Stats Grid */}
