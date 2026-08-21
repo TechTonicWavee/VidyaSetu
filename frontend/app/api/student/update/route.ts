@@ -148,7 +148,15 @@ export async function POST(request: NextRequest) {
         console.log('Resume Stored Successfully')
       } catch (parseError) {
         console.error(`[student/update] Resume parsing failed for ${universityId}:`, parseError)
-        throw parseError // Do NOT silently catch / swallow the error
+        // Best-effort: Do NOT throw the error so the resume upload doesn't fail.
+        // Instead, clear the parsed data and record the analysis attempt.
+        await prisma.student.update({
+          where: { universityId },
+          data: {
+            resumeParsed: Prisma.JsonNull,
+            resumeAnalyzedAt: new Date(),
+          },
+        })
       }
     }
 
