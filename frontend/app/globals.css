@@ -44,6 +44,10 @@
   --info: #5684a8;
   --info-soft: #eef3f7;
 
+  --dean-base: #20303c;
+  --dean-soft: #eef1f4;
+  --dean-gradient: linear-gradient(135deg, #394d5d, #20303c);
+
   --shadow-sm: none;
   --shadow-md: none;
 
@@ -89,6 +93,10 @@
   --danger-soft: rgba(240,82,82,0.13);
   --info: #38b6ff;
   --info-soft: rgba(56,182,255,0.13);
+
+  --dean-base: #5c7b94;
+  --dean-soft: rgba(32,48,60,0.4);
+  --dean-gradient: linear-gradient(135deg, #465f74, #5c7b94);
 
   /* Shadows: Deep navy-tinted layered shadows */
   --shadow-sm: 0 2px 8px rgba(0,0,0,0.4), 0 0 0 1px rgba(255, 255, 255, 0.02);
