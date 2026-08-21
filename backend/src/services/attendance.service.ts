@@ -21,7 +21,13 @@ export class AttendanceParserService {
   static parseExcelFile(buffer: Buffer): ParseResult {
     const workbook = xlsx.read(buffer, { type: 'buffer' });
     const sheetName = workbook.SheetNames[0]; // first sheet
+    if (!sheetName) {
+      throw new Error('Workbook contains no sheets.');
+    }
     const sheet = workbook.Sheets[sheetName];
+    if (!sheet) {
+      throw new Error('Workbook contains no sheets.');
+    }
     const data = xlsx.utils.sheet_to_json<string[]>(sheet, { header: 1, defval: '' });
 
     if (data.length < 10) {
@@ -32,8 +38,9 @@ export class AttendanceParserService {
     let session = '';
     let semesterStr = '';
     for (let i = 0; i < 7; i++) {
-      if (!data[i]) continue;
-      const rowStr = data[i].join(' ');
+      const infoRow = data[i];
+      if (!infoRow) continue;
+      const rowStr = infoRow.join(' ');
       if (rowStr.includes('Bachelor of Technology')) {
         session = rowStr;
       } else if (rowStr.includes('Computer Science and Engineering') || rowStr.match(/,[IVX]+,/)) {
@@ -66,6 +73,9 @@ export class AttendanceParserService {
     const headerRow = data[headerRowIdx];
     const subHeaderRow = data[headerRowIdx + 1];
 
+    if (!headerRow) {
+      throw new Error('Could not read the header row.');
+    }
     if (!subHeaderRow) {
       throw new Error('Missing sub-header row below the main header.');
     }
@@ -101,9 +111,11 @@ export class AttendanceParserService {
       const row = data[i];
       if (!row || row.length === 0) continue;
 
-      const regNo = typeof row[regNoColIdx] === 'number' 
-        ? row[regNoColIdx].toString().trim() 
-        : (row[regNoColIdx] || '').toString().trim();
+      // xlsx returns real numbers for numeric cells at runtime despite the string[] typing
+      const regNoRaw = row[regNoColIdx] as string | number | undefined;
+      const regNo = typeof regNoRaw === 'number'
+        ? regNoRaw.toString().trim()
+        : (regNoRaw || '').toString().trim();
       const name = (row[nameColIdx] || '').toString().trim();
 
       if (!regNo || regNo.length < 13) {
@@ -115,8 +127,8 @@ export class AttendanceParserService {
       const tRaw = row[totalColIdx + 1]?.toString().trim();
       const pRaw = row[totalColIdx + 2]?.toString().trim();
 
-      const aNum = parseFloat(aRaw);
-      const tNum = parseFloat(tRaw);
+      const aNum = parseFloat(aRaw ?? '');
+      const tNum = parseFloat(tRaw ?? '');
 
       if (aRaw === 'NR' || tRaw === 'NR' || pRaw === 'NR') {
         parsedRows.push({
@@ -148,7 +160,7 @@ export class AttendanceParserService {
       if (pRaw && pRaw.includes('%')) {
         pNum = parseFloat(pRaw.replace('%', ''));
       } else {
-        pNum = parseFloat(pRaw);
+        pNum = parseFloat(pRaw ?? '');
       }
 
       if (isNaN(aNum) || isNaN(pNum)) {

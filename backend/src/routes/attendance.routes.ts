@@ -3,7 +3,6 @@ import multer from 'multer';
 import { prisma } from '../lib/prisma';
 import { AttendanceParserService } from '../services/attendance.service';
 import { getIO } from '../sockets';
-import { requireAuth } from '../middleware/auth'; // We'll just assume there is a requireAuth middleware
 
 const router = Router();
 
