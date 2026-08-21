@@ -192,12 +192,38 @@ other is out of scope for this refactor and not evaluated here.
 
 ---
 
-## Stage 0 gate result: **FAILED — backend build/typecheck already broken pre-refactor**
+## Stage 0 gate result: fixed, now green — proceeding to Stage 1
+
+Original gate result was **FAILED** (see below, kept for the record). Per your direction, the
+backend attendance errors were fixed as a pre-refactor commit before moving on:
+
+- `c3d757e` — fixed the 9 backend `tsc` errors (bad `requireAuth` import + unguarded
+  `noUncheckedIndexedAccess` reads in the Excel parser). `tsc --noEmit`, `npm run build`,
+  `npm run lint` all clean; `attendance.service.test.ts` passes via `tsx`.
+- `1254c36` — a second, unrelated Claude Code session working in this same repo concurrently
+  finished wiring the attendance page into `FACULTY_NAV` and switching it to the shared
+  `apiFetch` client. Its edit left a stray extra `</div>` (20 opens vs 21 closes) that broke
+  `next build`; fixed by removing the stray tag. Verified with `tsc --noEmit` and `npm run
+  build` afterward — route list unchanged from the original baseline below, no new lint errors.
+
+**Updated baseline as of `1254c36` (current HEAD):**
+- Frontend: `tsc --noEmit` clean, `npm run build` succeeds, route list unchanged (91 routes,
+  diffed against the original list below — identical), lint still exactly the same 2
+  pre-existing errors (`app/api/spi/recalculate/route.ts:114`, `app/dean/meetings/page.tsx:29`)
+  + warnings.
+- Backend: `tsc --noEmit` clean, `npm run build` succeeds, lint clean (0 errors, 4 warnings, all
+  `no-explicit-any` in the attendance module), `attendance.service.test.ts` passes.
+
+This is the state Stage 1 (inventory/classification) proceeds from.
+
+---
+
+### Original gate result (superseded above): FAILED — backend build/typecheck broken pre-refactor
 
 Per the task instructions ("If the build is already failing before you touch anything, stop and
-report it"), I'm stopping here rather than proceeding into Stage 1.
+report it"), I stopped here rather than proceeding into Stage 1.
 
-**This is not new breakage.** It comes from the attendance feature that was mid-flight,
-uncommitted, in the working tree before this task started (now committed as `4ae3ee1` per your
-instruction to commit it first). The frontend is fully green. The backend has 9 pre-existing
+**This was not new breakage.** It came from the attendance feature that was mid-flight,
+uncommitted, in the working tree before this task started (committed as `4ae3ee1` per your
+instruction to commit it first). The frontend was fully green. The backend had 9 pre-existing
 `tsc` errors, all confined to the new attendance module.
