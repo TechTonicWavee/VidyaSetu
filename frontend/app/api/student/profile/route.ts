@@ -133,6 +133,7 @@ export async function GET(request: NextRequest) {
         resumeAnalyzedAt: student.resumeAnalyzedAt,
         resumePublicId: student.resumePublicId,
         resumeScore: resumeResult?.score ?? null,
+        spiHistory: student.spiHistory,
         cgpa: student.cgpa,
         semester: student.semester,
         attendance: student.attendance,
