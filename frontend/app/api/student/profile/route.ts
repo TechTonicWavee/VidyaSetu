@@ -84,19 +84,22 @@ export async function GET(request: NextRequest) {
       resumeParsed: student.resumeParsed,
     })
 
-    const certsResult = await calcCertificationsScore({
-      year: effectiveYear,
-      admissionYear,
-      certifications: student.certifications || [],
-      studentName: student.fullName,
-    })
-
-    const internshipsResult = await calcInternshipsScore({
-      year: effectiveYear,
-      admissionYear,
-      internships: student.internships || [],
-      studentName: student.fullName,
-    })
+    // Independent of each other — run concurrently instead of one after the other.
+    // Each can involve a PDF fetch+parse on a cache miss, so this halves the worst case.
+    const [certsResult, internshipsResult] = await Promise.all([
+      calcCertificationsScore({
+        year: effectiveYear,
+        admissionYear,
+        certifications: student.certifications || [],
+        studentName: student.fullName,
+      }),
+      calcInternshipsScore({
+        year: effectiveYear,
+        admissionYear,
+        internships: student.internships || [],
+        studentName: student.fullName,
+      }),
+    ])
 
     const academicSemester = rawSemester ?? (effectiveSemester > 1 ? effectiveSemester - 1 : 1)
     const academicsResult = calcAcademicsScore({

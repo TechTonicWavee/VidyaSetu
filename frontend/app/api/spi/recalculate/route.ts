@@ -148,21 +148,25 @@ export async function POST(request: NextRequest) {
       resumeParsed: student.resumeParsed,
     })
 
-    const certsResult = await calcCertificationsScore({
-      year: effectiveYear,
-      admissionYear,
-      certifications: activeCertifications,
-      studentName: student.fullName,
-    })
-
-    const internshipsResult = await calcInternshipsScore({
-      year: effectiveYear,
-      admissionYear,
-      internships: student.internships || [],
-      studentName: student.fullName,
-    })
+    // Independent of each other — run concurrently instead of one after the other.
+    const [certsResult, internshipsResult] = await Promise.all([
+      calcCertificationsScore({
+        year: effectiveYear,
+        admissionYear,
+        certifications: activeCertifications,
+        studentName: student.fullName,
+      }),
+      calcInternshipsScore({
+        year: effectiveYear,
+        admissionYear,
+        internships: student.internships || [],
+        studentName: student.fullName,
+      }),
+    ])
 
     // ── Cache Parsed Recipient Names ──────────────────────────────────────────
+    const cacheUpdates: Promise<unknown>[] = []
+
     if (certsResult && Array.isArray(certsResult.breakdown)) {
       for (const evaluatedCert of certsResult.breakdown) {
         if (!evaluatedCert.id) continue;
@@ -170,10 +174,12 @@ export async function POST(request: NextRequest) {
         if (!dbCert) continue;
 
         if (evaluatedCert.recipientName && dbCert.recipientName !== evaluatedCert.recipientName) {
-           await prisma.certification.update({
-             where: { id: dbCert.id },
-             data: { recipientName: evaluatedCert.recipientName }
-           })
+          cacheUpdates.push(
+            prisma.certification.update({
+              where: { id: dbCert.id },
+              data: { recipientName: evaluatedCert.recipientName }
+            })
+          )
         }
       }
     }
@@ -185,12 +191,18 @@ export async function POST(request: NextRequest) {
         if (!dbInt) continue;
 
         if (evaluatedInt.recipientName && dbInt.recipientName !== evaluatedInt.recipientName) {
-           await prisma.internship.update({
-             where: { id: dbInt.id },
-             data: { recipientName: evaluatedInt.recipientName }
-           })
+          cacheUpdates.push(
+            prisma.internship.update({
+              where: { id: dbInt.id },
+              data: { recipientName: evaluatedInt.recipientName }
+            })
+          )
         }
       }
+    }
+
+    if (cacheUpdates.length > 0) {
+      await Promise.allSettled(cacheUpdates)
     }
 
     // Academics engine

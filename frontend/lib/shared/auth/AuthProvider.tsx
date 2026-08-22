@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiPost, ApiError } from '../api/client';
-import { clearAccessToken, getAccessToken, registerUnauthorizedHandler, setAccessToken } from './tokenStore';
+import { clearAccessToken, consumePendingLoginSession, getAccessToken, registerUnauthorizedHandler, setAccessToken } from './tokenStore';
 
 export interface StudentSession {
   universityId: string;
@@ -79,6 +79,19 @@ export function AuthProvider({ children, demoMode = false }: { children: ReactNo
       syncLegacySessionMirror(null);
       router.push('/login');
     });
+
+    // We just came straight from a successful login — it already gave us a fresh
+    // access token and the student session, seconds ago. Skip the network round-trip
+    // to /api/auth/refresh entirely instead of re-verifying what we already know.
+    const pending = consumePendingLoginSession();
+    if (pending) {
+      setAccessToken(pending.accessToken);
+      setToken(pending.accessToken);
+      setStudent(pending.student as StudentSession);
+      syncLegacySessionMirror(pending.student as StudentSession);
+      setLoading(false);
+      return;
+    }
 
     (async () => {
       try {

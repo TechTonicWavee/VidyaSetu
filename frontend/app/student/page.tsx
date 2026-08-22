@@ -1,15 +1,13 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { TrendingUp, ArrowUpRight, CheckCircle2, Calendar, Activity, Zap } from 'lucide-react';
+import { Calendar, Activity } from 'lucide-react';
 import { authedFetch } from '@/lib/shared/api/sameOriginFetch';
 import { useAuth } from '@/lib/shared/auth/AuthProvider';
 import { useAsyncData } from '@/lib/student/hooks/useAsyncData';
-import { getDashboardExtras, getRankings } from '@/lib/student/data';
+import { getRankings } from '@/lib/student/data';
 import { icon as lucide } from '@/lib/student/utils/lucide';
-import { Card, StatCard, Badge, CardSkeleton } from '@/components/shared/ui';
-import { cn } from '@/lib/shared/utils/cn';
+import { Card, StatCard, Badge } from '@/components/shared/ui';
 import { useSocket } from '@/lib/student/socket/SocketProvider';
 import { SpiProgressionChart } from './SpiProgressionChart';
 import { PageHeader } from '@/components/shared/ui/PageHeader';
@@ -22,7 +20,6 @@ function greeting() {
 }
 
 export default function StudentDashboard() {
-  const router = useRouter();
   const { student } = useAuth();
   const { socket } = useSocket();
   const firstName = student?.name?.split(' ')[0] ?? 'Student';
@@ -30,30 +27,16 @@ export default function StudentDashboard() {
   const [spi, setSpi] = useState<number | null>(null);
   const [spiHistory, setSpiHistory] = useState<any[]>([]);
   const [spiLoading, setSpiLoading] = useState(true);
-  
+
   const [attendance, setAttendance] = useState<number | null>(null);
   const [classesAttended, setClassesAttended] = useState<number | null>(null);
   const [classesTotal, setClassesTotal] = useState<number | null>(null);
 
-  const { data: extras, loading: extrasLoading } = useAsyncData(() => getDashboardExtras(student?.universityId), [student?.universityId]);
   const { data: rankings, loading: rankingsLoading } = useAsyncData(() => getRankings(student?.universityId), [student?.universityId]);
-  const [todos, setTodos] = useState<{ id: string; label: string; done: boolean }[]>([]);
 
-  useEffect(() => {
-    if (extras?.todos) {
-      setTodos(extras.todos);
-    }
-  }, [extras?.todos]);
-
-  const toggleTodo = (id: string) => {
-    setTodos((prev) => prev.map((t) => (t.id === id ? { ...t, done: !t.done } : t)));
-  };
-
+  // Real, event-driven — starts empty and fills in as socket events actually
+  // arrive, rather than being seeded with placeholder activity on load.
   const [liveActivity, setLiveActivity] = useState<any[]>([]);
-
-  useEffect(() => {
-    if (extras?.activity) setLiveActivity(extras.activity);
-  }, [extras?.activity]);
 
   useEffect(() => {
     if (!socket) return;
@@ -73,8 +56,8 @@ export default function StudentDashboard() {
     };
     socket.on('notification:new', onNew);
     socket.on('attendance:updated', onAttendance);
-    return () => { 
-      socket.off('notification:new', onNew); 
+    return () => {
+      socket.off('notification:new', onNew);
       socket.off('attendance:updated', onAttendance);
     };
   }, [socket]);
@@ -84,6 +67,13 @@ export default function StudentDashboard() {
       setSpiLoading(false);
       return;
     }
+    // The dashboard only displays the SPI score/history — /api/student/profile
+    // already computes both live, so there's no need to also hit
+    // /api/spi/recalculate here too: that endpoint additionally does unconditional
+    // DB writes (spiScore, spiHistory) meant for after data actually changes
+    // (resume upload, profile save — see app/student/profile/edit/page.tsx), not
+    // for every dashboard glance. Firing both on every mount was computing the
+    // same six-engine SPI score twice and writing to the DB once for nothing.
     authedFetch(`/api/student/profile?universityId=${student.universityId}`)
       .then((r) => r.json())
       .then((d) => {
@@ -93,20 +83,6 @@ export default function StudentDashboard() {
           if (d.student?.attendance != null) setAttendance(Number(d.student.attendance));
           if (d.student?.classesAttended != null) setClassesAttended(Number(d.student.classesAttended));
           if (d.student?.classesTotal != null) setClassesTotal(Number(d.student.classesTotal));
-        }
-      })
-      .catch(() => {});
-
-    authedFetch('/api/spi/recalculate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ universityId: student.universityId }),
-    })
-      .then((r) => r.json())
-      .then((d) => { 
-        if (d?.success) {
-          if (typeof d.spi === 'number') setSpi(d.spi);
-          if (d.spiHistory != null) setSpiHistory(d.spiHistory);
         }
       })
       .catch(() => {})
@@ -129,7 +105,7 @@ export default function StudentDashboard() {
 
   return (
     <div className="space-y-8 pb-8">
-      <PageHeader 
+      <PageHeader
         title={`${greeting()}, ${firstName}`}
         description="Here's your snapshot for today. Keep shipping projects and practicing consistently to grow your SPI."
         actions={
@@ -139,51 +115,42 @@ export default function StudentDashboard() {
         }
       />
 
-      {/* Metrics Section: 4 Corners + Middle Chart Layout */}
+      {/* Metrics Section */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Left Column (2 Stats) */}
+        {/* Left Column (2 real stats) */}
         <div className="flex flex-col gap-6">
-          {extrasLoading ? (
-            <>
-              <CardSkeleton />
-              <CardSkeleton />
-            </>
+          {attendance !== null ? (
+            <StatCard
+              label="Overall Attendance"
+              value={`${attendance}%`}
+              icon={lucide('Calendar')}
+              tone={attendance >= 75 ? 'success' : attendance >= 65 ? 'warning' : 'danger'}
+              hint={`${classesAttended} / ${classesTotal} classes attended`}
+              className="flex-1"
+            />
           ) : (
-            <>
-              {attendance !== null ? (
-                <StatCard 
-                  label="Overall Attendance" 
-                  value={`${attendance}%`} 
-                  icon={lucide('Calendar')} 
-                  tone={attendance >= 75 ? 'success' : attendance >= 65 ? 'warning' : 'danger'} 
-                  hint={`${classesAttended} / ${classesTotal} classes attended`}
-                  className="flex-1"
-                />
-              ) : (
-                <div className="bg-surface rounded-2xl border border-line p-5 flex-1 flex flex-col justify-center items-center text-center">
-                  <Calendar className="text-muted/50 w-8 h-8 mb-2" />
-                  <p className="text-sm font-medium text-muted">Attendance not yet published for this semester.</p>
-                </div>
-              )}
-              {rankingsLoading ? (
-                <div className="flex-1 flex items-center justify-center bg-surface rounded-2xl border border-line p-5">
-                  <div className="w-6 h-6 border-2 border-brand border-t-transparent rounded-full animate-spin"></div>
-                </div>
-              ) : rankings ? (
-                <StatCard 
-                  label="Batch Rank" 
-                  value={`#${rankings.branch.overall}`} 
-                  icon={lucide('Award')} 
-                  tone="brand" 
-                  className="flex-1"
-                />
-              ) : null}
-            </>
+            <div className="bg-surface rounded-2xl border border-line p-5 flex-1 flex flex-col justify-center items-center text-center">
+              <Calendar className="text-muted/50 w-8 h-8 mb-2" />
+              <p className="text-sm font-medium text-muted">Attendance not yet published for this semester.</p>
+            </div>
           )}
+          {rankingsLoading ? (
+            <div className="flex-1 flex items-center justify-center bg-surface rounded-2xl border border-line p-5">
+              <div className="w-6 h-6 border-2 border-brand border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          ) : rankings ? (
+            <StatCard
+              label="Batch Rank"
+              value={`#${rankings.branch.overall}`}
+              icon={lucide('Award')}
+              tone="brand"
+              className="flex-1"
+            />
+          ) : null}
         </div>
-        
-        {/* Middle Column (SPI Chart) */}
-        <div className="lg:col-span-2">
+
+        {/* Right (SPI Chart) — takes the space the mock-data stat cards used to occupy */}
+        <div className="lg:col-span-3">
           <Card className="h-full flex flex-col p-6 shadow-sm border-line/60 hover:shadow-md transition-shadow">
             <div className="flex items-center justify-between mb-4">
               <div>
@@ -206,102 +173,32 @@ export default function StudentDashboard() {
             </div>
           </Card>
         </div>
-
-        {/* Right Column (2 Stats) */}
-        <div className="flex flex-col gap-6">
-          <StatCard 
-            label="Pending Tasks" 
-            value={todos.filter(t => !t.done).length.toString()} 
-            icon={lucide('ListChecks')} 
-            tone="blue" 
-            className="flex-1"
-          />
-          {extras?.quickStats[3] && (
-            <StatCard 
-              label={extras.quickStats[3].label} 
-              value={extras.quickStats[3].value} 
-              icon={lucide(extras.quickStats[3].iconKey)} 
-              tone={extras.quickStats[3].tone} 
-              className="flex-1"
-            />
-          )}
-        </div>
       </div>
 
-      {/* Bottom Section: Activity, Todos, Events */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left: Recent activity */}
-        <div className="lg:col-span-2">
-          <Card className="h-full p-6 shadow-sm border-line/60 hover:shadow-md transition-shadow">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="font-bold text-content text-lg">Recent activity</h3>
-              <button className="text-sm font-medium text-brand hover:text-brand-700 transition-colors">View all</button>
-            </div>
-            
-            {extrasLoading ? (
-              <div className="space-y-4">{[0, 1, 2].map((i) => <div key={i} className="h-14 rounded-xl bg-surface-2 animate-pulse" />)}</div>
-            ) : (
-              <div className="space-y-4">
-                {liveActivity.map((a) => {
-                  const Icon = lucide(a.iconKey);
-                  return (
-                    <div key={a.id} className="group flex items-center gap-4 py-3 px-4 rounded-2xl hover:bg-surface-2 transition-colors border border-transparent hover:border-line">
-                      <div className="w-11 h-11 rounded-xl bg-surface shadow-sm text-brand flex items-center justify-center flex-shrink-0 border border-line-strong group-hover:bg-brand-soft group-hover:border-brand/20 transition-colors">
-                        <Icon size={20} />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-content mb-0.5">{a.text}</p>
-                        <p className="text-xs text-muted font-medium">{a.time}</p>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
-          </Card>
-        </div>
-
-        {/* Right: To-dos + Events */}
-        <div className="space-y-6 flex flex-col">
-          <Card className="flex-1 p-6 shadow-sm border-line/60 hover:shadow-md transition-shadow">
-            <h3 className="font-bold text-content text-lg mb-5">To-do this week</h3>
-            <div className="space-y-3">
-              {todos.map((t) => (
-                <label 
-                  key={t.id} 
-                  className="flex items-start gap-3 p-3 rounded-xl hover:bg-surface-2 transition-colors cursor-pointer group"
-                  onClick={(e) => { e.preventDefault(); toggleTodo(t.id); }}
-                >
-                  <span className={cn('mt-0.5 w-5 h-5 rounded-[6px] border-2 flex items-center justify-center shrink-0 transition-colors', t.done ? 'bg-brand border-brand' : 'border-line-strong group-hover:border-brand/50')}>
-                    {t.done && <CheckCircle2 size={13} strokeWidth={3} className="text-white" />}
-                  </span>
-                  <span className={cn('text-[14px] font-medium leading-tight pt-0.5 transition-colors', t.done ? 'line-through text-muted' : 'text-content-2 group-hover:text-content')}>
-                    {t.label}
-                  </span>
-                </label>
-              ))}
-            </div>
-          </Card>
-
-          <Card className="flex-1 p-6 shadow-sm border-line/60 hover:shadow-md transition-shadow">
-            <h3 className="font-bold text-content text-lg mb-5">Upcoming</h3>
-            <div className="space-y-4">
-              {extras?.events.map((e) => (
-                <div key={e.id} className="flex items-center gap-4 group">
-                  <div className="w-12 h-12 rounded-2xl bg-surface-2 flex flex-col items-center justify-center shrink-0 border border-line group-hover:border-brand/30 transition-colors">
-                    <span className="text-[10px] font-bold text-muted uppercase leading-none mb-1">{e.date.split(' ')[0]}</span>
-                    <span className="text-sm font-black text-content leading-none">{e.date.split(' ')[1]}</span>
+      {/* Recent activity — real, event-driven via socket notifications */}
+      <Card className="p-6 shadow-sm border-line/60 hover:shadow-md transition-shadow">
+        <h3 className="font-bold text-content text-lg mb-6">Recent activity</h3>
+        {liveActivity.length === 0 ? (
+          <p className="text-sm text-muted py-6 text-center">No recent activity yet — it'll show up here as things happen.</p>
+        ) : (
+          <div className="space-y-4">
+            {liveActivity.map((a) => {
+              const Icon = lucide(a.iconKey);
+              return (
+                <div key={a.id} className="group flex items-center gap-4 py-3 px-4 rounded-2xl hover:bg-surface-2 transition-colors border border-transparent hover:border-line">
+                  <div className="w-11 h-11 rounded-xl bg-surface shadow-sm text-brand flex items-center justify-center flex-shrink-0 border border-line-strong group-hover:bg-brand-soft group-hover:border-brand/20 transition-colors">
+                    <Icon size={20} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-[14px] font-bold text-content truncate mb-1 group-hover:text-brand transition-colors">{e.title}</p>
-                    <Badge tone="gray" className="text-[10px] px-2 py-0.5">{e.tag}</Badge>
+                    <p className="text-sm font-semibold text-content mb-0.5">{a.text}</p>
+                    <p className="text-xs text-muted font-medium">{a.time}</p>
                   </div>
                 </div>
-              ))}
-            </div>
-          </Card>
-        </div>
-      </div>
+              );
+            })}
+          </div>
+        )}
+      </Card>
     </div>
   );
 }

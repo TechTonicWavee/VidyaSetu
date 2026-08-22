@@ -3,7 +3,7 @@
 import { useState, type FocusEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "@/components/shared/ThemeProvider";
-import { setAccessToken } from "@/lib/shared/auth/tokenStore";
+import { setAccessToken, setPendingLoginSession } from "@/lib/shared/auth/tokenStore";
 import {
   User, BookOpen, Building2, Heart, Settings,
   Eye, EyeOff, GraduationCap, BrainCircuit,
@@ -147,6 +147,7 @@ function StudentLoginForm({ portal, onSwitchPortal, portals: allPortals }: { por
       const data = await res.json();
       if (data.success) {
         setAccessToken(data.data.accessToken);
+        setPendingLoginSession({ accessToken: data.data.accessToken, student: data.data.student });
         router.push("/student");
       } else if (data.error?.code === "FORM_INCOMPLETE") {
         setLoginError({

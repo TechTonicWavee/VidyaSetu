@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Activity, Users, Award, Book, Code, Zap, Clock, TrendingUp, Loader2, Sparkles, Target } from 'lucide-react';
+import { Activity, Users, Award, Book, Code, Zap, Clock, TrendingUp, Sparkles, Target } from 'lucide-react';
 import {
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip,
 } from 'recharts';
@@ -34,7 +34,6 @@ export default function SPIPage() {
   const { student } = useAuth();
   const [spiScore, setSpiScore] = useState(0);
   const [spiLoading, setSpiLoading] = useState(true);
-  const [recalculating, setRecalculating] = useState(false);
   const [studentData, setStudentData] = useState<SpiStudentData | null>(null);
   const [dims, setDims] = useState({
     technicalDepth: 0, logicalReasoning: 0, initiative: 0,
@@ -44,42 +43,32 @@ export default function SPIPage() {
   useEffect(() => {
     if (!student?.universityId) { setSpiLoading(false); return; }
 
+    // /api/student/profile already computes the SPI score and its per-dimension
+    // breakdown live (spiBreakdown), from the exact same calculateSPI() call
+    // /api/spi/recalculate uses — no need to also fire that heavier endpoint
+    // (which additionally writes to the DB unconditionally) just to display it.
     authedFetch(`/api/student/profile?universityId=${student.universityId}`)
       .then((r) => r.json())
       .then((d) => {
         if (d?.success && d.student) {
           setStudentData(d.student);
           if (typeof d.student.spiScore === 'number') setSpiScore(d.student.spiScore);
-        }
-      })
-      .catch(() => {})
-      .finally(() => setSpiLoading(false));
-
-    setRecalculating(true);
-    authedFetch('/api/spi/recalculate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ universityId: student.universityId }),
-    })
-      .then((r) => r.json())
-      .then((d) => {
-        if (d?.success && typeof d.spi === 'number') {
-          setSpiScore(d.spi);
-          if (d.dimensions) {
+          if (d.student.spiBreakdown) {
+            const dimensions = d.student.spiBreakdown;
             setDims({
-              technicalDepth: d.dimensions.technicalDepth?.score ?? 0,
-              logicalReasoning: d.dimensions.logicalReasoning?.score ?? 0,
-              initiative: d.dimensions.initiative?.score ?? 0,
-              kinesthetic: d.dimensions.kinesthetic?.score ?? 0,
-              communication: d.dimensions.communication?.score ?? 0,
-              interpersonal: d.dimensions.interpersonal?.score ?? 0,
-              creativity: d.dimensions.creativity?.score ?? 0,
+              technicalDepth: dimensions.technicalDepth?.score ?? 0,
+              logicalReasoning: dimensions.logicalReasoning?.score ?? 0,
+              initiative: dimensions.initiative?.score ?? 0,
+              kinesthetic: dimensions.kinesthetic?.score ?? 0,
+              communication: dimensions.communication?.score ?? 0,
+              interpersonal: dimensions.interpersonal?.score ?? 0,
+              creativity: dimensions.creativity?.score ?? 0,
             });
           }
         }
       })
       .catch(() => {})
-      .finally(() => setRecalculating(false));
+      .finally(() => setSpiLoading(false));
   }, [student?.universityId]);
 
   let milestoneText = 'Tier 1 Ready!';
@@ -133,12 +122,6 @@ export default function SPIPage() {
         title="SPI Score"
         description="A single score capturing your complete academic and personal potential."
         icon={<TrendingUp size={22} />}
-        actions={recalculating ? (
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-brand/5 text-brand text-sm font-medium border border-brand/20">
-            <Loader2 size={16} className="animate-spin" />
-            <span>Updating...</span>
-          </div>
-        ) : undefined}
       />
 
       <div className="space-y-8 animate-fade-in">
