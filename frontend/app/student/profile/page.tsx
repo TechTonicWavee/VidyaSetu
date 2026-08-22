@@ -23,6 +23,9 @@ interface StudentProfileData {
   spiScore: number | null
   formStatus: string
   formSubmittedAt: string | null
+  cgpa: number | null
+  semester: number | null
+  attendance: number | null
   resumeUrl: string | null
   resumeParsed: unknown
   resumeAnalyzedAt: string | null
@@ -175,10 +178,10 @@ export default function StudentProfile() {
           
           {/* Stats Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-8 border-t border-line/40">
-             {[
-               { label: 'SPI Score', value: spiValue, icon: Activity },
-               { label: 'Attendance', value: '—', icon: CheckCircle },
-               { label: 'CGPA', value: '—', icon: TrendingUp },
+              {[
+                { label: 'SPI Score', value: spiValue, icon: Activity },
+                { label: 'Attendance', value: student?.attendance != null ? `${Math.round(student.attendance * 100)}%` : '—', icon: CheckCircle },
+                { label: 'CGPA', value: student?.cgpa != null ? Number(student.cgpa).toFixed(2) : '—', icon: TrendingUp },
                { label: 'Projects', value: String(projectsCount), icon: Folder },
              ].map(({ label, value, icon: Icon }) => (
                <div key={label} className="group relative rounded-2xl p-[1px] transition-all duration-300 hover:shadow-2xl hover:shadow-brand/20 hover:-translate-y-1 overflow-hidden bg-gradient-to-b from-line-strong/80 via-line/20 to-transparent">
@@ -213,8 +216,8 @@ export default function StudentProfile() {
             <h2 className="text-lg font-extrabold text-content mb-6">Academic Snapshot</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-8">
               {[
-                { label: 'Semester', value: student?.year ? `${student.year * 2}th` : '—' },
-                { label: 'Cumulative CGPA', value: '—' },
+                { label: 'Semester', value: student?.semester ? `${student.semester}th` : (student?.year ? `${student.year * 2}th` : '—') },
+                { label: 'Cumulative CGPA', value: student?.cgpa != null ? Number(student.cgpa).toFixed(2) : '—' },
                 { label: 'Credits Completed', value: '—' },
                 { label: 'Theory / Practical', value: '— / —' },
               ].map(({ label, value }) => (

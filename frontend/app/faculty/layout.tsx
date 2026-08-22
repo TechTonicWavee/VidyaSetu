@@ -9,7 +9,7 @@ import { AuthProvider } from '@/lib/auth/AuthProvider';
 
 export default function FacultyLayout({ children }: { children: ReactNode }) {
   return (
-    <AuthProvider>
+    <AuthProvider demoMode={true}>
       <AppShell navGroups={[{ items: FACULTY_NAV }]} showSidebar={true}>
         {children}
       </AppShell>

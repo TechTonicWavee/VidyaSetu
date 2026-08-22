@@ -9,7 +9,7 @@ import { AuthProvider } from '@/lib/auth/AuthProvider';
 
 export default function DeanLayout({ children }: { children: ReactNode }) {
   return (
-    <AuthProvider>
+    <AuthProvider demoMode={true}>
       <DeanProvider>
         <AppShell navGroups={[{ items: DEAN_NAV }]} showSidebar={true}>
           {children}

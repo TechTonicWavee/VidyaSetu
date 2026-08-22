@@ -35,6 +35,11 @@ model Student {
   resumeAnalyzedAt DateTime?
   resumeParsed     Json?
   resumePublicId   String?
+  cgpa             Float?            @default(0)
+  attendance       Float?
+  classesAttended  Int?
+  classesTotal     Int?
+  semester         Int?
   certifications   Certification[]
   codingProfile    CodingProfile?
   extracurriculars Extracurricular[]

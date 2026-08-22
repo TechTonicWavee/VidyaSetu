@@ -61,6 +61,11 @@ export async function GET(request: NextRequest) {
         resumeAnalyzedAt: student.resumeAnalyzedAt,
         resumePublicId: student.resumePublicId,
         resumeScore: resumeResult?.score ?? null,
+        cgpa: student.cgpa,
+        semester: student.semester,
+        attendance: student.attendance,
+        classesAttended: student.classesAttended,
+        classesTotal: student.classesTotal,
         avatarUrl: student.avatarUrl,
         avatarPublicId: student.avatarPublicId,
         codingProfile: student.codingProfile ? {

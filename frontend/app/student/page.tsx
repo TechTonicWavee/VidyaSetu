@@ -29,6 +29,11 @@ export default function StudentDashboard() {
 
   const [spi, setSpi] = useState<number | null>(null);
   const [spiLoading, setSpiLoading] = useState(true);
+  
+  const [attendance, setAttendance] = useState<number | null>(null);
+  const [classesAttended, setClassesAttended] = useState<number | null>(null);
+  const [classesTotal, setClassesTotal] = useState<number | null>(null);
+
   const { data: extras, loading: extrasLoading } = useAsyncData(() => getDashboardExtras(student?.universityId), [student?.universityId]);
   const [todos, setTodos] = useState<{ id: string; label: string; done: boolean }[]>([]);
 
@@ -59,8 +64,17 @@ export default function StudentDashboard() {
       };
       setLiveActivity((prev) => [newActivity, ...prev].slice(0, 5));
     };
+    const onAttendance = (data: any) => {
+      setAttendance(data.attendance);
+      setClassesAttended(data.classesAttended);
+      setClassesTotal(data.classesTotal);
+    };
     socket.on('notification:new', onNew);
-    return () => { socket.off('notification:new', onNew); };
+    socket.on('attendance:updated', onAttendance);
+    return () => { 
+      socket.off('notification:new', onNew); 
+      socket.off('attendance:updated', onAttendance);
+    };
   }, [socket]);
 
   useEffect(() => {
@@ -71,7 +85,12 @@ export default function StudentDashboard() {
     authedFetch(`/api/student/profile?universityId=${student.universityId}`)
       .then((r) => r.json())
       .then((d) => {
-        if (d?.success && d.student?.spiScore != null) setSpi(Number(d.student.spiScore));
+        if (d?.success) {
+          if (d.student?.spiScore != null) setSpi(Number(d.student.spiScore));
+          if (d.student?.attendance != null) setAttendance(Number(d.student.attendance));
+          if (d.student?.classesAttended != null) setClassesAttended(Number(d.student.classesAttended));
+          if (d.student?.classesTotal != null) setClassesTotal(Number(d.student.classesTotal));
+        }
       })
       .catch(() => {});
 
@@ -111,14 +130,20 @@ export default function StudentDashboard() {
             </>
           ) : (
             <>
-              {extras?.quickStats[0] && (
+              {attendance !== null ? (
                 <StatCard 
-                  label={extras.quickStats[0].label} 
-                  value={extras.quickStats[0].value} 
-                  icon={lucide(extras.quickStats[0].iconKey)} 
-                  tone={extras.quickStats[0].tone} 
+                  label="Overall Attendance" 
+                  value={`${attendance}%`} 
+                  icon={lucide('Calendar')} 
+                  tone={attendance >= 75 ? 'success' : attendance >= 65 ? 'warning' : 'danger'} 
+                  hint={`${classesAttended} / ${classesTotal} classes attended`}
                   className="flex-1"
                 />
+              ) : (
+                <div className="bg-surface rounded-2xl border border-line p-5 flex-1 flex flex-col justify-center items-center text-center">
+                  <Calendar className="text-muted/50 w-8 h-8 mb-2" />
+                  <p className="text-sm font-medium text-muted">Attendance not yet published for this semester.</p>
+                </div>
               )}
               {extras?.quickStats[1] && (
                 <StatCard 
