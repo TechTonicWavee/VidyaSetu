@@ -1,3 +1,0 @@
-interface:
-  display_name: "Configure"
-  short_description: "Configure Claude Octopus — redirects to /octo:setup..."
