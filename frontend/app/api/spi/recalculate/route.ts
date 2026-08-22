@@ -8,6 +8,7 @@ import calcLeetCodeScore from '@/lib/spi/sources/leetcodeScore'
 import calcResumeScore from '@/lib/spi/sources/resume'
 import calcCertificationsScore from '@/lib/spi/sources/certifications'
 import calcInternshipsScore from '@/lib/spi/sources/internships'
+import calcAcademicsScore from '@/lib/spi/sources/academics'
 import { evaluateCertificate } from '@/lib/spi/evaluators/certificateEvaluators'
 import calculateSPI from '@/lib/spi/orchestrator/calculateSPI'
 import { AuthError, requireAuth, requireOwnResource } from '../../../../lib/auth/verifyAccessToken'
@@ -113,15 +114,20 @@ export async function POST(request: NextRequest) {
     let effectiveYear = student.year ?? 1
     let admissionYear: number | null = (student as any).admissionYear ?? null
 
+    const now = new Date()
+    const currentMonth = now.getMonth() + 1
     if (admissionYear) {
-      const now = new Date()
       const currentYear  = now.getFullYear()
-      const currentMonth = now.getMonth() + 1
       const yearsElapsed = currentYear - admissionYear
       effectiveYear = currentMonth >= 7
         ? Math.min(4, Math.max(1, yearsElapsed + 1))
         : Math.min(4, Math.max(1, yearsElapsed))
     }
+    const effectiveSemester = currentMonth >= 7 ? effectiveYear * 2 - 1 : effectiveYear * 2
+
+    // cgpa and semester are now properly typed after prisma generate
+    const rawCgpa = student.cgpa ?? null
+    const rawSemester = student.semester ?? null
 
     // Run evidence engines
     const githubResult = calcGitHubScore({
@@ -172,6 +178,14 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    // Academics engine
+    const academicSemester = rawSemester ?? (effectiveSemester > 1 ? effectiveSemester - 1 : 1)
+    const academicsResult = calcAcademicsScore({
+      year: effectiveYear,
+      admissionYear,
+      academicsData: rawCgpa != null ? [{ semester: academicSemester, cgpa: rawCgpa }] : [],
+    })
+
     // Calculate SPI
     const spiResult = calculateSPI({
       github: githubResult,
@@ -179,6 +193,7 @@ export async function POST(request: NextRequest) {
       resume: resumeResult,
       certifications: certsResult,
       internships: internshipsResult,
+      academics: academicsResult,
     })
 
     // Save SPI and updated year back to Student table
@@ -204,6 +219,8 @@ export async function POST(request: NextRequest) {
         leetcode: leetcodeResult,
         resume: resumeResult,
         certifications: certsResult,
+        internships: internshipsResult,
+        academics: academicsResult,
       },
       { status: 200 }
     )
