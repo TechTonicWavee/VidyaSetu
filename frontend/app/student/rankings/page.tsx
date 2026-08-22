@@ -4,7 +4,7 @@ import { useState } from 'react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
 } from 'recharts';
-import { Award, TrendingUp, Users, Target } from 'lucide-react';
+import { Award, TrendingUp, Users, Target, Flag } from 'lucide-react';
 import { useAuth } from '@/lib/shared/auth/AuthProvider';
 import { useAsyncData } from '@/lib/student/hooks/useAsyncData';
 import { getRankings, type RankingScope } from '@/lib/student/data';
@@ -113,6 +113,44 @@ export default function RankingsPage() {
       {data && !loading && (
         <>
           <ScopeView scope={data[scope]} />
+
+          {data.milestones.length > 0 && (
+            <div className="mt-6">
+              <h3 className="font-semibold text-content flex items-center gap-2 mb-3">
+                <Flag size={18} className="text-brand" /> Next milestones
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {data.milestones.map((m) => (
+                  <Card key={m.targetRank}>
+                    <div className="flex items-center justify-between mb-1">
+                      <span className="text-sm font-bold text-content">{m.label} (branch)</span>
+                      <span className="text-xs font-semibold text-brand bg-brand-soft rounded px-2 py-0.5">
+                        {m.pointsNeeded > 0 ? `+${m.pointsNeeded} SPI pts` : 'Within reach'}
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted mb-3">
+                      Students ranked around #{m.targetRank} in your branch average an SPI of {m.thresholdScore}.
+                    </p>
+                    {m.gaps.length > 0 ? (
+                      <ul className="space-y-2">
+                        {m.gaps.map((area, i) => (
+                          <li key={i} className="flex gap-3 rounded-lg px-3 py-2.5 bg-surface-2 border border-line">
+                            <span className="shrink-0 mt-0.5 h-fit text-[11px] font-bold text-brand bg-brand-soft rounded px-2 py-0.5">
+                              {area.category}
+                            </span>
+                            <p className="text-sm text-content-2">{area.message}</p>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-sm text-muted">Your profile already matches this band on the areas we track.</p>
+                    )}
+                  </Card>
+                ))}
+              </div>
+            </div>
+          )}
+
           {data.improvementAreas.length > 0 && (
             <div className="mt-6">
               <Card>
