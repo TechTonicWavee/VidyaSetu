@@ -4,6 +4,7 @@ import { useState, type FocusEvent } from "react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "@/components/shared/ThemeProvider";
 import { setAccessToken, setPendingLoginSession } from "@/lib/shared/auth/tokenStore";
+import { useToast } from "@/components/shared/ToastContext";
 import {
   User, BookOpen, Building2, Heart, Settings,
   Eye, EyeOff, GraduationCap, BrainCircuit,
@@ -97,6 +98,7 @@ interface LoginError {
 
 function StudentLoginForm({ portal, onSwitchPortal, portals: allPortals }: { portal: (typeof portals)[number]; onSwitchPortal: (id: string) => void; portals: typeof portals }) {
   const router = useRouter();
+  const { addToast } = useToast();
 
   // 'login' | 'forgot' | 'reset'
   const [authState, setAuthState] = useState("login");
@@ -148,6 +150,7 @@ function StudentLoginForm({ portal, onSwitchPortal, portals: allPortals }: { por
       if (data.success) {
         setAccessToken(data.data.accessToken);
         setPendingLoginSession({ accessToken: data.data.accessToken, student: data.data.student });
+        addToast(`Welcome back, ${data.data.student?.name?.split(' ')[0] ?? 'there'}!`, 'success', 'Signed in successfully.');
         router.push("/student");
       } else if (data.error?.code === "FORM_INCOMPLETE") {
         setLoginError({

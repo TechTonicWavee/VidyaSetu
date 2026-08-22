@@ -24,7 +24,12 @@ function makePrismaClient() {
   // Re-use the pool across hot-reloads in dev instead of opening a new one
   // (and paying the cold-connection cost) on every module reload.
   if (!global.__vidyasetuPgPool) {
-    global.__vidyasetuPgPool = new Pool({ connectionString });
+    // node-postgres defaults to a max pool size of 10; several routes here
+    // (rankings especially) fan out well past that many concurrent queries in
+    // a single request via Promise.all, so a too-small pool serializes what's
+    // meant to be parallel work. Supabase's own pooler (pgbouncer=true in the
+    // connection string) is already sized to handle many app-side connections.
+    global.__vidyasetuPgPool = new Pool({ connectionString, max: 20 });
   }
 
   const adapter = new PrismaPg(global.__vidyasetuPgPool);

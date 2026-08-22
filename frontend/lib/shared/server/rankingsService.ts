@@ -5,6 +5,13 @@ import { AppError } from './appError';
 // Real, DB-backed rankings computed purely from each student's overall SPI score.
 // (Sports/Physical and other fabricated domains have been removed — ranking is
 // strictly SPI-based, within the student's section and branch cohorts.)
+//
+// IMPORTANT: this deliberately avoids ever fetching a full cohort's rows into the
+// app just to sort them in JS to find one rank. With ~1000 students in a branch,
+// that took over a second on its own and only gets worse as the student body
+// grows. Rank/average/leaderboard are computed with COUNT/AVG/ORDER-BY-LIMIT
+// queries instead — the DB does the sorting, the app only ever receives a
+// handful of rows. See refactor/FINDINGS.md for the measured before/after.
 
 export interface LeaderboardEntry {
   rank: number;
@@ -59,6 +66,7 @@ const detailSelect = {
 } satisfies Prisma.StudentSelect;
 
 type StudentDetail = Prisma.StudentGetPayload<{ select: typeof detailSelect }>;
+const cohortSelect = { universityId: true, fullName: true, spiScore: true } satisfies Prisma.StudentSelect;
 
 // Pure comparison — takes already-fetched detail records for "me" and a peer group,
 // and surfaces concrete, DB-derived gaps (certifications, internships, projects,
@@ -133,33 +141,76 @@ function buildImprovementAreas(me: StudentDetail, peers: StudentDetail[]): Impro
   return areas.slice(0, 5);
 }
 
-interface CohortStudent {
-  universityId: string;
-  fullName: string;
-  spiScore: number | null;
-}
+// Rank/average/leaderboard for one cohort (branch or section), entirely via
+// DB-side aggregates — never fetches the cohort's rows to sort them locally.
+//
+// total/better/avg are one raw query with FILTER-based conditional aggregation
+// rather than three separate count()/aggregate() calls — each Prisma query is
+// its own round trip, and on this project's DB (~150-900ms even warm, see
+// refactor/FINDINGS.md) collapsing 3 round trips into 1 is a real, measured
+// win, not a micro-optimization. Only the leaderboard needs actual rows, so
+// that one stays a normal findMany.
+async function computeScope(
+  where: Prisma.StudentWhereInput,
+  branch: string | null,
+  section: string | null,
+  universityId: string,
+  myScore: number,
+): Promise<RankingScopeResult> {
+  // Prisma.join doesn't splice cleanly through the pg driver adapter for
+  // nested Sql fragments, so build the WHERE clause with plain conditional
+  // template branches instead of dynamically joining fragments.
+  const aggQuery = section
+    ? prisma.$queryRaw<{ total: bigint; better: bigint; avgscore: number | null }[]>`
+        SELECT COUNT(*) AS total,
+               COUNT(*) FILTER (WHERE "spiScore" > ${myScore}) AS better,
+               AVG("spiScore") AS avgscore
+        FROM students
+        WHERE "spiScore" > 0 AND branch = ${branch} AND section = ${section}
+      `
+    : branch
+      ? prisma.$queryRaw<{ total: bigint; better: bigint; avgscore: number | null }[]>`
+          SELECT COUNT(*) AS total,
+                 COUNT(*) FILTER (WHERE "spiScore" > ${myScore}) AS better,
+                 AVG("spiScore") AS avgscore
+          FROM students
+          WHERE "spiScore" > 0 AND branch = ${branch}
+        `
+      : prisma.$queryRaw<{ total: bigint; better: bigint; avgscore: number | null }[]>`
+          SELECT COUNT(*) AS total,
+                 COUNT(*) FILTER (WHERE "spiScore" > ${myScore}) AS better,
+                 AVG("spiScore") AS avgscore
+          FROM students
+          WHERE "spiScore" > 0
+        `;
 
-function sortByScore(students: CohortStudent[]): CohortStudent[] {
-  return [...students].sort((a, b) => (b.spiScore ?? 0) - (a.spiScore ?? 0));
-}
+  const [aggRows, leaderboard] = await Promise.all([
+    aggQuery,
+    prisma.student.findMany({ where, orderBy: { spiScore: 'desc' }, take: 5, select: cohortSelect }),
+  ]);
 
-function buildScope(sorted: CohortStudent[], universityId: string): RankingScopeResult {
-  const total = sorted.length;
-  const idx = sorted.findIndex((s) => s.universityId === universityId);
-  const overall = idx >= 0 ? idx + 1 : total;
+  const total = Number(aggRows[0]?.total ?? 0);
+  const betterCount = Number(aggRows[0]?.better ?? 0);
+  // Not in this cohort's ranked set at all (e.g. no SPI yet) -> treated as
+  // last, same as the old fetch-and-sort version's "not found" case.
+  const overall = myScore > 0 ? betterCount + 1 : total;
   const percentile = total > 0 ? Math.max(1, Math.ceil((overall / total) * 100)) : 100;
-  const yourScore = idx >= 0 ? round1(sorted[idx].spiScore ?? 0) : 0;
-  const batchAvg = total > 0
-    ? round1(sorted.reduce((sum, s) => sum + (s.spiScore ?? 0), 0) / total)
-    : 0;
-  const leaderboard: LeaderboardEntry[] = sorted.slice(0, 5).map((s, i) => ({
-    rank: i + 1,
-    universityId: s.universityId,
-    name: s.fullName,
-    score: round1(s.spiScore ?? 0),
-    isYou: s.universityId === universityId,
-  }));
-  return { total, overall, percentile, yourScore, batchAvg, leaderboard };
+  const batchAvg = round1(aggRows[0]?.avgscore ?? 0);
+
+  return {
+    total,
+    overall,
+    percentile,
+    yourScore: round1(myScore),
+    batchAvg,
+    leaderboard: leaderboard.map((s, i) => ({
+      rank: i + 1,
+      universityId: s.universityId,
+      name: s.fullName,
+      score: round1(s.spiScore ?? 0),
+      isYou: s.universityId === universityId,
+    })),
+  };
 }
 
 // Rank targets we'll offer as milestones, largest cohort first. Only ones smaller
@@ -180,26 +231,21 @@ function pickMilestones(currentRank: number, total: number, max = 2): number[] {
 export async function getRankings(universityId: string): Promise<RankingsResult> {
   const me = await prisma.student.findUnique({
     where: { universityId },
-    select: { universityId: true, branch: true, section: true },
+    select: { universityId: true, branch: true, section: true, spiScore: true },
   });
   if (!me) throw AppError.notFound('Student not found.');
 
   const baseWhere = { spiScore: { gt: 0 } };
   const branchWhere = me.branch ? { ...baseWhere, branch: me.branch } : baseWhere;
   const sectionWhere = { ...branchWhere, ...(me.section ? { section: me.section } : {}) };
-  const select = { universityId: true, fullName: true, spiScore: true } as const;
+  const myScore = me.spiScore ?? 0;
 
-  const [branchStudents, sectionStudents, meDetail, top20] = await Promise.all([
-    prisma.student.findMany({ where: branchWhere, select }),
-    prisma.student.findMany({ where: sectionWhere, select }),
+  const [branchScope, sectionScope, meDetail, top20] = await Promise.all([
+    computeScope(branchWhere, me.branch, null, universityId, myScore),
+    computeScope(sectionWhere, me.branch, me.section, universityId, myScore),
     prisma.student.findUnique({ where: { universityId }, select: detailSelect }),
     prisma.student.findMany({ where: branchWhere, orderBy: { spiScore: 'desc' }, take: 20, select: detailSelect }),
   ]);
-
-  const sortedBranch = sortByScore(branchStudents);
-  const sortedSection = sortByScore(sectionStudents);
-  const branchScope = buildScope(sortedBranch, universityId);
-  const sectionScope = buildScope(sortedSection, universityId);
 
   const improvementAreas = meDetail ? buildImprovementAreas(meDetail, top20) : [];
 
@@ -209,29 +255,36 @@ export async function getRankings(universityId: string): Promise<RankingsResult>
 
   let milestones: MilestoneResult[] = [];
   if (meDetail && milestoneTargets.length > 0) {
-    const windows = milestoneTargets.map((targetRank) => {
-      const lo = Math.max(0, targetRank - 1 - MILESTONE_WINDOW);
-      const hi = Math.min(sortedBranch.length, targetRank - 1 + MILESTONE_WINDOW);
-      return { targetRank, universityIds: sortedBranch.slice(lo, hi).map((s) => s.universityId) };
-    });
-    const peerIds = [...new Set(windows.flatMap((w) => w.universityIds))];
-    const peerDetails = await prisma.student.findMany({
-      where: { universityId: { in: peerIds } },
-      select: detailSelect,
-    });
-    const peerById = new Map(peerDetails.map((p) => [p.universityId, p]));
+    const windows = await Promise.all(
+      milestoneTargets.map(async (targetRank) => {
+        const skip = Math.max(0, targetRank - 1 - MILESTONE_WINDOW);
+        const take = (targetRank - 1 - skip) + MILESTONE_WINDOW + 1;
+        const [thresholdRow, peers] = await Promise.all([
+          prisma.student.findFirst({
+            where: branchWhere,
+            orderBy: { spiScore: 'desc' },
+            skip: targetRank - 1,
+            select: { spiScore: true },
+          }),
+          prisma.student.findMany({
+            where: branchWhere,
+            orderBy: { spiScore: 'desc' },
+            skip,
+            take,
+            select: detailSelect,
+          }),
+        ]);
+        return { targetRank, thresholdScore: round1(thresholdRow?.spiScore ?? 0), peers };
+      }),
+    );
 
-    milestones = windows.map(({ targetRank, universityIds }) => {
-      const thresholdScore = round1(sortedBranch[targetRank - 1]?.spiScore ?? 0);
-      const windowPeers = universityIds.map((id) => peerById.get(id)).filter((p): p is StudentDetail => !!p);
-      return {
-        targetRank,
-        label: `Top ${targetRank}`,
-        thresholdScore,
-        pointsNeeded: Math.max(0, round1(thresholdScore - branchScope.yourScore)),
-        gaps: buildImprovementAreas(meDetail, windowPeers),
-      };
-    });
+    milestones = windows.map(({ targetRank, thresholdScore, peers }) => ({
+      targetRank,
+      label: `Top ${targetRank}`,
+      thresholdScore,
+      pointsNeeded: Math.max(0, round1(thresholdScore - branchScope.yourScore)),
+      gaps: buildImprovementAreas(meDetail, peers),
+    }));
   }
 
   return {
