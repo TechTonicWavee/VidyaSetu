@@ -430,7 +430,7 @@ export default function StudentIntelligence() {
                       <div className="flex items-center gap-3">
                         {categoryRadar.length > 0 && (
                           <div style={{ width: 120, height: 80 }}>
-                            <ResponsiveContainer width="100%" height="100%">
+                            <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 500, height: 300 }}>
                               <RadarChart data={categoryRadar} outerRadius="70%">
                                 <PolarGrid stroke="#e5e7eb" />
                                 <PolarAngleAxis dataKey="skill" tick={{ fontSize: 8, fill: '#9ca3af' }} />

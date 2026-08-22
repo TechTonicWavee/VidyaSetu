@@ -62,7 +62,7 @@ export default function AttendancePage() {
             </Card>
 
             <ChartCard title="Monthly Trend" subtitle="Attendance percentage over time" height={280} className="xl:col-span-2 shadow-md hover:border-brand/20 transition-colors">
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 500, height: 300 }}>
                 <LineChart data={data.monthly} margin={{ top: 16, right: 16, bottom: 0, left: -20 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke={CHART.grid} vertical={false} />
                   <XAxis dataKey="month" stroke={CHART.axis} fontSize={12} tickMargin={10} axisLine={false} tickLine={false} />

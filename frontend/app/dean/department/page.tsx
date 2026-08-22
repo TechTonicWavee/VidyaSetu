@@ -269,7 +269,7 @@ export default function DeanDepartmentPage() {
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col">
                 <h3 className="text-lg font-bold text-navy mb-6">SPI Distribution — CSE Students</h3>
                 <div className="h-64 w-full">
-                  <ResponsiveContainer width="100%" height="100%">
+                  <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 500, height: 300 }}>
                     <BarChart data={spiDistData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
                       <XAxis dataKey="range" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} dy={10} />
@@ -296,7 +296,7 @@ export default function DeanDepartmentPage() {
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col">
                 <h3 className="text-lg font-bold text-navy mb-6">Department Health Score — 3 Year Trend</h3>
                 <div className="h-64 w-full">
-                  <ResponsiveContainer width="100%" height="100%">
+                  <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 500, height: 300 }}>
                     <LineChart data={trendData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
                       <XAxis dataKey="semester" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} dy={10} />

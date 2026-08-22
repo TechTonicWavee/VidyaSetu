@@ -461,7 +461,7 @@ export default function FacultyCOAttainment() {
             <div className="bg-white shadow-sm border border-gray-200 rounded-2xl overflow-hidden p-6">
               <h3 className="font-bold text-navy text-lg mb-6">CO Attainment Overview — All Subjects</h3>
               <div className="h-[400px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 500, height: 300 }}>
                   <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
                     <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280', fontWeight: 'bold' }} dy={10} />

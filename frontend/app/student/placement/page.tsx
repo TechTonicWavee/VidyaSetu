@@ -43,7 +43,7 @@ export default function PlacementPage() {
             </Card>
 
             <ChartCard title="Skill gap analysis" subtitle="You vs role requirement" height={240} >
-              <ResponsiveContainer width="100%" height="100%">
+              <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 500, height: 300 }}>
                 <BarChart data={data.skillGaps} margin={{ top: 8, right: 12, bottom: 0, left: -18 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke={CHART.grid} vertical={false} />
                   <XAxis dataKey="skill" stroke={CHART.axis} fontSize={11} />

@@ -105,7 +105,7 @@ export default function YearwiseInsights() {
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 overflow-hidden">
               <h2 className="text-xl font-bold text-navy mb-6">Year-wise Performance — All Key Metrics</h2>
               <div className="h-[350px] w-full mb-6">
-                <ResponsiveContainer width="100%" height="100%">
+                <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 500, height: 300 }}>
                   <BarChart data={performanceData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
                     <XAxis dataKey="metric" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#6b7280', fontWeight: 'bold' }} dy={10} />
@@ -129,7 +129,7 @@ export default function YearwiseInsights() {
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col">
                 <h2 className="text-xl font-bold text-navy mb-6">SPI Distribution by Year</h2>
                 <div className="h-[250px] w-full mb-6 flex-1">
-                  <ResponsiveContainer width="100%" height="100%">
+                  <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 500, height: 300 }}>
                     <RechartsLineChart data={spiDistributionData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
                       <XAxis dataKey="range" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#6b7280' }} dy={10} />
@@ -151,7 +151,7 @@ export default function YearwiseInsights() {
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col">
                 <h2 className="text-xl font-bold text-navy mb-6">Cohort Health Trend — 4 Semesters</h2>
                 <div className="h-[250px] w-full mb-6 flex-1">
-                  <ResponsiveContainer width="100%" height="100%">
+                  <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 500, height: 300 }}>
                     <RechartsLineChart data={healthTrendData} margin={{ top: 10, right: 30, left: -20, bottom: 0 }}>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
                       <XAxis dataKey="term" axisLine={false} tickLine={false} tick={{ fontSize: 11, fill: '#6b7280' }} dy={10} />

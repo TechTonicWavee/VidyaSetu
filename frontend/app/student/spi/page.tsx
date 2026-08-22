@@ -194,7 +194,7 @@ export default function SPIPage() {
         {/* Radar + Journey */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <ChartCard title="Component Balance" subtitle="Normalised dimension scores" height={320} className="shadow-md border-line/50 hover:border-line transition-colors">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 500, height: 300 }}>
               <RadarChart data={radarData} outerRadius="68%">
                 <PolarGrid stroke={CHART.grid} className="opacity-50" />
                 <PolarAngleAxis dataKey="subject" tick={{ fill: CHART.axis, fontSize: 12, fontWeight: 500 }} />
