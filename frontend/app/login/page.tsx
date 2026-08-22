@@ -2,12 +2,13 @@
 
 import { useState, type FocusEvent } from "react";
 import { useRouter } from "next/navigation";
+import { useTheme } from "@/components/ThemeProvider";
 import { setAccessToken } from "../../lib/auth/tokenStore";
 import {
   User, BookOpen, Building2, Heart, Settings,
   Eye, EyeOff, GraduationCap, BrainCircuit,
   LayoutDashboard, UserCheck, ShieldCheck, ArrowLeft,
-  Loader2, CheckCircle2, AlertCircle,
+  Loader2, CheckCircle2, AlertCircle, Sun, Moon,
 } from "lucide-react";
 
 const portals = [
@@ -16,10 +17,10 @@ const portals = [
     label: "Student",
     sub: "Access your academics, skills & career tools",
     icon: GraduationCap,
-    accentColor: "var(--brand)",
-    iconBg: "var(--brand-soft)",
-    iconColor: "var(--brand)",
-    gradient: "var(--brand-gradient)",
+    accentColor: "var(--lp-accent)",
+    iconBg: "var(--lp-accent-light)",
+    iconColor: "var(--lp-accent)",
+    gradient: "var(--lp-accent)",
     path: "/student",
     loginTitle: "Student Login",
     loginSub: "Enter your student credentials to access your dashboard",
@@ -34,10 +35,10 @@ const portals = [
     label: "Faculty",
     sub: "Manage classes, analytics & student performance",
     icon: BookOpen,
-    accentColor: "var(--info)",
-    iconBg: "var(--info-soft)",
-    iconColor: "var(--info)",
-    gradient: "var(--info)",
+    accentColor: "var(--lp-accent)",
+    iconBg: "var(--lp-accent-light)",
+    iconColor: "var(--lp-accent)",
+    gradient: "var(--lp-accent)",
     path: "/faculty",
     loginTitle: "Faculty Login",
     loginSub: "Enter your faculty credentials to access your dashboard",
@@ -52,10 +53,10 @@ const portals = [
     label: "Dean",
     sub: "Department insights, forecasting & policy tools",
     icon: Building2,
-    accentColor: "var(--dean-base)",
-    iconBg: "var(--dean-soft)",
-    iconColor: "var(--dean-base)",
-    gradient: "var(--dean-gradient)",
+    accentColor: "var(--lp-accent)",
+    iconBg: "var(--lp-accent-light)",
+    iconColor: "var(--lp-accent)",
+    gradient: "var(--lp-accent)",
     path: "/dean",
     loginTitle: "Dean Login",
     loginSub: "Enter your credentials to access the Dean portal",
@@ -70,10 +71,10 @@ const portals = [
     label: "Admin",
     sub: "System configuration, users & SPI settings",
     icon: ShieldCheck,
-    accentColor: "var(--warning)",
-    iconBg: "var(--warning-soft)",
-    iconColor: "var(--warning)",
-    gradient: "var(--warning)",
+    accentColor: "var(--lp-accent)",
+    iconBg: "var(--lp-accent-light)",
+    iconColor: "var(--lp-accent)",
+    gradient: "var(--lp-accent)",
     path: "/admin",
     loginTitle: "Admin Login",
     loginSub: "Enter admin credentials to access the system dashboard",
@@ -664,6 +665,8 @@ function GenericLoginForm({ portal, onSwitchPortal, onBack }: { portal: (typeof 
 export default function LoginPage() {
   const [selectedPortal, setSelectedPortal] = useState<string | null>(null);
   const portal = portals.find((p) => p.id === selectedPortal);
+  const { theme, toggleTheme } = useTheme();
+  const isDark = theme === "dark";
 
   const switchPortal = (id: string) => setSelectedPortal(id);
   const goBack = () => setSelectedPortal(null);
@@ -671,36 +674,43 @@ export default function LoginPage() {
   // ── Portal selection screen ───────────────────────────────────────────────
   if (!selectedPortal) {
     return (
-      <div className="min-h-screen bg-bg font-sans">
-        <header className="bg-surface border-b border-line px-8 py-5 flex items-center gap-4">
-          <img
-            src="/kiet_logo.png"
-            alt="KIET"
-            className="h-12 w-auto flex-shrink-0 object-contain"
-            onError={(e) => { e.currentTarget.style.display = 'none'; }}
-          />
-          <div className="h-10 w-px bg-line flex-shrink-0" />
-          <div
-            className="w-11 h-11 rounded-xl flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
-            style={{ background: "var(--brand-gradient)" }}
-          >
-            VS
+      <div className="landing-page min-h-screen font-sans" data-theme={theme}>
+        <header className="px-8 py-5 flex items-center justify-between" style={{ background: 'var(--lp-surface)', borderBottom: '1px solid var(--lp-border)' }}>
+          <div className="flex items-center gap-4">
+            <img
+              src="/kiet_logo.png"
+              alt="KIET"
+              className="h-12 w-auto flex-shrink-0 object-contain"
+              onError={(e) => { e.currentTarget.style.display = 'none'; }}
+            />
+            <div className="h-10 w-px flex-shrink-0" style={{ background: 'var(--lp-border)' }} />
+            <div
+              className="w-11 h-11 rounded-xl flex items-center justify-center font-bold text-sm flex-shrink-0"
+              style={{ background: "var(--lp-accent)", color: "var(--lp-accent-fg)" }}
+            >
+              VS
+            </div>
+            <div>
+              <p className="font-bold text-base leading-tight" style={{ color: 'var(--lp-text-primary)' }}>VidyaSetu</p>
+              <p className="text-sm mt-0.5" style={{ color: 'var(--lp-text-muted)' }}>CSE Department · KIET Group of Institutions</p>
+            </div>
           </div>
-          <div>
-            <p className="font-bold text-content text-base leading-tight">VidyaSetu</p>
-            <p className="text-sm text-muted mt-0.5">CSE Department · KIET Group of Institutions</p>
-          </div>
+          
+          {/* Theme Toggle */}
+          <button onClick={toggleTheme} className="lp-theme-btn" aria-label="Toggle theme">
+            {isDark ? <Sun size={16} /> : <Moon size={16} />}
+          </button>
         </header>
 
         <main className="max-w-5xl mx-auto px-4 py-14">
           <div className="text-center mb-12">
-            <span className="inline-flex items-center gap-2 bg-brand-soft text-brand text-xs font-bold px-4 py-1.5 rounded-full mb-4 uppercase tracking-wider">
-              <UserCheck size={13} /> Access Portal
+            <span className="lp-badge mb-4">
+              <UserCheck size={13} /> ACCESS PORTAL
             </span>
-            <h1 className="text-4xl font-extrabold text-content mb-3">
-              Choose Your <span style={{ color: "var(--brand)" }}>Portal</span>
+            <h1 className="text-4xl font-extrabold mb-3" style={{ color: 'var(--lp-text-primary)' }}>
+              Choose Your <span style={{ color: "var(--lp-accent)" }}>Portal</span>
             </h1>
-            <p className="text-content-2 text-base max-w-md mx-auto">
+            <p className="text-base max-w-md mx-auto" style={{ color: 'var(--lp-text-secondary)' }}>
               Select your role to access personalised features and tools designed for your needs
             </p>
           </div>
@@ -711,29 +721,31 @@ export default function LoginPage() {
               return (
                 <div
                   key={p.id}
-                  className="bg-surface rounded-3xl border border-line hover:border-transparent hover:shadow-2xl hover:shadow-black/5 dark:hover:shadow-white/5 p-7 flex flex-col items-center text-center group cursor-pointer transition-all duration-300 transform hover:-translate-y-2 relative overflow-hidden"
+                  className="rounded-3xl p-7 flex flex-col items-center text-center group cursor-pointer transition-all duration-300 transform hover:-translate-y-2 relative overflow-hidden"
+                  style={{ background: 'var(--lp-surface)', border: '1.5px solid var(--lp-border)' }}
                   onClick={() => setSelectedPortal(p.id)}
+                  onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--lp-accent)'; e.currentTarget.style.boxShadow = '0 8px 40px var(--lp-accent-glow)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--lp-border)'; e.currentTarget.style.boxShadow = 'none'; }}
                 >
-                  {/* Subtle background glow effect on hover */}
                   <div 
-                    className="absolute inset-0 opacity-0 group-hover:opacity-[0.03] transition-opacity duration-300" 
-                    style={{ background: p.gradient }} 
+                    className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" 
+                    style={{ background: 'var(--lp-accent-glow)' }} 
                   />
                   
                   <div
-                    className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5 relative z-10 transition-transform duration-300 group-hover:scale-110 shadow-sm border border-black/5 dark:border-white/5"
-                    style={{ background: p.iconBg }}
+                    className="w-16 h-16 rounded-2xl flex items-center justify-center mb-5 relative z-10 transition-transform duration-300 group-hover:scale-110 shadow-sm"
+                    style={{ background: p.iconBg, border: '1px solid var(--lp-border-soft)' }}
                   >
                     <Icon size={28} color={p.iconColor} strokeWidth={2} />
                   </div>
 
-                  <p className="font-bold text-content text-lg mb-2 relative z-10 transition-colors group-hover:text-brand">{p.label}</p>
-                  <p className="text-muted text-xs mb-8 leading-relaxed relative z-10 flex-grow flex items-start justify-center">{p.sub}</p>
+                  <p className="font-bold text-lg mb-2 relative z-10 transition-colors" style={{ color: 'var(--lp-text-primary)' }}>{p.label}</p>
+                  <p className="text-xs mb-8 leading-relaxed relative z-10 flex-grow flex items-start justify-center" style={{ color: 'var(--lp-text-muted)' }}>{p.sub}</p>
 
                   <button
                     className="w-full py-2.5 rounded-xl text-sm font-semibold border-2 transition-all duration-300 relative z-10 group-hover:shadow-md"
-                    style={{ borderColor: p.accentColor, color: p.accentColor }}
-                    onMouseEnter={(e) => { e.currentTarget.style.background = p.accentColor; e.currentTarget.style.color = "#fff"; }}
+                    style={{ borderColor: p.accentColor, color: p.accentColor, background: 'transparent' }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = p.accentColor; e.currentTarget.style.color = "var(--lp-accent-fg)"; }}
                     onMouseLeave={(e) => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = p.accentColor; }}
                   >
                     Login
@@ -743,7 +755,7 @@ export default function LoginPage() {
             })}
           </div>
 
-          <p className="text-center text-xs text-muted mt-12">
+          <p className="text-center text-xs mt-12" style={{ color: 'var(--lp-text-muted)' }}>
             © 2026 VidyaSetu · CSE Department · KIET Group of Institutions
           </p>
         </main>
@@ -756,7 +768,8 @@ export default function LoginPage() {
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center font-sans px-4 py-10 bg-bg"
+      className="landing-page min-h-screen flex flex-col items-center justify-center font-sans px-4 py-10"
+      data-theme={theme}
     >
       {portal.id === "student" ? (
         <StudentLoginForm
@@ -774,7 +787,10 @@ export default function LoginPage() {
 
       <button
         onClick={goBack}
-        className="mt-5 flex items-center gap-1.5 mx-auto text-xs text-muted hover:text-content transition-colors"
+        className="mt-5 flex items-center gap-1.5 mx-auto text-xs transition-colors"
+        style={{ color: 'var(--lp-text-muted)' }}
+        onMouseEnter={e => e.currentTarget.style.color = 'var(--lp-text-primary)'}
+        onMouseLeave={e => e.currentTarget.style.color = 'var(--lp-text-muted)'}
       >
         <ArrowLeft size={13} /> Back to Portal Selection
       </button>

@@ -11,18 +11,8 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
-const mockData = [
-  { month: 'Jan', spi: 62 },
-  { month: 'Feb', spi: 64 },
-  { month: 'Mar', spi: 63 },
-  { month: 'Apr', spi: 68 },
-  { month: 'May', spi: 74 },
-  { month: 'Jun', spi: 72 },
-  { month: 'Jul', spi: 79 },
-  { month: 'Aug', spi: 85 },
-];
 
-export function SpiProgressionChart() {
+export function SpiProgressionChart({ data }: { data?: any[] }) {
   const { theme } = useTheme();
   
   // Theme-aware colors
@@ -32,10 +22,23 @@ export function SpiProgressionChart() {
   const tooltipBg = theme === 'dark' ? '#121a2e' : '#ffffff';
   const tooltipBorder = theme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
 
+  const chartData = (data || []).map(d => {
+    let month = '';
+    if (d.date) {
+      const dt = new Date(d.date);
+      if (!isNaN(dt.getTime())) {
+        month = dt.toLocaleDateString(undefined, { month: 'short' });
+      } else {
+        month = String(d.date);
+      }
+    }
+    return { month, spi: d.spi };
+  });
+
   return (
     <div className="w-full h-full min-h-[220px]">
       <ResponsiveContainer width="100%" height="100%">
-        <AreaChart data={mockData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
+        <AreaChart data={chartData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
           <defs>
             <linearGradient id="colorSpi" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor={strokeColor} stopOpacity={0.3} />

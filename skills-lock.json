@@ -1,0 +1,383 @@
+{
+  "version": 1,
+  "skills": {
+    "council-verdicts": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/octopus-starter-pack/council-verdicts/SKILL.md",
+      "computedHash": "5a435424e1392a967927c64c43f5125e1a3043a77a36cf205c8619df93a774d8"
+    },
+    "debate-kickoff": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/octopus-starter-pack/debate-kickoff/SKILL.md",
+      "computedHash": "2f56b793f18b05f10f6666e2b72c6cad7714040203d6efc348d49b583718f9e6"
+    },
+    "flow-define": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/flow-define/SKILL.md",
+      "computedHash": "c9ee75e92336ca406c7d176b7ae4cde512c071a3e1c747ef16c068393173f6f8"
+    },
+    "flow-deliver": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/flow-deliver/SKILL.md",
+      "computedHash": "8cbc18ad15141020062043433376c2a9f4e5846dc075b6b14826e7fafc3cb473"
+    },
+    "flow-develop": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/flow-develop/SKILL.md",
+      "computedHash": "98f158200bdd2125273af226594772276d0a0cf8b909555708db18278fffd8a8"
+    },
+    "flow-discover": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/flow-discover/SKILL.md",
+      "computedHash": "80c56c8457f09bfc998b80a1ed5a1f075e4cfc3199e24bf4d6a6c0a9cfe216a5"
+    },
+    "flow-parallel": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/flow-parallel/SKILL.md",
+      "computedHash": "4b54ba443e11b26ced568398b0baf2a77ffc90f4165b41bfa1906cbc1a54bc45"
+    },
+    "flow-spec": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/flow-spec/SKILL.md",
+      "computedHash": "7113fc3b433286ea7b22628c2374037b837efa60afabe7aa9e1a617ab5f56af1"
+    },
+    "model-cost-compare": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/octopus-starter-pack/model-cost-compare/SKILL.md",
+      "computedHash": "4fd68a0a360da47b1278c28e7a9bf3b211237d124ed6c7c68de14ea6c5c46fc1"
+    },
+    "octopus-architecture": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/octopus-architecture/SKILL.md",
+      "computedHash": "efcc33d5f38fae92fa4c88ad537631ced1f1f5de10e79c8ed634d513f6b4391f"
+    },
+    "octopus-quick": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/octopus-quick/SKILL.md",
+      "computedHash": "499cd2aab119af784c4b50e59c31fe1ed27498defbb3ff9889a41677ba7b019a"
+    },
+    "octopus-research": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/octopus-research/SKILL.md",
+      "computedHash": "4acb656ee2f920a755bdabee1a01903aab139fe664f11a2924ed579b8abb962a"
+    },
+    "octopus-security-audit": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/octopus-security-audit/SKILL.md",
+      "computedHash": "ca6b03881821d8960b37d2bed1875a33c8765639b7a3b1752adbb66218cb0731"
+    },
+    "octopus-ui-ux-design": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/octopus-ui-ux-design/SKILL.md",
+      "computedHash": "430d7de50a67809fb5886f4f0573e77652db0b24cdbee26a905bedaa1837447c"
+    },
+    "provider-health": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/octopus-starter-pack/provider-health/SKILL.md",
+      "computedHash": "44935a118d455b24eaa05ac5a889de1ab073a4c923941f94ee925c3441141fe1"
+    },
+    "skill-agent-topology": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-agent-topology/SKILL.md",
+      "computedHash": "1254b148ed3b37b49f8550c21bfbe13aa2f696fa053733420b455b4bda6171a6"
+    },
+    "skill-audit": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-audit/SKILL.md",
+      "computedHash": "7f7eddaccd2e2043640a95fcbda63136d0665071b3c5d1e9b4052db0ca581f98"
+    },
+    "skill-authoring": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-authoring/SKILL.md",
+      "computedHash": "0c3c0d3051a42fdc17a83758819a917de9c47a73cf950b8d94d1e7a014a0d0e5"
+    },
+    "skill-claw": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-claw/SKILL.md",
+      "computedHash": "b947f5a7d8f90c18a36ce3a3a3b77683e0b9096ba9325e710e13ae11abd48ba2"
+    },
+    "skill-code-review": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-code-review/SKILL.md",
+      "computedHash": "76e87ba9a6e406cfc176e711ed818df7f3541ded58807fc2c0ef0fac1548b0b2"
+    },
+    "skill-content-pipeline": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-content-pipeline/SKILL.md",
+      "computedHash": "4a3a458ff4db06beb13309a3560c6a4a4a33b668f0d4b71888e87e86d211c80c"
+    },
+    "skill-context-detection": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-context-detection/SKILL.md",
+      "computedHash": "f3b4f6a75bc0d8d14dd10e1bd46290859ba19d21f62ccd320abfcde06d15905e"
+    },
+    "skill-copilot-provider": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-copilot-provider/SKILL.md",
+      "computedHash": "43f2ece22e7fc3bf9382f10d0395ce086240f6afdf080138c2d5063b5b423c31"
+    },
+    "skill-cost-projections": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-cost-projections/SKILL.md",
+      "computedHash": "24d0db5b281cfa197e653e98cb55849e3cb42d9fc6d06f9ed64f6fbab6ab2694"
+    },
+    "skill-council": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-council/SKILL.md",
+      "computedHash": "9036c150aa6f2f6f6eb738e9f172e9c4a627019b8523791eab3f9756695c7aa1"
+    },
+    "skill-coverage-audit": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-coverage-audit/SKILL.md",
+      "computedHash": "f6f833a5d7e78775f731de65d8da7c293c5cafc0e19cf430fc78031e0f9e7e1b"
+    },
+    "skill-debate": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-debate/SKILL.md",
+      "computedHash": "b95e8a6de1e488235331db04c789ac320a1337c2b19cde03d2dc08d4d1a4f27b"
+    },
+    "skill-debug": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-debug/SKILL.md",
+      "computedHash": "407acdbd46e95d3f6a3cc8367ca31e5f90976ed8abb07d3b81a036b2d5b6b7f6"
+    },
+    "skill-decision-support": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-decision-support/SKILL.md",
+      "computedHash": "0a4e141567eff7e9d368c9fe7297c0761934a3ccc20c576175d26de7d804ba06"
+    },
+    "skill-deck": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-deck/SKILL.md",
+      "computedHash": "1f34a61778026125b1b15771593d26a4aef67b2caef887ad7c0f9c2221d90670"
+    },
+    "skill-design-lineage": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-design-lineage/SKILL.md",
+      "computedHash": "79204a8ae0f827eae642bf8b9ab4d716974f98ee1ff172d5d02d98c40a42a17c"
+    },
+    "skill-doc-delivery": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-doc-delivery/SKILL.md",
+      "computedHash": "4e5a95d7748acb22a84cc76b0d6a764c91d0d157e6189e5daf1eb96342952d9e"
+    },
+    "skill-doc-sync": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-doc-sync/SKILL.md",
+      "computedHash": "0b55016c850a020899a73309ee206695735d344a4256375f304b96307de9bdc3"
+    },
+    "skill-doctor": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-doctor/SKILL.md",
+      "computedHash": "1bc527f97c373487ea6083256aa5ba9a71489a834a0d02bece1d1ca2e65a036b"
+    },
+    "skill-extract": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-extract/SKILL.md",
+      "computedHash": "141082e2015765e9c0998f0d8f1d245b50c3278985d0aa0044721150c34232b2"
+    },
+    "skill-factory": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-factory/SKILL.md",
+      "computedHash": "a2127c71e30c95cd2e19987c5c20c47d5cf4bc48d055d8b2f9b2e5a015a36e75"
+    },
+    "skill-finish-branch": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-finish-branch/SKILL.md",
+      "computedHash": "028c98656fc5e4483ba0ba0206b20734141dd82200426978f27bf7e625102d74"
+    },
+    "skill-intake": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-intake/SKILL.md",
+      "computedHash": "a237d47896ce4bfd46db40ff7dd18c72f4947f6020cd5960afbc7120e5c0f04d"
+    },
+    "skill-intent-contract": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-intent-contract/SKILL.md",
+      "computedHash": "ddd9a7b068b96e984a04ff6639c942cb313796b83a4395229da26fa6956b8974"
+    },
+    "skill-issues": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-issues/SKILL.md",
+      "computedHash": "34b5724dcae328ac14303be4ceb1b223e6d3fafc15258d8dc2ce97488dfe17dc"
+    },
+    "skill-iterative-loop": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-iterative-loop/SKILL.md",
+      "computedHash": "9c0fb5e844834c94212cc3eddc42ac614ce46b7a4d1f32ec5569c995ec0576ac"
+    },
+    "skill-knowledge-work": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-knowledge-work/SKILL.md",
+      "computedHash": "54480df03a84ee4e23cdc953ade4b73025b669f8ebe68b3c95ef0a78efefc869"
+    },
+    "skill-meta-prompt": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-meta-prompt/SKILL.md",
+      "computedHash": "fcfd49f309063ef53da13a5d1c816a42d4c431fa56cca15cbca89457877e9229"
+    },
+    "skill-native-escalation-routing": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-native-escalation-routing/SKILL.md",
+      "computedHash": "831febb5cc24ebb21c73bf583c1d68a09058113f4c8f0488127f8afc62d72616"
+    },
+    "skill-parallel-agents": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-parallel-agents/SKILL.md",
+      "computedHash": "75303bb5da7d59a3d34d6855351c00a8d9af5566e9a9ea3575cd3324abc9af48"
+    },
+    "skill-prd": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-prd/SKILL.md",
+      "computedHash": "ae54abf1d446727184bbdfff56d2e405a7bc6eeed4c5c6ebca80d7bc2da3566e"
+    },
+    "skill-pressure-test": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-pressure-test/SKILL.md",
+      "computedHash": "d535b29d0e3c8552da1167bac7bdb3a186a30af85ebb8d864039745cbf73315f"
+    },
+    "skill-resume": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-resume/SKILL.md",
+      "computedHash": "a511a9ea362604412e45c65be46be5492ad14d279d2701f34b232042a83f3fd3"
+    },
+    "skill-review-response": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-review-response/SKILL.md",
+      "computedHash": "5439d47272c3a517919f1cbbf93eeee6e9828e6f9e84fb271125c003614e6389"
+    },
+    "skill-rollback": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-rollback/SKILL.md",
+      "computedHash": "4424e240f3ec0a05f0b9f60d333729052d7ca1ca3220cd11beb2fa892b78bc56"
+    },
+    "skill-security-framing": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-security-framing/SKILL.md",
+      "computedHash": "12f2f737be31861ffd1425e82e94d478f9cda2dfdff358f530b16d60b6027e0b"
+    },
+    "skill-ship": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-ship/SKILL.md",
+      "computedHash": "248bea29c927737cbacd50b79cc4b9492eacb8f989bd9f2a53fed84c614feabb"
+    },
+    "skill-staged-review": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-staged-review/SKILL.md",
+      "computedHash": "fedc0377b0ce89b18e66dd3a31c752dd1b102e1b738912540d3230e54755d8cc"
+    },
+    "skill-status": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-status/SKILL.md",
+      "computedHash": "40a389765ab433bad44536d4cf04485a7324a47845900108dfc4b1efe86a7e57"
+    },
+    "skill-task-management": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-task-management/SKILL.md",
+      "computedHash": "0ad87a1b2b029b923691e55b59d2ea1f40fe12d3dd3f7dfa5c25d084234c2cd4"
+    },
+    "skill-tdd": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-tdd/SKILL.md",
+      "computedHash": "1a70fb4a26a3423420de3a183ca69aaeccbd0eee4c98d8a079cabf65e5e2af14"
+    },
+    "skill-thought-partner": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-thought-partner/SKILL.md",
+      "computedHash": "2c4ae5c8a056cd37c03a489e9e19094f6da5cf938c7791d8a8313d8a081ce008"
+    },
+    "skill-verification-gate": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-verification-gate/SKILL.md",
+      "computedHash": "3313a3c18f51bf7de6dd338ad94abc6f44e10440ee19f584bc68594a9f295d61"
+    },
+    "skill-verify": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-verify/SKILL.md",
+      "computedHash": "7315db3a0cb6195a145bf2d3c2ba767f0041c2a6905f2ecf4f5cb3b28880578e"
+    },
+    "skill-visual-feedback": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-visual-feedback/SKILL.md",
+      "computedHash": "17eefc50f4e413f3b0d9f7e58fc72d5abe57f3f30a71bf980a0c30c76bd25004"
+    },
+    "skill-work-slicing": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-work-slicing/SKILL.md",
+      "computedHash": "244af19b8a214baa72df694e4dadc6183dd671ceef9a7375ec52f064ec3ebcd0"
+    },
+    "skill-writing-plans": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/skill-writing-plans/SKILL.md",
+      "computedHash": "9fa516243526f529549b8f2df7d1bcb3db84815017fc552bf753625ca4e4daa3"
+    },
+    "sys-configure": {
+      "source": "nyldn/claude-octopus",
+      "sourceType": "github",
+      "skillPath": "skills/sys-configure/SKILL.md",
+      "computedHash": "b8cc645d2c812ea709b7e8b56bcb145822a89699c8a2a0fa9f9fd09df4546508"
+    }
+  }
+}

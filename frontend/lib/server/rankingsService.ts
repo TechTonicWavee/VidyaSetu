@@ -161,7 +161,8 @@ export async function getRankings(universityId: string): Promise<RankingsResult>
   });
   if (!me) throw AppError.notFound('Student not found.');
 
-  const branchWhere = me.branch ? { branch: me.branch } : {};
+  const baseWhere = { spiScore: { gt: 0 } };
+  const branchWhere = me.branch ? { ...baseWhere, branch: me.branch } : baseWhere;
   const sectionWhere = { ...branchWhere, ...(me.section ? { section: me.section } : {}) };
   const select = { universityId: true, fullName: true, spiScore: true } as const;
 
