@@ -20,7 +20,7 @@ import {
 import {
   FACULTY_PROFILE, SECTION_STUDENTS, SECTION_STATS, DEPT_BENCHMARKS,
   type SectionStudent
-} from '../../../lib/faculty/mock-data'
+} from '@/lib/faculty/mock-data'
 
 interface RiskInfo {
   id: string

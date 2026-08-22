@@ -5,13 +5,13 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
 } from 'recharts';
 import { Award, TrendingUp, Users, Target } from 'lucide-react';
-import { useAuth } from '@/lib/auth/AuthProvider';
-import { useAsyncData } from '@/lib/hooks/useAsyncData';
-import { getRankings, type RankingScope } from '@/lib/data';
+import { useAuth } from '@/lib/shared/auth/AuthProvider';
+import { useAsyncData } from '@/lib/student/hooks/useAsyncData';
+import { getRankings, type RankingScope } from '@/lib/student/data';
 import {
   PageHeader, Card, StatCard, Tabs, ChartCard, ChartTooltip, CHART,
   ErrorState, CardSkeleton,
-} from '@/components/ui';
+} from '@/components/shared/ui';
 
 function ScopeView({ scope }: { scope: RankingScope }) {
   const compare = [

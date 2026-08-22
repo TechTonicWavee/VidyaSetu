@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server'
-import { STUDENT_PILOT_MODE, STUDENT_ALLOWED_ROUTES, isRestrictedRoute } from './lib/access'
+import { STUDENT_PILOT_MODE, STUDENT_ALLOWED_ROUTES, isRestrictedRoute } from './lib/student/access'
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl

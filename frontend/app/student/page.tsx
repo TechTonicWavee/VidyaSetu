@@ -3,16 +3,16 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { TrendingUp, ArrowUpRight, CheckCircle2, Calendar, Activity, Zap } from 'lucide-react';
-import { authedFetch } from '@/lib/api/sameOriginFetch';
-import { useAuth } from '@/lib/auth/AuthProvider';
-import { useAsyncData } from '@/lib/hooks/useAsyncData';
-import { getDashboardExtras, getRankings } from '@/lib/data';
-import { icon as lucide } from '@/lib/utils/lucide';
-import { Card, StatCard, Badge, CardSkeleton } from '@/components/ui';
-import { cn } from '@/lib/utils/cn';
-import { useSocket } from '@/lib/socket/SocketProvider';
+import { authedFetch } from '@/lib/shared/api/sameOriginFetch';
+import { useAuth } from '@/lib/shared/auth/AuthProvider';
+import { useAsyncData } from '@/lib/student/hooks/useAsyncData';
+import { getDashboardExtras, getRankings } from '@/lib/student/data';
+import { icon as lucide } from '@/lib/student/utils/lucide';
+import { Card, StatCard, Badge, CardSkeleton } from '@/components/shared/ui';
+import { cn } from '@/lib/shared/utils/cn';
+import { useSocket } from '@/lib/student/socket/SocketProvider';
 import { SpiProgressionChart } from './SpiProgressionChart';
-import { PageHeader } from '@/components/ui/PageHeader';
+import { PageHeader } from '@/components/shared/ui/PageHeader';
 
 function greeting() {
   const h = new Date().getHours();

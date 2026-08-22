@@ -4,13 +4,13 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend,
 } from 'recharts';
 import { Target, Building2, CheckCircle2, Clock, Calendar } from 'lucide-react';
-import { useAuth } from '@/lib/auth/AuthProvider';
-import { useAsyncData } from '@/lib/hooks/useAsyncData';
-import { getPlacement } from '@/lib/data';
+import { useAuth } from '@/lib/shared/auth/AuthProvider';
+import { useAsyncData } from '@/lib/student/hooks/useAsyncData';
+import { getPlacement } from '@/lib/student/data';
 import {
   PageHeader, Card, Badge, ProgressRing, ChartCard, ChartTooltip, CHART,
   ErrorState, CardSkeleton,
-} from '@/components/ui';
+} from '@/components/shared/ui';
 
 const STATUS: Record<string, { tone: 'green' | 'amber' | 'blue'; label: string }> = {
   ready: { tone: 'green', label: 'Ready' },

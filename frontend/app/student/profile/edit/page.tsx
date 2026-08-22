@@ -10,12 +10,12 @@ import {
   ExternalLink, Award as Badge, Tag, Info, Lock, Download,
   type LucideIcon
 } from 'lucide-react'
-import getInitials from '@/lib/getInitials'
-import { useAuth } from '../../../../lib/auth/AuthProvider'
-import { authedFetch } from '../../../../lib/api/sameOriginFetch'
-import { uploadToCloudinary, deleteCloudinaryAsset } from '../../../../lib/upload/cloudinaryClient'
-import FileUploadField from '../../../../components/profile/FileUploadField'
-import { useToast } from '../../../../components/ToastContext'
+import getInitials from '@/lib/shared/getInitials'
+import { useAuth } from '@/lib/shared/auth/AuthProvider'
+import { authedFetch } from '@/lib/shared/api/sameOriginFetch'
+import { uploadToCloudinary, deleteCloudinaryAsset } from '@/lib/shared/upload/cloudinaryClient'
+import FileUploadField from '@/components/student/profile/FileUploadField'
+import { useToast } from '@/components/shared/ToastContext'
 
 const Github = (props: { size?: number; className?: string }) => (
   <svg

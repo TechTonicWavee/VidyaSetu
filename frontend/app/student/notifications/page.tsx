@@ -2,15 +2,15 @@
 
 import { useEffect, useState } from 'react';
 import { Bell, Check, X, Users, TrendingUp, CheckCheck } from 'lucide-react';
-import { listNotifications, markAllNotificationsRead, type Notification } from '@/lib/api/notifications';
-import { acceptInvite, declineInvite } from '@/lib/api/teams';
-import { ApiError } from '@/lib/api/client';
-import { formatRelativeTime } from '@/lib/format/relativeTime';
-import { useNotifications } from '@/lib/notifications/NotificationsProvider';
-import { useSocket } from '@/lib/socket/SocketProvider';
-import { useToast } from '@/components/ToastContext';
-import { PageHeader, Card, Button, Badge, ErrorState } from '@/components/ui';
-import { cn } from '@/lib/utils/cn';
+import { listNotifications, markAllNotificationsRead, type Notification } from '@/lib/student/api/notifications';
+import { acceptInvite, declineInvite } from '@/lib/student/api/teams';
+import { ApiError } from '@/lib/shared/api/client';
+import { formatRelativeTime } from '@/lib/student/format/relativeTime';
+import { useNotifications } from '@/lib/student/notifications/NotificationsProvider';
+import { useSocket } from '@/lib/student/socket/SocketProvider';
+import { useToast } from '@/components/shared/ToastContext';
+import { PageHeader, Card, Button, Badge, ErrorState } from '@/components/shared/ui';
+import { cn } from '@/lib/shared/utils/cn';
 
 const PAGE_SIZE = 15;
 type Filter = 'all' | 'unread' | 'team_invite';

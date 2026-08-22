@@ -1,6 +1,6 @@
 'use client'
 
-import { useDemo } from '@/components/DemoContext'
+import { useDemo } from '@/components/shared/DemoContext'
 
 export default function DemoStarter() {
   const demo = useDemo()

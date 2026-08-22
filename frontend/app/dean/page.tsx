@@ -10,7 +10,7 @@ import {
   Users, Activity, Briefcase, AlertTriangle, Calendar, Clock, MapPin
 } from 'lucide-react'
 
-import { PageHeader, StatCard, Card, Badge } from '@/components/ui'
+import { PageHeader, StatCard, Card, Badge } from '@/components/shared/ui'
 
 const statCards = [
   { label: 'Total Students', value: '480', sub: 'CSE Department', icon: Users, tone: 'info' },

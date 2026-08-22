@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Eye, EyeOff, Loader2 } from 'lucide-react'
-import { setAccessToken } from '../../../lib/auth/tokenStore'
+import { setAccessToken } from '@/lib/shared/auth/tokenStore'
 
 export default function FormLogin() {
   const router = useRouter()

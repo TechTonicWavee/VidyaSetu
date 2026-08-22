@@ -3,7 +3,7 @@
 
 import { useMemo, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { FACULTY_PROFILE } from '../../../lib/faculty/mock-data'
+import { FACULTY_PROFILE } from '@/lib/faculty/mock-data'
 import { Home, BookOpen, Bell, BarChart2, Users, Target, MessageCircle, FileText, Settings, LogOut, Search, ChevronDown, AlertTriangle, Calendar, Clock, ExternalLink, User, Activity, TrendingUp, Award, Grid, CheckCircle, Zap, AlertCircle, Plug, Brain } from 'lucide-react'
 
 const navLinks = [

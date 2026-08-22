@@ -7,7 +7,7 @@ import {
   Upload, FileText, Trash2, Plus, X, Award, Briefcase,
   Users, Loader2, PartyPopper, AlertCircle, Tag, ExternalLink, RefreshCw
 } from 'lucide-react'
-import { uploadToCloudinary, type UploadFolder } from '@/lib/upload/cloudinaryClient'
+import { uploadToCloudinary, type UploadFolder } from '@/lib/shared/upload/cloudinaryClient'
 
 // ─── Data shapes ──────────────────────────────────────────────────────────────
 

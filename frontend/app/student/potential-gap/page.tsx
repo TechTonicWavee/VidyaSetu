@@ -1,11 +1,11 @@
 'use client';
 
 import { Lightbulb, ArrowRight, TrendingUp, Target, Zap, Rocket } from 'lucide-react';
-import { useAuth } from '@/lib/auth/AuthProvider';
-import { useAsyncData } from '@/lib/hooks/useAsyncData';
-import { getPotentialGap, type GapItem } from '@/lib/data';
-import { PageHeader, Card, Badge, ProgressBar, ErrorState, CardSkeleton } from '@/components/ui';
-import { cn } from '@/lib/utils/cn';
+import { useAuth } from '@/lib/shared/auth/AuthProvider';
+import { useAsyncData } from '@/lib/student/hooks/useAsyncData';
+import { getPotentialGap, type GapItem } from '@/lib/student/data';
+import { PageHeader, Card, Badge, ProgressBar, ErrorState, CardSkeleton } from '@/components/shared/ui';
+import { cn } from '@/lib/shared/utils/cn';
 
 const TONE: Record<GapItem['tone'], 'red' | 'amber' | 'blue' | 'brand'> = { red: 'red', amber: 'amber', blue: 'brand' };
 

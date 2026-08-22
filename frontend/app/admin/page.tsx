@@ -11,7 +11,7 @@ const navLinks = [
   { id: 'logs',       label: 'System Logs',      icon: Activity,   badge: null,  active: false, path: '/admin/configuration' },
 ]
 
-import { PageHeader, StatCard, Card, Badge } from '@/components/ui'
+import { PageHeader, StatCard, Card, Badge } from '@/components/shared/ui'
 
 const statCards = [
   { label: 'Total Users', value: '1,498', sub: 'Faculty + Students', icon: Users, tone: 'info' },

@@ -2,12 +2,12 @@
 
 import { useMemo, useState } from 'react';
 import { BookOpen, RefreshCw, Clock, CheckCircle2, AlertTriangle, FileText, ChevronRight } from 'lucide-react';
-import { useAuth } from '@/lib/auth/AuthProvider';
-import { useAsyncData } from '@/lib/hooks/useAsyncData';
-import { getAssignments, type AssignmentStatus } from '@/lib/data';
-import { PageHeader, Card, Badge, Tabs, Select, ErrorState, CardSkeleton } from '@/components/ui';
-import { formatRelativeTime } from '@/lib/format/relativeTime';
-import { cn } from '@/lib/utils/cn';
+import { useAuth } from '@/lib/shared/auth/AuthProvider';
+import { useAsyncData } from '@/lib/student/hooks/useAsyncData';
+import { getAssignments, type AssignmentStatus } from '@/lib/student/data';
+import { PageHeader, Card, Badge, Tabs, Select, ErrorState, CardSkeleton } from '@/components/shared/ui';
+import { formatRelativeTime } from '@/lib/student/format/relativeTime';
+import { cn } from '@/lib/shared/utils/cn';
 
 const STATUS_META: Record<AssignmentStatus, { tone: 'red' | 'amber' | 'blue' | 'green'; label: string; icon: typeof Clock; box: string }> = {
   overdue: { tone: 'red', label: 'Overdue', icon: AlertTriangle, box: 'bg-danger/10 text-danger border border-danger/20' },

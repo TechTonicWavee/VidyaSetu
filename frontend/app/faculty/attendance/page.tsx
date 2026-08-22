@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { Upload, RefreshCw, FileUp, CheckCircle2, AlertTriangle } from 'lucide-react'
-import { apiFetch } from '@/lib/api/client'
+import { apiFetch } from '@/lib/shared/api/client'
 
 export default function FacultyAttendancePage() {
   const router = useRouter()

@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server';
-import { apiOk, handleRouteError } from '@/lib/server/http';
-import { requireAuth } from '@/lib/auth/verifyAccessToken';
-import * as directoryService from '@/lib/server/directoryService';
+import { apiOk, handleRouteError } from '@/lib/shared/server/http';
+import { requireAuth } from '@/lib/shared/auth/verifyAccessToken';
+import * as directoryService from '@/lib/shared/server/directoryService';
 
 export const dynamic = 'force-dynamic';
 

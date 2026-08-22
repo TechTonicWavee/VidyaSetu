@@ -2,7 +2,7 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { FACULTY_PROFILE } from "../../../lib/faculty/mock-data";
+import { FACULTY_PROFILE } from "@/lib/faculty/mock-data";
 import {
   Home,
   BookOpen,

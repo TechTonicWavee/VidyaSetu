@@ -4,14 +4,14 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine,
 } from 'recharts';
 import { CalendarCheck, AlertTriangle, TrendingUp, ChevronRight, BookOpen } from 'lucide-react';
-import { useAuth } from '@/lib/auth/AuthProvider';
-import { useAsyncData } from '@/lib/hooks/useAsyncData';
-import { getAttendance } from '@/lib/data';
+import { useAuth } from '@/lib/shared/auth/AuthProvider';
+import { useAsyncData } from '@/lib/student/hooks/useAsyncData';
+import { getAttendance } from '@/lib/student/data';
 import {
   PageHeader, Card, Badge, ProgressRing, ProgressBar, ChartCard, ChartTooltip, CHART,
   ErrorState, CardSkeleton,
-} from '@/components/ui';
-import { cn } from '@/lib/utils/cn';
+} from '@/components/shared/ui';
+import { cn } from '@/lib/shared/utils/cn';
 
 const DOT: Record<string, string> = {
   present: 'bg-success text-white shadow-sm shadow-success/20',

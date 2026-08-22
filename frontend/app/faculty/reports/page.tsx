@@ -9,7 +9,7 @@ import {
   Calendar, Activity, CheckCircle, AlertCircle,
   Grid, Filter, RefreshCw, Clock, Eye, Menu, ExternalLink, Brain
 } from 'lucide-react'
-import { FACULTY_PROFILE } from '../../../lib/faculty/mock-data'
+import { FACULTY_PROFILE } from '@/lib/faculty/mock-data'
 
 const navLinks = [
   { id: 'dashboard',    label: 'Dashboard',            icon: Home,          badge: null,  path: '/faculty' },

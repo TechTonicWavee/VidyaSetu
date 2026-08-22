@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { AuthError, requireAuth } from '../../../../lib/auth/verifyAccessToken';
-import { createUploadSignature } from '../../../../lib/server/cloudinary';
+import { AuthError, requireAuth } from '@/lib/shared/auth/verifyAccessToken';
+import { createUploadSignature } from '@/lib/shared/server/cloudinary';
 
 export const dynamic = 'force-dynamic';
 

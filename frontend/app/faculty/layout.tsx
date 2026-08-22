@@ -1,11 +1,11 @@
 'use client';
 
 import type { ReactNode } from 'react';
-import AppShell from '@/components/ui/AppShell';
-import { FACULTY_NAV } from '@/lib/nav/faculty';
+import AppShell from '@/components/shared/ui/AppShell';
+import { FACULTY_NAV } from '@/lib/faculty/nav';
 import { Home, BookOpen, Brain, AlertCircle, Activity, Users, CheckCircle, MessageCircle, FileText, ExternalLink } from 'lucide-react';
 
-import { AuthProvider } from '@/lib/auth/AuthProvider';
+import { AuthProvider } from '@/lib/shared/auth/AuthProvider';
 
 export default function FacultyLayout({ children }: { children: ReactNode }) {
   return (

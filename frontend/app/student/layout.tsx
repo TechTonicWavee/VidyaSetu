@@ -7,13 +7,13 @@ import {
   CalendarCheck, BookOpen, Trophy, Lightbulb, ListChecks, Users, Grid, Bell,
 } from 'lucide-react';
 
-import { STUDENT_PILOT_MODE, STUDENT_ALLOWED_MENU_ITEMS } from '@/lib/access';
-import { AuthProvider, useAuth } from '@/lib/auth/AuthProvider';
-import { SocketProvider } from '@/lib/socket/SocketProvider';
-import { NotificationsProvider, useNotifications } from '@/lib/notifications/NotificationsProvider';
-import AppShell from '@/components/ui/AppShell';
-import { type NavGroup } from '@/components/ui/AppShell';
-import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { STUDENT_PILOT_MODE, STUDENT_ALLOWED_MENU_ITEMS } from '@/lib/student/access';
+import { AuthProvider, useAuth } from '@/lib/shared/auth/AuthProvider';
+import { SocketProvider } from '@/lib/student/socket/SocketProvider';
+import { NotificationsProvider, useNotifications } from '@/lib/student/notifications/NotificationsProvider';
+import AppShell from '@/components/shared/ui/AppShell';
+import { type NavGroup } from '@/components/shared/ui/AppShell';
+import { ErrorBoundary } from '@/components/shared/ErrorBoundary';
 
 const NAV_GROUPS: NavGroup[] = [
   {

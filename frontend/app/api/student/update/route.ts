@@ -1,10 +1,10 @@
 import type { NextRequest } from 'next/server'
 import { Prisma }      from '@prisma/client'
-import { prisma }       from '@/lib/prisma'
-import { parseResume }  from '@/lib/resume/parser'
-import { evaluateCertificate } from '@/lib/spi/evaluators/certificateEvaluators'
-import { AuthError, requireAuth, requireOwnResource } from '../../../../lib/auth/verifyAccessToken'
-import { destroyCloudinaryAsset } from '../../../../lib/server/cloudinary'
+import { prisma }       from '@/lib/shared/prisma'
+import { parseResume }  from '@/lib/shared/resume/parser'
+import { evaluateCertificate } from '@/lib/shared/spi/evaluators/certificateEvaluators'
+import { AuthError, requireAuth, requireOwnResource } from '@/lib/shared/auth/verifyAccessToken'
+import { destroyCloudinaryAsset } from '@/lib/shared/server/cloudinary'
 
 export const dynamic = 'force-dynamic'
 

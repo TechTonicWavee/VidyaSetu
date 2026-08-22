@@ -5,10 +5,10 @@ import { Activity, Users, Award, Book, Code, Zap, Clock, TrendingUp, Loader2, Sp
 import {
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip,
 } from 'recharts';
-import { authedFetch } from '@/lib/api/sameOriginFetch';
-import { useAuth } from '@/lib/auth/AuthProvider';
-import { PageHeader, Card, Badge, ProgressRing, ChartCard, ChartTooltip, CHART } from '@/components/ui';
-import { cn } from '@/lib/utils/cn';
+import { authedFetch } from '@/lib/shared/api/sameOriginFetch';
+import { useAuth } from '@/lib/shared/auth/AuthProvider';
+import { PageHeader, Card, Badge, ProgressRing, ChartCard, ChartTooltip, CHART } from '@/components/shared/ui';
+import { cn } from '@/lib/shared/utils/cn';
 
 interface SpiStudentData {
   codingProfile: {

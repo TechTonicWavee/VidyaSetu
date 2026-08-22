@@ -1,8 +1,8 @@
 import type { NextRequest } from 'next/server';
-import { apiOk, handleRouteError } from '@/lib/server/http';
-import { requireAuth } from '@/lib/auth/verifyAccessToken';
-import { optionalString, parsePagination } from '@/lib/server/validate';
-import * as teamService from '@/lib/server/teamService';
+import { apiOk, handleRouteError } from '@/lib/shared/server/http';
+import { requireAuth } from '@/lib/shared/auth/verifyAccessToken';
+import { optionalString, parsePagination } from '@/lib/shared/server/validate';
+import * as teamService from '@/lib/shared/server/teamService';
 
 export const dynamic = 'force-dynamic';
 

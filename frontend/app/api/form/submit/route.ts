@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client'
 import type { NextRequest } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { parseResume } from '@/lib/resume/parser'
+import { prisma } from '@/lib/shared/prisma'
+import { parseResume } from '@/lib/shared/resume/parser'
 
 export const dynamic = 'force-dynamic'
 

@@ -1,8 +1,8 @@
 import type { NextRequest } from 'next/server';
-import { apiOk, handleRouteError } from '@/lib/server/http';
-import { AppError } from '@/lib/server/appError';
-import { setRefreshCookie } from '@/lib/server/cookies';
-import * as authService from '@/lib/server/authService';
+import { apiOk, handleRouteError } from '@/lib/shared/server/http';
+import { AppError } from '@/lib/shared/server/appError';
+import { setRefreshCookie } from '@/lib/shared/server/cookies';
+import * as authService from '@/lib/shared/server/authService';
 
 export const dynamic = 'force-dynamic';
 

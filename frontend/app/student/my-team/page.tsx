@@ -3,10 +3,10 @@
 import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Users, Plus, Clock, X, Check, Search, UserPlus2, ArrowRight } from 'lucide-react';
-import getInitials from '@/lib/getInitials';
-import { useAuth } from '../../../lib/auth/AuthProvider';
-import { useSocket } from '../../../lib/socket/SocketProvider';
-import { useToast } from '../../../components/ToastContext';
+import getInitials from '@/lib/shared/getInitials';
+import { useAuth } from '@/lib/shared/auth/AuthProvider';
+import { useSocket } from '@/lib/student/socket/SocketProvider';
+import { useToast } from '@/components/shared/ToastContext';
 import {
   listMyTeams,
   listReceivedInvites,
@@ -19,12 +19,12 @@ import {
   type Team,
   type TeamInvite,
   type OpenTeam,
-} from '../../../lib/api/teams';
-import { ApiError } from '../../../lib/api/client';
-import { formatRelativeTime } from '../../../lib/format/relativeTime';
-import CreateTeamModal from '../../../components/team/CreateTeamModal';
-import { PageHeader, Card, Button, Badge, Tabs } from '@/components/ui';
-import { cn } from '@/lib/utils/cn';
+} from '@/lib/student/api/teams';
+import { ApiError } from '@/lib/shared/api/client';
+import { formatRelativeTime } from '@/lib/student/format/relativeTime';
+import CreateTeamModal from '@/components/student/team/CreateTeamModal';
+import { PageHeader, Card, Button, Badge, Tabs } from '@/components/shared/ui';
+import { cn } from '@/lib/shared/utils/cn';
 
 export default function MyTeamPage() {
   const { student } = useAuth();

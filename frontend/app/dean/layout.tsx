@@ -2,10 +2,10 @@
 
 import type { ReactNode } from 'react';
 import { DeanProvider } from './_context/DeanContext';
-import AppShell from '@/components/ui/AppShell';
-import { DEAN_NAV } from '@/lib/nav/dean';
+import AppShell from '@/components/shared/ui/AppShell';
+import { DEAN_NAV } from '@/lib/dean/nav';
 
-import { AuthProvider } from '@/lib/auth/AuthProvider';
+import { AuthProvider } from '@/lib/shared/auth/AuthProvider';
 
 export default function DeanLayout({ children }: { children: ReactNode }) {
   return (

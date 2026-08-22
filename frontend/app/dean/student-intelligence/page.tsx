@@ -14,12 +14,12 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, RadarChart, Radar,
   PolarGrid, PolarAngleAxis, PolarRadiusAxis
 } from 'recharts'
-import { ALL_STUDENTS } from '../../../lib/dean/mock-data'
+import { ALL_STUDENTS } from '@/lib/dean/mock-data'
 import {
   enrichStudents, getCategoryDistribution, generateInsights,
   getTopPerCategory, getWorstCluster, CATEGORIES, CATEGORY_META,
   type EnrichedStudent, type CategoryId
-} from '../../../lib/dean/intelligence/analyzer'
+} from '@/lib/dean/intelligence/analyzer'
 
 // ─── Nav ─────────────────────────────────────────────────────────────────────
 const navLinks = [

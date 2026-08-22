@@ -7,11 +7,11 @@ import {
   Cpu, Edit2, Activity, Award, TrendingUp, Target, 
   MapPin, Mail, Phone, Calendar, Briefcase, Code2, FileText, ChevronRight
 } from 'lucide-react'
-import getInitials from '@/lib/getInitials'
-import { useAuth } from '../../../lib/auth/AuthProvider'
-import { authedFetch } from '../../../lib/api/sameOriginFetch'
-import { Card, Button, Tabs, Badge } from '@/components/ui'
-import { cn } from '@/lib/utils/cn'
+import getInitials from '@/lib/shared/getInitials'
+import { useAuth } from '@/lib/shared/auth/AuthProvider'
+import { authedFetch } from '@/lib/shared/api/sameOriginFetch'
+import { Card, Button, Tabs, Badge } from '@/components/shared/ui'
+import { cn } from '@/lib/shared/utils/cn'
 
 interface StudentProfileData {
   fullName: string

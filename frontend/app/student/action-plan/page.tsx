@@ -2,11 +2,11 @@
 
 import { useEffect, useState } from 'react';
 import { ListChecks, Target, Flame, CheckCircle2, Circle, Clock } from 'lucide-react';
-import { useAuth } from '@/lib/auth/AuthProvider';
-import { useAsyncData } from '@/lib/hooks/useAsyncData';
-import { getActionPlan, type ActionTask } from '@/lib/data';
-import { PageHeader, Card, Badge, ProgressRing, ErrorState, CardSkeleton } from '@/components/ui';
-import { cn } from '@/lib/utils/cn';
+import { useAuth } from '@/lib/shared/auth/AuthProvider';
+import { useAsyncData } from '@/lib/student/hooks/useAsyncData';
+import { getActionPlan, type ActionTask } from '@/lib/student/data';
+import { PageHeader, Card, Badge, ProgressRing, ErrorState, CardSkeleton } from '@/components/shared/ui';
+import { cn } from '@/lib/shared/utils/cn';
 
 const PRIORITY: Record<ActionTask['priority'], { tone: 'red' | 'amber' | 'blue'; label: string }> = {
   high: { tone: 'red', label: 'High Priority' },

@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client'
 import type { NextRequest } from 'next/server'
-import { prisma } from '@/lib/prisma'
-import { AuthError, requireAuth, requireOwnResource } from '../../../../lib/auth/verifyAccessToken'
+import { prisma } from '@/lib/shared/prisma'
+import { AuthError, requireAuth, requireOwnResource } from '@/lib/shared/auth/verifyAccessToken'
 
 export const dynamic = 'force-dynamic'
 

@@ -2,9 +2,9 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import getInitials from '@/lib/getInitials'
+import getInitials from '@/lib/shared/getInitials'
 import { Home, User, Activity, TrendingUp, Users, Bell, Award, Grid, FileText, Search, ChevronDown, Target, Clock, AlertTriangle, BookOpen, CheckCircle, Zap, ExternalLink, Plug, Layout, ArrowRight } from 'lucide-react'
-import { AuthProvider, useAuth } from '../../lib/auth/AuthProvider'
+import { AuthProvider, useAuth } from '@/lib/shared/auth/AuthProvider'
 
 const navLinks = [
   { id: 'dashboard',  label: 'Dashboard',       icon: Home,       active: false, path: '/student' },

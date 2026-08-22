@@ -2,17 +2,17 @@
 
 import { useEffect, useState } from 'react';
 import { Search, Users, CheckCircle, Plus } from 'lucide-react';
-import getInitials from '@/lib/getInitials';
-import { useAuth } from '../../../lib/auth/AuthProvider';
-import { listDirectory, listDomains, type DomainCount } from '../../../lib/api/directory';
-import { listMyTeams } from '../../../lib/api/teams';
-import type { PublicStudentCard } from '../../../lib/api/teams';
-import { ApiError } from '../../../lib/api/client';
-import InviteToTeamModal from '../../../components/directory/InviteToTeamModal';
-import StudentProfileModal from '../../../components/directory/StudentProfileModal';
-import { useToast } from '../../../components/ToastContext';
-import { PageHeader, Card, Button, Badge, ErrorState } from '@/components/ui';
-import { cn } from '@/lib/utils/cn';
+import getInitials from '@/lib/shared/getInitials';
+import { useAuth } from '@/lib/shared/auth/AuthProvider';
+import { listDirectory, listDomains, type DomainCount } from '@/lib/student/api/directory';
+import { listMyTeams } from '@/lib/student/api/teams';
+import type { PublicStudentCard } from '@/lib/student/api/teams';
+import { ApiError } from '@/lib/shared/api/client';
+import InviteToTeamModal from '@/components/student/directory/InviteToTeamModal';
+import StudentProfileModal from '@/components/student/directory/StudentProfileModal';
+import { useToast } from '@/components/shared/ToastContext';
+import { PageHeader, Card, Button, Badge, ErrorState } from '@/components/shared/ui';
+import { cn } from '@/lib/shared/utils/cn';
 
 const PAGE_SIZE = 12;
 

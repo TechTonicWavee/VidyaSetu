@@ -5,10 +5,10 @@ import './globals.css'
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap', adjustFontFallback: false })
 const newsreader = Newsreader({ subsets: ['latin'], variable: '--font-newsreader', display: 'swap', adjustFontFallback: false })
 const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jetbrains-mono', display: 'swap', adjustFontFallback: false })
-import { ToastProvider } from '@/components/ToastContext'
-import { KeyboardShortcutProvider } from '@/components/KeyboardShortcuts'
-import { DemoProvider } from '@/components/DemoContext'
-import { ThemeProvider } from '@/components/ThemeProvider'
+import { ToastProvider } from '@/components/shared/ToastContext'
+import { KeyboardShortcutProvider } from '@/components/shared/KeyboardShortcuts'
+import { DemoProvider } from '@/components/shared/DemoContext'
+import { ThemeProvider } from '@/components/shared/ThemeProvider'
 
 export const metadata = {
   title: 'VidyaSetu — AI-Powered Student Intelligence Platform',

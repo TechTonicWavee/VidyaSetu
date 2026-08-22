@@ -5,13 +5,13 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip,
 } from 'recharts';
 import { Activity, Sparkles } from 'lucide-react';
-import { useAuth } from '@/lib/auth/AuthProvider';
-import { useAsyncData } from '@/lib/hooks/useAsyncData';
-import { getSkillRadar } from '@/lib/data';
+import { useAuth } from '@/lib/shared/auth/AuthProvider';
+import { useAsyncData } from '@/lib/student/hooks/useAsyncData';
+import { getSkillRadar } from '@/lib/student/data';
 import {
   PageHeader, Card, ProgressRing, ProgressBar, ChartCard, ChartTooltip, CHART,
   ErrorState, CardSkeleton, Badge,
-} from '@/components/ui';
+} from '@/components/shared/ui';
 
 export default function SkillRadarPage() {
   const { student } = useAuth();

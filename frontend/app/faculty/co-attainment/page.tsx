@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
-import { FACULTY_PROFILE } from '../../../lib/faculty/mock-data'
+import { FACULTY_PROFILE } from '@/lib/faculty/mock-data'
 import { Home, User, Activity, BookOpen, Bell, Settings, LogOut, Search, ChevronDown, AlertTriangle, MessageSquare, Target, CheckCircle2, Calendar, Clock, BookMarked, Download, XCircle, ChevronRight, TrendingUp, Users, Award, Grid, FileText, CheckCircle, Zap, AlertCircle, Plug, ExternalLink, Brain } from 'lucide-react'
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend, ReferenceLine

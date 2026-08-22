@@ -5,7 +5,7 @@ import {
   ArrowRight, BarChart2, Bell, Users, ShieldCheck,
   TrendingUp, BookOpen, Activity, Brain, User, Building, Settings, Sun, Moon, Zap
 } from 'lucide-react'
-import { useTheme } from '@/components/ThemeProvider'
+import { useTheme } from '@/components/shared/ThemeProvider'
 
 const stats = [
   { value: '480+', label: 'Students Tracked', icon: Users },

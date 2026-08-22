@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server';
-import { apiOk, handleRouteError } from '@/lib/server/http';
-import { requireAuth } from '@/lib/auth/verifyAccessToken';
-import * as notificationService from '@/lib/server/notificationService';
+import { apiOk, handleRouteError } from '@/lib/shared/server/http';
+import { requireAuth } from '@/lib/shared/auth/verifyAccessToken';
+import * as notificationService from '@/lib/shared/server/notificationService';
 
 export const dynamic = 'force-dynamic';
 

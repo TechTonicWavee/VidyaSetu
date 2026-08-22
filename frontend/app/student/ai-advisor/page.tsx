@@ -2,9 +2,9 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { Bot, Send, Sparkles, RotateCw, User } from 'lucide-react';
-import { useAuth } from '@/lib/auth/AuthProvider';
-import { PageHeader, Card, Badge } from '@/components/ui';
-import { cn } from '@/lib/utils/cn';
+import { useAuth } from '@/lib/shared/auth/AuthProvider';
+import { PageHeader, Card, Badge } from '@/components/shared/ui';
+import { cn } from '@/lib/shared/utils/cn';
 
 interface ChatMessage {
   role: 'user' | 'assistant';

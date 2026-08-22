@@ -1,17 +1,17 @@
 
 import type { NextRequest } from 'next/server'
-import { prisma } from '@/lib/prisma'
+import { prisma } from '@/lib/shared/prisma'
 
 // Shared lib/spi modules
-import calcGitHubScore from '@/lib/spi/sources/githubScore'
-import calcLeetCodeScore from '@/lib/spi/sources/leetcodeScore'
-import calcResumeScore from '@/lib/spi/sources/resume'
-import calcCertificationsScore from '@/lib/spi/sources/certifications'
-import calcInternshipsScore from '@/lib/spi/sources/internships'
-import calcAcademicsScore from '@/lib/spi/sources/academics'
-import { evaluateCertificate } from '@/lib/spi/evaluators/certificateEvaluators'
-import calculateSPI from '@/lib/spi/orchestrator/calculateSPI'
-import { AuthError, requireAuth, requireOwnResource } from '../../../../lib/auth/verifyAccessToken'
+import calcGitHubScore from '@/lib/shared/spi/sources/githubScore'
+import calcLeetCodeScore from '@/lib/shared/spi/sources/leetcodeScore'
+import calcResumeScore from '@/lib/shared/spi/sources/resume'
+import calcCertificationsScore from '@/lib/shared/spi/sources/certifications'
+import calcInternshipsScore from '@/lib/shared/spi/sources/internships'
+import calcAcademicsScore from '@/lib/shared/spi/sources/academics'
+import { evaluateCertificate } from '@/lib/shared/spi/evaluators/certificateEvaluators'
+import calculateSPI from '@/lib/shared/spi/orchestrator/calculateSPI'
+import { AuthError, requireAuth, requireOwnResource } from '@/lib/shared/auth/verifyAccessToken'
 
 export const dynamic = 'force-dynamic'
 

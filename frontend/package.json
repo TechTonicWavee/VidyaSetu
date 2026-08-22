@@ -3,11 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "npm run sync-prisma && next dev",
+    "build": "npm run sync-prisma && next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "npm run sync-prisma && tsc --noEmit",
+    "sync-prisma": "node scripts/sync-prisma-client.mjs"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",

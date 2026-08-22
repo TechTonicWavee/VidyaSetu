@@ -1,7 +1,7 @@
 'use client';
 
 import { useMemo } from 'react';
-import { useTheme } from '@/components/ThemeProvider';
+import { useTheme } from '@/components/shared/ThemeProvider';
 import {
   AreaChart,
   Area,

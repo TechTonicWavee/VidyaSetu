@@ -1,8 +1,8 @@
 import { NextRequest } from 'next/server';
-import { apiOk, handleRouteError } from '@/lib/server/http';
-import { requireAuth } from '@/lib/auth/verifyAccessToken';
-import { AttendanceParserService } from '@/lib/server/attendanceService';
-import { prisma } from '@/lib/prisma';
+import { apiOk, handleRouteError } from '@/lib/shared/server/http';
+import { requireAuth } from '@/lib/shared/auth/verifyAccessToken';
+import { AttendanceParserService } from '@/lib/shared/server/attendanceService';
+import { prisma } from '@/lib/shared/prisma';
 
 export const dynamic = 'force-dynamic';
 

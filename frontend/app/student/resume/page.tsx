@@ -36,15 +36,15 @@ import {
   FileText, Download, RefreshCw, Code2, Eye, AlertCircle,
   Loader2, CheckCircle2, Clock, ChevronDown
 } from 'lucide-react';
-import { useAuth } from '@/lib/auth/AuthProvider';
-import { authedFetch } from '@/lib/api/sameOriginFetch';
-import { PageHeader, Button, Badge } from '@/components/ui';
-import { buildJakeResume, StudentData } from '@/components/resume/templates/jake';
-import PdfPreview from '@/components/resume/PdfPreview';
+import { useAuth } from '@/lib/shared/auth/AuthProvider';
+import { authedFetch } from '@/lib/shared/api/sameOriginFetch';
+import { PageHeader, Button, Badge } from '@/components/shared/ui';
+import { buildJakeResume, StudentData } from '@/components/student/resume/templates/jake';
+import PdfPreview from '@/components/student/resume/PdfPreview';
 
 // Lazy-load Monaco so it doesn't block the initial page render.
 // Decision 3 (decision.md): Monaco is large; Next.js lazy-loads it automatically.
-const LatexEditor = dynamic(() => import('@/components/resume/LatexEditor'), {
+const LatexEditor = dynamic(() => import('@/components/student/resume/LatexEditor'), {
   ssr: false,
   loading: () => (
     <div className="flex items-center justify-center bg-[#1e1e2e] rounded-lg border border-[var(--border)] h-full">

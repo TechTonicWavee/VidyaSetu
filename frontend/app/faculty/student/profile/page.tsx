@@ -35,7 +35,7 @@ import {
   ExternalLink,
   Brain,
 } from "lucide-react";
-import { FACULTY_PROFILE } from '../../../../lib/faculty/mock-data'
+import { FACULTY_PROFILE } from '@/lib/faculty/mock-data'
 import {
   LineChart,
   Line,

@@ -1,1 +1,0 @@
-export { prisma } from '../../backend/src/lib/prisma';

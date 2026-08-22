@@ -2,8 +2,8 @@
 
 import { useState, type FocusEvent } from "react";
 import { useRouter } from "next/navigation";
-import { useTheme } from "@/components/ThemeProvider";
-import { setAccessToken } from "../../lib/auth/tokenStore";
+import { useTheme } from "@/components/shared/ThemeProvider";
+import { setAccessToken } from "@/lib/shared/auth/tokenStore";
 import {
   User, BookOpen, Building2, Heart, Settings,
   Eye, EyeOff, GraduationCap, BrainCircuit,

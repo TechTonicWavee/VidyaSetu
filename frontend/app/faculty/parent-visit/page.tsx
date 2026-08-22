@@ -1,10 +1,10 @@
 'use client'
 
-import { EmptyState } from '@/components/EmptyState'
+import { EmptyState } from '@/components/shared/EmptyState'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { FACULTY_PROFILE } from '../../../lib/faculty/mock-data'
+import { FACULTY_PROFILE } from '@/lib/faculty/mock-data'
 import { Home, BookOpen, Bell, BarChart2, Users, CheckCircle, MessageCircle, FileText, Settings, LogOut, Search, ChevronDown, AlertTriangle, TrendingUp, Target, ExternalLink, MoreHorizontal, ChevronRight, User, Activity, Award, Grid, Zap, AlertCircle, Plug, Brain } from 'lucide-react'
 
 const navLinks = [

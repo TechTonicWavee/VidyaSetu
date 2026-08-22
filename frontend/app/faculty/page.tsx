@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { FACULTY_PROFILE } from "../../lib/faculty/mock-data";
+import { FACULTY_PROFILE } from "@/lib/faculty/mock-data";
 import {
   Home,
   BookOpen,
@@ -99,7 +99,7 @@ const subjectHealth = [
   { name: "Data Structures", avg: 72, co: 81, risk: 3 },
 ];
 
-import { PageHeader, StatCard, Card, Badge } from "@/components/ui";
+import { PageHeader, StatCard, Card, Badge } from "@/components/shared/ui";
 
 export default function FacultyDashboard() {
   const router = useRouter();

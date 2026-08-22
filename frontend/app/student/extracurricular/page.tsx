@@ -2,15 +2,15 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { Trophy, Plus, Calendar, Star, Medal, Target } from 'lucide-react';
-import { useAuth } from '@/lib/auth/AuthProvider';
-import { useAsyncData } from '@/lib/hooks/useAsyncData';
-import { getExtracurricular, type ExtracurricularItem } from '@/lib/data';
+import { useAuth } from '@/lib/shared/auth/AuthProvider';
+import { useAsyncData } from '@/lib/student/hooks/useAsyncData';
+import { getExtracurricular, type ExtracurricularItem } from '@/lib/student/data';
 import {
   PageHeader, Card, Badge, Button, Modal, Field, Input, Textarea, Select,
   ErrorState, CardSkeleton, EmptyState,
-} from '@/components/ui';
-import { useToast } from '@/components/ToastContext';
-import { cn } from '@/lib/utils/cn';
+} from '@/components/shared/ui';
+import { useToast } from '@/components/shared/ToastContext';
+import { cn } from '@/lib/shared/utils/cn';
 
 const CATEGORIES: ExtracurricularItem['category'][] = ['Sports', 'Cultural', 'Technical', 'Social', 'Leadership'];
 const CAT_TONE: Record<ExtracurricularItem['category'], 'green' | 'amber' | 'brand' | 'blue' | 'red'> = {

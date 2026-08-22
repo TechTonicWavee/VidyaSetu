@@ -4,14 +4,14 @@ import { useCallback, useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Crown, LogOut, Trash2, UserPlus, UserMinus, Loader2 } from 'lucide-react';
-import getInitials from '@/lib/getInitials';
-import { useAuth } from '../../../../lib/auth/AuthProvider';
-import { useSocket } from '../../../../lib/socket/SocketProvider';
-import { getTeam, removeTeamMember, updateTeam, deleteTeam, type Team } from '../../../../lib/api/teams';
-import { ApiError } from '../../../../lib/api/client';
-import InviteMemberModal from '../../../../components/team/InviteMemberModal';
-import { useToast } from '../../../../components/ToastContext';
-import { Card, Button, Badge, ErrorState } from '@/components/ui';
+import getInitials from '@/lib/shared/getInitials';
+import { useAuth } from '@/lib/shared/auth/AuthProvider';
+import { useSocket } from '@/lib/student/socket/SocketProvider';
+import { getTeam, removeTeamMember, updateTeam, deleteTeam, type Team } from '@/lib/student/api/teams';
+import { ApiError } from '@/lib/shared/api/client';
+import InviteMemberModal from '@/components/student/team/InviteMemberModal';
+import { useToast } from '@/components/shared/ToastContext';
+import { Card, Button, Badge, ErrorState } from '@/components/shared/ui';
 
 export default function TeamDetailPage() {
   const { teamId } = useParams<{ teamId: string }>();

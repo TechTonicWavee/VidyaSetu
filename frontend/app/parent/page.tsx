@@ -6,7 +6,7 @@ import {
   ArrowRight, Heart, FileText, CalendarDays, ExternalLink, ShieldCheck
 } from 'lucide-react'
 
-import { StatCard, Card, Badge } from '@/components/ui'
+import { StatCard, Card, Badge } from '@/components/shared/ui'
 
 const stats = [
   { label: 'Attendance', value: '79%', icon: Calendar, tone: 'success', sub: 'Above minimum threshold' },
