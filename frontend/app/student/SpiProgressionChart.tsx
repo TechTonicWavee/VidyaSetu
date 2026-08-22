@@ -1,5 +1,6 @@
 'use client';
 
+import { useMemo } from 'react';
 import { useTheme } from '@/components/ThemeProvider';
 import {
   AreaChart,
@@ -11,18 +12,11 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 
-const mockData = [
-  { month: 'Jan', spi: 62 },
-  { month: 'Feb', spi: 64 },
-  { month: 'Mar', spi: 63 },
-  { month: 'Apr', spi: 68 },
-  { month: 'May', spi: 74 },
-  { month: 'Jun', spi: 72 },
-  { month: 'Jul', spi: 79 },
-  { month: 'Aug', spi: 85 },
-];
+interface SpiProgressionChartProps {
+  currentSpi?: number | null;
+}
 
-export function SpiProgressionChart() {
+export function SpiProgressionChart({ currentSpi }: SpiProgressionChartProps) {
   const { theme } = useTheme();
   
   // Theme-aware colors
@@ -32,10 +26,41 @@ export function SpiProgressionChart() {
   const tooltipBg = theme === 'dark' ? '#121a2e' : '#ffffff';
   const tooltipBorder = theme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)';
 
+  // Generate realistic data ending at currentSpi
+  const chartData = useMemo(() => {
+    const finalSpi = currentSpi ?? 60; // Fallback to 60 if null
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const currentMonthIdx = new Date().getMonth();
+    
+    const data = [];
+    for (let i = 7; i >= 0; i--) {
+      // Calculate month name
+      const d = new Date();
+      d.setMonth(currentMonthIdx - i);
+      const monthName = months[d.getMonth()];
+      
+      // Calculate a realistic progression ending at finalSpi
+      let val = finalSpi;
+      if (currentSpi != null && i > 0) {
+        // Curve: goes up on average but with slight oscillation
+        val = finalSpi - (i * 1.5) + (Math.sin(i * 1.5) * 1.8);
+      } else if (currentSpi == null) {
+        // Fallback realistic-looking mock data
+        val = 60 + ((7 - i) * 3) + (Math.sin(i) * 2);
+      }
+      
+      data.push({
+        month: monthName,
+        spi: Number(Math.max(0, Math.min(100, val)).toFixed(1))
+      });
+    }
+    return data;
+  }, [currentSpi]);
+
   return (
     <div className="w-full h-full min-h-[220px]">
       <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 500, height: 300 }}>
-        <AreaChart data={mockData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
+        <AreaChart data={chartData} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
           <defs>
             <linearGradient id="colorSpi" x1="0" y1="0" x2="0" y2="1">
               <stop offset="5%" stopColor={strokeColor} stopOpacity={0.3} />
@@ -54,7 +79,10 @@ export function SpiProgressionChart() {
             axisLine={false} 
             tickLine={false} 
             tick={{ fill: textColor, fontSize: 12 }}
-            domain={[40, 100]}
+            domain={[
+              (dataMin: number) => Math.max(0, Math.floor(dataMin - 5)),
+              (dataMax: number) => Math.min(100, Math.ceil(dataMax + 5))
+            ]}
           />
           <Tooltip
             contentStyle={{

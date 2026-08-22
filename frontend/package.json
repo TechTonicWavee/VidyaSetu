@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit"
@@ -27,7 +27,8 @@
     "react": "^18",
     "react-dom": "^18",
     "recharts": "^3.8.1",
-    "unpdf": "^1.8.0"
+    "unpdf": "^1.8.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.7",

@@ -172,7 +172,7 @@ export default function StudentDashboard() {
               <Badge tone="green" className="px-3 py-1 shadow-sm">+12% Growth</Badge>
             </div>
             <div className="flex-1 min-h-[160px] -ml-2">
-              <SpiProgressionChart />
+              <SpiProgressionChart currentSpi={spi} />
             </div>
           </Card>
         </div>
