@@ -15,24 +15,24 @@
    .dark overrides make every token-driven surface theme-correct.
    ============================================================ */
 :root {
-  --bg: #fcfbf9;
-  --surface: #ffffff;
-  --surface-2: #f6f5f2;
-  --surface-3: #f0efeb;
+  --bg: #F8F7F4;
+  --surface: #FFFFFF;
+  --surface-2: #F5F4F0;
+  --surface-3: #E4E1D8;
 
-  --content: #3a3632;
-  --content-2: #65605a;
-  --muted: #8b8681;
+  --content: #1A1915;
+  --content-2: #4A4740;
+  --muted: #8A877E;
 
-  --line: #edeae3;
-  --line-strong: #dfdbd1;
+  --line: #E4E1D8;
+  --line-strong: #EDEBE4;
 
-  --brand: #d16b47;
-  --brand-600: #be5d3c;
-  --brand-700: #a44d30;
-  --brand-soft: #faefe9;
-  --brand-fg: #ffffff;
-  --brand-accent: #e28465;
+  --brand: #0D6F5C;
+  --brand-600: #0A5D4D;
+  --brand-700: #084C3F;
+  --brand-soft: #E6F4F1;
+  --brand-fg: #FFFFFF;
+  --brand-accent: #00C896;
   --brand-gradient: linear-gradient(135deg, var(--brand-accent), var(--brand));
 
   --success: #438f63;
@@ -51,8 +51,8 @@
   --shadow-sm: none;
   --shadow-md: none;
 
-  --sidebar-bg: #ffffff;
-  --sidebar-border: #edeae3;
+  --sidebar-bg: var(--bg);
+  --sidebar-border: var(--line);
 }
 
 .dark {
@@ -60,28 +60,28 @@
   /* Reference: Neutrade Crypto UI Kit on Dribbble                   */
   /* Deep navy-purple bases, lifted card surfaces, vibrant accents.  */
 
-  /* Backgrounds: Deep navy with signature cool-purple undertone */
-  --bg: #0b0b14;
-  --surface: #141423;
-  --surface-2: #1c1c2e;
-  --surface-3: #252538;
+  /* Backgrounds */
+  --bg: #0C0C0F;
+  --surface: #17171C;
+  --surface-2: #1E1E25;
+  --surface-3: rgba(255,255,255,0.07);
 
-  /* Typography: Crisp near-white + blue-gray secondary — high contrast */
-  --content: #f8f8fd;
-  --content-2: #a6a6c3;
-  --muted: #82829c;
+  /* Typography */
+  --content: #F0F0F5;
+  --content-2: #A0A0B0;
+  --muted: #60606E;
 
-  /* Borders: Very subtle navy-tinted — defines cards without eye-piercing glare */
-  --line: rgba(255, 255, 255, 0.04);
-  --line-strong: rgba(255, 255, 255, 0.08);
+  /* Borders */
+  --line: rgba(255, 255, 255, 0.07);
+  --line-strong: rgba(255, 255, 255, 0.12);
 
-  /* Brand: Vibrant periwinkle — the "Neutrade blue" energy */
-  --brand: #5b6ef5;
-  --brand-600: #4555e8;
-  --brand-700: #3342d0;
-  --brand-soft: rgba(91,110,245,0.15);
-  --brand-fg: #ffffff;
-  --brand-accent: #9b8af8;
+  /* Brand */
+  --brand: #00C896;
+  --brand-600: #00B584;
+  --brand-700: #009D73;
+  --brand-soft: rgba(0, 200, 150, 0.12);
+  --brand-fg: #000000;
+  --brand-accent: #0D6F5C;
   --brand-gradient: linear-gradient(135deg, var(--brand-accent), var(--brand));
 
   /* Semantic: Vivid, vibrant, balanced against the navy canvas */
