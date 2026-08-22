@@ -28,6 +28,15 @@ frontend keeps its own `@prisma/client` package in sync via
 sync is exactly how a stale-client / mismatched-field bug reappears — it happened once already
 during this restructure (`spiHistory` on `Student`), see `refactor/FINDINGS.md`.
 
+**The client uses the `pg` driver adapter, not Prisma's default engine — this matters a lot.**
+`backend/src/shared/lib/prisma.ts` constructs the client with `@prisma/adapter-pg` over a real,
+hot-reload-safe `pg.Pool`, not a bare `new PrismaClient()`. Measured directly against this
+project's DB (a Supabase pooler): the default engine took **~1000ms per query**, warm connection
+included; the adapter took **~150-235ms** — roughly 6x faster, on every DB call in the app. If
+you ever see this reverted back to a plain `new PrismaClient()`, that's a real regression, not a
+style choice — every page that touches the DB will feel it. See `refactor/FINDINGS.md` for how
+this was found.
+
 **The load-bearing fact that shapes everything else in this document:** the frontend does not
 call the Express backend by default for anything except attendance. It has its own, parallel
 implementation of the rest of the API.

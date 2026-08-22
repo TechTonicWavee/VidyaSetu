@@ -59,3 +59,13 @@ Both recorded in `refactor/BASELINE.md` as part of the pre-refactor baseline; ne
    the moment the schema changed again (missing `Student.spiHistory`, added after the
    consolidation). This surfaced as ~30 unrelated-looking type errors during the restructure.
    Fixed with `frontend/scripts/sync-prisma-client.mjs`, wired into `dev`/`build`/`typecheck`.
+10. **Prisma using the default engine instead of the `pg` adapter — the actual cause of the
+    "stuck" loading spinners reported after the restructure.** Diagnosed by measuring raw query
+    latency directly against the live DB (a Supabase pooler): ~1000ms per query with a bare
+    `new PrismaClient()`, even warm; ~150-235ms with `@prisma/adapter-pg` over a real connection
+    pool — about 6x. The original frontend-only `prisma.ts` (before the schema consolidation)
+    used the adapter specifically to avoid this ("Next.js + Prisma Rust Query Engine DNS
+    issues" per its own comment); that got dropped when frontend switched to re-exporting
+    backend's plain client. Fixed in `backend/src/shared/lib/prisma.ts` (shared by both
+    packages now), plus parallelizing/de-blocking a couple of sequential queries in the auth
+    refresh flow specifically. See `ARCHITECTURE.md` §1.
