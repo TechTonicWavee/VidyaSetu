@@ -66,7 +66,7 @@ export default function PlacementPage() {
               
               <div className="flex flex-col items-center text-center">
                 <div className="relative mb-6">
-                  <ProgressRing value={data.readiness} label={`${data.readiness}%`} sublabel="Ready" size={140} strokeWidth={10} />
+                  <ProgressRing value={data.readiness} label={`${data.readiness}%`} sublabel="Ready" size={140} stroke={10} />
                 </div>
                 <h3 className="font-bold text-content text-lg leading-tight mb-2">You're on track</h3>
                 <p className="text-xs text-muted leading-relaxed max-w-[260px]">
