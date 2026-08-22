@@ -67,7 +67,7 @@ export default function AttendancePage() {
                   label={`${data.overall}%`}
                   sublabel="Overall"
                   size={160}
-                  strokeWidth={10}
+                  stroke={10}
                   color={data.overall >= data.required ? 'var(--brand)' : 'var(--danger)'}
                 />
               </div>
