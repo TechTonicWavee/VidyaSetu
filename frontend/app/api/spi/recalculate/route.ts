@@ -178,6 +178,21 @@ export async function POST(request: NextRequest) {
       }
     }
 
+    if (internshipsResult && Array.isArray(internshipsResult.breakdown)) {
+      for (const evaluatedInt of internshipsResult.breakdown) {
+        if (!evaluatedInt.id) continue;
+        const dbInt = student.internships.find(i => i.id === evaluatedInt.id)
+        if (!dbInt) continue;
+
+        if (evaluatedInt.recipientName && dbInt.recipientName !== evaluatedInt.recipientName) {
+           await prisma.internship.update({
+             where: { id: dbInt.id },
+             data: { recipientName: evaluatedInt.recipientName }
+           })
+        }
+      }
+    }
+
     // Academics engine
     const academicSemester = rawSemester ?? (effectiveSemester > 1 ? effectiveSemester - 1 : 1)
     const academicsResult = calcAcademicsScore({

@@ -114,6 +114,50 @@ export async function GET(request: NextRequest) {
       academics: academicsResult,
     })
 
+    // ── Cache Parsed Recipient Names ──────────────────────────────────────────
+    // Do this asynchronously in the background so it doesn't block the GET request
+    // if we just parsed it. Wait, actually we can just await it since we already 
+    // paid the parse penalty, but fire-and-forget is safer for GET.
+    const cacheUpdates = []
+
+    if (certsResult && Array.isArray(certsResult.breakdown)) {
+      for (const evaluatedCert of certsResult.breakdown) {
+        if (!evaluatedCert.id) continue;
+        const dbCert = student.certifications?.find(c => c.id === evaluatedCert.id)
+        if (!dbCert) continue;
+
+        if (evaluatedCert.recipientName && dbCert.recipientName !== evaluatedCert.recipientName) {
+           cacheUpdates.push(
+             prisma.certification.update({
+               where: { id: dbCert.id },
+               data: { recipientName: evaluatedCert.recipientName }
+             })
+           )
+        }
+      }
+    }
+
+    if (internshipsResult && Array.isArray(internshipsResult.breakdown)) {
+      for (const evaluatedInt of internshipsResult.breakdown) {
+        if (!evaluatedInt.id) continue;
+        const dbInt = student.internships?.find(i => i.id === evaluatedInt.id)
+        if (!dbInt) continue;
+
+        if (evaluatedInt.recipientName && dbInt.recipientName !== evaluatedInt.recipientName) {
+           cacheUpdates.push(
+             prisma.internship.update({
+               where: { id: dbInt.id },
+               data: { recipientName: evaluatedInt.recipientName }
+             })
+           )
+        }
+      }
+    }
+
+    if (cacheUpdates.length > 0) {
+      await Promise.allSettled(cacheUpdates)
+    }
+
     return Response.json({
       success: true,
       student: {

@@ -185,12 +185,18 @@ export async function calcInternshipsScore({
       const docUrl = getDocUrl(item)
       let recipientName = item.recipientName || null
 
-      if (!recipientName && docUrl) {
+      if (recipientName === '[UNPARSABLE]') {
+        recipientName = null
+      } else if (!recipientName && docUrl) {
         try {
           const parsed = await parseCertificateName(docUrl)
-          if (parsed) recipientName = parsed
+          if (parsed) {
+            recipientName = parsed
+          } else {
+            recipientName = '[UNPARSABLE]'
+          }
         } catch {
-          // ignore parse failure
+          recipientName = '[UNPARSABLE]'
         }
       }
 
