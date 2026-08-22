@@ -7,6 +7,7 @@ import { useAuth } from '@/lib/shared/auth/AuthProvider';
 import { useAsyncData } from '@/lib/student/hooks/useAsyncData';
 import { getRankings } from '@/lib/student/data';
 import { icon as lucide } from '@/lib/student/utils/lucide';
+import { formatRelativeTime } from '@/lib/student/format/relativeTime';
 import { Card, StatCard, Badge } from '@/components/shared/ui';
 import { useSocket } from '@/lib/student/socket/SocketProvider';
 import { SpiProgressionChart } from './SpiProgressionChart';
@@ -34,20 +35,47 @@ export default function StudentDashboard() {
 
   const { data: rankings, loading: rankingsLoading } = useAsyncData(() => getRankings(student?.universityId), [student?.universityId]);
 
-  // Real, event-driven — starts empty and fills in as socket events actually
-  // arrive, rather than being seeded with placeholder activity on load.
+  // Real notification history, fetched once on mount, then kept live by
+  // prepending new ones as socket events arrive below — not mock, and not
+  // starting empty either.
   const [liveActivity, setLiveActivity] = useState<any[]>([]);
+  const [activityLoading, setActivityLoading] = useState(true);
+
+  const activityIcon = (type: string) =>
+    type === 'team_invite' ? 'Users'
+    : type === 'invite_accepted' || type === 'invite_declined' ? 'TrendingUp'
+    : 'Bell';
+
+  useEffect(() => {
+    if (!student?.universityId) { setActivityLoading(false); return; }
+    authedFetch('/api/notifications?limit=5')
+      .then((r) => r.json())
+      .then((d) => {
+        if (d?.success && Array.isArray(d.data?.items)) {
+          setLiveActivity(
+            d.data.items.map((n: any) => ({
+              id: n.id,
+              iconKey: activityIcon(n.type),
+              text: n.title,
+              time: formatRelativeTime(n.createdAt),
+            })),
+          );
+        }
+      })
+      .catch(() => {})
+      .finally(() => setActivityLoading(false));
+  }, [student?.universityId]);
 
   useEffect(() => {
     if (!socket) return;
     const onNew = (notification: any) => {
       const newActivity = {
         id: notification.id,
-        iconKey: notification.type === 'team_invite' ? 'Users' : 'Zap',
+        iconKey: activityIcon(notification.type),
         text: notification.title,
         time: 'Just now',
       };
-      setLiveActivity((prev) => [newActivity, ...prev].slice(0, 5));
+      setLiveActivity((prev) => [newActivity, ...prev.filter((a) => a.id !== newActivity.id)].slice(0, 5));
     };
     const onAttendance = (data: any) => {
       setAttendance(data.attendance);
@@ -175,10 +203,12 @@ export default function StudentDashboard() {
         </div>
       </div>
 
-      {/* Recent activity — real, event-driven via socket notifications */}
+      {/* Recent activity — real notifications, fetched on load and kept live via sockets */}
       <Card className="p-6 shadow-sm border-line/60 hover:shadow-md transition-shadow">
         <h3 className="font-bold text-content text-lg mb-6">Recent activity</h3>
-        {liveActivity.length === 0 ? (
+        {activityLoading ? (
+          <div className="space-y-4">{[0, 1, 2].map((i) => <div key={i} className="h-14 rounded-xl bg-surface-2 animate-pulse" />)}</div>
+        ) : liveActivity.length === 0 ? (
           <p className="text-sm text-muted py-6 text-center">No recent activity yet — it'll show up here as things happen.</p>
         ) : (
           <div className="space-y-4">

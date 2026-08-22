@@ -124,7 +124,14 @@ export async function refreshTokens(rawRefreshToken: string) {
   }
 
   const tokenHash = hashToken(rawRefreshToken);
-  const stored = await prisma.refreshToken.findUnique({ where: { tokenHash } });
+  // Neither of these depends on the other's result — both are derivable from the
+  // already-verified JWT payload — so run them concurrently instead of one after
+  // another. On a high-latency DB connection (see ARCHITECTURE.md / FINDINGS.md)
+  // this halves the round-trip cost of the common case.
+  const [stored, student] = await Promise.all([
+    prisma.refreshToken.findUnique({ where: { tokenHash } }),
+    prisma.student.findUnique({ where: { universityId: payload.universityId } }),
+  ]);
 
   if (!stored || stored.revoked || stored.expiresAt < new Date()) {
     await prisma.refreshToken.updateMany({
@@ -137,7 +144,6 @@ export async function refreshTokens(rawRefreshToken: string) {
     );
   }
 
-  const student = await prisma.student.findUnique({ where: { universityId: payload.universityId } });
   if (!student) {
     throw AppError.unauthorized('Account no longer exists.', 'STUDENT_NOT_FOUND');
   }
@@ -155,9 +161,15 @@ export async function refreshTokens(rawRefreshToken: string) {
     },
   });
 
-  await prisma.refreshToken.update({
+  // The new token is already persisted and valid, so the response doesn't need to
+  // wait on marking the old (now-superseded) one revoked — that's bookkeeping for
+  // reuse-detection on a token that's rotated out either way. Not awaiting it
+  // trims a full DB round-trip off every refresh call.
+  prisma.refreshToken.update({
     where: { id: stored.id },
     data: { revoked: true, replacedBy: created.id },
+  }).catch((err) => {
+    console.error('[authService.refreshTokens] failed to revoke superseded refresh token:', err);
   });
 
   return { accessToken, refreshToken: newRefreshToken, student: studentSummary(student) };
