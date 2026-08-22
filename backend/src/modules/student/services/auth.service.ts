@@ -1,14 +1,14 @@
 import bcrypt from 'bcryptjs';
-import { prisma } from '../lib/prisma';
-import { env } from '../config/env';
-import { AppError } from '../utils/appError';
+import { prisma } from '../../../shared/lib/prisma';
+import { env } from '../../../shared/config/env';
+import { AppError } from '../../../shared/utils/appError';
 import {
   hashToken,
   newJti,
   signAccessToken,
   signRefreshToken,
   verifyRefreshToken,
-} from '../utils/jwt';
+} from '../../../shared/utils/jwt';
 
 function studentSummary(student: {
   universityId: string;

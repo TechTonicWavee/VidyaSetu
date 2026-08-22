@@ -1,5 +1,5 @@
-import { prisma } from '../lib/prisma';
-import { AppError } from '../utils/appError';
+import { prisma } from '../../../shared/lib/prisma';
+import { AppError } from '../../../shared/utils/appError';
 import { publicStudentCardSelect } from '../lib/publicStudent';
 import { createNotification } from './notification.service';
 

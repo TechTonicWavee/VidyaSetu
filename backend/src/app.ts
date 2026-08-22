@@ -1,15 +1,15 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import { env } from './config/env';
-import { requestLogger } from './middleware/requestLogger';
-import { errorHandler, notFoundHandler } from './middleware/errorHandler';
-import { authRouter } from './routes/auth.routes';
-import { teamRouter } from './routes/team.routes';
-import { inviteRouter } from './routes/invite.routes';
-import { directoryRouter } from './routes/directory.routes';
-import { notificationRouter } from './routes/notification.routes';
-import { attendanceRouter } from './routes/attendance.routes';
+import { env } from './shared/config/env';
+import { requestLogger } from './shared/middleware/requestLogger';
+import { errorHandler, notFoundHandler } from './shared/middleware/errorHandler';
+import { authRouter } from './modules/student/routes/auth.routes';
+import { teamRouter } from './modules/student/routes/team.routes';
+import { inviteRouter } from './modules/student/routes/invite.routes';
+import { directoryRouter } from './modules/student/routes/directory.routes';
+import { notificationRouter } from './modules/student/routes/notification.routes';
+import { attendanceRouter } from './modules/shared/attendance/routes/attendance.routes';
 
 export function createApp() {
   const app = express();

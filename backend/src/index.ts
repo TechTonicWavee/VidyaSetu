@@ -1,7 +1,7 @@
 import http from 'http';
-import { env } from './config/env';
+import { env } from './shared/config/env';
 import { createApp } from './app';
-import { initSockets } from './sockets';
+import { initSockets } from './shared/sockets';
 
 const app = createApp();
 const server = http.createServer(app);

@@ -1,7 +1,7 @@
-import { asyncHandler } from '../utils/asyncHandler';
-import { ok } from '../utils/response';
-import { AppError } from '../utils/appError';
-import type { AuthedRequest } from '../middleware/auth';
+import { asyncHandler } from '../../../shared/utils/asyncHandler';
+import { ok } from '../../../shared/utils/response';
+import { AppError } from '../../../shared/utils/appError';
+import type { AuthedRequest } from '../../../shared/middleware/auth';
 import * as notificationService from '../services/notification.service';
 
 export const list = asyncHandler(async (req, res) => {

@@ -1,4 +1,4 @@
-import { prisma } from '../lib/prisma';
+import { prisma } from '../shared/lib/prisma';
 
 // Generates ~392 additional DEMO2026-prefixed students (on top of the 8 hand-crafted
 // ones in seed.ts) so the directory, rankings-adjacent, and team-finder pages have

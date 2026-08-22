@@ -1,8 +1,8 @@
 import type { Response } from 'express';
-import { env } from '../config/env';
-import { asyncHandler } from '../utils/asyncHandler';
-import { ok } from '../utils/response';
-import { AppError } from '../utils/appError';
+import { env } from '../../../shared/config/env';
+import { asyncHandler } from '../../../shared/utils/asyncHandler';
+import { ok } from '../../../shared/utils/response';
+import { AppError } from '../../../shared/utils/appError';
 import * as authService from '../services/auth.service';
 
 const REFRESH_COOKIE = 'vs_refresh';

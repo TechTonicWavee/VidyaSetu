@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import multer from 'multer';
-import { prisma } from '../lib/prisma';
+import { prisma } from '../../../../shared/lib/prisma';
 import { AttendanceParserService } from '../services/attendance.service';
-import { getIO } from '../sockets';
+import { getIO } from '../../../../shared/sockets';
 
 const router = Router();
 

@@ -1,6 +1,6 @@
-import { prisma } from '../lib/prisma';
-import { AppError } from '../utils/appError';
-import { emitToUser } from '../sockets';
+import { prisma } from '../../../shared/lib/prisma';
+import { AppError } from '../../../shared/utils/appError';
+import { emitToUser } from '../../../shared/sockets';
 
 interface CreateNotificationInput {
   universityId: string;

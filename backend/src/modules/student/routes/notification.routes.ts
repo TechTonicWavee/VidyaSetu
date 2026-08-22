@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { authMiddleware } from '../middleware/auth';
-import { validate } from '../middleware/validate';
+import { authMiddleware } from '../../../shared/middleware/auth';
+import { validate } from '../../../shared/middleware/validate';
 import { listNotificationsQuerySchema, notificationIdParamsSchema } from '../validators/notification.schema';
 import * as notificationController from '../controllers/notification.controller';
 

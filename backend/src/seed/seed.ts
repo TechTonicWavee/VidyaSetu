@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { prisma } from '../lib/prisma';
+import { prisma } from '../shared/lib/prisma';
 import { seedBulkStudents, seedBulkTeams } from './bulkStudents';
 
 // Demo data for Krrish's modules (My Team / Domain Directory / Notifications),
@@ -254,8 +254,8 @@ async function main() {
   const team = await seedTeam();
   console.log(`Seeded team "${team.name}" (${team.id})`);
 
-  const bulkIds = await seedBulkStudents(passwordHash);
-  await seedBulkTeams(bulkIds);
+  const bulkIds = await seedBulkStudents(passwordHash, 1000);
+  await seedBulkTeams(bulkIds, 150);
 
   console.log('Seed complete. Log in with any DEMO2026CSE0xx university ID and the demo password.');
 }

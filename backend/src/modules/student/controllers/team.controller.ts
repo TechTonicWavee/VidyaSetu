@@ -1,6 +1,6 @@
-import { asyncHandler } from '../utils/asyncHandler';
-import { ok } from '../utils/response';
-import type { AuthedRequest } from '../middleware/auth';
+import { asyncHandler } from '../../../shared/utils/asyncHandler';
+import { ok } from '../../../shared/utils/response';
+import type { AuthedRequest } from '../../../shared/middleware/auth';
 import * as teamService from '../services/team.service';
 
 function uid(req: AuthedRequest) {
