@@ -15,8 +15,15 @@ interface DirectoryFilters {
 }
 
 export async function listDirectory(filters: DirectoryFilters) {
+  // Not gated on formStatus: 'submitted' — with a roster-seeded student body,
+  // most real students haven't logged in yet (no password set), but they're
+  // still real, enrolled students and belong in the directory. (branch was
+  // considered as an "is this real" proxy instead, but two already-visible,
+  // actually-submitted students are missing it — excluding on it would have
+  // been a regression. fullName being non-empty is the one thing every real
+  // record actually has; it excludes exactly one genuinely blank row.)
   const where: Prisma.StudentWhereInput = {
-    formStatus: 'submitted',
+    fullName: { not: '' },
     ...(filters.domain ? { domain: filters.domain } : {}),
     ...(filters.year ? { year: filters.year } : {}),
     ...(filters.section ? { section: filters.section } : {}),
@@ -53,9 +60,10 @@ export async function listDirectory(filters: DirectoryFilters) {
 }
 
 export async function listDomains() {
+  // Same fix as listDirectory above — not gated on formStatus: 'submitted'.
   const rows = await prisma.student.groupBy({
     by: ['domain'],
-    where: { formStatus: 'submitted', domain: { not: null } },
+    where: { fullName: { not: '' }, domain: { not: null } },
     _count: { domain: true },
   });
   const counts = new Map<string, number>();
