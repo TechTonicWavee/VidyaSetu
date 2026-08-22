@@ -6,7 +6,7 @@ const prisma = new PrismaClient()
 
 async function main() {
   const student = await prisma.student.findFirst({
-    where: { universityId: '202401100200243' },
+    where: { universityId: '202401100200221' },
   })
 
   if (!student) { console.error('Not found'); return }

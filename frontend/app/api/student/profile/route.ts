@@ -1,6 +1,12 @@
 import type { NextRequest } from 'next/server'
 import { prisma } from '@/lib/prisma'
 import calcResumeScore from '@/lib/spi/sources/resume'
+import calcGitHubScore from '@/lib/spi/sources/githubScore'
+import calcLeetCodeScore from '@/lib/spi/sources/leetcodeScore'
+import calcCertificationsScore from '@/lib/spi/sources/certifications'
+import calcInternshipsScore from '@/lib/spi/sources/internships'
+import calcAcademicsScore from '@/lib/spi/sources/academics'
+import calculateSPI from '@/lib/spi/orchestrator/calculateSPI'
 import { AuthError, requireAuth, requireOwnResource } from '../../../../lib/auth/verifyAccessToken'
 
 export const dynamic = 'force-dynamic'
@@ -39,9 +45,73 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    // cgpa and semester are now properly typed after prisma generate
+    const rawCgpa = student.cgpa ?? null
+    const rawSemester = student.semester ?? null
+
+    // ── Derive effective year/semester for SPI engines ──────────────────────
+    const admissionYear: number | null =
+      (student as any).admissionYear ??
+      (parseInt(universityId.slice(0, 4), 10) || null)
+
+    const now = new Date()
+    const month = now.getMonth() + 1
+    let effectiveYear = student.year ?? 1
+    if (admissionYear) {
+      const yearsElapsed = now.getFullYear() - admissionYear
+      effectiveYear = month >= 7
+        ? Math.min(4, Math.max(1, yearsElapsed + 1))
+        : Math.min(4, Math.max(1, yearsElapsed))
+    }
+    const effectiveSemester = month >= 7 ? effectiveYear * 2 - 1 : effectiveYear * 2
+
+    // ── Run all SPI evidence engines ─────────────────────────────────────────
+    const githubResult = calcGitHubScore({
+      year: effectiveYear,
+      admissionYear,
+      githubStats: student.codingProfile?.githubStats,
+    })
+
+    const leetcodeResult = calcLeetCodeScore({
+      year: effectiveYear,
+      admissionYear,
+      leetcodeStats: student.codingProfile?.leetcodeStats,
+    })
+
     const resumeResult = calcResumeScore({
-      year: student.year,
+      year: effectiveYear,
+      admissionYear,
       resumeParsed: student.resumeParsed,
+    })
+
+    const certsResult = await calcCertificationsScore({
+      year: effectiveYear,
+      admissionYear,
+      certifications: student.certifications || [],
+      studentName: student.fullName,
+    })
+
+    const internshipsResult = await calcInternshipsScore({
+      year: effectiveYear,
+      admissionYear,
+      internships: student.internships || [],
+      studentName: student.fullName,
+    })
+
+    const academicSemester = rawSemester ?? (effectiveSemester > 1 ? effectiveSemester - 1 : 1)
+    const academicsResult = calcAcademicsScore({
+      year: effectiveYear,
+      admissionYear,
+      academicsData: rawCgpa != null ? [{ semester: academicSemester, cgpa: rawCgpa }] : [],
+    })
+
+    const spiResult = calculateSPI({
+      github: githubResult,
+      leetcode: leetcodeResult,
+      resume: resumeResult,
+      certifications: certsResult,
+      internships: internshipsResult,
+      academics: academicsResult,
     })
 
     return Response.json({
@@ -53,7 +123,9 @@ export async function GET(request: NextRequest) {
         section: student.section,
         email: student.email,
         phone: student.phone,
-        spiScore: student.spiScore,
+        spiScore: spiResult.spi,          // live-calculated
+        spiBreakdown: spiResult.dimensions,
+        evidenceCoverage: spiResult.evidenceCoverage,
         formStatus: student.formStatus,
         formSubmittedAt: student.formSubmittedAt,
         resumeUrl: student.resumeUrl,
