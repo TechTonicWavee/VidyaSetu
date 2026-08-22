@@ -10,6 +10,7 @@ export { Avatar } from './Avatar';
 export { ProgressRing } from './ProgressRing';
 export { ProgressBar } from './ProgressBar';
 export { ErrorState } from './ErrorState';
+export { ComingSoon } from './ComingSoon';
 export { SectionTitle } from './SectionTitle';
 export { ChartCard } from './ChartCard';
 export { ChartTooltip, CHART } from './ChartTooltip';
