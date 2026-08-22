@@ -46,3 +46,11 @@ ehthumbs.db
 .idea/
 *.swp
 *.swo
+
+# Antigravity IDE Files
+.claude/
+agent/skills/
+.agents/
+skills-lock.json
+implementation_plan.md
+stash.patch

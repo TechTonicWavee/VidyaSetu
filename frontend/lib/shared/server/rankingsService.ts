@@ -228,7 +228,25 @@ function pickMilestones(currentRank: number, total: number, max = 2): number[] {
     .slice(0, max);
 }
 
+// Rankings involve several DB round trips per request (see the module comment)
+// and don't need to be second-fresh — a short in-memory cache means
+// navigating between pages, or a page refresh moments later, doesn't pay the
+// full cost again. Cleared automatically by TTL; deliberately not persisted
+// or shared across server instances, since staleness this short is fine but
+// staleness that survives a redeploy wouldn't be.
+const CACHE_TTL_MS = 60_000;
+const cache = new Map<string, { data: RankingsResult; expiresAt: number }>();
+
 export async function getRankings(universityId: string): Promise<RankingsResult> {
+  const cached = cache.get(universityId);
+  if (cached && cached.expiresAt > Date.now()) return cached.data;
+
+  const data = await computeRankings(universityId);
+  cache.set(universityId, { data, expiresAt: Date.now() + CACHE_TTL_MS });
+  return data;
+}
+
+async function computeRankings(universityId: string): Promise<RankingsResult> {
   const me = await prisma.student.findUnique({
     where: { universityId },
     select: { universityId: true, branch: true, section: true, spiScore: true },
