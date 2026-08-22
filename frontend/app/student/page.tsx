@@ -6,7 +6,7 @@ import { TrendingUp, ArrowUpRight, CheckCircle2, Calendar, Activity, Zap } from 
 import { authedFetch } from '@/lib/api/sameOriginFetch';
 import { useAuth } from '@/lib/auth/AuthProvider';
 import { useAsyncData } from '@/lib/hooks/useAsyncData';
-import { getDashboardExtras } from '@/lib/data';
+import { getDashboardExtras, getRankings } from '@/lib/data';
 import { icon as lucide } from '@/lib/utils/lucide';
 import { Card, StatCard, Badge, CardSkeleton } from '@/components/ui';
 import { cn } from '@/lib/utils/cn';
@@ -28,6 +28,7 @@ export default function StudentDashboard() {
   const firstName = student?.name?.split(' ')[0] ?? 'Student';
 
   const [spi, setSpi] = useState<number | null>(null);
+  const [spiHistory, setSpiHistory] = useState<any[]>([]);
   const [spiLoading, setSpiLoading] = useState(true);
   
   const [attendance, setAttendance] = useState<number | null>(null);
@@ -35,6 +36,7 @@ export default function StudentDashboard() {
   const [classesTotal, setClassesTotal] = useState<number | null>(null);
 
   const { data: extras, loading: extrasLoading } = useAsyncData(() => getDashboardExtras(student?.universityId), [student?.universityId]);
+  const { data: rankings, loading: rankingsLoading } = useAsyncData(() => getRankings(student?.universityId), [student?.universityId]);
   const [todos, setTodos] = useState<{ id: string; label: string; done: boolean }[]>([]);
 
   useEffect(() => {
@@ -87,6 +89,7 @@ export default function StudentDashboard() {
       .then((d) => {
         if (d?.success) {
           if (d.student?.spiScore != null) setSpi(Number(d.student.spiScore));
+          if (d.student?.spiHistory != null) setSpiHistory(d.student.spiHistory);
           if (d.student?.attendance != null) setAttendance(Number(d.student.attendance));
           if (d.student?.classesAttended != null) setClassesAttended(Number(d.student.classesAttended));
           if (d.student?.classesTotal != null) setClassesTotal(Number(d.student.classesTotal));
@@ -100,12 +103,29 @@ export default function StudentDashboard() {
       body: JSON.stringify({ universityId: student.universityId }),
     })
       .then((r) => r.json())
-      .then((d) => { if (d?.success && typeof d.spi === 'number') setSpi(d.spi); })
+      .then((d) => { 
+        if (d?.success) {
+          if (typeof d.spi === 'number') setSpi(d.spi);
+          if (d.spiHistory != null) setSpiHistory(d.spiHistory);
+        }
+      })
       .catch(() => {})
       .finally(() => setSpiLoading(false));
   }, [student?.universityId]);
 
   const date = new Date().toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+  let growthText = "0% Growth";
+  let isPositive = true;
+  if (spiHistory.length >= 2) {
+    const first = spiHistory[0].spi;
+    const last = spiHistory[spiHistory.length - 1].spi;
+    if (first > 0) {
+      const pct = ((last - first) / first) * 100;
+      isPositive = pct >= 0;
+      growthText = `${pct > 0 ? '+' : ''}${pct.toFixed(1)}% Growth`;
+    }
+  }
 
   return (
     <div className="space-y-8 pb-8">
@@ -145,15 +165,19 @@ export default function StudentDashboard() {
                   <p className="text-sm font-medium text-muted">Attendance not yet published for this semester.</p>
                 </div>
               )}
-              {extras?.quickStats[1] && (
+              {rankingsLoading ? (
+                <div className="flex-1 flex items-center justify-center bg-surface rounded-2xl border border-line p-5">
+                  <div className="w-6 h-6 border-2 border-brand border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              ) : rankings ? (
                 <StatCard 
-                  label={extras.quickStats[1].label} 
-                  value={extras.quickStats[1].value} 
-                  icon={lucide(extras.quickStats[1].iconKey)} 
-                  tone={extras.quickStats[1].tone} 
+                  label="Batch Rank" 
+                  value={`#${rankings.branch.overall}`} 
+                  icon={lucide('Award')} 
+                  tone="brand" 
                   className="flex-1"
                 />
-              )}
+              ) : null}
             </>
           )}
         </div>
@@ -167,44 +191,39 @@ export default function StudentDashboard() {
                   <Activity className="text-brand w-5 h-5" />
                   SPI Progression
                 </h3>
-                <p className="text-sm text-muted mt-0.5">Your performance over the last 8 months</p>
+                <p className="text-sm text-muted mt-0.5">Your performance over the last {spiHistory.length || 8} months</p>
               </div>
-              <Badge tone="green" className="px-3 py-1 shadow-sm">+12% Growth</Badge>
+              <Badge tone={isPositive ? 'green' : 'red'} className="px-3 py-1 shadow-sm">{growthText}</Badge>
             </div>
             <div className="flex-1 min-h-[160px] -ml-2">
-              <SpiProgressionChart currentSpi={spi} />
+              {spiLoading ? (
+                <div className="w-full h-full flex items-center justify-center min-h-[160px]">
+                  <div className="w-6 h-6 border-2 border-brand border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              ) : (
+                <SpiProgressionChart currentSpi={spi} />
+              )}
             </div>
           </Card>
         </div>
 
         {/* Right Column (2 Stats) */}
         <div className="flex flex-col gap-6">
-          {extrasLoading ? (
-            <>
-              <CardSkeleton />
-              <CardSkeleton />
-            </>
-          ) : (
-            <>
-              {extras?.quickStats[2] && (
-                <StatCard 
-                  label={extras.quickStats[2].label} 
-                  value={extras.quickStats[2].value} 
-                  icon={lucide(extras.quickStats[2].iconKey)} 
-                  tone={extras.quickStats[2].tone} 
-                  className="flex-1"
-                />
-              )}
-              {extras?.quickStats[3] && (
-                <StatCard 
-                  label={extras.quickStats[3].label} 
-                  value={extras.quickStats[3].value} 
-                  icon={lucide(extras.quickStats[3].iconKey)} 
-                  tone={extras.quickStats[3].tone} 
-                  className="flex-1"
-                />
-              )}
-            </>
+          <StatCard 
+            label="Pending Tasks" 
+            value={todos.filter(t => !t.done).length.toString()} 
+            icon={lucide('ListChecks')} 
+            tone="blue" 
+            className="flex-1"
+          />
+          {extras?.quickStats[3] && (
+            <StatCard 
+              label={extras.quickStats[3].label} 
+              value={extras.quickStats[3].value} 
+              icon={lucide(extras.quickStats[3].iconKey)} 
+              tone={extras.quickStats[3].tone} 
+              className="flex-1"
+            />
           )}
         </div>
       </div>

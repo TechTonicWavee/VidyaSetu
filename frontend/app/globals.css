@@ -346,3 +346,305 @@ input:focus, textarea:focus, select:focus { outline: none; }
   }
   @page { margin: 14mm; }
 }
+
+/* ============================================================
+   LANDING PAGE EXCLUSIVE COLOR SYSTEM
+   Scoped to .landing-page so it never leaks into the dashboard.
+   Light: Ivory canvas + Deep Forest Teal accent
+   Dark:  Carbon ink + Electric Jade accent
+   ============================================================ */
+
+/* ─── LIGHT MODE TOKENS ─── */
+.landing-page {
+  --lp-bg:          #F8F7F4;
+  --lp-bg-alt:      #F0EFE9;
+  --lp-surface:     #FFFFFF;
+  --lp-surface-2:   #F5F4F0;
+  --lp-border:      #E4E1D8;
+  --lp-border-soft: #EDEBE4;
+
+  --lp-text-primary:   #1A1915;
+  --lp-text-secondary: #4A4740;
+  --lp-text-muted:     #8A877E;
+
+  --lp-accent:        #0D6F5C;
+  --lp-accent-hover:  #0A5D4D;
+  --lp-accent-light:  #E6F4F1;
+  --lp-accent-glow:   rgba(13, 111, 92, 0.12);
+  --lp-accent-fg:     #FFFFFF;
+
+  background-color: var(--lp-bg);
+  color:            var(--lp-text-primary);
+}
+
+/* ─── DARK MODE TOKENS ─── */
+.dark .landing-page {
+  --lp-bg:          #0C0C0F;
+  --lp-bg-alt:      #111116;
+  --lp-surface:     #17171C;
+  --lp-surface-2:   #1E1E25;
+  --lp-border:      rgba(255,255,255,0.07);
+  --lp-border-soft: rgba(255,255,255,0.04);
+
+  --lp-text-primary:   #F0F0F5;
+  --lp-text-secondary: #A0A0B0;
+  --lp-text-muted:     #60606E;
+
+  --lp-accent:        #00C896;
+  --lp-accent-hover:  #00B584;
+  --lp-accent-light:  rgba(0, 200, 150, 0.12);
+  --lp-accent-glow:   rgba(0, 200, 150, 0.2);
+  --lp-accent-fg:     #000000;
+
+  background-color: var(--lp-bg);
+  color:            var(--lp-text-primary);
+}
+
+/* ─── LANDING UTILITY CLASSES ─── */
+.lp-surface-2   { background: var(--lp-surface-2); }
+.lp-section-alt { background: var(--lp-bg-alt); }
+.lp-divider     { border-left: 1.5px solid var(--lp-border); }
+
+.lp-circuit-h   { background: var(--lp-accent); opacity: 0.15; }
+.lp-circuit-v   { background: var(--lp-accent); opacity: 0.15; }
+.lp-circuit-dot {
+  background: var(--lp-accent);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--lp-accent-glow);
+  opacity: 0.5;
+}
+
+/* ─── BADGE ─── */
+.lp-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: 99px;
+  background: var(--lp-accent-light);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--lp-accent);
+  letter-spacing: 0.01em;
+}
+
+/* ─── BUTTONS ─── */
+.lp-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: var(--lp-accent);
+  color: var(--lp-accent-fg);
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px var(--lp-accent-glow);
+}
+.lp-btn-primary:hover {
+  background: var(--lp-accent-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 30px var(--lp-accent-glow);
+}
+
+.lp-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: transparent;
+  color: var(--lp-text-primary);
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  border: 1.5px solid var(--lp-border);
+  cursor: pointer;
+  transition: background 0.2s, border-color 0.2s;
+}
+.lp-btn-secondary:hover {
+  background: var(--lp-surface-2);
+  border-color: var(--lp-text-muted);
+}
+
+/* ─── THEME TOGGLE ─── */
+.lp-theme-btn {
+  padding: 8px;
+  border-radius: 8px;
+  border: 1.5px solid var(--lp-border);
+  background: var(--lp-surface);
+  color: var(--lp-text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s, border-color 0.2s;
+}
+.lp-theme-btn:hover { color: var(--lp-accent); border-color: var(--lp-accent); }
+
+/* ─── ICON CIRCLE ─── */
+.lp-icon-circle {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  border: 1.5px solid var(--lp-border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--lp-text-primary);
+  background: var(--lp-surface);
+  transition: border-color 0.2s, color 0.2s, transform 0.2s;
+  flex-shrink: 0;
+}
+.lp-feature:hover .lp-icon-circle {
+  border-color: var(--lp-accent);
+  color: var(--lp-accent);
+  transform: scale(1.08);
+}
+
+/* ─── MOCKUP ─── */
+.lp-mockup {
+  background: var(--lp-surface);
+  border: 1px solid var(--lp-border);
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.05);
+}
+.dark .lp-mockup {
+  box-shadow: 0 32px 80px rgba(0,0,0,0.5), 0 8px 24px rgba(0,0,0,0.3);
+}
+.lp-mockup-header {
+  height: 40px;
+  border-bottom: 1px solid var(--lp-border);
+  background: var(--lp-surface-2);
+  display: flex; align-items: center;
+  padding: 0 16px;
+  justify-content: space-between;
+}
+.lp-mockup-body {
+  padding: 24px;
+  height: 310px;
+  background: var(--lp-surface);
+}
+.lp-bar-accent {
+  background: var(--lp-accent);
+  border-radius: 4px 4px 0 0;
+}
+.lp-bar-muted {
+  background: var(--lp-border);
+  border-radius: 4px 4px 0 0;
+}
+.lp-chip {
+  font-size: 10px; font-weight: 700;
+  padding: 2px 8px; border-radius: 4px;
+  background: var(--lp-accent-light);
+  color: var(--lp-accent);
+}
+
+/* ─── FLOAT CARD ─── */
+.lp-float-card {
+  position: absolute;
+  left: -16px; bottom: 56px;
+  background: var(--lp-surface);
+  border: 1px solid var(--lp-border);
+  border-radius: 14px;
+  padding: 14px 18px;
+  display: flex; align-items: center; gap: 14px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.08);
+}
+.dark .lp-float-card {
+  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+}
+.lp-float-icon {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: var(--lp-accent-light);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--lp-accent);
+}
+
+/* ─── ROLE CARDS ─── */
+.lp-role-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 32px;
+  background: var(--lp-surface);
+  border: 1.5px solid var(--lp-border);
+  border-radius: 16px;
+  text-align: left;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+}
+.lp-role-card:hover {
+  border-color: var(--lp-accent);
+  box-shadow: 0 8px 40px var(--lp-accent-glow);
+  transform: translateY(-3px);
+}
+.lp-role-card .lp-arrow-btn {
+  position: absolute; bottom: 28px; right: 28px;
+  width: 32px; height: 32px;
+  border-radius: 50%;
+  border: 1.5px solid var(--lp-border);
+  background: var(--lp-surface-2);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--lp-text-muted);
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+.lp-role-card:hover .lp-arrow-btn {
+  background: var(--lp-accent);
+  border-color: var(--lp-accent);
+  color: var(--lp-accent-fg);
+}
+
+/* ─── CTA BANNER ─── */
+.lp-cta-banner {
+  background: var(--lp-accent);
+  border-radius: 28px;
+  padding: 64px 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  box-shadow: 0 20px 60px var(--lp-accent-glow);
+}
+.lp-cta-white-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: var(--lp-accent-fg);
+  color: var(--lp-accent);
+  border-radius: 99px;
+  font-size: 15px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+}
+.lp-cta-white-btn:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+}
+
+/* ─── SCROLL INDICATOR ─── */
+.lp-scroll-mouse {
+  width: 22px; height: 36px;
+  border-radius: 99px;
+  border: 2px solid var(--lp-text-muted);
+  display: flex; justify-content: center; padding-top: 6px;
+}
+.lp-scroll-dot {
+  width: 3px; height: 6px;
+  border-radius: 99px;
+  background: var(--lp-accent);
+  animation: lp-scroll-bounce 1.6s ease-in-out infinite;
+}
+@keyframes lp-scroll-bounce {
+  0%, 100% { transform: translateY(0); opacity: 1; }
+  50%       { transform: translateY(6px); opacity: 0.4; }
+}
+
