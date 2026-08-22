@@ -1,10 +1,11 @@
 # VidyaSetu Backend
 
-Node.js + Express + TypeScript service for Krrish's modules: JWT auth, My Team,
-Domain Directory, and Notifications (REST + Socket.IO). Talks to the same
-Supabase Postgres database as `frontend/`, via its own Prisma client.
+Node.js + Express + TypeScript service, organized by role module: JWT auth, My Team,
+Domain Directory, and Notifications (REST + Socket.IO) — all student-domain today.
+`prisma/schema.prisma` here is the **only** Prisma schema in the repo; `frontend/` shares this
+same client (see the root `README.md`).
 
-See the root `SETUP.md` for how to configure and run this alongside the frontend.
+See the root `README.md` for how this fits together with `frontend/` and where new code goes.
 
 ## Scripts
 
@@ -17,7 +18,15 @@ See the root `SETUP.md` for how to configure and run this alongside the frontend
 
 ## Layout
 
-- `src/routes`, `src/controllers`, `src/services` — one set per module (`auth`, `team`, `invite`, `directory`, `notification`)
-- `src/middleware` — `authMiddleware` (JWT verification), Zod `validate`, central `errorHandler`
-- `src/sockets` — Socket.IO server, JWT handshake auth, per-user rooms (`user:{universityId}`)
-- `prisma/schema.prisma` — mirror of `frontend/prisma/schema.prisma` (see the comment at the top of that file for the sync process)
+- `src/modules/student/{routes,controllers,services,validators}` — auth, team, invite,
+  directory, notification (all gated by `authMiddleware`, whose role type is literally
+  `'student'` — see root `ARCHITECTURE.md` §4)
+- `src/modules/shared/attendance/` — cross-role (faculty writes, student meant to read);
+  no auth middleware yet, see `refactor/FINDINGS.md`
+- `src/modules/faculty/`, `dean/`, `admin/` — scaffolded, empty; no backend logic exists for
+  these roles yet
+- `src/shared/` — `config/env`, `middleware` (`authMiddleware`, Zod `validate`, central
+  `errorHandler`), `utils` (`appError`, `jwt`, `response`, `asyncHandler`), `lib/prisma`,
+  `sockets` (Socket.IO server, JWT handshake auth, per-user rooms `user:{universityId}`)
+- `src/seed/` — `seed.ts`/`bulkStudents.ts`/`seed_cgpa.js`, run manually, not part of any module
+- `scripts/oneoff/` — one-off data-repair scripts, not part of the app; see the README there
