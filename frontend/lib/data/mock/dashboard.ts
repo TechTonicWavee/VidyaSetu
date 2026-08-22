@@ -5,7 +5,7 @@ export const dashboardMock: DashboardExtras = {
     { label: 'Attendance', value: '79%', iconKey: 'CalendarCheck', tone: 'amber' },
     { label: 'Batch Rank', value: '#89', iconKey: 'Award', tone: 'brand' },
     { label: 'Pending Tasks', value: '3', iconKey: 'ListChecks', tone: 'blue' },
-    { label: 'Placement Ready', value: '68%', iconKey: 'Target', tone: 'green' },
+    { label: 'Placement Ready', value: '-', iconKey: 'Target', tone: 'green' },
   ],
   todos: [
     { id: 'd1', label: 'Submit DBMS assignment (overdue)', done: false },

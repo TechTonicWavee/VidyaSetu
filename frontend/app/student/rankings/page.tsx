@@ -34,10 +34,10 @@ function ScopeView({ scope }: { scope: RankingScope }) {
               <CartesianGrid strokeDasharray="3 3" stroke={CHART.grid} vertical={false} />
               <XAxis dataKey="label" stroke={CHART.axis} fontSize={12} />
               <YAxis stroke={CHART.axis} fontSize={12} domain={[0, 100]} />
-              <Tooltip content={<ChartTooltip />} />
-              <Bar dataKey="value" name="SPI" radius={[4, 4, 0, 0]}>
-                <Cell fill={CHART.brand} />
-                <Cell fill={CHART.blue} />
+              <Tooltip content={<ChartTooltip />} cursor={false} />
+              <Bar dataKey="value" name="SPI" radius={[6, 6, 0, 0]} maxBarSize={60}>
+                <Cell fill="var(--brand)" />
+                <Cell fill="var(--line)" />
               </Bar>
             </BarChart>
           </ResponsiveContainer>
