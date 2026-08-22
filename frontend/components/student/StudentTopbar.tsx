@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Menu, Search, Bell, Sun, Moon, ChevronDown, User, Settings, LogOut, CheckCheck } from 'lucide-react';
+import { Menu, Bell, Sun, Moon, ChevronDown, User, Settings, LogOut, CheckCheck } from 'lucide-react';
 import { cn } from '@/lib/utils/cn';
 import { useAuth } from '@/lib/auth/AuthProvider';
 import { useTheme } from '@/components/ThemeProvider';
@@ -50,18 +50,6 @@ export default function StudentTopbar({ title, onOpenMobile }: { title: string; 
 
       <h1 className="text-lg font-bold text-content tracking-tight truncate">{title}</h1>
 
-      {/* Search (stub for now) */}
-      <div className="hidden md:flex items-center ml-4 flex-1 max-w-sm">
-        <div className="relative w-full">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
-          <input
-            type="search"
-            placeholder="Search…"
-            aria-label="Search"
-            className="w-full bg-surface-2 border border-line rounded-xl pl-9 pr-3 py-2 text-sm text-content placeholder:text-muted focus:border-brand focus:ring-2 focus:ring-brand/20"
-          />
-        </div>
-      </div>
 
       <div className="flex items-center gap-1.5 ml-auto">
         {/* Theme toggle */}
