@@ -390,10 +390,10 @@ export default function DeanReports() {
           {/* Title + Filters + Download */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 animate-fade-in">
             <div>
-              <h1 className="text-2xl font-bold text-[#0D1B2A]">
+              <h1 className="text-2xl font-bold text-content">
                 Department Reports
               </h1>
-              <p className="text-gray-500 text-sm mt-0.5">
+              <p className="text-muted text-sm mt-0.5">
                 Comprehensive analytics summary — generated{" "}
                 {new Date().toLocaleDateString("en-IN", {
                   day: "numeric",
@@ -408,13 +408,13 @@ export default function DeanReports() {
                 <select
                   value={branch}
                   onChange={(e) => setBranch(e.target.value)}
-                  className="appearance-none bg-white border border-gray-200 rounded-lg px-4 py-2 text-sm text-[#0D1B2A] pr-8 focus:outline-none focus:ring-2 focus:ring-purple-200 cursor-pointer"
+                  className="appearance-none bg-surface border border-line rounded-lg px-4 py-2 text-sm text-content pr-8 focus:outline-none focus:ring-2 focus:ring-purple-200 cursor-pointer"
                 >
                   <option>CSE</option>
                 </select>
                 <ChevronDown
                   size={13}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted pointer-events-none"
                 />
               </div>
               {/* Semester filter */}
@@ -422,7 +422,7 @@ export default function DeanReports() {
                 <select
                   value={semester}
                   onChange={(e) => setSemester(e.target.value)}
-                  className="appearance-none bg-white border border-gray-200 rounded-lg px-4 py-2 text-sm text-[#0D1B2A] pr-8 focus:outline-none focus:ring-2 focus:ring-purple-200 cursor-pointer"
+                  className="appearance-none bg-surface border border-line rounded-lg px-4 py-2 text-sm text-content pr-8 focus:outline-none focus:ring-2 focus:ring-purple-200 cursor-pointer"
                 >
                   <option>S1 2026</option>
                   <option>S2 2025</option>
@@ -431,7 +431,7 @@ export default function DeanReports() {
                 </select>
                 <ChevronDown
                   size={13}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted pointer-events-none"
                 />
               </div>
               <button
@@ -461,7 +461,7 @@ export default function DeanReports() {
                 style={{ animationDelay: `${i * 0.06}s` }}
               >
                 <div className="flex items-center justify-between mb-2">
-                  <p className="text-xs font-medium text-gray-500 uppercase tracking-wide leading-tight">
+                  <p className="text-xs font-medium text-muted uppercase tracking-wide leading-tight">
                     {k.label}
                   </p>
                   <div
@@ -470,7 +470,7 @@ export default function DeanReports() {
                     <k.icon size={14} color={k.iconColor} />
                   </div>
                 </div>
-                <p className="text-xl font-bold text-[#0D1B2A] leading-none mb-1">
+                <p className="text-xl font-bold text-content leading-none mb-1">
                   {k.value}
                 </p>
                 <p className={`text-xs font-semibold ${k.deltaColor}`}>
@@ -489,10 +489,10 @@ export default function DeanReports() {
             >
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h2 className="font-semibold text-[#0D1B2A] text-sm">
+                  <h2 className="font-semibold text-content text-sm">
                     Overall Pass Rate Trend
                   </h2>
-                  <p className="text-xs text-gray-400 mt-0.5">
+                  <p className="text-xs text-muted mt-0.5">
                     Department-wide, semester over semester
                   </p>
                 </div>
@@ -503,19 +503,19 @@ export default function DeanReports() {
                   data={passRateData}
                   margin={{ top: 4, right: 8, left: -10, bottom: 0 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--line)" />
                   <XAxis
                     dataKey="sem"
-                    tick={{ fontSize: 11, fill: "#9CA3AF" }}
+                    tick={{ fontSize: 11, fill: "var(--muted)" }}
                   />
                   <YAxis
                     domain={[75, 90]}
-                    tick={{ fontSize: 11, fill: "#9CA3AF" }}
+                    tick={{ fontSize: 11, fill: "var(--muted)" }}
                     unit="%"
                   />
                   <Tooltip
                     formatter={(v) => [`${v}%`, "Pass Rate"]}
-                    contentStyle={{ fontSize: 12, borderRadius: 8 }}
+                    contentStyle={{ fontSize: 12, borderRadius: 8, background: 'var(--surface)', borderColor: 'var(--line)', color: 'var(--content)' }}
                   />
                   <Line
                     type="monotone"
@@ -536,10 +536,10 @@ export default function DeanReports() {
             >
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h2 className="font-semibold text-[#0D1B2A] text-sm">
+                  <h2 className="font-semibold text-content text-sm">
                     Branch-wise SPI Trend
                   </h2>
-                  <p className="text-xs text-gray-400 mt-0.5">
+                  <p className="text-xs text-muted mt-0.5">
                     Average SPI per branch over semesters
                   </p>
                 </div>
@@ -550,16 +550,16 @@ export default function DeanReports() {
                   data={semesterTrend}
                   margin={{ top: 4, right: 8, left: -10, bottom: 0 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--line)" />
                   <XAxis
                     dataKey="sem"
-                    tick={{ fontSize: 11, fill: "#9CA3AF" }}
+                    tick={{ fontSize: 11, fill: "var(--muted)" }}
                   />
                   <YAxis
                     domain={[58, 82]}
-                    tick={{ fontSize: 11, fill: "#9CA3AF" }}
+                    tick={{ fontSize: 11, fill: "var(--muted)" }}
                   />
-                  <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8 }} />
+                  <Tooltip contentStyle={{ fontSize: 12, borderRadius: 8, background: 'var(--surface)', borderColor: 'var(--line)', color: 'var(--content)' }} />
                   <Legend wrapperStyle={{ fontSize: 11 }} />
                   {["CSE"].map((b) => (
                     <Line
@@ -585,15 +585,15 @@ export default function DeanReports() {
               style={{ animationDelay: "0.34s" }}
             >
               <div className="flex items-center justify-between mb-4">
-                <h2 className="font-semibold text-[#0D1B2A] text-sm">
+                <h2 className="font-semibold text-content text-sm">
                   Branch Performance Summary
                 </h2>
-                <span className="text-xs text-gray-400">{semester}</span>
+                <span className="text-xs text-muted">{semester}</span>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-left">
                   <thead>
-                    <tr className="border-b border-gray-100 text-xs text-gray-500 uppercase">
+                    <tr className="border-b border-line text-xs text-muted uppercase">
                       <th className="pb-3 font-medium">Branch</th>
                       <th className="pb-3 font-medium">Students</th>
                       <th className="pb-3 font-medium">Avg SPI</th>
@@ -608,24 +608,24 @@ export default function DeanReports() {
                     {filteredBranch.map((b, i) => (
                       <tr
                         key={i}
-                        className="border-b border-gray-50 hover:bg-gray-50/50 transition"
+                        className="border-b border-gray-50 hover:bg-surface-2/50 transition"
                       >
-                        <td className="py-3 font-bold text-sm text-[#0D1B2A]">
+                        <td className="py-3 font-bold text-sm text-content">
                           {b.branch}
                         </td>
-                        <td className="py-3 text-sm text-gray-600">
+                        <td className="py-3 text-sm text-content-2">
                           {b.students}
                         </td>
-                        <td className="py-3 text-sm font-semibold text-[#0D1B2A]">
+                        <td className="py-3 text-sm font-semibold text-content">
                           {b.avgSpi}
                         </td>
-                        <td className="py-3 text-sm text-gray-700">
+                        <td className="py-3 text-sm text-content-2">
                           {b.passRate}
                         </td>
-                        <td className="py-3 text-sm text-gray-700">
+                        <td className="py-3 text-sm text-content-2">
                           {b.placementReady}
                         </td>
-                        <td className="py-3 text-sm text-gray-700">{b.co}</td>
+                        <td className="py-3 text-sm text-content-2">{b.co}</td>
                         <td className="py-3 text-sm text-red-600 font-semibold">
                           {b.atRisk}
                         </td>
@@ -648,7 +648,7 @@ export default function DeanReports() {
               className="card animate-fade-in"
               style={{ animationDelay: "0.42s" }}
             >
-              <h2 className="font-semibold text-[#0D1B2A] text-sm mb-4">
+              <h2 className="font-semibold text-content text-sm mb-4">
                 Risk Distribution
               </h2>
               <ResponsiveContainer width="100%" height={180}>
@@ -667,7 +667,7 @@ export default function DeanReports() {
                   </Pie>
                   <Tooltip
                     formatter={(v, n) => [v + " students", n]}
-                    contentStyle={{ fontSize: 12, borderRadius: 8 }}
+                    contentStyle={{ fontSize: 12, borderRadius: 8, background: 'var(--surface)', borderColor: 'var(--line)', color: 'var(--content)' }}
                   />
                 </PieChart>
               </ResponsiveContainer>
@@ -682,9 +682,9 @@ export default function DeanReports() {
                         className="w-2.5 h-2.5 rounded-full flex-shrink-0"
                         style={{ background: d.fill }}
                       />
-                      <span className="text-gray-600">{d.name}</span>
+                      <span className="text-content-2">{d.name}</span>
                     </div>
-                    <span className="font-semibold text-[#0D1B2A]">
+                    <span className="font-semibold text-content">
                       {d.value}
                     </span>
                   </div>
@@ -699,17 +699,17 @@ export default function DeanReports() {
             style={{ animationDelay: "0.48s" }}
           >
             <div className="flex items-center justify-between mb-4">
-              <h2 className="font-semibold text-[#0D1B2A] text-sm">
+              <h2 className="font-semibold text-content text-sm">
                 Faculty Performance Summary
               </h2>
-              <span className="text-xs text-gray-400">
+              <span className="text-xs text-muted">
                 {filteredFaculty.length} faculty shown
               </span>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-left">
                 <thead>
-                  <tr className="border-b border-gray-100 text-xs text-gray-500 uppercase">
+                  <tr className="border-b border-line text-xs text-muted uppercase">
                     <th className="pb-3 font-medium">Faculty</th>
                     <th className="pb-3 font-medium">Branch</th>
                     <th className="pb-3 font-medium">Students</th>
@@ -722,19 +722,19 @@ export default function DeanReports() {
                   {filteredFaculty.map((f, i) => (
                     <tr
                       key={i}
-                      className="border-b border-gray-50 hover:bg-gray-50/50 transition"
+                      className="border-b border-gray-50 hover:bg-surface-2/50 transition"
                     >
-                      <td className="py-2.5 font-semibold text-sm text-[#0D1B2A]">
+                      <td className="py-2.5 font-semibold text-sm text-content">
                         {f.name}
                       </td>
-                      <td className="py-2.5 text-sm text-gray-600">
+                      <td className="py-2.5 text-sm text-content-2">
                         {f.branch}
                       </td>
-                      <td className="py-2.5 text-sm text-gray-600">
+                      <td className="py-2.5 text-sm text-content-2">
                         {f.students}
                       </td>
-                      <td className="py-2.5 text-sm text-gray-700">{f.co}</td>
-                      <td className="py-2.5 text-sm font-bold text-[#0D1B2A]">
+                      <td className="py-2.5 text-sm text-content-2">{f.co}</td>
+                      <td className="py-2.5 text-sm font-bold text-content">
                         {f.score}/100
                       </td>
                       <td className="py-2.5">
@@ -759,7 +759,7 @@ export default function DeanReports() {
               style={{ animationDelay: "0.54s" }}
             >
               <div className="flex items-center justify-between mb-4">
-                <h2 className="font-semibold text-[#0D1B2A] text-sm">
+                <h2 className="font-semibold text-content text-sm">
                   Curriculum Risk Subjects
                 </h2>
                 <AlertTriangle size={15} className="text-red-500" />
@@ -775,13 +775,13 @@ export default function DeanReports() {
                   return (
                     <div
                       key={i}
-                      className="flex items-center justify-between p-3 rounded-xl border border-gray-100 bg-gray-50/40 hover:bg-white transition"
+                      className="flex items-center justify-between p-3 rounded-xl border border-line bg-surface-2/40 hover:bg-surface transition"
                     >
                       <div>
-                        <p className="font-semibold text-sm text-[#0D1B2A]">
+                        <p className="font-semibold text-sm text-content">
                           {c.subject}
                         </p>
-                        <p className="text-xs text-gray-500 mt-0.5">
+                        <p className="text-xs text-muted mt-0.5">
                           {c.branches} · Fail rate:{" "}
                           <span className="font-bold text-red-600">
                             {c.failRate}
@@ -805,7 +805,7 @@ export default function DeanReports() {
               style={{ animationDelay: "0.6s" }}
             >
               <div className="flex items-center justify-between mb-4">
-                <h2 className="font-semibold text-[#0D1B2A] text-sm">
+                <h2 className="font-semibold text-content text-sm">
                   AI-Generated Insights
                 </h2>
                 <Zap size={15} className="text-purple-500" />
@@ -832,7 +832,7 @@ export default function DeanReports() {
                       <div
                         className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${dot}`}
                       />
-                      <p className="text-xs text-gray-700 leading-relaxed">
+                      <p className="text-xs text-content-2 leading-relaxed">
                         {ins.text}
                       </p>
                     </div>
@@ -843,7 +843,7 @@ export default function DeanReports() {
           </div>
 
           {/* Footer */}
-          <div className="text-center text-xs text-gray-400 py-2 animate-fade-in">
+          <div className="text-center text-xs text-muted py-2 animate-fade-in">
             © 2026 Educator Analytics OS · Report generated for {semester} ·{" "}
             CSE · Dean: Dr. Vineet Sharma
           </div>

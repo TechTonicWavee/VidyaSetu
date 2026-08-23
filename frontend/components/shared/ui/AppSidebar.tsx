@@ -3,9 +3,11 @@
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { LogOut, ChevronDown, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/shared/utils/cn';
 import { useAuth } from '@/lib/shared/auth/AuthProvider';
+import { useTheme } from '@/components/shared/ThemeProvider';
 
 import type { NavGroup } from './AppShell';
 
@@ -20,6 +22,8 @@ export function AppSidebar({
 }) {
   const pathname = usePathname();
   const { logout, student } = useAuth();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
 
   const isActive = (path: string) => {
     if (path === '/student' || path === '/faculty' || path === '/admin' || path === '/dean' || path === '/parent') {
@@ -66,11 +70,19 @@ export function AppSidebar({
         style={{ width: 280 }}
       >
         {/* Brand Header */}
-        <div className="flex flex-col gap-1.5 py-6 px-6 shrink-0 border-b border-transparent">
-          <div className="flex items-center gap-1">
-            <span className="text-2xl font-serif font-bold text-content tracking-tight">Vidya</span>
-            <span className="text-2xl font-serif font-bold text-brand tracking-tight">Setu</span>
-          </div>
+        <div className="flex flex-col gap-1.5 py-5 px-5 shrink-0 border-b border-transparent">
+          <Link href="/" className="flex items-center" aria-label="VidyaSetu Home">
+            <Image
+              src={isDark ? '/logos/logo-dark.png' : '/logos/logo-light.png'}
+              alt="VidyaSetu"
+              width={160}
+              height={72}
+              quality={100}
+              priority
+              className="object-contain w-auto"
+              style={{ height: '36px', width: 'auto', maxWidth: '180px' }}
+            />
+          </Link>
         </div>
 
         {/* Nav */}

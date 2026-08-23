@@ -173,13 +173,13 @@ export default function CurriculumGapAnalysis() {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
               <div>
                 <h1 className="text-3xl font-bold text-content mb-1">Curriculum Gap Analysis</h1>
-                <p className="text-gray-500 text-sm max-w-2xl leading-relaxed">
+                <p className="text-muted text-sm max-w-2xl leading-relaxed">
                   Topics failing consistently across multiple batches and faculty — evidence-based signals for curriculum revision and faculty development.
                 </p>
               </div>
               <div className="flex items-center gap-3 shrink-0">
-                <span className="px-3 py-1.5 bg-gray-100 text-gray-600 font-bold text-sm border border-gray-200 rounded-lg">Based on 3 years of data</span>
-                <button className="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 font-bold text-sm rounded-xl hover:bg-gray-50 transition shadow-sm flex items-center gap-2">
+                <span className="px-3 py-1.5 bg-surface-2 text-content-2 font-bold text-sm border border-line rounded-lg">Based on 3 years of data</span>
+                <button className="px-5 py-2.5 bg-surface border border-line text-content font-bold text-sm rounded-xl hover:bg-surface-2 transition shadow-sm flex items-center gap-2">
                   <Download size={16} /> Export Report
                 </button>
               </div>
@@ -187,70 +187,70 @@ export default function CurriculumGapAnalysis() {
 
             {/* TOP - Gap Summary Strip */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col items-center justify-center text-center">
+              <div className="bg-surface rounded-2xl shadow-sm border border-line p-6 flex flex-col items-center justify-center text-center">
                 <p className="font-bold text-red-600 text-4xl mb-2">6</p>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Critical Gaps</p>
-                <p className="text-xs text-gray-500">Topics failing 40%+ students · 3+ consecutive years</p>
+                <p className="text-xs font-bold text-muted uppercase tracking-widest mb-1">Critical Gaps</p>
+                <p className="text-xs text-muted">Topics failing 40%+ students · 3+ consecutive years</p>
               </div>
 
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col items-center justify-center text-center">
+              <div className="bg-surface rounded-2xl shadow-sm border border-line p-6 flex flex-col items-center justify-center text-center">
                 <p className="font-bold text-amber-500 text-4xl mb-2">14</p>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Significant Gaps</p>
-                <p className="text-xs text-gray-500">Topics failing 30-40% students</p>
+                <p className="text-xs font-bold text-muted uppercase tracking-widest mb-1">Significant Gaps</p>
+                <p className="text-xs text-muted">Topics failing 30-40% students</p>
               </div>
 
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col items-center justify-center text-center">
-                <p className="font-bold text-blue-600 text-4xl mb-2">8</p>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Subjects Affected</p>
-                <p className="text-xs text-gray-500">Subjects with at least 1 gap</p>
+              <div className="bg-surface rounded-2xl shadow-sm border border-line p-6 flex flex-col items-center justify-center text-center">
+                <p className="font-bold text-blue-600 dark:text-blue-400 text-4xl mb-2">8</p>
+                <p className="text-xs font-bold text-muted uppercase tracking-widest mb-1">Subjects Affected</p>
+                <p className="text-xs text-muted">Subjects with at least 1 gap</p>
               </div>
 
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col items-center justify-center text-center">
-                <p className="font-bold text-teal-600 text-4xl mb-2">11</p>
-                <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Recommended Actions</p>
-                <p className="text-xs text-gray-500">Specific curriculum changes identified</p>
+              <div className="bg-surface rounded-2xl shadow-sm border border-line p-6 flex flex-col items-center justify-center text-center">
+                <p className="font-bold text-teal-600 dark:text-teal-400 text-4xl mb-2">11</p>
+                <p className="text-xs font-bold text-muted uppercase tracking-widest mb-1">Recommended Actions</p>
+                <p className="text-xs text-muted">Specific curriculum changes identified</p>
               </div>
             </div>
 
             {/* SECTION A - Critical Gap Heatmap */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-              <div className="p-6 border-b border-gray-100 bg-gray-50/50">
-                <h2 className="text-xl font-bold text-navy mb-1">Curriculum Gap Heatmap — By Subject and Batch Year</h2>
-                <p className="text-sm text-gray-500">Red = consistently failing, Green = consistently passing, Yellow = borderline</p>
+            <div className="bg-surface rounded-2xl shadow-sm border border-line overflow-hidden">
+              <div className="p-6 border-b border-line bg-surface-2/50">
+                <h2 className="text-xl font-bold text-content mb-1">Curriculum Gap Heatmap — By Subject and Batch Year</h2>
+                <p className="text-sm text-muted">Red = consistently failing, Green = consistently passing, Yellow = borderline</p>
               </div>
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse min-w-[1000px]">
                   <thead>
                     <tr>
-                      <th rowSpan={2} className="p-4 pl-6 border-b-2 border-r border-gray-200 bg-white font-bold text-navy w-1/4">Topic</th>
-                      <th colSpan={3} className="p-3 text-center border-b border-r border-gray-200 bg-gray-50 text-xs font-bold text-gray-500 uppercase">2024 Batch</th>
-                      <th colSpan={3} className="p-3 text-center border-b border-r border-gray-200 bg-gray-50 text-xs font-bold text-gray-500 uppercase">2023 Batch</th>
-                      <th colSpan={3} className="p-3 text-center border-b border-gray-200 bg-gray-50 text-xs font-bold text-gray-500 uppercase">2022 Batch</th>
+                      <th rowSpan={2} className="p-4 pl-6 border-b-2 border-r border-line bg-surface font-bold text-content w-1/4">Topic</th>
+                      <th colSpan={3} className="p-3 text-center border-b border-r border-line bg-surface-2 text-xs font-bold text-muted uppercase">2024 Batch</th>
+                      <th colSpan={3} className="p-3 text-center border-b border-r border-line bg-surface-2 text-xs font-bold text-muted uppercase">2023 Batch</th>
+                      <th colSpan={3} className="p-3 text-center border-b border-line bg-surface-2 text-xs font-bold text-muted uppercase">2022 Batch</th>
                     </tr>
-                    <tr className="bg-white text-xs font-bold text-gray-500">
-                      <th className="p-3 text-center border-b border-r border-gray-200">CSE</th>
-                      <th className="p-3 text-center border-b border-r border-gray-200">CSE</th>
-                      <th className="p-3 text-center border-b border-r border-gray-200">CSE</th>
-                      <th className="p-3 text-center border-b border-r border-gray-200">CSE</th>
-                      <th className="p-3 text-center border-b border-r border-gray-200">CSE</th>
-                      <th className="p-3 text-center border-b border-r border-gray-200">CSE</th>
-                      <th className="p-3 text-center border-b border-r border-gray-200">CSE</th>
-                      <th className="p-3 text-center border-b border-r border-gray-200">CSE</th>
-                      <th className="p-3 text-center border-b border-gray-200">CSE</th>
+                    <tr className="bg-surface text-xs font-bold text-muted">
+                      <th className="p-3 text-center border-b border-r border-line">CSE</th>
+                      <th className="p-3 text-center border-b border-r border-line">CSE</th>
+                      <th className="p-3 text-center border-b border-r border-line">CSE</th>
+                      <th className="p-3 text-center border-b border-r border-line">CSE</th>
+                      <th className="p-3 text-center border-b border-r border-line">CSE</th>
+                      <th className="p-3 text-center border-b border-r border-line">CSE</th>
+                      <th className="p-3 text-center border-b border-r border-line">CSE</th>
+                      <th className="p-3 text-center border-b border-r border-line">CSE</th>
+                      <th className="p-3 text-center border-b border-line">CSE</th>
                     </tr>
                   </thead>
                   <tbody>
                     {heatmapData.map((row, i) => (
-                      <tr key={i} className="border-b border-gray-100 hover:bg-gray-50/50">
-                        <td className="p-4 pl-6 border-r border-gray-100">
+                      <tr key={i} className="border-b border-line hover:bg-surface-2/50 transition-colors">
+                        <td className="p-4 pl-6 border-r border-line">
                           <div className="flex flex-col gap-1 items-start">
-                            <span className="font-bold text-navy text-sm">{row.topic}</span>
-                            <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded border ${row.labelColor}`}>{row.label}</span>
+                            <span className="font-bold text-content text-sm">{row.topic}</span>
+                            <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded border ${row.labelColor.replace('bg-red-100 text-red-700 border-red-200', 'bg-red-100 dark:bg-red-500/20 text-red-700 dark:text-red-400 border-red-200 dark:border-red-500/30').replace('bg-orange-100 text-orange-700 border-orange-200', 'bg-orange-100 dark:bg-orange-500/20 text-orange-700 dark:text-orange-400 border-orange-200 dark:border-orange-500/30')}`}>{row.label}</span>
                           </div>
                         </td>
                         {row.cells.map((cell, j) => (
-                          <td key={j} className="p-1 border-r border-gray-100 relative group">
+                          <td key={j} className="p-1 border-r border-line relative group">
                             <div className={`w-full h-12 flex items-center justify-center font-bold text-sm rounded ${cell.color} transition-transform transform group-hover:scale-[0.98]`}>
                               {cell.val}
                             </div>
@@ -259,14 +259,14 @@ export default function CurriculumGapAnalysis() {
                       </tr>
                     ))}
                     {topicFailRates.map((topic, i) => (
-                      <tr key={`topic-${i}`} className="border-b border-gray-100 bg-gray-50/30">
-                        <td className="p-4 pl-6 border-r border-gray-100">
+                      <tr key={`topic-${i}`} className="border-b border-line bg-surface-2/30">
+                        <td className="p-4 pl-6 border-r border-line">
                           <div className="flex items-center gap-3">
-                            <span className="font-bold text-gray-700 text-sm flex-1">{topic.name}</span>
-                            <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded border ${topic.color}`}>{topic.label}</span>
+                            <span className="font-bold text-content-2 text-sm flex-1">{topic.name}</span>
+                            <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded border ${topic.color.replace('bg-amber-100 text-amber-700 border-amber-200', 'bg-amber-100 dark:bg-amber-500/20 text-amber-700 dark:text-amber-400 border-amber-200 dark:border-amber-500/30').replace('bg-yellow-100 text-yellow-800 border-yellow-200', 'bg-yellow-100 dark:bg-yellow-500/20 text-yellow-800 dark:text-yellow-400 border-yellow-200 dark:border-yellow-500/30')}`}>{topic.label}</span>
                           </div>
                         </td>
-                        <td colSpan={9} className="p-4 text-center text-sm font-bold text-gray-500">
+                        <td colSpan={9} className="p-4 text-center text-sm font-bold text-muted">
                           {topic.avg} avg fail
                         </td>
                       </tr>
@@ -278,10 +278,10 @@ export default function CurriculumGapAnalysis() {
 
             {/* SECTION B - Gap Detail Cards */}
             <div className="space-y-6">
-              <h2 className="text-xl font-bold text-navy">Critical Gap Analysis — Top 3 Topics</h2>
+              <h2 className="text-xl font-bold text-content">Critical Gap Analysis — Top 3 Topics</h2>
 
               {/* GAP CARD 1 */}
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+              <div className="bg-surface rounded-2xl shadow-sm border border-line overflow-hidden">
                 <div className="bg-red-600 px-6 py-4 flex items-center justify-between">
                   <div>
                     <h3 className="font-bold text-white text-lg">Database Normalization (1NF-3NF)</h3>
@@ -294,73 +294,73 @@ export default function CurriculumGapAnalysis() {
                 <div className="p-6 grid grid-cols-1 lg:grid-cols-12 gap-8">
                   <div className="lg:col-span-8">
                     <div className="flex items-center gap-4 mb-6">
-                      <span className="px-3 py-1 bg-gray-100 text-gray-700 font-bold text-xs rounded-md">Subject: DBMS</span>
-                      <span className="text-sm font-bold text-red-600 bg-red-50 px-3 py-1 rounded-md">58% average fail rate across 3 years</span>
+                      <span className="px-3 py-1 bg-surface-2 text-content-2 font-bold text-xs rounded-md">Subject: DBMS</span>
+                      <span className="text-sm font-bold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-500/10 px-3 py-1 rounded-md">58% average fail rate across 3 years</span>
                     </div>
 
-                    <h4 className="font-bold text-navy text-sm mb-3">Why it's failing:</h4>
+                    <h4 className="font-bold text-content text-sm mb-3">Why it's failing:</h4>
                     <ul className="space-y-2 mb-8">
                       <li className="flex items-start gap-2">
                         <span className="text-red-500 mt-1"><XCircle size={14} /></span>
-                        <span className="text-sm text-gray-700">The topic requires abstract relational algebra understanding that most students lack prerequisite for</span>
+                        <span className="text-sm text-content-2">The topic requires abstract relational algebra understanding that most students lack prerequisite for</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="text-red-500 mt-1"><XCircle size={14} /></span>
-                        <span className="text-sm text-gray-700">Current teaching relies heavily on theory before practice — students struggle without examples</span>
+                        <span className="text-sm text-content-2">Current teaching relies heavily on theory before practice — students struggle without examples</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="text-red-500 mt-1"><XCircle size={14} /></span>
-                        <span className="text-sm text-gray-700">Assessment questions often use unfamiliar database schemas that confuse students</span>
+                        <span className="text-sm text-content-2">Assessment questions often use unfamiliar database schemas that confuse students</span>
                       </li>
                     </ul>
 
-                    <h4 className="font-bold text-navy text-sm mb-4">Recommended Actions:</h4>
+                    <h4 className="font-bold text-content text-sm mb-4">Recommended Actions:</h4>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      <div className="border border-red-200 bg-red-50/50 p-4 rounded-xl flex flex-col">
-                        <span className="text-[10px] font-bold text-red-700 uppercase tracking-widest mb-2">HIGH PRIORITY</span>
-                        <p className="text-sm text-navy font-medium mb-3 flex-1">Introduce 3 real-world database examples (e-commerce, hospital, school) before teaching normalization theory — context-first approach</p>
+                      <div className="border border-red-200 dark:border-red-500/20 bg-red-50/50 dark:bg-red-500/5 p-4 rounded-xl flex flex-col">
+                        <span className="text-[10px] font-bold text-red-700 dark:text-red-400 uppercase tracking-widest mb-2">HIGH PRIORITY</span>
+                        <p className="text-sm text-content font-medium mb-3 flex-1">Introduce 3 real-world database examples (e-commerce, hospital, school) before teaching normalization theory — context-first approach</p>
                         <div className="flex items-center justify-between text-xs mb-4">
-                          <span className="text-gray-500 font-medium">Effort: Low</span>
-                          <span className="text-green-600 font-bold">Impact: -15% fail</span>
+                          <span className="text-muted font-medium">Effort: Low</span>
+                          <span className="text-green-600 dark:text-green-400 font-bold">Impact: -15% fail</span>
                         </div>
-                        <button onClick={() => showToast("Added to curriculum revision plan")} className="w-full py-2 border border-blue-200 text-blue-700 font-bold text-xs rounded-lg hover:bg-blue-50 transition bg-white">
+                        <button onClick={() => showToast("Added to curriculum revision plan")} className="w-full py-2 border border-blue-200 dark:border-blue-500/30 text-blue-700 dark:text-blue-400 font-bold text-xs rounded-lg hover:bg-blue-50 dark:hover:bg-blue-500/10 transition bg-surface">
                           Add to Curriculum Plan
                         </button>
                       </div>
-                      <div className="border border-amber-200 bg-amber-50/50 p-4 rounded-xl flex flex-col">
-                        <span className="text-[10px] font-bold text-amber-700 uppercase tracking-widest mb-2">MEDIUM PRIORITY</span>
-                        <p className="text-sm text-navy font-medium mb-3 flex-1">Add a dedicated normalization practical lab session where students normalize a messy real database</p>
+                      <div className="border border-amber-200 dark:border-amber-500/20 bg-amber-50/50 dark:bg-amber-500/5 p-4 rounded-xl flex flex-col">
+                        <span className="text-[10px] font-bold text-amber-700 dark:text-amber-400 uppercase tracking-widest mb-2">MEDIUM PRIORITY</span>
+                        <p className="text-sm text-content font-medium mb-3 flex-1">Add a dedicated normalization practical lab session where students normalize a messy real database</p>
                         <div className="flex items-center justify-between text-xs mb-4">
-                          <span className="text-gray-500 font-medium">Effort: Medium</span>
-                          <span className="text-green-600 font-bold">Impact: -12% fail</span>
+                          <span className="text-muted font-medium">Effort: Medium</span>
+                          <span className="text-green-600 dark:text-green-400 font-bold">Impact: -12% fail</span>
                         </div>
-                        <button onClick={() => showToast("Added to curriculum revision plan")} className="w-full py-2 border border-blue-200 text-blue-700 font-bold text-xs rounded-lg hover:bg-blue-50 transition bg-white mt-auto">
+                        <button onClick={() => showToast("Added to curriculum revision plan")} className="w-full py-2 border border-blue-200 dark:border-blue-500/30 text-blue-700 dark:text-blue-400 font-bold text-xs rounded-lg hover:bg-blue-50 dark:hover:bg-blue-500/10 transition bg-surface mt-auto">
                           Add to Curriculum Plan
                         </button>
                       </div>
-                      <div className="border border-amber-200 bg-amber-50/50 p-4 rounded-xl flex flex-col">
-                        <span className="text-[10px] font-bold text-amber-700 uppercase tracking-widest mb-2">MEDIUM PRIORITY</span>
-                        <p className="text-sm text-navy font-medium mb-3 flex-1">Revise assessment questions to use familiar domains (student records, college database) instead of abstract schemas</p>
+                      <div className="border border-amber-200 dark:border-amber-500/20 bg-amber-50/50 dark:bg-amber-500/5 p-4 rounded-xl flex flex-col">
+                        <span className="text-[10px] font-bold text-amber-700 dark:text-amber-400 uppercase tracking-widest mb-2">MEDIUM PRIORITY</span>
+                        <p className="text-sm text-content font-medium mb-3 flex-1">Revise assessment questions to use familiar domains (student records, college database) instead of abstract schemas</p>
                         <div className="flex items-center justify-between text-xs mb-4">
-                          <span className="text-gray-500 font-medium">Effort: Low</span>
-                          <span className="text-green-600 font-bold">Impact: -8% fail</span>
+                          <span className="text-muted font-medium">Effort: Low</span>
+                          <span className="text-green-600 dark:text-green-400 font-bold">Impact: -8% fail</span>
                         </div>
-                        <button onClick={() => showToast("Added to curriculum revision plan")} className="w-full py-2 border border-blue-200 text-blue-700 font-bold text-xs rounded-lg hover:bg-blue-50 transition bg-white mt-auto">
+                        <button onClick={() => showToast("Added to curriculum revision plan")} className="w-full py-2 border border-blue-200 dark:border-blue-500/30 text-blue-700 dark:text-blue-400 font-bold text-xs rounded-lg hover:bg-blue-50 dark:hover:bg-blue-500/10 transition bg-surface mt-auto">
                           Add to Curriculum Plan
                         </button>
                       </div>
                     </div>
                   </div>
                   
-                  <div className="lg:col-span-4 flex flex-col items-center justify-center bg-gray-50 rounded-xl border border-gray-200 p-6">
-                    <h4 className="font-bold text-navy text-sm mb-4 w-full">What the data shows</h4>
+                  <div className="lg:col-span-4 flex flex-col items-center justify-center bg-surface-2 rounded-xl border border-line p-6">
+                    <h4 className="font-bold text-content text-sm mb-4 w-full">What the data shows</h4>
                     <div className="w-full h-[200px]">
                       <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 500, height: 300 }}>
                         <BarChart data={gap1Data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
-                          <XAxis dataKey="year" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} dy={5} />
-                          <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} domain={[0, 100]} />
-                          <Tooltip cursor={{ fill: '#f3f4f6' }} contentStyle={{ borderRadius: '8px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', fontSize: '12px' }} />
+                          <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--line)" />
+                          <XAxis dataKey="year" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: 'var(--muted)' }} dy={5} />
+                          <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: 'var(--muted)' }} domain={[0, 100]} />
+                          <Tooltip cursor={{ fill: 'var(--surface)' }} contentStyle={{ borderRadius: '8px', border: '1px solid var(--line)', background: 'var(--surface)', color: 'var(--content)', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', fontSize: '12px' }} />
                           <Bar dataKey="rate" fill="#EF4444" radius={[4, 4, 0, 0]} barSize={30}>
                             {gap1Data.map((entry, index) => (
                               <Cell key={`cell-${index}`} fill={index === 2 ? '#B91C1C' : '#EF4444'} />
@@ -369,13 +369,13 @@ export default function CurriculumGapAnalysis() {
                         </BarChart>
                       </ResponsiveContainer>
                     </div>
-                    <p className="text-xs text-red-600 font-bold mt-2">Fail rate getting worse each year</p>
+                    <p className="text-xs text-red-600 dark:text-red-400 font-bold mt-2">Fail rate getting worse each year</p>
                   </div>
                 </div>
               </div>
 
               {/* GAP CARD 2 */}
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+              <div className="bg-surface rounded-2xl shadow-sm border border-line overflow-hidden">
                 <div className="bg-amber-500 px-6 py-3 flex items-center justify-between">
                   <div>
                     <h3 className="font-bold text-white text-base">Regular Expressions and Automata</h3>
@@ -388,39 +388,39 @@ export default function CurriculumGapAnalysis() {
                 <div className="p-5 grid grid-cols-1 lg:grid-cols-12 gap-6">
                   <div className="lg:col-span-8">
                     <div className="flex items-center gap-4 mb-4">
-                      <span className="px-2.5 py-1 bg-gray-100 text-gray-700 font-bold text-[10px] rounded uppercase">Subject: TOC</span>
-                      <span className="text-xs font-bold text-red-600">60% average — worst performing topic in department</span>
+                      <span className="px-2.5 py-1 bg-surface-2 text-content-2 font-bold text-[10px] rounded uppercase border border-line">Subject: TOC</span>
+                      <span className="text-xs font-bold text-red-600 dark:text-red-400">60% average — worst performing topic in department</span>
                     </div>
 
-                    <h4 className="font-bold text-gray-500 text-xs uppercase tracking-widest mb-2">Why it's failing</h4>
+                    <h4 className="font-bold text-muted text-xs uppercase tracking-widest mb-2">Why it's failing</h4>
                     <ul className="space-y-1.5 mb-5 pl-1">
                       <li className="flex items-start gap-2">
                         <span className="text-red-500 mt-1"><XCircle size={12} /></span>
-                        <span className="text-sm text-gray-700">Mathematical notation is introduced too quickly without visual intuition</span>
+                        <span className="text-sm text-content-2">Mathematical notation is introduced too quickly without visual intuition</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="text-red-500 mt-1"><XCircle size={12} /></span>
-                        <span className="text-sm text-gray-700">Students lack prerequisite discrete mathematics foundation</span>
+                        <span className="text-sm text-content-2">Students lack prerequisite discrete mathematics foundation</span>
                       </li>
                       <li className="flex items-start gap-2">
                         <span className="text-red-500 mt-1"><XCircle size={12} /></span>
-                        <span className="text-sm text-gray-700">No practical applications shown — students cannot connect theory to use</span>
+                        <span className="text-sm text-content-2">No practical applications shown — students cannot connect theory to use</span>
                       </li>
                     </ul>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="border border-gray-200 bg-gray-50 p-3 rounded-xl flex flex-col">
-                        <p className="text-sm text-navy font-medium mb-2 flex-1">Use regex visualizers and tools like Regexr.com in class before formal notation</p>
+                      <div className="border border-line bg-surface-2 p-3 rounded-xl flex flex-col">
+                        <p className="text-sm text-content font-medium mb-2 flex-1">Use regex visualizers and tools like Regexr.com in class before formal notation</p>
                         <div className="flex items-center justify-between">
-                          <span className="text-green-600 font-bold text-xs">Impact: -18% fail</span>
-                          <button onClick={() => showToast("Added to curriculum revision plan")} className="text-blue-600 hover:text-blue-800 font-bold text-xs flex items-center gap-1">Add <ArrowRight size={12}/></button>
+                          <span className="text-green-600 dark:text-green-400 font-bold text-xs">Impact: -18% fail</span>
+                          <button onClick={() => showToast("Added to curriculum revision plan")} className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-bold text-xs flex items-center gap-1">Add <ArrowRight size={12}/></button>
                         </div>
                       </div>
-                      <div className="border border-gray-200 bg-gray-50 p-3 rounded-xl flex flex-col">
-                        <p className="text-sm text-navy font-medium mb-2 flex-1">Add discrete math prerequisite check in Sem 2 — students without foundation get bridging material</p>
+                      <div className="border border-line bg-surface-2 p-3 rounded-xl flex flex-col">
+                        <p className="text-sm text-content font-medium mb-2 flex-1">Add discrete math prerequisite check in Sem 2 — students without foundation get bridging material</p>
                         <div className="flex items-center justify-between">
-                          <span className="text-green-600 font-bold text-xs">Impact: -11% fail</span>
-                          <button onClick={() => showToast("Added to curriculum revision plan")} className="text-blue-600 hover:text-blue-800 font-bold text-xs flex items-center gap-1">Add <ArrowRight size={12}/></button>
+                          <span className="text-green-600 dark:text-green-400 font-bold text-xs">Impact: -11% fail</span>
+                          <button onClick={() => showToast("Added to curriculum revision plan")} className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-bold text-xs flex items-center gap-1">Add <ArrowRight size={12}/></button>
                         </div>
                       </div>
                     </div>
@@ -430,19 +430,19 @@ export default function CurriculumGapAnalysis() {
                     <div className="w-full h-[120px]">
                       <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 500, height: 300 }}>
                         <BarChart data={gap2Data} margin={{ top: 0, right: 0, left: -30, bottom: 0 }}>
-                          <XAxis dataKey="year" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#6b7280' }} dy={5} />
-                          <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: '#6b7280' }} domain={[0, 100]} />
+                          <XAxis dataKey="year" axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--muted)' }} dy={5} />
+                          <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 10, fill: 'var(--muted)' }} domain={[0, 100]} />
                           <Bar dataKey="rate" fill="#EF4444" radius={[2, 2, 0, 0]} barSize={20} />
                         </BarChart>
                       </ResponsiveContainer>
                     </div>
-                    <p className="text-[10px] text-gray-500 font-bold mt-1 uppercase tracking-widest">Getting Worse</p>
+                    <p className="text-[10px] text-muted font-bold mt-1 uppercase tracking-widest">Getting Worse</p>
                   </div>
                 </div>
               </div>
 
               {/* GAP CARD 3 */}
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+              <div className="bg-surface rounded-2xl shadow-sm border border-line overflow-hidden">
                 <div className="bg-green-600 px-6 py-3 flex items-center justify-between">
                   <div>
                     <h3 className="font-bold text-white text-base">Process Scheduling Algorithms</h3>
@@ -454,42 +454,42 @@ export default function CurriculumGapAnalysis() {
                 
                 <div className="p-5">
                   <div className="flex items-center gap-4 mb-4">
-                    <span className="px-2.5 py-1 bg-gray-100 text-gray-700 font-bold text-[10px] rounded uppercase">Subject: OS</span>
-                    <span className="text-xs font-bold text-red-600">55% average across CSE years</span>
+                    <span className="px-2.5 py-1 bg-surface-2 text-content-2 font-bold text-[10px] rounded uppercase border border-line">Subject: OS</span>
+                    <span className="text-xs font-bold text-red-600 dark:text-red-400">55% average across CSE years</span>
                   </div>
 
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <div>
-                      <h4 className="font-bold text-gray-500 text-xs uppercase tracking-widest mb-2">Why it's failing</h4>
+                      <h4 className="font-bold text-muted text-xs uppercase tracking-widest mb-2">Why it's failing</h4>
                       <ul className="space-y-1.5 pl-1">
                         <li className="flex items-start gap-2">
                           <span className="text-red-500 mt-1"><XCircle size={12} /></span>
-                          <span className="text-sm text-gray-700">Round Robin and Priority Scheduling require careful manual calculation that students rush through</span>
+                          <span className="text-sm text-content-2">Round Robin and Priority Scheduling require careful manual calculation that students rush through</span>
                         </li>
                         <li className="flex items-start gap-2">
                           <span className="text-red-500 mt-1"><XCircle size={12} /></span>
-                          <span className="text-sm text-gray-700">Gantt chart drawing is error-prone under exam conditions</span>
+                          <span className="text-sm text-content-2">Gantt chart drawing is error-prone under exam conditions</span>
                         </li>
                         <li className="flex items-start gap-2">
                           <span className="text-red-500 mt-1"><XCircle size={12} /></span>
-                          <span className="text-sm text-gray-700">Multiple algorithm variants taught in quick succession cause confusion</span>
+                          <span className="text-sm text-content-2">Multiple algorithm variants taught in quick succession cause confusion</span>
                         </li>
                       </ul>
                     </div>
 
                     <div className="flex flex-col gap-3">
-                      <div className="border border-gray-200 bg-gray-50 p-3 rounded-xl flex items-center justify-between">
-                        <p className="text-sm text-navy font-medium flex-1 pr-4">Interactive scheduling simulator tool — students trace algorithms step by step visually</p>
+                      <div className="border border-line bg-surface-2 p-3 rounded-xl flex items-center justify-between">
+                        <p className="text-sm text-content font-medium flex-1 pr-4">Interactive scheduling simulator tool — students trace algorithms step by step visually</p>
                         <div className="flex flex-col items-end shrink-0 gap-1">
-                          <span className="text-green-600 font-bold text-xs">Impact: -17% fail</span>
-                          <button onClick={() => showToast("Added to curriculum revision plan")} className="text-blue-600 hover:text-blue-800 font-bold text-[10px] uppercase tracking-wider">Add to Plan</button>
+                          <span className="text-green-600 dark:text-green-400 font-bold text-xs">Impact: -17% fail</span>
+                          <button onClick={() => showToast("Added to curriculum revision plan")} className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-bold text-[10px] uppercase tracking-wider">Add to Plan</button>
                         </div>
                       </div>
-                      <div className="border border-gray-200 bg-gray-50 p-3 rounded-xl flex items-center justify-between">
-                        <p className="text-sm text-navy font-medium flex-1 pr-4">Reduce number of scheduling algorithm variants taught and go deeper on fewer</p>
+                      <div className="border border-line bg-surface-2 p-3 rounded-xl flex items-center justify-between">
+                        <p className="text-sm text-content font-medium flex-1 pr-4">Reduce number of scheduling algorithm variants taught and go deeper on fewer</p>
                         <div className="flex flex-col items-end shrink-0 gap-1">
-                          <span className="text-green-600 font-bold text-xs">Impact: -10% fail</span>
-                          <button onClick={() => showToast("Added to curriculum revision plan")} className="text-blue-600 hover:text-blue-800 font-bold text-[10px] uppercase tracking-wider">Add to Plan</button>
+                          <span className="text-green-600 dark:text-green-400 font-bold text-xs">Impact: -10% fail</span>
+                          <button onClick={() => showToast("Added to curriculum revision plan")} className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-bold text-[10px] uppercase tracking-wider">Add to Plan</button>
                         </div>
                       </div>
                     </div>
@@ -500,16 +500,16 @@ export default function CurriculumGapAnalysis() {
             </div>
 
             {/* SECTION C - Curriculum Revision Plan */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-              <div className="p-6 border-b border-gray-100 bg-gray-50/50">
-                <h2 className="text-xl font-bold text-navy mb-1">AI-Generated Curriculum Revision Recommendations</h2>
-                <p className="text-sm text-gray-500">Based on 3 years of student performance data — prioritized by impact and effort</p>
+            <div className="bg-surface rounded-2xl shadow-sm border border-line overflow-hidden">
+              <div className="p-6 border-b border-line bg-surface-2/50">
+                <h2 className="text-xl font-bold text-content mb-1">AI-Generated Curriculum Revision Recommendations</h2>
+                <p className="text-sm text-muted">Based on 3 years of student performance data — prioritized by impact and effort</p>
               </div>
 
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse">
                   <thead>
-                    <tr className="bg-white border-b border-gray-200 text-xs font-bold text-gray-500 uppercase tracking-wider">
+                    <tr className="bg-surface-2 border-b border-line text-xs font-bold text-muted uppercase tracking-wider">
                       <th className="p-4 pl-6 w-16">Priority</th>
                       <th className="p-4 w-1/3">Change</th>
                       <th className="p-4">Subject</th>
@@ -521,15 +521,15 @@ export default function CurriculumGapAnalysis() {
                   </thead>
                   <tbody className="text-sm">
                     {plan.map((item) => (
-                      <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50/50">
-                        <td className="p-4 pl-6 font-bold text-navy">{item.priority}</td>
-                        <td className="p-4 font-bold text-navy pr-8">{item.change}</td>
-                        <td className="p-4 text-gray-600 font-medium">{item.subject}</td>
-                        <td className="p-4 text-gray-600">{item.branches}</td>
-                        <td className="p-4 text-gray-600">{item.effort}</td>
-                        <td className="p-4 font-bold text-green-600">{item.impact}</td>
+                      <tr key={item.id} className="border-b border-line hover:bg-surface-2/50 transition-colors">
+                        <td className="p-4 pl-6 font-bold text-content">{item.priority}</td>
+                        <td className="p-4 font-bold text-content pr-8">{item.change}</td>
+                        <td className="p-4 text-content-2 font-medium">{item.subject}</td>
+                        <td className="p-4 text-content-2">{item.branches}</td>
+                        <td className="p-4 text-content-2">{item.effort}</td>
+                        <td className="p-4 font-bold text-green-600 dark:text-green-400">{item.impact}</td>
                         <td className="p-4 pr-6">
-                          <span className={`px-3 py-1 rounded-md text-xs font-bold border whitespace-nowrap ${item.statusColor}`}>
+                          <span className={`px-3 py-1 rounded-md text-xs font-bold border whitespace-nowrap ${item.statusColor.replace('bg-amber-100 text-amber-800 border-amber-200', 'bg-amber-100 dark:bg-amber-500/20 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-500/30').replace('bg-blue-100 text-blue-800 border-blue-200', 'bg-blue-100 dark:bg-blue-500/20 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-500/30').replace('bg-gray-100 text-gray-800 border-gray-200', 'bg-surface-2 text-content border-line').replace('bg-purple-100 text-purple-800 border-purple-200', 'bg-purple-100 dark:bg-purple-500/20 text-purple-800 dark:text-purple-300 border-purple-200 dark:border-purple-500/30').replace('bg-green-100 text-green-800 border-green-200', 'bg-green-100 dark:bg-green-500/20 text-green-800 dark:text-green-300 border-green-200 dark:border-green-500/30')}`}>
                             {item.status}
                           </span>
                         </td>
@@ -539,16 +539,16 @@ export default function CurriculumGapAnalysis() {
                 </table>
               </div>
 
-              <div className="p-6 bg-gray-50 border-t border-gray-200 flex flex-wrap gap-4 items-center justify-between">
+              <div className="p-6 bg-surface-2 border-t border-line flex flex-wrap gap-4 items-center justify-between">
                 <div className="flex gap-3">
                   <button onClick={approveAllPending} className="px-6 py-2.5 bg-blue-600 text-white font-bold text-sm rounded-xl hover:bg-blue-700 transition shadow-sm">
                     Approve All Pending
                   </button>
-                  <button className="px-5 py-2.5 bg-white border border-teal-200 text-teal-700 font-bold text-sm rounded-xl hover:bg-teal-50 transition shadow-sm">
+                  <button className="px-5 py-2.5 bg-surface border border-teal-200 dark:border-teal-500/30 text-teal-700 dark:text-teal-400 font-bold text-sm rounded-xl hover:bg-teal-50 dark:hover:bg-teal-500/10 transition shadow-sm">
                     Send to Faculty Heads for Review
                   </button>
                 </div>
-                <button className="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 font-bold text-sm rounded-xl hover:bg-gray-50 transition shadow-sm flex items-center gap-2">
+                <button className="px-5 py-2.5 bg-surface border border-line text-content font-bold text-sm rounded-xl hover:bg-surface-2 transition shadow-sm flex items-center gap-2">
                   <FileText size={16} /> Download Full Curriculum Review Report
                 </button>
               </div>

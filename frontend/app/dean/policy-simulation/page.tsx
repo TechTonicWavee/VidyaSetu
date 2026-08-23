@@ -402,15 +402,15 @@ function AnimatedNumber({ value, decimals = 1, duration = 900 }: { value: number
 const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: { color: string; name: string; value: number }[]; label?: string }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-white border border-gray-200 rounded-xl shadow-lg px-4 py-3 text-xs">
-      <p className="font-bold text-gray-700 mb-1">{label}</p>
+    <div className="bg-surface border border-line rounded-xl shadow-lg px-4 py-3 text-xs">
+      <p className="font-bold text-content-2 mb-1">{label}</p>
       {payload.map((p, i) => (
         <div key={i} className="flex items-center gap-2">
           <div
             className="w-2 h-2 rounded-full"
             style={{ background: p.color }}
           />
-          <span className="text-gray-500">{p.name}:</span>
+          <span className="text-muted">{p.name}:</span>
           <span className="font-bold text-gray-800">{p.value}%</span>
         </div>
       ))}
@@ -570,7 +570,7 @@ export default function PolicySimulation() {
                   {result && (
                     <button
                       onClick={() => setCompareMode((v) => !v)}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border font-semibold transition ${compareMode ? "bg-indigo-100 border-indigo-300 text-indigo-700" : "bg-white border-gray-200 text-gray-600 hover:border-indigo-300 hover:text-indigo-700"}`}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border font-semibold transition ${compareMode ? "bg-indigo-100 border-indigo-300 text-indigo-700" : "bg-surface border-line text-content-2 hover:border-indigo-300 hover:text-indigo-700"}`}
                     >
                       <BarChart2 size={12} />
                       Compare Mode
@@ -597,7 +597,7 @@ export default function PolicySimulation() {
                   <div className="p-5 space-y-5">
                     {/* Policy Type */}
                     <div>
-                      <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-2">
+                      <label className="block text-xs font-bold text-content-2 uppercase tracking-wide mb-2">
                         Policy Type
                       </label>
                       <div className="grid grid-cols-1 gap-2">
@@ -620,7 +620,7 @@ export default function PolicySimulation() {
                                   }
                                 : {}
                             }
-                            className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl border text-sm font-medium transition text-left ${policyType === pt ? "" : "border-gray-200 text-gray-700 hover:border-indigo-200"}`}
+                            className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl border text-sm font-medium transition text-left ${policyType === pt ? "" : "border-line text-content-2 hover:border-indigo-200"}`}
                           >
                             <div
                               className="w-1.5 h-1.5 rounded-full flex-shrink-0"
@@ -639,18 +639,18 @@ export default function PolicySimulation() {
                     {policyType === "Add Course" && (
                       <div className="space-y-3">
                         <div>
-                          <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">
+                          <label className="block text-xs font-bold text-content-2 uppercase tracking-wide mb-1.5">
                             Course Name
                           </label>
                           <input
                             value={courseName}
                             onChange={(e) => setCourseName(e.target.value)}
-                            className="w-full px-3 py-2.5 rounded-xl border border-gray-200 text-sm text-[#0D1B2A] focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-300 transition bg-gray-50"
+                            className="w-full px-3 py-2.5 rounded-xl border border-line text-sm text-content focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-300 transition bg-surface-2"
                             placeholder="e.g. Communication Skills"
                           />
                         </div>
                         <div>
-                          <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">
+                          <label className="block text-xs font-bold text-content-2 uppercase tracking-wide mb-1.5">
                             Target Year
                           </label>
                           <div className="grid grid-cols-4 gap-2">
@@ -667,7 +667,7 @@ export default function PolicySimulation() {
                                       }
                                     : {}
                                 }
-                                className={`py-2 rounded-lg border text-sm font-semibold transition ${targetYear === yr ? "" : "border-gray-200 text-gray-600 hover:border-indigo-300"}`}
+                                className={`py-2 rounded-lg border text-sm font-semibold transition ${targetYear === yr ? "" : "border-line text-content-2 hover:border-indigo-300"}`}
                               >
                                 {yr}
                               </button>
@@ -679,7 +679,7 @@ export default function PolicySimulation() {
 
                     {policyType === "Improve Attendance" && (
                       <div>
-                        <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">
+                        <label className="block text-xs font-bold text-content-2 uppercase tracking-wide mb-1.5">
                           Min Attendance Threshold:{" "}
                           <span className="text-purple-700">
                             {attendanceThreshold}%
@@ -696,7 +696,7 @@ export default function PolicySimulation() {
                           }
                           className="w-full accent-purple-600"
                         />
-                        <div className="flex justify-between text-xs text-gray-400 mt-1">
+                        <div className="flex justify-between text-xs text-muted mt-1">
                           <span>70%</span>
                           <span>90%</span>
                         </div>
@@ -705,7 +705,7 @@ export default function PolicySimulation() {
 
                     {/* Target Branch */}
                     <div>
-                      <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">
+                      <label className="block text-xs font-bold text-content-2 uppercase tracking-wide mb-1.5">
                         Target Branch
                       </label>
                       <div className="grid grid-cols-1 gap-2">
@@ -722,7 +722,7 @@ export default function PolicySimulation() {
                                   }
                                 : {}
                             }
-                            className={`py-2 rounded-lg border text-sm font-semibold transition ${targetBranch === b ? "" : "border-gray-200 text-gray-600 hover:border-indigo-300"}`}
+                            className={`py-2 rounded-lg border text-sm font-semibold transition ${targetBranch === b ? "" : "border-line text-content-2 hover:border-indigo-300"}`}
                           >
                             {b}
                           </button>
@@ -732,7 +732,7 @@ export default function PolicySimulation() {
 
                     {/* Impact Level */}
                     <div>
-                      <label className="block text-xs font-bold text-gray-600 uppercase tracking-wide mb-1.5">
+                      <label className="block text-xs font-bold text-content-2 uppercase tracking-wide mb-1.5">
                         Implementation Intensity
                       </label>
                       <div className="grid grid-cols-3 gap-2">
@@ -753,7 +753,7 @@ export default function PolicySimulation() {
                                   }
                                 : {}
                             }
-                            className={`py-2 rounded-lg border text-sm font-semibold transition ${impactLevel === l ? "" : "border-gray-200 text-gray-600 hover:border-gray-400"}`}
+                            className={`py-2 rounded-lg border text-sm font-semibold transition ${impactLevel === l ? "" : "border-line text-content-2 hover:border-gray-400"}`}
                           >
                             {l}
                           </button>
@@ -785,7 +785,7 @@ export default function PolicySimulation() {
                         <button
                           onClick={handleReset}
                           title="Reset"
-                          className="w-11 flex items-center justify-center rounded-xl border border-gray-200 text-gray-500 hover:bg-red-50 hover:border-red-300 hover:text-red-500 transition"
+                          className="w-11 flex items-center justify-center rounded-xl border border-line text-muted hover:bg-red-50 hover:border-red-300 hover:text-red-500 transition"
                         >
                           <RotateCcw size={16} />
                         </button>
@@ -794,7 +794,7 @@ export default function PolicySimulation() {
                         <button
                           onClick={handleSave}
                           title="Save scenario"
-                          className="w-11 flex items-center justify-center rounded-xl border border-gray-200 text-gray-500 hover:bg-green-50 hover:border-green-300 hover:text-green-500 transition"
+                          className="w-11 flex items-center justify-center rounded-xl border border-line text-muted hover:bg-green-50 hover:border-green-300 hover:text-green-500 transition"
                         >
                           <Save size={16} />
                         </button>
@@ -806,20 +806,20 @@ export default function PolicySimulation() {
                 {/* Saved Scenarios */}
                 {savedScenarios.length > 0 && (
                   <Card className="p-4">
-                    <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-3">
+                    <p className="text-xs font-bold text-muted uppercase tracking-wide mb-3">
                       Saved Scenarios
                     </p>
                     <div className="space-y-2">
                       {savedScenarios.map((s) => (
                         <div
                           key={s.id}
-                          className="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-100 hover:border-purple-200 transition"
+                          className="flex items-center justify-between p-3 rounded-xl bg-surface-2 border border-line hover:border-purple-200 transition"
                         >
                           <div>
-                            <p className="text-sm font-semibold text-[#0D1B2A]">
+                            <p className="text-sm font-semibold text-content">
                               {s.label}
                             </p>
-                            <p className="text-xs text-gray-400">
+                            <p className="text-xs text-muted">
                               {s.targetBranch} · {s.impactLevel} impact
                             </p>
                           </div>
@@ -858,7 +858,7 @@ export default function PolicySimulation() {
               <div className="xl:col-span-3 space-y-5">
                 {/* Baseline reference */}
                 <Card className="p-5">
-                  <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-4 flex items-center gap-1.5">
+                  <p className="text-xs font-bold text-muted uppercase tracking-wide mb-4 flex items-center gap-1.5">
                     <Info size={14} />
                     Current Baseline
                   </p>
@@ -871,9 +871,9 @@ export default function PolicySimulation() {
                     ].map((b) => (
                       <div
                         key={b.l}
-                        className="p-4 rounded-xl bg-gray-50 border border-gray-100 flex flex-col justify-center"
+                        className="p-4 rounded-xl bg-surface-2 border border-line flex flex-col justify-center"
                       >
-                        <p className="text-xs text-gray-500 mb-1">{b.l}</p>
+                        <p className="text-xs text-muted mb-1">{b.l}</p>
                         <p className={`text-xl font-black ${b.c}`}>{b.v}</p>
                       </div>
                     ))}
@@ -888,10 +888,10 @@ export default function PolicySimulation() {
                     >
                       <Cpu size={28} color="#7c3aed" />
                     </div>
-                    <p className="font-bold text-[#0D1B2A] text-lg mb-1">
+                    <p className="font-bold text-content text-lg mb-1">
                       No simulation yet
                     </p>
-                    <p className="text-gray-400 text-sm text-center max-w-xs">
+                    <p className="text-muted text-sm text-center max-w-xs">
                       Configure a policy in the builder and click{" "}
                       <strong>Run Simulation</strong> to see projected impact
                     </p>
@@ -902,10 +902,10 @@ export default function PolicySimulation() {
                 {loading && (
                   <Card padded={false} className="flex flex-col items-center justify-center py-20 animate-fade-in">
                     <div className="w-12 h-12 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin mb-5" />
-                    <p className="font-bold text-[#0D1B2A] mb-1">
+                    <p className="font-bold text-content mb-1">
                       Running simulation engine…
                     </p>
-                    <p className="text-gray-400 text-sm">
+                    <p className="text-muted text-sm">
                       Calculating impact across all branches
                     </p>
                   </Card>
@@ -922,7 +922,7 @@ export default function PolicySimulation() {
                         return (
                           <div
                             key={i}
-                            className="bg-white rounded-2xl border shadow-sm p-4 overflow-hidden relative"
+                            className="bg-surface rounded-2xl border shadow-sm p-4 overflow-hidden relative"
                             style={{
                               borderColor: improved
                                 ? "#bbf7d0"
@@ -943,12 +943,12 @@ export default function PolicySimulation() {
                                 >
                                   <k.icon size={14} color={k.color} />
                                 </div>
-                                <p className="text-xs font-semibold text-gray-500">
+                                <p className="text-xs font-semibold text-muted">
                                   {k.label}
                                 </p>
                               </div>
                               <span
-                                className={`text-xs font-bold px-2 py-0.5 rounded-full flex items-center gap-1 ${improved ? "bg-green-100 text-green-700" : neutral ? "bg-gray-100 text-gray-500" : "bg-red-100 text-red-700"}`}
+                                className={`text-xs font-bold px-2 py-0.5 rounded-full flex items-center gap-1 ${improved ? "bg-green-100 text-green-700" : neutral ? "bg-gray-100 text-muted" : "bg-red-100 text-red-700"}`}
                               >
                                 {improved ? (
                                   <TrendingUp size={10} />
@@ -962,10 +962,10 @@ export default function PolicySimulation() {
                             </div>
                             <div className="flex items-end gap-3">
                               <div>
-                                <p className="text-xs text-gray-400 mb-0.5">
+                                <p className="text-xs text-muted mb-0.5">
                                   Before
                                 </p>
-                                <p className="text-lg font-bold text-gray-400">
+                                <p className="text-lg font-bold text-muted">
                                   {k.before}
                                   {k.unit}
                                 </p>
@@ -975,7 +975,7 @@ export default function PolicySimulation() {
                                 className="text-gray-300 mb-1"
                               />
                               <div>
-                                <p className="text-xs text-gray-400 mb-0.5">
+                                <p className="text-xs text-muted mb-0.5">
                                   After
                                 </p>
                                 <p
@@ -1036,7 +1036,7 @@ export default function PolicySimulation() {
                         <h3 className="font-bold text-sm text-content mb-1">
                           Branch-wise Impact
                         </h3>
-                        <p className="text-xs text-gray-400 mb-4">
+                        <p className="text-xs text-muted mb-4">
                           Placement readiness before vs after
                         </p>
                         <ResponsiveContainer width="100%" height={180}>
@@ -1061,12 +1061,12 @@ export default function PolicySimulation() {
                               dataKey="branch"
                               axisLine={false}
                               tickLine={false}
-                              tick={{ fontSize: 12, fill: "#9ca3af" }}
+                              tick={{ fontSize: 12, fill: "var(--muted)" }}
                             />
                             <YAxis
                               axisLine={false}
                               tickLine={false}
-                              tick={{ fontSize: 11, fill: "#9ca3af" }}
+                              tick={{ fontSize: 11, fill: "var(--muted)" }}
                               unit="%"
                               domain={[50, 90]}
                             />
@@ -1100,10 +1100,10 @@ export default function PolicySimulation() {
                       <Card className="p-5">
                         <div className="flex items-start justify-between mb-2">
                           <div>
-                            <h3 className="font-bold text-sm text-[#0D1B2A] mb-0.5">
+                            <h3 className="font-bold text-sm text-content mb-0.5">
                               Skill Distribution Shift
                             </h3>
-                            <p className="text-xs text-gray-400">
+                            <p className="text-xs text-muted">
                               Before vs after policy
                             </p>
                           </div>
@@ -1113,7 +1113,7 @@ export default function PolicySimulation() {
                                 className="w-2.5 h-2.5 rounded-sm"
                                 style={{ background: "#d1d5db" }}
                               />
-                              <span className="text-xs text-gray-400">
+                              <span className="text-xs text-muted">
                                 Before
                               </span>
                             </div>
@@ -1122,7 +1122,7 @@ export default function PolicySimulation() {
                                 className="w-2.5 h-2.5 rounded-sm"
                                 style={{ background: "#4338CA" }}
                               />
-                              <span className="text-xs text-gray-500 font-medium">
+                              <span className="text-xs text-muted font-medium">
                                 After
                               </span>
                             </div>
@@ -1139,10 +1139,10 @@ export default function PolicySimulation() {
                             }}
                             outerRadius="68%"
                           >
-                            <PolarGrid gridType="polygon" stroke="#f0f0f0" />
+                            <PolarGrid gridType="polygon" stroke="var(--line)" />
                             <PolarAngleAxis
                               dataKey="skill"
-                              tick={{ fontSize: 10, fill: "#9ca3af" }}
+                              tick={{ fontSize: 10, fill: "var(--muted)" }}
                             />
                             <PolarRadiusAxis
                               angle={30}
@@ -1173,10 +1173,10 @@ export default function PolicySimulation() {
                     <Card className="p-5">
                       <div className="flex items-center justify-between mb-4">
                         <div>
-                          <h3 className="font-bold text-sm text-[#0D1B2A]">
+                          <h3 className="font-bold text-sm text-content">
                             Projected 6-Semester Trend
                           </h3>
-                          <p className="text-xs text-gray-400 mt-0.5">
+                          <p className="text-xs text-muted mt-0.5">
                             Placement readiness trajectory with and without
                             policy
                           </p>
@@ -1198,12 +1198,12 @@ export default function PolicySimulation() {
                             dataKey="sem"
                             axisLine={false}
                             tickLine={false}
-                            tick={{ fontSize: 11, fill: "#9ca3af" }}
+                            tick={{ fontSize: 11, fill: "var(--muted)" }}
                           />
                           <YAxis
                             axisLine={false}
                             tickLine={false}
-                            tick={{ fontSize: 11, fill: "#9ca3af" }}
+                            tick={{ fontSize: 11, fill: "var(--muted)" }}
                             unit="%"
                             domain={[55, 85]}
                           />
@@ -1253,7 +1253,7 @@ export default function PolicySimulation() {
                           >
                             <Zap size={14} color="#4338CA" />
                           </div>
-                          <h3 className="font-bold text-sm text-[#0D1B2A]">
+                          <h3 className="font-bold text-sm text-content">
                             AI-Generated Insights
                           </h3>
                         </div>
@@ -1276,8 +1276,8 @@ export default function PolicySimulation() {
                                 text: "text-blue-800",
                               },
                             }[ins.type as "positive" | "warning" | "info"] ?? {
-                              dot: "bg-gray-500",
-                              bg: "bg-gray-50 border-gray-200",
+                              dot: "bg-surface-20",
+                              bg: "bg-surface-2 border-line",
                               text: "text-gray-800",
                             };
                             return (

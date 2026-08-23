@@ -13,6 +13,13 @@ import { ThemeProvider } from '@/components/shared/ThemeProvider'
 export const metadata = {
   title: 'VidyaSetu — AI-Powered Student Intelligence Platform',
   description: 'Multi-role AI-powered web application for engineering colleges in India. Track Student Potential Index, career paths, and institutional analytics.',
+  icons: {
+    icon: [
+      { url: '/logos/icon-192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/logos/icon-transparent-512.png', sizes: '512x512', type: 'image/png' },
+    ],
+    apple: '/logos/icon-black-1024.png',
+  },
 }
 
 // Sets the `dark` class on <html> before hydration/paint so switching themes
