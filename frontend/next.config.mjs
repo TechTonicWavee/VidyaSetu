@@ -2,9 +2,10 @@
 const nextConfig = {
   eslint: { ignoreDuringBuilds: true },
   experimental: {
-    serverComponentsExternalPackages: ['unpdf'],
+    serverComponentsExternalPackages: ['unpdf', 'pg', '@prisma/adapter-pg', '@prisma/client'],
     externalDir: true
   },
+
   // Only the faculty endpoints that still live on the standalone Express
   // server (backend/src/modules/faculty) are proxied — a wildcard here would
   // also swallow /api/faculty/project-tracker, which is a real Next.js API
