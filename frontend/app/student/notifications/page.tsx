@@ -90,50 +90,42 @@ export default function NotificationsPage() {
 
   async function handleInviteAction(notificationId: string, inviteId: string, action: 'accept' | 'decline') {
     setInviteState((s) => ({ ...s, [inviteId]: 'pending' }));
+
+    // Collect ALL notification IDs tied to this invite BEFORE removing from state,
+    // so we can mark all of them read and prevent re-appearing on refresh.
+    const allRelatedIds = items
+      .filter((n) => (n.payload?.inviteId as string | undefined) === inviteId)
+      .map((n) => n.id);
+
     try {
       if (action === 'accept') {
         await acceptInvite(inviteId);
-        // Bug 1 fix: mark as accepted BEFORE removing so the badge briefly
-        // shows if removal races, and state is correct in all cases.
         setInviteState((s) => ({ ...s, [inviteId]: 'accepted' }));
         addToast('Invite accepted — welcome to the team!', 'success');
       } else {
         await declineInvite(inviteId);
-        // Bug 1 fix: same for decline.
         setInviteState((s) => ({ ...s, [inviteId]: 'declined' }));
         addToast('Invite declined.', 'success');
       }
 
-      // Bug 2 fix: remove ALL notification rows that reference this inviteId
-      // (e.g. duplicate notifications for the same invite), not just the one
-      // whose button was clicked.
+      // Remove ALL notification cards for this invite from the UI.
       setItems((list) =>
-        list.filter((n) => {
-          const nInviteId = (n.payload?.inviteId as string | undefined) ?? null;
-          return nInviteId !== inviteId;
-        })
+        list.filter((n) => (n.payload?.inviteId as string | undefined) !== inviteId)
       );
-      await markReadShared(notificationId);
+      // Mark every related notification as read so they don't reappear on refresh.
+      await Promise.all(allRelatedIds.map((id) => markReadShared(id).catch(() => {})));
     } catch (err) {
       const code = err instanceof ApiError ? err.code : '';
       const msg = err instanceof ApiError ? err.message : 'Failed to respond to invite.';
 
       if (code === 'INVITE_NOT_PENDING') {
-        // Invite was already accepted, declined, or cancelled elsewhere.
-        // Silently sweep away every notification card tied to this invite
-        // so the user doesn't see stale actionable cards.
+        // Invite was already responded to elsewhere — sweep all cards + mark all read.
         setItems((list) =>
-          list.filter((n) => {
-            const nInviteId = (n.payload?.inviteId as string | undefined) ?? null;
-            return nInviteId !== inviteId;
-          })
+          list.filter((n) => (n.payload?.inviteId as string | undefined) !== inviteId)
         );
         addToast('This invite was already responded to.', 'info');
-        // Mark the originating notification read in the background (best-effort).
-        markReadShared(notificationId).catch(() => {});
+        Promise.all(allRelatedIds.map((id) => markReadShared(id).catch(() => {})));
       } else {
-        // Generic failure — show error state on card + toast, but do NOT
-        // set the full-page error (setError) which triggers "Something went wrong".
         setInviteState((s) => ({ ...s, [inviteId]: 'error' }));
         addToast(msg, 'error');
       }
