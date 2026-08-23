@@ -384,25 +384,24 @@ export default function FacultyPerformanceDeepDive() {
 
   return (
     <>
-    <main className="dean-page px-8 py-8">
-          <div className="max-w-[1400px] mx-auto p-6 md:p-8 animate-fade-in space-y-8 pb-20">
+    <div className="space-y-8 animate-fade-in pb-20">
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
               <div>
-                <h1 className="text-3xl font-bold text-navy mb-1">
+                <h1 className="text-3xl font-bold text-content mb-1">
                   Faculty Performance Analytics
                 </h1>
-                <p className="text-gray-500 text-sm max-w-2xl leading-relaxed">
+                <p className="text-muted text-sm max-w-2xl leading-relaxed">
                   Ranked by student outcome improvement — not ratings. Every
                   score is based on how much students actually improved under
                   each faculty member.
                 </p>
               </div>
               <div className="flex items-center gap-3 shrink-0">
-                <span className="px-3 py-1.5 bg-blue-50 text-blue-700 font-bold text-sm border border-blue-200 rounded-lg shadow-sm">
+                <span className="px-3 py-1.5 bg-brand/10 text-brand font-bold text-sm border border-brand/20 rounded-lg shadow-sm">
                   Semester: Even 2026
                 </span>
-                <button className="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 font-bold text-sm rounded-xl hover:bg-gray-50 transition shadow-sm flex items-center gap-2">
+                <button className="px-5 py-2.5 bg-surface border border-line text-content-2 font-bold text-sm rounded-xl hover:bg-surface-2 transition shadow-sm flex items-center gap-2">
                   <Download size={16} /> Export Report
                 </button>
               </div>
@@ -466,118 +465,6 @@ export default function FacultyPerformanceDeepDive() {
                 <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center text-red-500">
                   <AlertTriangle size={24} />
                 </div>
-              </div>
-            </div>
-
-            {/* MAIN - Faculty Leaderboard */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-              <div className="p-6 border-b border-gray-100 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-gray-50/50">
-                <div>
-                  <h2 className="text-xl font-bold text-navy mb-1">
-                    Faculty Effectiveness Rankings
-                  </h2>
-                  <p className="text-sm text-gray-500">
-                    Ranked by student improvement rate — updated every semester
-                  </p>
-                </div>
-
-                <div className="flex flex-wrap gap-3">
-                  <select
-                    className="text-sm border border-gray-300 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 font-medium text-gray-700 cursor-pointer"
-                    value={selectedBranchFilter}
-                    onChange={(e) => setSelectedBranchFilter(e.target.value)}
-                  >
-                    <option value="CSE">CSE Only</option>
-                  </select>
-                  <select className="text-sm border border-gray-300 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 font-medium text-gray-700 cursor-pointer">
-                    <option>Dept: CSE</option>
-                    <option>Core CS</option>
-                    <option>Mathematics</option>
-                    <option>Humanities</option>
-                  </select>
-                  <select className="text-sm border border-gray-300 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 font-medium text-gray-700 cursor-pointer">
-                    <option>Sort: By Effectiveness</option>
-                    <option>Sort: By Students</option>
-                    <option>Sort: By CO Attainment</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse min-w-[1000px]">
-                  <thead>
-                    <tr className="bg-white border-b border-gray-200 text-xs font-bold text-gray-500 uppercase tracking-wider">
-                      <th className="p-4 pl-6 w-16">Rank</th>
-                      <th className="p-4">Name</th>
-                      <th className="p-4">Branch</th>
-                      <th className="p-4">Subjects</th>
-                      <th className="p-4 text-center">Students</th>
-                      <th className="p-4 text-center">Improvement</th>
-                      <th className="p-4 text-center">CO Attainment</th>
-                      <th className="p-4 text-center">Alerts</th>
-                      <th className="p-4">Effectiveness Score</th>
-                      <th className="p-4 pr-6"></th>
-                    </tr>
-                  </thead>
-                  <tbody className="text-sm">
-                    {filteredFaculty.map((f, i) => (
-                      <tr
-                        key={f.id}
-                        className="border-b border-gray-100 hover:bg-gray-50/80 transition-colors"
-                      >
-                        <td className="p-4 pl-6 font-bold text-gray-400">
-                          #{f.rank}
-                        </td>
-                        <td className="p-4 font-bold text-navy flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-600">
-                            {f.name
-                              .split(" ")
-                              .map((n) => n[0])
-                              .join("")
-                              .replace("D", "")
-                              .replace("P", "")
-                              .substring(0, 2)}
-                          </div>
-                          {f.name}
-                        </td>
-                        <td className="p-4 font-medium text-gray-600">
-                          {f.branch}
-                        </td>
-                        <td className="p-4 text-gray-600 truncate max-w-[150px]">
-                          {f.subjects}
-                        </td>
-                        <td className="p-4 text-center text-gray-600 font-medium">
-                          {f.students}
-                        </td>
-                        <td className="p-4 text-center font-bold text-green-600">
-                          +{f.improvement}%
-                        </td>
-                        <td className="p-4 text-center font-bold text-gray-700">
-                          {f.co}%
-                        </td>
-                        <td className="p-4 text-center text-gray-600">
-                          {f.alerts}
-                        </td>
-                        <td className="p-4">
-                          {getScoreBadge(f.score, f.category)}
-                        </td>
-                        <td className="p-4 pr-6 text-right">
-                          <button
-                            onClick={() => openFacultyDetails(f)}
-                            className="text-blue-600 hover:text-blue-800 font-bold text-xs flex items-center gap-1 justify-end w-full"
-                          >
-                            View Details <ArrowRight size={14} />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                {filteredFaculty.length === 0 && (
-                  <div className="p-8 text-center text-gray-500 font-medium">
-                    No faculty found for the selected filters.
-                  </div>
-                )}
               </div>
             </div>
 
@@ -728,8 +615,119 @@ export default function FacultyPerformanceDeepDive() {
                 </div>
               </div>
             </div>
-          </div>
-        </main>
+
+            {/* MAIN - Faculty Leaderboard */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+              <div className="p-6 border-b border-gray-100 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-gray-50/50">
+                <div>
+                  <h2 className="text-xl font-bold text-navy mb-1">
+                    Faculty Effectiveness Rankings
+                  </h2>
+                  <p className="text-sm text-gray-500">
+                    Ranked by student improvement rate — updated every semester
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-3">
+                  <select
+                    className="text-sm border border-gray-300 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 font-medium text-gray-700 cursor-pointer"
+                    value={selectedBranchFilter}
+                    onChange={(e) => setSelectedBranchFilter(e.target.value)}
+                  >
+                    <option value="CSE">CSE Only</option>
+                  </select>
+                  <select className="text-sm border border-gray-300 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 font-medium text-gray-700 cursor-pointer">
+                    <option>Dept: CSE</option>
+                    <option>Core CS</option>
+                    <option>Mathematics</option>
+                    <option>Humanities</option>
+                  </select>
+                  <select className="text-sm border border-gray-300 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 font-medium text-gray-700 cursor-pointer">
+                    <option>Sort: By Effectiveness</option>
+                    <option>Sort: By Students</option>
+                    <option>Sort: By CO Attainment</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse min-w-[1000px]">
+                  <thead>
+                    <tr className="bg-white border-b border-gray-200 text-xs font-bold text-gray-500 uppercase tracking-wider">
+                      <th className="p-4 pl-6 w-16">Rank</th>
+                      <th className="p-4">Name</th>
+                      <th className="p-4">Branch</th>
+                      <th className="p-4">Subjects</th>
+                      <th className="p-4 text-center">Students</th>
+                      <th className="p-4 text-center">Improvement</th>
+                      <th className="p-4 text-center">CO Attainment</th>
+                      <th className="p-4 text-center">Alerts</th>
+                      <th className="p-4">Effectiveness Score</th>
+                      <th className="p-4 pr-6"></th>
+                    </tr>
+                  </thead>
+                  <tbody className="text-sm">
+                    {filteredFaculty.map((f, i) => (
+                      <tr
+                        key={f.id}
+                        className="border-b border-gray-100 hover:bg-gray-50/80 transition-colors"
+                      >
+                        <td className="p-4 pl-6 font-bold text-gray-400">
+                          #{f.rank}
+                        </td>
+                        <td className="p-4 font-bold text-navy flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-600">
+                            {f.name
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")
+                              .replace("D", "")
+                              .replace("P", "")
+                              .substring(0, 2)}
+                          </div>
+                          {f.name}
+                        </td>
+                        <td className="p-4 font-medium text-gray-600">
+                          {f.branch}
+                        </td>
+                        <td className="p-4 text-gray-600 truncate max-w-[150px]">
+                          {f.subjects}
+                        </td>
+                        <td className="p-4 text-center text-gray-600 font-medium">
+                          {f.students}
+                        </td>
+                        <td className="p-4 text-center font-bold text-green-600">
+                          +{f.improvement}%
+                        </td>
+                        <td className="p-4 text-center font-bold text-gray-700">
+                          {f.co}%
+                        </td>
+                        <td className="p-4 text-center text-gray-600">
+                          {f.alerts}
+                        </td>
+                        <td className="p-4">
+                          {getScoreBadge(f.score, f.category)}
+                        </td>
+                        <td className="p-4 pr-6 text-right">
+                          <button
+                            onClick={() => openFacultyDetails(f)}
+                            className="text-blue-600 hover:text-blue-800 font-bold text-xs flex items-center gap-1 justify-end w-full"
+                          >
+                            View Details <ArrowRight size={14} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                {filteredFaculty.length === 0 && (
+                  <div className="p-8 text-center text-gray-500 font-medium">
+                    No faculty found for the selected filters.
+                  </div>
+                )}
+              </div>
+            </div>
+            </div>
 
       {/* ══════════════════════════════════
           SLIDE-IN PANEL (FACULTY DETAIL)
@@ -1143,8 +1141,8 @@ export default function FacultyPerformanceDeepDive() {
 
       {/* TOAST */}
       {toastMessage && (
-        <div className="fixed bottom-8 right-8 bg-gray-900 text-white px-6 py-3 rounded-xl shadow-xl font-medium text-sm animate-fade-in z-50 flex items-center gap-2">
-          <CheckCircle2 size={16} className="text-green-400" />
+        <div className="fixed bottom-8 right-8 bg-content text-surface px-6 py-3 rounded-xl shadow-xl font-medium text-sm animate-fade-in z-50 flex items-center gap-2">
+          <CheckCircle2 size={16} className="text-success" />
           {toastMessage}
         </div>
       )}

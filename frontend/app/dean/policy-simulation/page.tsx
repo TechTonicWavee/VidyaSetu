@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { PageHeader } from "@/components/shared/ui/PageHeader";
+import { Card, CardHeader } from "@/components/shared/ui/Card";
 import {
   Brain,
   LayoutDashboard,
@@ -551,55 +553,43 @@ export default function PolicySimulation() {
     : [];
 
   return (
-    <main className="dean-page px-8 py-8">
+    <div className="space-y-6 pb-10">
           <div className="max-w-7xl mx-auto space-y-6 pb-10">
             {/* Page Title */}
-            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 animate-fade-in">
-              <div>
-                <div className="flex items-center gap-2 mb-1">
-                  <div
-                    className="w-8 h-8 rounded-lg flex items-center justify-center"
-                    style={{ background: "#4338CA" }}
-                  >
-                    <Cpu size={16} color="#fff" />
+            <PageHeader 
+              title="Policy Simulation Engine"
+              description="Test strategic decisions before implementing them — see projected impact instantly"
+              icon={<Cpu size={22} />}
+              actions={
+                <div className="flex items-center gap-2 text-xs ml-10 sm:ml-0">
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-purple-50 border border-purple-200 text-purple-700 font-semibold">
+                    <Sparkles size={12} />
+                    {savedScenarios.length} saved scenario
+                    {savedScenarios.length !== 1 ? "s" : ""}
                   </div>
-                  <h1 className="text-2xl font-black text-[#0D1B2A]">
-                    Policy Simulation Engine
-                  </h1>
+                  {result && (
+                    <button
+                      onClick={() => setCompareMode((v) => !v)}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border font-semibold transition ${compareMode ? "bg-indigo-100 border-indigo-300 text-indigo-700" : "bg-white border-gray-200 text-gray-600 hover:border-indigo-300 hover:text-indigo-700"}`}
+                    >
+                      <BarChart2 size={12} />
+                      Compare Mode
+                    </button>
+                  )}
                 </div>
-                <p className="text-gray-500 text-sm ml-10">
-                  Test strategic decisions before implementing them — see
-                  projected impact instantly
-                </p>
-              </div>
-              <div className="flex items-center gap-2 text-xs ml-10 sm:ml-0">
-                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-purple-50 border border-purple-200 text-purple-700 font-semibold">
-                  <Sparkles size={12} />
-                  {savedScenarios.length} saved scenario
-                  {savedScenarios.length !== 1 ? "s" : ""}
-                </div>
-                {result && (
-                  <button
-                    onClick={() => setCompareMode((v) => !v)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border font-semibold transition ${compareMode ? "bg-indigo-100 border-indigo-300 text-indigo-700" : "bg-white border-gray-200 text-gray-600 hover:border-indigo-300 hover:text-indigo-700"}`}
-                  >
-                    <BarChart2 size={12} />
-                    Compare Mode
-                  </button>
-                )}
-              </div>
-            </div>
+              }
+            />
 
             <div className="grid grid-cols-1 xl:grid-cols-5 gap-6">
               {/* ── LEFT: Scenario Builder ──────────────────────────────── */}
               <div className="xl:col-span-2 space-y-4">
                 {/* Builder card */}
-                <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-                  <div className="px-5 py-4 border-b border-gray-100">
-                    <h2 className="font-bold text-[#0D1B2A] text-sm">
+                <Card padded={false} className="overflow-hidden">
+                  <div className="px-5 py-4 border-b border-line bg-surface-2">
+                    <h2 className="font-bold text-content text-sm">
                       Scenario Builder
                     </h2>
-                    <p className="text-xs text-gray-500 mt-0.5">
+                    <p className="text-xs text-muted mt-0.5">
                       Configure your policy change below
                     </p>
                   </div>
@@ -811,11 +801,11 @@ export default function PolicySimulation() {
                       )}
                     </div>
                   </div>
-                </div>
+                </Card>
 
                 {/* Saved Scenarios */}
                 {savedScenarios.length > 0 && (
-                  <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-4">
+                  <Card className="p-4">
                     <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-3">
                       Saved Scenarios
                     </p>
@@ -858,16 +848,21 @@ export default function PolicySimulation() {
                         </div>
                       ))}
                     </div>
-                  </div>
+                  </Card>
                 )}
 
+
+              </div>
+
+              {/* ── RIGHT: Results ──────────────────────────────────────── */}
+              <div className="xl:col-span-3 space-y-5">
                 {/* Baseline reference */}
-                <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-4">
-                  <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-3 flex items-center gap-1.5">
-                    <Info size={12} />
+                <Card className="p-5">
+                  <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-4 flex items-center gap-1.5">
+                    <Info size={14} />
                     Current Baseline
                   </p>
-                  <div className="grid grid-cols-2 gap-2">
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     {[
                       { l: "Placement Ready", v: "61%", c: "text-blue-600" },
                       { l: "At-Risk", v: "10.2%", c: "text-red-500" },
@@ -876,21 +871,17 @@ export default function PolicySimulation() {
                     ].map((b) => (
                       <div
                         key={b.l}
-                        className="p-3 rounded-xl bg-gray-50 border border-gray-100"
+                        className="p-4 rounded-xl bg-gray-50 border border-gray-100 flex flex-col justify-center"
                       >
-                        <p className="text-xs text-gray-500 mb-0.5">{b.l}</p>
-                        <p className={`text-base font-black ${b.c}`}>{b.v}</p>
+                        <p className="text-xs text-gray-500 mb-1">{b.l}</p>
+                        <p className={`text-xl font-black ${b.c}`}>{b.v}</p>
                       </div>
                     ))}
                   </div>
-                </div>
-              </div>
-
-              {/* ── RIGHT: Results ──────────────────────────────────────── */}
-              <div className="xl:col-span-3 space-y-5">
+                </Card>
                 {/* Empty state */}
                 {!result && !loading && (
-                  <div className="bg-white rounded-2xl border border-dashed border-gray-300 flex flex-col items-center justify-center py-20 animate-fade-in">
+                  <Card padded={false} className="border-dashed flex flex-col items-center justify-center py-20 animate-fade-in">
                     <div
                       className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4"
                       style={{ background: "#EEF2FF" }}
@@ -904,12 +895,12 @@ export default function PolicySimulation() {
                       Configure a policy in the builder and click{" "}
                       <strong>Run Simulation</strong> to see projected impact
                     </p>
-                  </div>
+                  </Card>
                 )}
 
                 {/* Loading */}
                 {loading && (
-                  <div className="bg-white rounded-2xl border border-gray-200 flex flex-col items-center justify-center py-20 animate-fade-in">
+                  <Card padded={false} className="flex flex-col items-center justify-center py-20 animate-fade-in">
                     <div className="w-12 h-12 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin mb-5" />
                     <p className="font-bold text-[#0D1B2A] mb-1">
                       Running simulation engine…
@@ -917,7 +908,7 @@ export default function PolicySimulation() {
                     <p className="text-gray-400 text-sm">
                       Calculating impact across all branches
                     </p>
-                  </div>
+                  </Card>
                 )}
 
                 {/* Results */}
@@ -1041,8 +1032,8 @@ export default function PolicySimulation() {
                     {/* Charts grid */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
                       {/* Branch Impact Bar Chart */}
-                      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
-                        <h3 className="font-bold text-sm text-[#0D1B2A] mb-1">
+                      <Card className="p-5">
+                        <h3 className="font-bold text-sm text-content mb-1">
                           Branch-wise Impact
                         </h3>
                         <p className="text-xs text-gray-400 mb-4">
@@ -1103,10 +1094,10 @@ export default function PolicySimulation() {
                             )}
                           </BarChart>
                         </ResponsiveContainer>
-                      </div>
+                      </Card>
 
                       {/* Skill Radar */}
-                      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
+                      <Card className="p-5">
                         <div className="flex items-start justify-between mb-2">
                           <div>
                             <h3 className="font-bold text-sm text-[#0D1B2A] mb-0.5">
@@ -1175,11 +1166,11 @@ export default function PolicySimulation() {
                             />
                           </RadarChart>
                         </ResponsiveContainer>
-                      </div>
+                      </Card>
                     </div>
 
                     {/* Projected Trend Line */}
-                    <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
+                    <Card className="p-5">
                       <div className="flex items-center justify-between mb-4">
                         <div>
                           <h3 className="font-bold text-sm text-[#0D1B2A]">
@@ -1249,12 +1240,12 @@ export default function PolicySimulation() {
                           />
                         </LineChart>
                       </ResponsiveContainer>
-                    </div>
+                    </Card>
 
                     {/* Insights + Recommendation */}
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
                       {/* AI Insights */}
-                      <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
+                      <Card className="p-5">
                         <div className="flex items-center gap-2 mb-4">
                           <div
                             className="w-7 h-7 rounded-lg flex items-center justify-center"
@@ -1306,7 +1297,7 @@ export default function PolicySimulation() {
                             );
                           })}
                         </div>
-                      </div>
+                      </Card>
 
                       {/* Recommendation Card */}
                       <div
@@ -1432,7 +1423,7 @@ export default function PolicySimulation() {
               </div>
             </div>
           </div>
-        </main>
+    </div>
   );
 }
 

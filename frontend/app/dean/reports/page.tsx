@@ -386,7 +386,7 @@ export default function DeanReports() {
   const filteredFaculty = facultySummary.filter((f) => f.branch === "CSE");
 
   return (
-    <main className="dean-page px-8 py-8">
+    <div className="space-y-8 animate-fade-in pb-10">
           {/* Title + Filters + Download */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 animate-fade-in">
             <div>
@@ -847,7 +847,7 @@ export default function DeanReports() {
             © 2026 Educator Analytics OS · Report generated for {semester} ·{" "}
             CSE · Dean: Dr. Vineet Sharma
           </div>
-        </main>
+    </div>
   );
 }
 

@@ -316,13 +316,11 @@ export default function DeanForecastingPage() {
   };
 
   return (
-    <>
-    <main className="dean-page px-8 py-8">
-          <div className="max-w-7xl mx-auto space-y-8 animate-fade-in pb-10">
+    <div className="space-y-8 animate-fade-in pb-20">
             {/* HEADER */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-2">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
               <div>
-                <h1 className="text-3xl font-bold text-navy mb-1">
+                <h1 className="text-3xl font-bold text-content mb-1">
                   Cohort Forecasting
                 </h1>
                 <p className="text-gray-500 text-sm">
@@ -504,6 +502,93 @@ export default function DeanForecastingPage() {
               </div>
             </div>
 
+            {/* SECTION C - OUTCOME FORECAST CHART */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+              <div className="p-6 border-b border-gray-100">
+                <h3 className="text-lg font-bold text-navy mb-1">
+                  Predicted SPI Distribution at Semester End
+                </h3>
+                <p className="text-sm text-gray-500">
+                  Current distribution vs predicted distribution with and
+                  without intervention
+                </p>
+              </div>
+
+              <div className="p-6 h-[400px]">
+                <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 500, height: 300 }}>
+                  <BarChart
+                    data={forecastChartData}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                  >
+                    <CartesianGrid
+                      strokeDasharray="3 3"
+                      vertical={false}
+                      stroke="#f3f4f6"
+                    />
+                    <XAxis
+                      dataKey="range"
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fontSize: 12, fill: "#6b7280" }}
+                      dy={10}
+                    />
+                    <YAxis
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fontSize: 12, fill: "#6b7280" }}
+                    />
+                    <RechartsTooltip
+                      cursor={{ fill: "#f3f4f6" }}
+                      contentStyle={{
+                        borderRadius: "8px",
+                        border: "none",
+                        boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
+                      }}
+                    />
+                    <Legend
+                      verticalAlign="top"
+                      height={36}
+                      iconType="circle"
+                      wrapperStyle={{ fontSize: "12px", paddingBottom: "20px" }}
+                    />
+                    <Bar
+                      dataKey="current"
+                      name="Current"
+                      fill="#3B82F6"
+                      radius={[4, 4, 0, 0]}
+                    />
+                    <Bar
+                      dataKey="without"
+                      name="Without Intervention"
+                      fill="#F59E0B"
+                      radius={[4, 4, 0, 0]}
+                    />
+                    <Bar
+                      dataKey="with"
+                      name="With Intervention"
+                      fill="#22C55E"
+                      radius={[4, 4, 0, 0]}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+
+              <div className="p-6 bg-gray-50 border-t border-gray-100">
+                <div className="bg-green-50 border border-green-200 rounded-xl p-5 shadow-sm">
+                  <p className="text-green-900 font-medium leading-relaxed text-sm">
+                    With targeted intervention on the top 209 at-risk students,
+                    the department can move{" "}
+                    <span className="font-bold text-green-700">
+                      88 additional students from below-average to average SPI
+                      range
+                    </span>{" "}
+                    by semester end. This would improve the department health
+                    score from 73 to approximately 81.
+                  </p>
+                </div>
+              </div>
+            </div>
+
             {/* SECTION B - AT-RISK STUDENTS */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
               <div className="p-6 border-b border-gray-100">
@@ -635,93 +720,6 @@ export default function DeanForecastingPage() {
               </div>
             </div>
 
-            {/* SECTION C - OUTCOME FORECAST CHART */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-              <div className="p-6 border-b border-gray-100">
-                <h3 className="text-lg font-bold text-navy mb-1">
-                  Predicted SPI Distribution at Semester End
-                </h3>
-                <p className="text-sm text-gray-500">
-                  Current distribution vs predicted distribution with and
-                  without intervention
-                </p>
-              </div>
-
-              <div className="p-6 h-[400px]">
-                <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 500, height: 300 }}>
-                  <BarChart
-                    data={forecastChartData}
-                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-                  >
-                    <CartesianGrid
-                      strokeDasharray="3 3"
-                      vertical={false}
-                      stroke="#f3f4f6"
-                    />
-                    <XAxis
-                      dataKey="range"
-                      axisLine={false}
-                      tickLine={false}
-                      tick={{ fontSize: 12, fill: "#6b7280" }}
-                      dy={10}
-                    />
-                    <YAxis
-                      axisLine={false}
-                      tickLine={false}
-                      tick={{ fontSize: 12, fill: "#6b7280" }}
-                    />
-                    <RechartsTooltip
-                      cursor={{ fill: "#f3f4f6" }}
-                      contentStyle={{
-                        borderRadius: "8px",
-                        border: "none",
-                        boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
-                      }}
-                    />
-                    <Legend
-                      verticalAlign="top"
-                      height={36}
-                      iconType="circle"
-                      wrapperStyle={{ fontSize: "12px", paddingBottom: "20px" }}
-                    />
-                    <Bar
-                      dataKey="current"
-                      name="Current"
-                      fill="#3B82F6"
-                      radius={[4, 4, 0, 0]}
-                    />
-                    <Bar
-                      dataKey="without"
-                      name="Without Intervention"
-                      fill="#F59E0B"
-                      radius={[4, 4, 0, 0]}
-                    />
-                    <Bar
-                      dataKey="with"
-                      name="With Intervention"
-                      fill="#22C55E"
-                      radius={[4, 4, 0, 0]}
-                    />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
-
-              <div className="p-6 bg-gray-50 border-t border-gray-100">
-                <div className="bg-green-50 border border-green-200 rounded-xl p-5 shadow-sm">
-                  <p className="text-green-900 font-medium leading-relaxed text-sm">
-                    With targeted intervention on the top 209 at-risk students,
-                    the department can move{" "}
-                    <span className="font-bold text-green-700">
-                      88 additional students from below-average to average SPI
-                      range
-                    </span>{" "}
-                    by semester end. This would improve the department health
-                    score from 73 to approximately 81.
-                  </p>
-                </div>
-              </div>
-            </div>
-
             {/* SECTION D - POLICY SIMULATION */}
             <div className="bg-purple-50 rounded-2xl shadow-sm border border-purple-200 overflow-hidden">
               <div className="p-6 border-b border-purple-100">
@@ -803,8 +801,6 @@ export default function DeanForecastingPage() {
                 </div>
               </div>
             </div>
-          </div>
-        </main>
 
       {/* INTERVENE MODAL */}
       {interveneModalOpen && selectedStudent && (
@@ -900,7 +896,7 @@ export default function DeanForecastingPage() {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
 

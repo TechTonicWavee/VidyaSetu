@@ -173,16 +173,15 @@ export default function StudentIntelligence() {
   }, [filtered, selectedCategory])
 
   return (
-    <main className="dean-page px-8 py-8">
-
+    <div className="space-y-8 animate-fade-in pb-20">
           {/* ── Page Title ─────────────────────────────────────────────────── */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <div className="flex items-center gap-2.5 mb-1">
-                <div className="w-9 h-9 rounded-xl flex items-center justify-center" style={{ background: '#4338CA' }}>
-                  <Brain size={18} color="#fff" />
+                <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-brand">
+                  <Brain size={18} className="text-surface" />
                 </div>
-                <h1 className="text-2xl font-black text-[#0D1B2A]">Student Intelligence Engine</h1>
+                <h1 className="text-2xl font-black text-content">Student Intelligence Engine</h1>
               </div>
               <p className="text-gray-500 text-sm ml-11">AI-driven segmentation — showing what each student is actually doing and suited for</p>
             </div>
@@ -831,7 +830,7 @@ export default function StudentIntelligence() {
             </ResponsiveContainer>
           </div>
 
-        </main>
+        </div>
   )
 }
 
