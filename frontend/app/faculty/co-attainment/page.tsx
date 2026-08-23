@@ -3,10 +3,11 @@
 import { useState, type FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import { FACULTY_PROFILE } from '@/lib/faculty/mock-data'
-import { Home, User, Activity, BookOpen, Bell, Settings, LogOut, Search, ChevronDown, AlertTriangle, MessageSquare, Target, CheckCircle2, Calendar, Clock, BookMarked, Download, XCircle, ChevronRight, TrendingUp, Users, Award, Grid, FileText, CheckCircle, Zap, AlertCircle, Plug, ExternalLink, Brain } from 'lucide-react'
+import { Home, BookOpen, Activity, AlertCircle, Users, CheckCircle, MessageSquare, FileText, ExternalLink, Brain, LogOut, Search, Bell, ChevronDown, CheckCircle2, AlertTriangle, Target, Calendar, Clock, Download } from 'lucide-react'
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend, ReferenceLine
 } from 'recharts'
+import { PageHeader, Card, StatCard, Badge, Button, Modal, Field } from '@/components/shared/ui'
 
 const navLinks = [
   { id: 'dashboard',    label: 'Dashboard',            icon: Home,          badge: null,  path: '/faculty' },
@@ -91,11 +92,9 @@ const chartData = [
 
 export default function FacultyCOAttainment() {
   const router = useRouter()
-  const [activeNav, setActiveNav] = useState('co')
   const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [activeNav, setActiveNav] = useState('co')
   const [activeTab, setActiveTab] = useState<keyof typeof subjectData>('DBMS')
-
-  // Modal state
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [toastMessage, setToastMessage] = useState<string | null>(null)
 
@@ -120,291 +119,79 @@ export default function FacultyCOAttainment() {
   const atRiskCount = summaryRows.filter(r => Math.round((r.co1 + r.co2 + r.co3) / 3) < 75).length
 
   return (
-    <div className="flex h-screen bg-[#F3F4F6] overflow-hidden font-sans">
-      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-          SIDEBAR
-      â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
-      <aside className={`${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'} flex-shrink-0 bg-white border-r border-gray-100 flex flex-col transition-all duration-300 shadow-sm`}>
-        <div className="p-5 border-b border-gray-50">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style={{ background: 'linear-gradient(135deg, #4338CA, #7C3AED)' }}>
-              {FACULTY_PROFILE.initials}
-            </div>
-            <div className="overflow-hidden">
-              <p className="font-semibold text-sm text-navy truncate">{FACULTY_PROFILE.name}</p>
-              <p className="text-xs text-gray-500 truncate">{FACULTY_PROFILE.department} · {FACULTY_PROFILE.subtitle}</p>
-            </div>
-          </div>
-        </div>
-
-        <nav className="flex-1 p-3 overflow-y-auto">
-          {navLinks.map(link => (
-            <button
-              key={link.id}
-              onClick={() => {
-                if (link.external) { window.open(link.external, '_blank'); return; }
-                if (link.path) {
-                  router.push(link.path)
-                } else {
-                  if (typeof setActiveNav === 'function') setActiveNav(link.id)
-                }
-              }}
-              className="nav-link w-full text-left mb-0.5"
-              style={activeNav === link.id && !link.external ? { background: '#EEF2FF', color: '#3730A3', fontWeight: 600 } : {}}
-            >
-              <link.icon size={17} />
-              <span className="flex-1">{link.label}</span>
-              {link.badge && (
-                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${link.badge === 'New' ? 'bg-indigo-100 text-indigo-700' : 'bg-red-500 text-white'}`}>
-                  {link.badge}
-                </span>
-              )}
-            </button>
-          ))}
-        </nav>
-
-        <div className="p-3 border-t border-gray-50">
-          <button onClick={() => router.push('/login')} className="nav-link w-full text-left text-red-500 hover:bg-red-50 hover:text-red-600">
-            <LogOut size={17} />
-            <span>Switch Role</span>
-          </button>
-        </div>
-      </aside>
-
-      {/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
-          MAIN CONTENT
-      â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* TOP NAV */}
-        <header className="bg-white border-b border-gray-100 px-6 py-3 flex items-center gap-4 flex-shrink-0 shadow-sm">
-          <button onClick={() => setSidebarOpen(v => !v)} className="text-gray-400 hover:text-gray-700 transition" aria-label="Toggle sidebar">
-            <Settings size={20} />
-          </button>
-          <div className="flex items-center gap-2 mr-4">
-            <div className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs" style={{ background: '#4338CA' }}>EA</div>
-            <span className="font-bold text-navy text-sm hidden sm:block">Educator Analytics OS</span>
-          </div>
-          <div className="flex-1 max-w-md relative">
-            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input type="text" placeholder="Search students, subjects, features..." className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-300 transition" />
-          </div>
-          <div className="flex-1" />
-          <div className="relative">
-            <button className="relative p-2 rounded-lg hover:bg-gray-100 transition text-gray-500" aria-label="Notifications">
-              <Bell size={19} />
-              <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">{Math.min(atRiskCount, 9)}</span>
-            </button>
-          </div>
-          <div className="flex items-center gap-2 cursor-pointer group" aria-label="Profile menu">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs" style={{ background: 'linear-gradient(135deg, #4338CA, #7C3AED)' }}>{FACULTY_PROFILE.initials}</div>
-            <ChevronDown size={14} className="text-gray-400 group-hover:text-gray-600 transition" />
-          </div>
-        </header>
-
-        {/* PAGE BODY */}
-        <main className="flex-1 overflow-y-auto p-6">
-          <div className="space-y-6 animate-fade-in">
-            <div>
-              <h1 className="text-xl font-bold text-navy">CO Attainment</h1>
-              <p className="text-sm text-gray-500">Track course outcome achievement</p>
-            </div>
-
-            <div className="card rounded-2xl shadow-sm border border-gray-100 animate-fade-in" style={{ animationDelay: '0.08s' }}>
-              <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-3 mb-4">
-                <div>
-                  <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Overview</p>
-                  <p className="text-sm font-semibold text-navy">Subject-wise CO attainment (CO1-CO3)</p>
-                </div>
-                <div className="text-xs text-gray-500">
-                  Target threshold: <span className="font-semibold text-navy">75%</span>
-                </div>
-              </div>
-
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse whitespace-nowrap">
-                  <thead>
-                    <tr className="bg-gray-50 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200">
-                      <th className="px-6 py-4">Subject</th>
-                      <th className="px-4 py-4 text-center">CO1</th>
-                      <th className="px-4 py-4 text-center">CO2</th>
-                      <th className="px-4 py-4 text-center">CO3</th>
-                      <th className="px-4 py-4 text-center">Overall %</th>
-                      <th className="px-6 py-4 text-right">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-gray-100 text-sm font-medium">
-                    {summaryRows.map((row) => {
-                      const overall = Math.round((row.co1 + row.co2 + row.co3) / 3)
-                      const isGood = overall >= 75
-
-                      const barClass = (pct: number) => {
-                        if (pct >= 75) return 'bg-green-500'
-                        if (pct >= 60) return 'bg-yellow-400'
-                        if (pct >= 45) return 'bg-blue-500'
-                        return 'bg-red-500'
-                      }
-
-                      const pillClass = isGood ? 'bg-indigo-100 text-indigo-700' : 'bg-red-100 text-red-700'
-                      const pillLabel = isGood ? 'GOOD' : 'AT RISK'
-
-                      const Cell = ({ value }: { value: number }) => (
-                        <div className="min-w-[96px]">
-                          <div className="font-semibold text-navy text-center">{value}%</div>
-                          <div className="mt-2 w-full bg-gray-200 rounded-full h-1.5">
-                            <div className={`h-1.5 rounded-full ${barClass(value)}`} style={{ width: `${value}%` }} />
-                          </div>
-                        </div>
-                      )
-
-                      return (
-                        <tr key={row.subject} className="hover:bg-gray-50/50">
-                          <td className="px-6 py-4 text-navy font-semibold">{row.subject}</td>
-                          <td className="px-4 py-4 text-center"><Cell value={row.co1} /></td>
-                          <td className="px-4 py-4 text-center"><Cell value={row.co2} /></td>
-                          <td className="px-4 py-4 text-center"><Cell value={row.co3} /></td>
-                          <td className="px-4 py-4 text-center">
-                            <div className="min-w-[96px]">
-                              <div className="font-bold text-navy">{overall}%</div>
-                              <div className="mt-2 w-full bg-gray-200 rounded-full h-1.5">
-                                <div className={`h-1.5 rounded-full ${barClass(overall)}`} style={{ width: `${overall}%` }} />
-                              </div>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 text-right">
-                            <span className={`inline-block px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${pillClass}`}>
-                              {pillLabel}
-                            </span>
-                          </td>
-                        </tr>
-                      )
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            {/* Legacy detailed view kept (hidden) to preserve prior work */}
-            {false && (
-              <>
-            {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
-              <div>
-                <h1 className="text-3xl font-bold text-navy mb-1">CO Attainment Tracker</h1>
-                <p className="text-gray-500 text-sm max-w-2xl">Track Course Outcome attainment in real time across all your subjects — NBA requires 75% attainment on all COs</p>
-              </div>
-              <div className="px-4 py-1.5 bg-blue-100 text-blue-800 font-bold text-sm rounded-full border border-blue-200 flex items-center gap-2 shadow-sm">
+          <div className="space-y-6 animate-fade-in relative pb-12">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+              <PageHeader 
+                title="CO Attainment Tracker"
+                description="Track Course Outcome attainment across all your subjects. NBA requires 75% attainment."
+              />
+              <Badge tone="brand" className="text-sm px-4 py-1.5 shadow-sm">
                 NBA Target: 75%
-              </div>
+              </Badge>
             </div>
 
-            {/* TOP SUMMARY STRIP */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-green-100 text-green-600 flex items-center justify-center shrink-0">
-                  <CheckCircle2 size={24} />
-                </div>
-                <div>
-                  <h3 className="text-3xl font-black text-green-600 leading-none mb-1">7</h3>
-                  <p className="font-bold text-navy text-sm mb-0.5">COs Achieved</p>
-                  <p className="text-xs text-gray-500">Out of 20 total</p>
-                </div>
-              </div>
-              
-              <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center shrink-0">
-                  <AlertTriangle size={24} />
-                </div>
-                <div>
-                  <h3 className="text-3xl font-black text-red-600 leading-none mb-1">11</h3>
-                  <p className="font-bold text-navy text-sm mb-0.5">COs Below Target</p>
-                  <p className="text-xs text-gray-500">Need improvement</p>
-                </div>
-              </div>
-
-              <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center shrink-0">
-                  <Target size={24} />
-                </div>
-                <div>
-                  <h3 className="text-3xl font-black text-amber-500 leading-none mb-1">2</h3>
-                  <p className="font-bold text-navy text-sm mb-0.5">Close to Target</p>
-                  <p className="text-xs text-gray-500">Within 5% of 75%</p>
-                </div>
-              </div>
-
-              <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-200 flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
-                  <Activity size={24} />
-                </div>
-                <div>
-                  <h3 className="text-3xl font-black text-amber-500 leading-none mb-1">68.6%</h3>
-                  <p className="font-bold text-navy text-sm mb-0.5">Overall Attainment</p>
-                  <p className="text-xs text-gray-500">Avg across all subjects</p>
-                </div>
-              </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+              <StatCard label="COs Achieved" value="7" hint="Out of 20 total" icon={CheckCircle2} tone="success" />
+              <StatCard label="COs Below Target" value="11" hint="Need improvement" icon={AlertTriangle} tone="danger" />
+              <StatCard label="Close to Target" value="2" hint="Within 5% of 75%" icon={Target} tone="amber" />
+              <StatCard label="Overall Attainment" value="68.6%" hint="Avg across all subjects" icon={Activity} tone="brand" />
             </div>
 
-            {/* SUBJECT TABS & DATA */}
-            <div className="bg-white shadow-sm border border-gray-200 rounded-2xl overflow-hidden">
-              {/* TABS */}
-              <div className="flex border-b border-gray-200 overflow-x-auto hide-scrollbar bg-gray-50">
+            <Card className="p-0 sm:p-0">
+              <div className="flex border-b border-line overflow-x-auto hide-scrollbar bg-surface-2/30 rounded-t-2xl">
                 {['DBMS', 'Operating Systems', 'Theory of Computation', 'Data Structures'].map(tab => {
                   const key = tab === 'Operating Systems' ? 'OS' : tab === 'Theory of Computation' ? 'TOC' : tab === 'Data Structures' ? 'DSA' : 'DBMS'
                   return (
                     <button
                       key={tab}
                       onClick={() => setActiveTab(key)}
-                      className={`px-8 py-4 font-bold text-sm whitespace-nowrap transition-colors relative ${activeTab === key ? 'text-blue-600 bg-white' : 'text-gray-500 hover:text-navy hover:bg-gray-100/50'}`}
+                      className={`px-8 py-4 font-bold text-sm whitespace-nowrap transition-colors relative ${
+                        activeTab === key ? 'text-brand bg-surface' : 'text-content-2 hover:text-content hover:bg-surface-2'
+                      }`}
                     >
                       {tab}
-                      {activeTab === key && <div className="absolute top-0 left-0 w-full h-1 bg-blue-600"></div>}
+                      {activeTab === key && <div className="absolute top-0 left-0 w-full h-1 bg-brand"></div>}
                     </button>
                   )
                 })}
               </div>
 
               <div className="p-6">
-                <h3 className="font-bold text-navy text-lg mb-4">CO Attainment — {activeTab}</h3>
+                <h3 className="font-bold text-content text-lg mb-4">CO Attainment — {activeTab}</h3>
                 
-                {/* TABLE */}
-                <div className="overflow-x-auto mb-6 rounded-xl border border-gray-200">
+                <div className="overflow-x-auto mb-6 rounded-xl border border-line">
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="bg-gray-50 border-b border-gray-200 text-xs font-bold text-gray-500 uppercase tracking-wider">
+                      <tr className="bg-surface-2/50 border-b border-line text-xs font-bold text-muted uppercase tracking-wider">
                         <th className="p-4 pl-6">CO Code</th>
                         <th className="p-4">CO Description</th>
                         <th className="p-4 text-center">Target</th>
                         <th className="p-4 text-center">Assessment 1</th>
                         <th className="p-4 text-center">Assessment 2</th>
                         <th className="p-4 text-center">Assessment 3</th>
-                        <th className="p-4 text-center bg-blue-50/50">Attained</th>
+                        <th className="p-4 text-center bg-brand-soft/30">Attained</th>
                         <th className="p-4 text-center">Gap</th>
                         <th className="p-4 pr-6">Status</th>
                       </tr>
                     </thead>
-                    <tbody className="text-sm">
+                    <tbody className="text-sm font-medium">
                       {currentData.table.map((row, idx) => (
-                        <tr key={idx} className="border-b border-gray-100 hover:bg-gray-50/50 last:border-0">
-                          <td className="p-4 pl-6 font-bold text-navy">{row.code}</td>
-                          <td className="p-4 text-gray-700 max-w-xs">{row.desc}</td>
-                          <td className="p-4 text-center text-gray-500">{row.target}%</td>
-                          <td className="p-4 text-center text-gray-500">{row.a1}</td>
-                          <td className="p-4 text-center text-gray-500">{row.a2}</td>
-                          <td className="p-4 text-center text-gray-500">{row.a3}</td>
-                          <td className="p-4 text-center font-black text-navy bg-blue-50/30 text-lg">{row.attained}%</td>
-                          <td className={`p-4 text-center font-bold ${row.gap.startsWith('+') ? 'text-green-600' : 'text-red-600'}`}>{row.gap}</td>
+                        <tr key={idx} className="border-b border-line/60 hover:bg-surface-2/30 transition-colors last:border-0">
+                          <td className="p-4 pl-6 font-bold text-content">{row.code}</td>
+                          <td className="p-4 text-content-2 max-w-xs">{row.desc}</td>
+                          <td className="p-4 text-center text-muted">{row.target}%</td>
+                          <td className="p-4 text-center text-muted">{row.a1}</td>
+                          <td className="p-4 text-center text-muted">{row.a2}</td>
+                          <td className="p-4 text-center text-muted">{row.a3}</td>
+                          <td className="p-4 text-center font-black text-brand bg-brand-soft/20 text-lg">{row.attained}%</td>
+                          <td className={`p-4 text-center font-bold ${row.gap.startsWith('+') ? 'text-success' : 'text-danger'}`}>{row.gap}</td>
                           <td className="p-4 pr-6">
                             <span className={`flex items-center gap-1.5 font-bold text-xs ${
-                              row.statusColor === 'green' ? 'text-green-600' :
-                              row.statusColor === 'red' ? 'text-red-500' :
-                              row.statusColor === 'darkred' ? 'text-red-700' :
-                              'text-amber-600'
+                              row.statusColor === 'green' ? 'text-success' :
+                              row.statusColor === 'red' || row.statusColor === 'darkred' ? 'text-danger' :
+                              'text-amber'
                             }`}>
                               {row.status}
-                              {row.statusColor === 'green' && <CheckCircle2 size={14} />}
-                              {row.statusColor === 'red' && <XCircle size={14} />}
-                              {row.statusColor === 'darkred' && <XCircle size={14} />}
-                              {row.statusColor === 'amber' && <AlertTriangle size={14} />}
                             </span>
                           </td>
                         </tr>
@@ -413,60 +200,64 @@ export default function FacultyCOAttainment() {
                   </table>
                 </div>
 
-                <div className="flex flex-col lg:flex-row gap-6">
-                  {/* OVERALL ATTAINMENT BOX */}
-                  <div className="w-full lg:w-1/3 border border-gray-200 rounded-xl p-5 flex flex-col justify-center">
-                    <p className="text-sm font-bold text-gray-500 uppercase tracking-wider mb-2">Overall {activeTab} CO Attainment</p>
+                <div className="flex flex-col xl:flex-row gap-6">
+                  <div className="w-full xl:w-1/3 border border-line rounded-xl p-5 flex flex-col justify-center bg-surface">
+                    <p className="text-xs font-bold text-muted uppercase tracking-wider mb-3">Overall {activeTab} CO Attainment</p>
                     <div className="flex items-end gap-2 mb-4">
-                      <span className={`text-5xl font-black ${currentData.overall >= 75 ? 'text-green-500' : currentData.overall >= 60 ? 'text-yellow-500' : currentData.overall >= 45 ? 'text-blue-500' : 'text-red-500'}`}>{currentData.overall}%</span>
+                      <span className={`text-5xl font-black ${
+                        currentData.overall >= 75 ? 'text-success' : 
+                        currentData.overall >= 60 ? 'text-amber' : 
+                        currentData.overall >= 45 ? 'text-info' : 'text-danger'
+                      }`}>{currentData.overall}%</span>
                     </div>
-                    <div className="h-3 w-full bg-gray-100 rounded-full overflow-hidden mb-3">
-                      <div className={`h-full rounded-full ${currentData.overall >= 75 ? 'bg-green-500' : currentData.overall >= 60 ? 'bg-yellow-400' : currentData.overall >= 45 ? 'bg-blue-500' : 'bg-red-500'}`} style={{ width: `${currentData.overall}%` }}></div>
+                    <div className="h-2 w-full bg-surface-3 rounded-full overflow-hidden mb-4">
+                      <div className={`h-full rounded-full ${
+                        currentData.overall >= 75 ? 'bg-success' : 
+                        currentData.overall >= 60 ? 'bg-amber' : 
+                        currentData.overall >= 45 ? 'bg-info' : 'bg-danger'
+                      }`} style={{ width: `${currentData.overall}%` }}></div>
                     </div>
                     {currentData.gap > 0 ? (
-                      <p className="text-sm font-bold text-amber-700 bg-amber-50 p-2 rounded inline-block w-fit">
-                        Need {currentData.gap}% improvement to meet NBA requirement for {activeTab}
-                      </p>
+                      <Badge tone="amber" className="w-fit">
+                        Need {currentData.gap}% improvement for NBA
+                      </Badge>
                     ) : (
-                      <p className="text-sm font-bold text-green-700 bg-green-50 p-2 rounded inline-block w-fit">
-                        Meets NBA requirement for {activeTab}
-                      </p>
+                      <Badge tone="green" className="w-fit">
+                        Meets NBA requirement
+                      </Badge>
                     )}
                   </div>
 
-                  {/* AI RECOMMENDATION BOX */}
-                  <div className="flex-1 bg-blue-50/50 border border-blue-200 rounded-xl p-5 relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-1.5 h-full bg-blue-500"></div>
-                    <div className="flex gap-3 mb-3">
-                      <div className="mt-0.5 text-blue-600"><AlertTriangle size={20} /></div>
+                  <div className="flex-1 bg-brand-soft/30 border border-brand/20 rounded-xl p-5 relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-1.5 h-full bg-brand"></div>
+                    <div className="flex gap-3 mb-4">
+                      <div className="mt-0.5 text-brand"><AlertTriangle size={20} /></div>
                       <div>
-                        <h4 className="font-bold text-blue-900 text-base mb-1">AI Recommendation for CO Improvement</h4>
-                        <p className="text-sm text-blue-800 leading-relaxed max-w-2xl font-medium">
+                        <h4 className="font-bold text-brand-strong text-base mb-1">AI Recommendation for CO Improvement</h4>
+                        <p className="text-sm text-brand-strong/80 leading-relaxed max-w-2xl font-medium">
                           {currentData.recommendation}
                         </p>
                       </div>
                     </div>
                     <div className="mt-4 pl-8">
-                      <button onClick={() => setIsModalOpen(true)} className="px-5 py-2.5 bg-white border border-blue-300 text-blue-700 font-bold text-sm rounded-lg hover:bg-blue-50 transition shadow-sm flex items-center gap-2">
-                        <Calendar size={16} /> Plan Re-teach Session
-                      </button>
+                      <Button onClick={() => setIsModalOpen(true)} icon={Calendar} variant="secondary" className="bg-surface border-brand/30 text-brand hover:bg-brand-soft/50 hover:border-brand/50">
+                        Plan Re-teach Session
+                      </Button>
                     </div>
                   </div>
                 </div>
-
               </div>
-            </div>
+            </Card>
 
-            {/* BOTTOM CHART SECTION */}
-            <div className="bg-white shadow-sm border border-gray-200 rounded-2xl overflow-hidden p-6">
-              <h3 className="font-bold text-navy text-lg mb-6">CO Attainment Overview — All Subjects</h3>
+            <Card>
+              <h3 className="font-bold text-content text-lg mb-6">CO Attainment Overview — All Subjects</h3>
               <div className="h-[400px] w-full">
                 <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 500, height: 300 }}>
                   <BarChart data={chartData} margin={{ top: 20, right: 30, left: 0, bottom: 5 }}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
                     <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280', fontWeight: 'bold' }} dy={10} />
                     <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} domain={[0, 100]} />
-                    <Tooltip cursor={{ fill: '#f3f4f6' }} contentStyle={{ borderRadius: '8px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+                    <Tooltip cursor={false} contentStyle={{ borderRadius: '8px', border: '1px solid #e5e7eb', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
                     <Legend verticalAlign="top" height={36} wrapperStyle={{ fontSize: '12px', fontWeight: 'bold' }} />
                     
                     <ReferenceLine y={75} stroke="#EF4444" strokeDasharray="5 5" label={{ position: 'right', value: 'NBA Target (75%)', fill: '#EF4444', fontSize: 12, fontWeight: 'bold' }} />
@@ -479,85 +270,61 @@ export default function FacultyCOAttainment() {
                 </ResponsiveContainer>
               </div>
 
-              <div className="mt-8 flex flex-col sm:flex-row gap-4 border-t border-gray-100 pt-6">
-                <button className="px-6 py-2.5 bg-blue-600 text-white font-bold text-sm rounded-xl hover:bg-blue-700 transition shadow-sm flex items-center justify-center gap-2">
-                  <Target size={16} /> Generate CO Improvement Report for All Subjects
-                </button>
-                <button className="px-6 py-2.5 bg-white border border-gray-300 text-gray-700 font-bold text-sm rounded-xl hover:bg-gray-50 transition shadow-sm flex items-center justify-center gap-2">
-                  <Download size={16} /> Download for NAAC Submission
-                </button>
+              <div className="mt-8 flex flex-col sm:flex-row gap-4 border-t border-line/60 pt-6">
+                <Button icon={Target}>
+                  Generate CO Improvement Report
+                </Button>
+                <Button variant="secondary" icon={Download}>
+                  Download for NAAC Submission
+                </Button>
               </div>
-            </div>
+            </Card>
 
-              </>
+            {isModalOpen && (
+              <Modal
+                title="Plan Re-teach Session"
+                width="md"
+                onClose={() => setIsModalOpen(false)}
+                footer={
+                  <div className="flex gap-3 justify-end w-full">
+                    <Button variant="ghost" onClick={() => setIsModalOpen(false)}>Cancel</Button>
+                    <Button onClick={handleScheduleSession}>Schedule Session</Button>
+                  </div>
+                }
+              >
+                <div className="space-y-5">
+                  <div className="bg-surface-2 p-4 rounded-xl border border-line">
+                    <p className="text-xs text-muted font-bold uppercase tracking-wider mb-1">Target Subject & Topic</p>
+                    <p className="font-bold text-content">{activeTab}</p>
+                    <p className="text-sm text-content-2">{currentData.criticalCO}: {currentData.criticalTopic}</p>
+                  </div>
+
+                  <Field label="Session Date">
+                    <input type="date" className="w-full border border-line bg-surface rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand text-content" required defaultValue="2026-04-18" />
+                  </Field>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-content mb-2 flex items-center gap-2"><Clock size={16} className="text-muted" /> Duration</label>
+                    <div className="grid grid-cols-2 gap-3">
+                      <label className="flex items-center justify-center p-3 border border-line rounded-xl cursor-pointer hover:bg-surface-2 has-[:checked]:border-brand has-[:checked]:bg-brand-soft/50 has-[:checked]:text-brand font-medium text-sm transition">
+                        <input type="radio" name="duration" className="hidden" defaultChecked />
+                        1 Hour
+                      </label>
+                      <label className="flex items-center justify-center p-3 border border-line rounded-xl cursor-pointer hover:bg-surface-2 has-[:checked]:border-brand has-[:checked]:bg-brand-soft/50 has-[:checked]:text-brand font-medium text-sm transition">
+                        <input type="radio" name="duration" className="hidden" />
+                        2 Hours
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </Modal>
+            )}
+            {toastMessage && (
+              <div className="fixed bottom-8 right-8 bg-surface-inverted text-surface px-6 py-3 rounded-xl shadow-xl font-medium text-sm animate-fade-in z-50 flex items-center gap-2">
+                <CheckCircle2 size={16} className="text-success" />
+                {toastMessage}
+              </div>
             )}
           </div>
-        </main>
-      </div>
-
-      {/* MODAL: PLAN RE-TEACH SESSION */}
-      {isModalOpen && (
-        <div className="fixed inset-0 bg-navy/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-fade-in">
-          <div className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
-            <div className="flex justify-between items-center p-6 border-b border-gray-100 bg-blue-50/50">
-              <h2 className="text-xl font-bold text-navy flex items-center gap-2">
-                <BookMarked size={20} className="text-blue-600" /> Plan Re-teach Session
-              </h2>
-              <button onClick={() => setIsModalOpen(false)} className="text-gray-400 hover:text-gray-600 transition">
-                <XCircle size={24} />
-              </button>
-            </div>
-            
-            <form onSubmit={handleScheduleSession} className="p-6">
-              
-              <div className="mb-5 bg-gray-50 p-4 rounded-xl border border-gray-200">
-                <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">Target Subject & Topic</p>
-                <p className="font-bold text-navy">{activeTab}</p>
-                <p className="text-sm text-gray-700">{currentData.criticalCO}: {currentData.criticalTopic}</p>
-              </div>
-
-              <div className="mb-5">
-                <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2"><Calendar size={16} /> Session Date</label>
-                <input type="date" className="w-full border border-gray-300 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 text-gray-700" required defaultValue="2026-04-18" />
-              </div>
-
-              <div className="mb-8">
-                <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center gap-2"><Clock size={16} /> Duration</label>
-                <div className="grid grid-cols-2 gap-3">
-                  <label className="flex items-center justify-center p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50 has-[:checked]:text-blue-700 font-medium text-sm transition">
-                    <input type="radio" name="duration" className="hidden" defaultChecked />
-                    1 Hour
-                  </label>
-                  <label className="flex items-center justify-center p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 has-[:checked]:border-blue-500 has-[:checked]:bg-blue-50 has-[:checked]:text-blue-700 font-medium text-sm transition">
-                    <input type="radio" name="duration" className="hidden" />
-                    2 Hours
-                  </label>
-                </div>
-              </div>
-
-              <div className="flex gap-3 justify-end pt-4 border-t border-gray-100">
-                <button type="button" onClick={() => setIsModalOpen(false)} className="px-5 py-2.5 text-gray-600 font-bold text-sm rounded-xl hover:bg-gray-100 transition">
-                  Cancel
-                </button>
-                <button type="submit" className="px-6 py-2.5 bg-blue-600 text-white font-bold text-sm rounded-xl hover:bg-blue-700 transition shadow-sm">
-                  Schedule Session
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-
-      {/* TOAST */}
-      {toastMessage && (
-        <div className="fixed bottom-8 right-8 bg-gray-900 text-white px-6 py-3 rounded-xl shadow-xl font-medium text-sm animate-fade-in z-50 flex items-center gap-2">
-          <CheckCircle2 size={16} className="text-green-400" />
-          {toastMessage}
-        </div>
-      )}
-
-    </div>
   )
 }
-
-
