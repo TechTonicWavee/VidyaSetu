@@ -231,7 +231,7 @@ export default function FacultyDashboard() {
                    <p className="text-xs text-success font-medium flex items-center gap-1"><span className="w-1.5 h-1.5 rounded-full bg-success animate-pulse"></span> Connected</p>
                 </div>
               </div>
-              <Badge tone="orange" className="text-[9px]">SYNCING</Badge>
+              <Badge tone="amber" className="text-[9px]">SYNCING</Badge>
             </div>
             
             <ul className="space-y-2 mt-2 flex-1">
