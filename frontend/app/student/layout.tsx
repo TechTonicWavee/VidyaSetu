@@ -4,7 +4,7 @@ import { useMemo, useState, type ReactNode } from 'react';
 import { usePathname } from 'next/navigation';
 import {
   Home, User, TrendingUp, Activity, Award, Target, FileText, Bot,
-  CalendarCheck, BookOpen, Trophy, Lightbulb, ListChecks, Users, Grid, Bell,
+  CalendarCheck, Trophy, Lightbulb, ListChecks, Users, Grid, Bell,
 } from 'lucide-react';
 
 import { STUDENT_PILOT_MODE, STUDENT_ALLOWED_MENU_ITEMS } from '@/lib/student/access';
@@ -40,7 +40,6 @@ const NAV_GROUPS: NavGroup[] = [
     heading: 'Academics',
     items: [
       { id: 'attendance', label: 'Attendance', icon: CalendarCheck, href: '/student/attendance' },
-      { id: 'assignments', label: 'Assignments', icon: BookOpen, href: '/student/assignments' },
     ],
   },
   {

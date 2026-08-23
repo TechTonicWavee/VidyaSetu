@@ -1,44 +1,29 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Activity, Users, Award, Book, Code, Zap, Clock, TrendingUp, Sparkles, Target } from 'lucide-react';
+import { Activity, Users, Award, Book, Code, TrendingUp, Target, ArrowRight } from 'lucide-react';
 import {
   Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, ResponsiveContainer, Tooltip,
 } from 'recharts';
 import { authedFetch } from '@/lib/shared/api/sameOriginFetch';
 import { useAuth } from '@/lib/shared/auth/AuthProvider';
+import { getRankings, type RankingImprovementArea } from '@/lib/student/data';
 import { PageHeader, Card, Badge, ProgressRing, ChartCard, ChartTooltip, CHART } from '@/components/shared/ui';
 import { cn } from '@/lib/shared/utils/cn';
-
-interface SpiStudentData {
-  codingProfile: {
-    github: string | null;
-    leetcode: string | null;
-    leetcodeSolved: number | null;
-    githubRepos: number | null;
-  } | null;
-}
-
-interface ActionItem {
-  impact: string;
-  title: string;
-  how: string;
-  dim: string;
-  eff: string;
-  time: string;
-  badge?: string;
-  badgeTone?: 'red' | 'brand';
-}
+import { SpiProgressionChart, type SpiHistoryPoint } from '../SpiProgressionChart';
 
 export default function SPIPage() {
   const { student } = useAuth();
   const [spiScore, setSpiScore] = useState(0);
   const [spiLoading, setSpiLoading] = useState(true);
-  const [studentData, setStudentData] = useState<SpiStudentData | null>(null);
+  const [spiHistory, setSpiHistory] = useState<SpiHistoryPoint[]>([]);
   const [dims, setDims] = useState({
     technicalDepth: 0, logicalReasoning: 0, initiative: 0,
     kinesthetic: 0, communication: 0, interpersonal: 0, creativity: 0,
   });
+
+  const [improvementAreas, setImprovementAreas] = useState<RankingImprovementArea[]>([]);
+  const [improvementLoading, setImprovementLoading] = useState(true);
 
   useEffect(() => {
     if (!student?.universityId) { setSpiLoading(false); return; }
@@ -51,8 +36,8 @@ export default function SPIPage() {
       .then((r) => r.json())
       .then((d) => {
         if (d?.success && d.student) {
-          setStudentData(d.student);
           if (typeof d.student.spiScore === 'number') setSpiScore(d.student.spiScore);
+          if (Array.isArray(d.student.spiHistory)) setSpiHistory(d.student.spiHistory);
           if (d.student.spiBreakdown) {
             const dimensions = d.student.spiBreakdown;
             setDims({
@@ -69,6 +54,17 @@ export default function SPIPage() {
       })
       .catch(() => {})
       .finally(() => setSpiLoading(false));
+  }, [student?.universityId]);
+
+  useEffect(() => {
+    if (!student?.universityId) { setImprovementLoading(false); return; }
+    // Same real, evidence-based comparison the Rankings page uses (certifications,
+    // internships, projects, skills, DSA vs. top performers in your branch) —
+    // no separate hardcoded "generic tips" engine.
+    getRankings(student.universityId)
+      .then((d) => setImprovementAreas(d.improvementAreas ?? []))
+      .catch(() => {})
+      .finally(() => setImprovementLoading(false));
   }, [student?.universityId]);
 
   let milestoneText = 'Tier 1 Ready!';
@@ -91,25 +87,6 @@ export default function SPIPage() {
     { subject: 'Extracurricular', A: Math.round((dims.kinesthetic / 20) * 100) },
     { subject: 'Soft Skills', A: Math.round((dims.communication / 30) * 100) },
   ];
-
-  const actions: ActionItem[] = [];
-  if (!studentData?.codingProfile?.leetcode) {
-    actions.push({ impact: '+10.0', title: 'Link LeetCode username', how: 'Add your LeetCode username in Edit Profile to sync coding stats.', dim: 'Logical Reasoning', eff: 'Low', time: '5 mins', badge: 'High Impact', badgeTone: 'red' });
-  } else if ((studentData?.codingProfile?.leetcodeSolved ?? 0) < 50) {
-    actions.push({ impact: '+5.0', title: 'Solve 50 LeetCode problems', how: 'Easy/medium questions boost your logical reasoning index.', dim: 'Logical Reasoning', eff: 'Medium', time: '2 weeks' });
-  }
-  if (!studentData?.codingProfile?.github) {
-    actions.push({ impact: '+15.0', title: 'Link GitHub account', how: 'Link GitHub in Edit Profile to sync repository evidence.', dim: 'Technical Depth', eff: 'Low', time: '5 mins', badge: 'Highest Impact', badgeTone: 'brand' });
-  } else if ((studentData?.codingProfile?.githubRepos ?? 0) < 5) {
-    actions.push({ impact: '+8.0', title: 'Commit projects on GitHub', how: 'Upload and maintain active codebases on GitHub.', dim: 'Technical Depth', eff: 'Medium', time: '1 week' });
-  }
-  const fillers: ActionItem[] = [
-    { impact: '+2.0', title: 'Maintain daily streaks', how: 'Consistent daily LeetCode submissions.', dim: 'Consistency', eff: 'Low', time: 'Daily' },
-    { impact: '+3.0', title: 'Document repositories', how: 'Add READMEs and docs to your projects.', dim: 'Initiative', eff: 'Low', time: 'Ongoing' },
-    { impact: '+4.0', title: 'Add projects to profile', how: 'Save your latest working projects in Edit Profile.', dim: 'Project Quality', eff: 'Medium', time: 'Ongoing' },
-    { impact: '+2.0', title: 'Add extracurriculars', how: 'Upload hackathons and club roles in Edit Profile.', dim: 'Extracurricular', eff: 'Low', time: 'Ongoing' },
-  ];
-  for (const f of fillers) { if (actions.length >= 5) break; actions.push(f); }
 
   const TONE_ICON: Record<string, string> = {
     blue: 'bg-info/10 text-info', teal: 'bg-teal-500/10 text-teal-500',
@@ -136,7 +113,7 @@ export default function SPIPage() {
                <div className="absolute inset-0 bg-brand/20 blur-3xl rounded-full scale-75 animate-pulse" />
                <ProgressRing value={spiScore} label={spiLoading ? '…' : String(Math.round(spiScore))} sublabel="out of 100" size={180} stroke={14} />
             </div>
-            
+
             <div className="flex-1 w-full">
               <div className="flex items-center gap-3 flex-wrap">
                 <Badge tone={spiScore >= 60 ? 'green' : 'gray'} className="px-3 py-1 font-semibold text-xs shadow-sm">Tier 3 · 60</Badge>
@@ -155,7 +132,7 @@ export default function SPIPage() {
                   <div key={b.title} className="group relative rounded-2xl p-[1px] transition-all duration-300 hover:shadow-2xl hover:shadow-brand/20 hover:-translate-y-1 overflow-hidden bg-gradient-to-b from-line-strong/80 via-line/20 to-transparent">
                     {/* Inner glowing effect on hover */}
                     <div className="absolute inset-0 bg-gradient-to-b from-brand/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                    
+
                     <div className="relative h-full bg-surface-2/90 backdrop-blur-md group-hover:bg-surface rounded-[15px] p-4 text-center transition-colors">
                       <div className={cn('w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-3 transition-transform group-hover:scale-110 duration-300 shadow-sm relative', TONE_ICON[b.tone])}>
                         <div className="absolute inset-0 bg-current opacity-20 blur-md rounded-xl" />
@@ -194,21 +171,29 @@ export default function SPIPage() {
             </ResponsiveContainer>
           </ChartCard>
 
-          <Card className="lg:col-span-2 relative flex flex-col items-center justify-center text-center min-h-[320px] overflow-hidden border-dashed border-2 border-line/50 bg-surface/30 hover:bg-surface/50 transition-colors">
-            <div className="w-16 h-16 rounded-2xl bg-surface border border-line shadow-sm flex items-center justify-center mb-4 text-muted relative z-10 transition-transform hover:scale-105 duration-300">
-              <TrendingUp size={32} className="stroke-[1.5]" />
+          <Card className="lg:col-span-2 flex flex-col p-6 shadow-md border-line/50 hover:border-line transition-colors">
+            <div className="flex items-center justify-between mb-2">
+              <div>
+                <h3 className="font-bold text-content text-lg flex items-center gap-2">
+                  <Activity className="text-brand w-5 h-5" />
+                  SPI Journey
+                </h3>
+                <p className="text-sm text-muted mt-0.5">Your real SPI history — filter by range to zoom in.</p>
+              </div>
             </div>
-            <h3 className="text-lg font-bold text-content relative z-10">SPI Journey Coming Soon</h3>
-            <p className="text-sm text-muted mt-2 max-w-md relative z-10 leading-relaxed">
-              Your historical SPI trend will populate over future semesters as you accumulate more evidence and continuous evaluations.
-            </p>
-            <div className="mt-6 relative z-10">
-               <Badge tone="gray" className="px-3 py-1.5 font-medium"><Sparkles size={14} className="mr-1.5 inline text-brand" /> Feature in development</Badge>
+            <div className="flex-1 min-h-[260px]">
+              {spiLoading ? (
+                <div className="w-full h-full flex items-center justify-center min-h-[260px]">
+                  <div className="w-6 h-6 border-2 border-brand border-t-transparent rounded-full animate-spin"></div>
+                </div>
+              ) : (
+                <SpiProgressionChart history={spiHistory} currentSpi={spiScore} showRangeFilter height={220} />
+              )}
             </div>
           </Card>
         </div>
 
-        {/* Action Plan */}
+        {/* Improvement Plan — real, evidence-based comparison against top performers */}
         <section className="mt-10">
           <div className="flex items-center gap-2.5 mb-6">
             <div className="p-2 rounded-lg bg-brand/10 text-brand">
@@ -216,37 +201,43 @@ export default function SPIPage() {
             </div>
             <h2 className="text-xl font-black tracking-tight text-content">Your Improvement Plan</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5">
-            {actions.map((act, i) => (
-              <Card key={i} className={cn('relative flex flex-col group hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 border-line/40 overflow-hidden', i === 0 && 'ring-2 ring-brand/40 border-transparent shadow-lg shadow-brand/10 bg-gradient-to-b from-brand/[0.03] to-transparent')}>
-                {i === 0 && <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-brand to-brand-accent" />}
-                
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <span className="text-3xl font-black text-brand tracking-tighter drop-shadow-sm">{act.impact}</span>
-                    <span className="text-[10px] text-muted font-bold uppercase tracking-widest block mt-1">SPI points</span>
-                  </div>
-                  {act.badge && (
-                    <Badge tone={act.badgeTone === 'red' ? 'red' : 'brand'} className="shadow-sm">{act.badge}</Badge>
-                  )}
-                </div>
-                
-                <h3 className="font-bold text-content text-base mb-2 group-hover:text-brand transition-colors leading-snug">{act.title}</h3>
-                <p className="text-sm text-muted leading-relaxed flex-1">{act.how}</p>
-                
-                <div className="pt-4 mt-4 border-t border-line/50 space-y-2">
-                  <div className="flex items-center gap-1.5">
+
+          {improvementLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {[0, 1, 2].map((i) => <div key={i} className="h-40 rounded-2xl bg-surface-2 animate-pulse" />)}
+            </div>
+          ) : improvementAreas.length === 0 ? (
+            <Card className="p-8 text-center border-dashed border-2 border-line/50 bg-surface/30">
+              <p className="text-sm text-muted">
+                Not enough peer data yet to compare your profile against top performers in your branch. Check back once more students in your cohort have real SPI scores.
+              </p>
+            </Card>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {improvementAreas.map((area, i) => (
+                <Card key={area.category} className={cn('relative flex flex-col group hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 border-line/40', i === 0 && 'ring-2 ring-brand/40 border-transparent shadow-lg shadow-brand/10 bg-gradient-to-b from-brand/[0.03] to-transparent')}>
+                  {i === 0 && <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-brand to-brand-accent rounded-t-2xl" />}
+
+                  <div className="flex items-center gap-1.5 mb-3">
                     <div className="w-1.5 h-1.5 rounded-full bg-brand/50" />
-                    <p className="text-xs font-semibold text-content uppercase tracking-wider truncate">{act.dim}</p>
+                    <p className="text-xs font-semibold text-content uppercase tracking-wider">{area.category}</p>
                   </div>
-                  <div className="flex justify-between items-center text-xs font-medium text-muted bg-surface-2 px-2.5 py-2 rounded-md">
-                    <span className="flex items-center gap-1.5"><Zap size={14} className={act.eff === 'High' ? 'text-danger fill-danger/20' : act.eff === 'Medium' ? 'text-warning fill-warning/20' : 'text-success fill-success/20'} /> {act.eff} Effort</span>
-                    <span className="flex items-center gap-1.5"><Clock size={14} className="text-muted" /> {act.time}</span>
+
+                  <p className="text-sm text-muted leading-relaxed flex-1">{area.message}</p>
+
+                  <div className="pt-4 mt-4 border-t border-line/50 flex items-center justify-between text-xs font-medium">
+                    <span className="flex items-center gap-1.5 text-content">
+                      You: <span className="font-bold">{area.yours}</span>
+                    </span>
+                    <ArrowRight size={13} className="text-muted" />
+                    <span className="flex items-center gap-1.5 text-brand">
+                      Top performers: <span className="font-bold">{area.benchmark}</span>
+                    </span>
                   </div>
-                </div>
-              </Card>
-            ))}
-          </div>
+                </Card>
+              ))}
+            </div>
+          )}
         </section>
       </div>
     </div>

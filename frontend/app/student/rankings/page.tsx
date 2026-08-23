@@ -87,7 +87,10 @@ function ScopeView({ scope }: { scope: RankingScope }) {
 export default function RankingsPage() {
   const { student } = useAuth();
   const { data, loading, error, reload } = useAsyncData(() => getRankings(student?.universityId), [student?.universityId]);
-  const [scope, setScope] = useState<'section' | 'branch'>('section');
+  // Defaults to branch, not section: with most students yet to onboard, a
+  // student's own section is often too sparse (sometimes just themselves) to
+  // be a meaningful comparison, while branch already has a real cohort.
+  const [scope, setScope] = useState<'section' | 'branch'>('branch');
 
   return (
     <div>

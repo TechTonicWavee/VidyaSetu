@@ -3,7 +3,7 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiPost, ApiError } from '../api/client';
-import { clearAccessToken, consumePendingLoginSession, getAccessToken, registerUnauthorizedHandler, setAccessToken } from './tokenStore';
+import { clearAccessToken, consumePendingLoginSession, getAccessToken, peekPendingLoginSession, registerUnauthorizedHandler, setAccessToken } from './tokenStore';
 
 export interface StudentSession {
   universityId: string;
@@ -25,11 +25,20 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children, demoMode = false }: { children: ReactNode, demoMode?: boolean }) {
   const router = useRouter();
+  // Seeded synchronously (not in an effect) from any pending post-login
+  // session, so the very first render already shows the real student and
+  // skips loading=true entirely — otherwise there's an unavoidable one-frame
+  // "Verifying session" flash between mount and the effect below running.
+  const pendingAtMount = demoMode ? null : peekPendingLoginSession();
   const [student, setStudent] = useState<StudentSession | null>(
-    demoMode ? { universityId: 'DEMO', name: 'Demo User', branch: 'CSE', year: 4, section: 'A', avatarUrl: null } : null
+    demoMode
+      ? { universityId: 'DEMO', name: 'Demo User', branch: 'CSE', year: 4, section: 'A', avatarUrl: null }
+      : (pendingAtMount?.student as StudentSession | undefined) ?? null,
   );
-  const [token, setToken] = useState<string | null>(demoMode ? 'demo-token' : null);
-  const [loading, setLoading] = useState(!demoMode);
+  const [token, setToken] = useState<string | null>(
+    demoMode ? 'demo-token' : pendingAtMount?.accessToken ?? null,
+  );
+  const [loading, setLoading] = useState(!demoMode && pendingAtMount == null);
   const hydrated = useRef(false);
 
   // [Krrish/auth] localStorage.vs_student is no longer trusted for authentication — every

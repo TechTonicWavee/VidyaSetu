@@ -10,6 +10,7 @@ import { useSocket } from '@/lib/student/socket/SocketProvider';
 import { getTeam, removeTeamMember, updateTeam, deleteTeam, type Team } from '@/lib/student/api/teams';
 import { ApiError } from '@/lib/shared/api/client';
 import InviteMemberModal from '@/components/student/team/InviteMemberModal';
+import ProjectTrackerSection from '@/components/student/team/ProjectTrackerSection';
 import { useToast } from '@/components/shared/ToastContext';
 import { Card, Button, Badge, ErrorState } from '@/components/shared/ui';
 
@@ -237,6 +238,12 @@ export default function TeamDetailPage() {
       {showInvite && (
         <InviteMemberModal teamId={team.id} onClose={() => setShowInvite(false)} onInvited={() => {}} />
       )}
+
+      {/* Project Tracker */}
+      <div>
+        <h2 className="text-lg font-black text-content tracking-tight mb-4">Project Tracker</h2>
+        <ProjectTrackerSection team={team} isLeader={isLeader} myUniversityId={student?.universityId} />
+      </div>
     </div>
   );
 }

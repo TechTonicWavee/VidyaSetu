@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { Menu, Search, Bell, Sun, Moon, ChevronDown, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/shared/utils/cn';
 import { useAuth } from '@/lib/shared/auth/AuthProvider';
@@ -10,7 +10,8 @@ import { useTheme } from '@/components/shared/ThemeProvider';
 import getInitials from '@/lib/shared/getInitials';
 
 export function AppTopbar({ onOpenMobile }: { onOpenMobile: () => void }) {
-  const { student, logout } = useAuth();
+  const router = useRouter();
+  const { student } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [isSearchFocused, setIsSearchFocused] = useState(false);
@@ -140,8 +141,8 @@ export function AppTopbar({ onOpenMobile }: { onOpenMobile: () => void }) {
         <div className="h-6 w-px bg-line/50 mx-1 hidden sm:block" />
 
         {/* Profile menu */}
-        <button 
-          onClick={() => window.location.href = '/student/profile'}
+        <button
+          onClick={() => router.push('/student/profile')}
           className="flex items-center gap-3 pl-2 pr-3 py-1.5 rounded-full hover:bg-surface-2 border border-transparent hover:border-line transition-all duration-300 group"
         >
           <div className="relative">

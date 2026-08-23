@@ -36,6 +36,15 @@ export function consumePendingLoginSession(): { accessToken: string; student: un
   return session;
 }
 
+// Non-destructive read, for seeding AuthProvider's initial React state
+// synchronously (in a useState lazy initializer) so the post-login redirect
+// renders the real student immediately instead of a "loading" frame first.
+// The actual one-time consumption still happens via consumePendingLoginSession
+// above, inside AuthProvider's effect.
+export function peekPendingLoginSession(): { accessToken: string; student: unknown } | null {
+  return pendingLoginSession;
+}
+
 export function registerUnauthorizedHandler(fn: () => void) {
   unauthorizedHandler = fn;
 }

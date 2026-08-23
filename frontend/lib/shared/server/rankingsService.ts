@@ -246,6 +246,14 @@ export async function getRankings(universityId: string): Promise<RankingsResult>
   return data;
 }
 
+// A single student's new SPI score can shift rank/percentile/averages for
+// everyone in their section and branch, not just themselves — cheaper to
+// drop the whole (small, in-memory) cache than to work out which cached
+// entries are affected.
+export function invalidateRankingsCache(): void {
+  cache.clear();
+}
+
 async function computeRankings(universityId: string): Promise<RankingsResult> {
   const me = await prisma.student.findUnique({
     where: { universityId },

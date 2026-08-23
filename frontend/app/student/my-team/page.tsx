@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Users, Plus, Clock, X, Check, Search, UserPlus2, ArrowRight } from 'lucide-react';
+import { Users, Plus, Clock, X, Check, Search, UserPlus2, ArrowRight, Megaphone, ExternalLink, Code2 } from 'lucide-react';
 import getInitials from '@/lib/shared/getInitials';
 import { useAuth } from '@/lib/shared/auth/AuthProvider';
 import { useSocket } from '@/lib/student/socket/SocketProvider';
@@ -20,10 +20,20 @@ import {
   type TeamInvite,
   type OpenTeam,
 } from '@/lib/student/api/teams';
+import {
+  listOpenTeammatePosts,
+  listMyTeammatePosts,
+  applyToTeammatePost,
+  closeTeammatePost,
+  respondToApplication,
+  type OpenTeammatePost,
+  type MyTeammatePost,
+} from '@/lib/student/api/teammates';
 import { ApiError } from '@/lib/shared/api/client';
 import { formatRelativeTime } from '@/lib/student/format/relativeTime';
 import CreateTeamModal from '@/components/student/team/CreateTeamModal';
-import { PageHeader, Card, Button, Badge, Tabs } from '@/components/shared/ui';
+import CreateTeammatePostModal from '@/components/student/team/CreateTeammatePostModal';
+import { PageHeader, Card, Button, Badge } from '@/components/shared/ui';
 import { cn } from '@/lib/shared/utils/cn';
 
 export default function MyTeamPage() {
@@ -31,7 +41,7 @@ export default function MyTeamPage() {
   const { socket } = useSocket();
   const { addToast } = useToast();
 
-  const [activeTab, setActiveTab] = useState<'mine' | 'find'>('mine');
+  const [activeTab, setActiveTab] = useState<'mine' | 'find' | 'teammates'>('mine');
 
   const [teams, setTeams] = useState<Team[]>([]);
   const [sentInvites, setSentInvites] = useState<TeamInvite[]>([]);
@@ -160,6 +170,12 @@ export default function MyTeamPage() {
           className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'find' ? 'bg-brand text-white shadow-md shadow-brand/20' : 'bg-transparent text-content-2 hover:bg-surface-2'}`}
         >
           Find a Team
+        </button>
+        <button
+          onClick={() => setActiveTab('teammates')}
+          className={`px-5 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'teammates' ? 'bg-brand text-white shadow-md shadow-brand/20' : 'bg-transparent text-content-2 hover:bg-surface-2'}`}
+        >
+          Looking for Teammates
         </button>
       </div>
 
@@ -343,8 +359,10 @@ export default function MyTeamPage() {
             </div>
           </div>
         </>
-      ) : (
+      ) : activeTab === 'find' ? (
         <FindTeamPanel />
+      ) : (
+        <TeammatesPanel />
       )}
 
       {showCreate && (
@@ -509,6 +527,284 @@ function FindTeamPanel() {
             Load More Teams
           </Button>
         </div>
+      )}
+    </div>
+  );
+}
+
+function TeammatesPanel() {
+  const { addToast } = useToast();
+  const [subTab, setSubTab] = useState<'browse' | 'mine'>('browse');
+  const [showCreate, setShowCreate] = useState(false);
+
+  const [openPosts, setOpenPosts] = useState<OpenTeammatePost[]>([]);
+  const [browseLoading, setBrowseLoading] = useState(true);
+  const [applying, setApplying] = useState<Record<string, boolean>>({});
+
+  const [myPosts, setMyPosts] = useState<MyTeammatePost[]>([]);
+  const [mineLoading, setMineLoading] = useState(true);
+  const [responding, setResponding] = useState<Record<string, boolean>>({});
+
+  const loadBrowse = useCallback(async () => {
+    setBrowseLoading(true);
+    try {
+      const result = await listOpenTeammatePosts({ limit: 12 });
+      setOpenPosts(result.items);
+    } catch (err) {
+      addToast(err instanceof ApiError ? err.message : 'Failed to load listings.', 'error');
+    } finally {
+      setBrowseLoading(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const loadMine = useCallback(async () => {
+    setMineLoading(true);
+    try {
+      const posts = await listMyTeammatePosts();
+      setMyPosts(posts);
+    } catch (err) {
+      addToast(err instanceof ApiError ? err.message : 'Failed to load your listings.', 'error');
+    } finally {
+      setMineLoading(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (subTab === 'browse') loadBrowse();
+    else loadMine();
+  }, [subTab, loadBrowse, loadMine]);
+
+  async function handleApply(post: OpenTeammatePost) {
+    setApplying((s) => ({ ...s, [post.id]: true }));
+    try {
+      await applyToTeammatePost(post.id);
+      setOpenPosts((list) => list.map((p) => (p.id === post.id ? { ...p, myApplicationStatus: 'pending' } : p)));
+      addToast(`Applied to "${post.role}" for ${post.eventName}!`, 'success');
+    } catch (err) {
+      addToast(err instanceof ApiError ? err.message : 'Failed to apply.', 'error');
+    } finally {
+      setApplying((s) => ({ ...s, [post.id]: false }));
+    }
+  }
+
+  async function handleRespond(applicationId: string, action: 'accept' | 'reject') {
+    setResponding((s) => ({ ...s, [applicationId]: true }));
+    try {
+      await respondToApplication(applicationId, action);
+      addToast(action === 'accept' ? 'Applicant accepted.' : 'Applicant declined.', 'success');
+      loadMine();
+    } catch (err) {
+      addToast(err instanceof ApiError ? err.message : 'Failed to respond.', 'error');
+      setResponding((s) => ({ ...s, [applicationId]: false }));
+    }
+  }
+
+  async function handleClose(post: MyTeammatePost) {
+    if (!confirm(`Close "${post.role}" for ${post.eventName}? No one will be able to apply after this.`)) return;
+    try {
+      await closeTeammatePost(post.id);
+      setMyPosts((list) => list.map((p) => (p.id === post.id ? { ...p, status: 'closed' } : p)));
+      addToast('Listing closed.', 'success');
+    } catch (err) {
+      addToast(err instanceof ApiError ? err.message : 'Failed to close listing.', 'error');
+    }
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex flex-wrap items-center justify-between gap-4">
+        <div className="inline-flex bg-surface-2 p-1 rounded-xl gap-1">
+          <button
+            onClick={() => setSubTab('browse')}
+            className={cn('px-4 py-2 rounded-lg text-sm font-bold transition-all', subTab === 'browse' ? 'bg-surface shadow-sm text-content' : 'text-muted hover:text-content')}
+          >
+            Browse
+          </button>
+          <button
+            onClick={() => setSubTab('mine')}
+            className={cn('px-4 py-2 rounded-lg text-sm font-bold transition-all', subTab === 'mine' ? 'bg-surface shadow-sm text-content' : 'text-muted hover:text-content')}
+          >
+            My Posts {myPosts.length > 0 && `(${myPosts.length})`}
+          </button>
+        </div>
+        <Button icon={Megaphone} onClick={() => setShowCreate(true)} className="shadow-lg shadow-brand/20">
+          Post a Requirement
+        </Button>
+      </div>
+
+      {subTab === 'browse' ? (
+        browseLoading ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array.from({ length: 6 }).map((_, i) => <div key={i} className="h-56 bg-surface-2 rounded-3xl animate-pulse border border-line" />)}
+          </div>
+        ) : openPosts.length === 0 ? (
+          <Card className="py-16 text-center border-dashed border-2 bg-surface-2/30">
+            <div className="w-16 h-16 rounded-full bg-brand/10 flex items-center justify-center mx-auto mb-4">
+              <Megaphone size={28} className="text-brand" />
+            </div>
+            <h3 className="font-black text-content text-xl mb-2 tracking-tight">No open requirements right now</h3>
+            <p className="text-muted text-sm max-w-sm mx-auto leading-relaxed">
+              When students post that they&apos;re looking for teammates for an event, they&apos;ll show up here.
+            </p>
+          </Card>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {openPosts.map((post) => (
+              <Card key={post.id} className="flex flex-col group hover:-translate-y-1.5 hover:shadow-xl transition-all duration-300 border-line/40">
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <div>
+                    <p className="text-brand text-xs font-bold uppercase tracking-widest mb-1">{post.eventName}</p>
+                    <h3 className="font-black text-content text-lg leading-tight tracking-tight">{post.role}</h3>
+                  </div>
+                  <Badge tone="gray" className="flex-shrink-0 font-bold">{post.membersNeeded} needed</Badge>
+                </div>
+                {post.description && <p className="text-muted text-sm mb-3 line-clamp-2 leading-relaxed">{post.description}</p>}
+                {post.techStack.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mb-4">
+                    {post.techStack.map((t) => (
+                      <span key={t} className="px-2 py-0.5 rounded-md bg-info/10 text-info text-[11px] font-semibold">{t}</span>
+                    ))}
+                  </div>
+                )}
+                <div className="mt-auto flex items-center justify-between pt-3 border-t border-line/50">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <div className="w-8 h-8 rounded-full bg-brand/10 text-brand text-xs font-bold flex items-center justify-center flex-shrink-0">
+                      {getInitials(post.poster.fullName)}
+                    </div>
+                    <p className="text-xs font-semibold text-content truncate">{post.poster.fullName}</p>
+                  </div>
+                  {post.myApplicationStatus === 'pending' ? (
+                    <span className="text-xs font-bold text-muted px-3 py-1.5 bg-surface-2 rounded-lg flex-shrink-0">Applied</span>
+                  ) : post.myApplicationStatus === 'accepted' ? (
+                    <Badge tone="green" className="flex-shrink-0">Accepted</Badge>
+                  ) : post.myApplicationStatus === 'rejected' ? (
+                    <Badge tone="gray" className="flex-shrink-0">Declined</Badge>
+                  ) : (
+                    <Button size="sm" loading={applying[post.id]} onClick={() => handleApply(post)} className="flex-shrink-0">
+                      Apply
+                    </Button>
+                  )}
+                </div>
+              </Card>
+            ))}
+          </div>
+        )
+      ) : mineLoading ? (
+        <div className="space-y-4">
+          {Array.from({ length: 3 }).map((_, i) => <div key={i} className="h-32 bg-surface-2 rounded-2xl animate-pulse border border-line" />)}
+        </div>
+      ) : myPosts.length === 0 ? (
+        <Card className="py-16 text-center border-dashed border-2 bg-surface-2/30">
+          <div className="w-16 h-16 rounded-full bg-brand/10 flex items-center justify-center mx-auto mb-4">
+            <Megaphone size={28} className="text-brand" />
+          </div>
+          <h3 className="font-black text-content text-xl mb-2 tracking-tight">You haven&apos;t posted anything yet</h3>
+          <p className="text-muted text-sm max-w-sm mx-auto leading-relaxed mb-6">Post a requirement to find teammates for an event or project.</p>
+          <Button icon={Megaphone} onClick={() => setShowCreate(true)}>Post a Requirement</Button>
+        </Card>
+      ) : (
+        <div className="space-y-5">
+          {myPosts.map((post) => {
+            const pending = post.applications.filter((a) => a.status === 'pending');
+            const decided = post.applications.filter((a) => a.status !== 'pending');
+            return (
+              <Card key={post.id} className="border-line/40">
+                <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
+                  <div>
+                    <p className="text-brand text-xs font-bold uppercase tracking-widest mb-1">{post.eventName}</p>
+                    <h3 className="font-black text-content text-lg tracking-tight">{post.role}</h3>
+                    <p className="text-xs text-muted mt-1">{post.membersNeeded} needed · {formatRelativeTime(post.createdAt)}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Badge tone={post.status === 'open' ? 'green' : 'gray'}>{post.status === 'open' ? 'Open' : 'Closed'}</Badge>
+                    {post.status === 'open' && (
+                      <Button size="sm" variant="ghost" onClick={() => handleClose(post)} className="text-danger hover:bg-danger/10">
+                        Close
+                      </Button>
+                    )}
+                  </div>
+                </div>
+
+                {post.applications.length === 0 ? (
+                  <p className="text-sm text-muted py-4 text-center border-t border-line/50">No applicants yet.</p>
+                ) : (
+                  <div className="border-t border-line/50 pt-4 space-y-3">
+                    {[...pending, ...decided].map((app) => (
+                      <div key={app.id} className="border border-line rounded-xl p-4 bg-surface-2/50">
+                        <div className="flex flex-wrap items-start justify-between gap-3">
+                          <div className="flex items-start gap-3 min-w-0">
+                            <div className="w-10 h-10 rounded-full bg-brand/10 text-brand text-xs font-bold flex items-center justify-center flex-shrink-0">
+                              {getInitials(app.applicant.fullName)}
+                            </div>
+                            <div className="min-w-0">
+                              <p className="font-bold text-content text-sm truncate">{app.applicant.fullName}</p>
+                              <p className="text-xs text-muted truncate">
+                                {app.applicant.branch} {app.applicant.year ? `· Year ${app.applicant.year}` : ''}
+                                {app.applicant.section ? `, Sec ${app.applicant.section}` : ''}
+                              </p>
+                              <div className="flex flex-wrap items-center gap-3 mt-2">
+                                {app.applicant.codingProfile?.github && (
+                                  <a href={app.applicant.codingProfile.github} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-xs font-semibold text-content-2 hover:text-brand transition">
+                                    <ExternalLink size={13} /> GitHub
+                                  </a>
+                                )}
+                                {app.applicant.codingProfile?.linkedinUrl && (
+                                  <a href={app.applicant.codingProfile.linkedinUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-xs font-semibold text-content-2 hover:text-brand transition">
+                                    <ExternalLink size={13} /> LinkedIn
+                                  </a>
+                                )}
+                                {app.applicant.codingProfile?.leetcode && (
+                                  <span className="inline-flex items-center gap-1 text-xs font-semibold text-muted">
+                                    <Code2 size={13} /> {app.applicant.codingProfile.leetcodeSolved ?? 0} solved
+                                  </span>
+                                )}
+                              </div>
+                              {app.applicant.certifications.length > 0 && (
+                                <div className="flex flex-wrap gap-1.5 mt-2">
+                                  {[...new Set(app.applicant.certifications.flatMap((c) => c.skills))].slice(0, 6).map((s) => (
+                                    <span key={s} className="px-2 py-0.5 rounded-md bg-surface text-content-2 text-[10px] font-semibold border border-line">{s}</span>
+                                  ))}
+                                </div>
+                              )}
+                              {app.message && <p className="text-xs text-muted italic mt-2">&quot;{app.message}&quot;</p>}
+                            </div>
+                          </div>
+                          <div className="flex-shrink-0">
+                            {app.status === 'pending' ? (
+                              <div className="flex gap-2">
+                                <Button size="sm" icon={Check} loading={responding[app.id]} onClick={() => handleRespond(app.id, 'accept')} className="bg-success hover:bg-success-600 text-white border-0">
+                                  Accept
+                                </Button>
+                                <Button size="sm" variant="secondary" icon={X} disabled={responding[app.id]} onClick={() => handleRespond(app.id, 'reject')} className="text-danger hover:bg-danger/10 border-danger/20">
+                                  Reject
+                                </Button>
+                              </div>
+                            ) : (
+                              <Badge tone={app.status === 'accepted' ? 'green' : 'gray'}>{app.status === 'accepted' ? 'Accepted' : 'Rejected'}</Badge>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </Card>
+            );
+          })}
+        </div>
+      )}
+
+      {showCreate && (
+        <CreateTeammatePostModal
+          onClose={() => setShowCreate(false)}
+          onCreated={() => {
+            setShowCreate(false);
+            setSubTab('mine');
+            loadMine();
+          }}
+        />
       )}
     </div>
   );

@@ -12,6 +12,7 @@ import calcAcademicsScore from '@/lib/shared/spi/sources/academics'
 import { evaluateCertificate } from '@/lib/shared/spi/evaluators/certificateEvaluators'
 import calculateSPI from '@/lib/shared/spi/orchestrator/calculateSPI'
 import { AuthError, requireAuth, requireOwnResource } from '@/lib/shared/auth/verifyAccessToken'
+import { invalidateRankingsCache } from '@/lib/shared/server/rankingsService'
 
 export const dynamic = 'force-dynamic'
 
@@ -269,6 +270,7 @@ export async function POST(request: NextRequest) {
         year: effectiveYear,  // keep year column in sync with dynamic value
       },
     })
+    invalidateRankingsCache()
 
     // Return SPI response
     return Response.json(

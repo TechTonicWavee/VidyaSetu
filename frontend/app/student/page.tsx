@@ -10,7 +10,7 @@ import { icon as lucide } from '@/lib/student/utils/lucide';
 import { formatRelativeTime } from '@/lib/student/format/relativeTime';
 import { Card, StatCard, Badge } from '@/components/shared/ui';
 import { useSocket } from '@/lib/student/socket/SocketProvider';
-import { SpiProgressionChart } from './SpiProgressionChart';
+import { SpiProgressionChart, type SpiHistoryPoint } from './SpiProgressionChart';
 import { PageHeader } from '@/components/shared/ui/PageHeader';
 
 function greeting() {
@@ -26,7 +26,7 @@ export default function StudentDashboard() {
   const firstName = student?.name?.split(' ')[0] ?? 'Student';
 
   const [spi, setSpi] = useState<number | null>(null);
-  const [spiHistory, setSpiHistory] = useState<any[]>([]);
+  const [spiHistory, setSpiHistory] = useState<SpiHistoryPoint[]>([]);
   const [spiLoading, setSpiLoading] = useState(true);
 
   const [attendance, setAttendance] = useState<number | null>(null);
@@ -196,7 +196,7 @@ export default function StudentDashboard() {
                   <div className="w-6 h-6 border-2 border-brand border-t-transparent rounded-full animate-spin"></div>
                 </div>
               ) : (
-                <SpiProgressionChart currentSpi={spi} />
+                <SpiProgressionChart history={spiHistory} currentSpi={spi} />
               )}
             </div>
           </Card>
