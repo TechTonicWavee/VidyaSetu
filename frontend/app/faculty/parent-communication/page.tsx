@@ -1,32 +1,17 @@
-/* eslint-disable react/no-unescaped-entities */
 'use client'
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { FACULTY_PROFILE } from '@/lib/faculty/mock-data'
-import { Home, User, Activity, BookOpen, Bell, Settings, LogOut, Search, ChevronDown, AlertTriangle, MessageSquare, Target, Calendar, QrCode, FileText, Send, Check, CheckCheck, Phone, Video, MoreVertical, Clock, CheckCircle2, ChevronUp, ChevronRight, TrendingUp, Users, Award, Grid, CheckCircle, Zap, AlertCircle, Plug, ExternalLink, Brain } from 'lucide-react'
-
-const navLinks = [
-  { id: 'dashboard',    label: 'Dashboard',            icon: Home,          badge: null,  path: '/faculty' },
-  { id: 'classes',      label: 'My Classes',           icon: BookOpen,      badge: null,  path: '/faculty/my-classes' },
-  { id: 'intelligence', label: 'Student Reports', icon: Brain, path: '/faculty/student-reports' },
-  { id: 'alerts',       label: 'Student Alerts',       icon: AlertCircle,   badge: '5',   path: '/faculty/alerts' },
-  { id: 'analytics',    label: 'Subject Analytics',    icon: Activity,      badge: null,  path: '/faculty/analytics' },
-  { id: 'profiles',     label: 'Student Profiles',     icon: Users,         badge: null,  path: '/faculty/student/profile' },
-  { id: 'co',           label: 'CO Attainment',        icon: CheckCircle,   badge: null,  path: '/faculty/co-attainment' },
-  { id: 'parent',       label: 'Parent Communication', icon: MessageSquare, badge: null,  path: '/faculty/parent-communication' },
-  { id: 'reports',      label: 'Reports',              icon: FileText,      badge: null,  path: '/faculty/reports' },
-  { id: 'assignments',  label: 'Assignments (Moodle)', icon: ExternalLink,  badge: null,  path: null, external: 'http://lms.kiet.edu/moodle/' },
-  { id: 'attendance',   label: 'Attendance (Vidya)',   icon: ExternalLink,  badge: null,  path: null, external: 'https://kiet.cybervidya.net' },
-]
+import { MessageSquare, Bell, Calendar, Send, Search, User, QrCode, CheckCheck, ChevronUp, ChevronDown, Clock, Video, AlertTriangle, CheckCircle2 } from 'lucide-react'
+import { PageHeader, Card, StatCard, Badge, Button } from '@/components/shared/ui'
+import { cn } from '@/lib/shared/utils/cn'
 
 export default function FacultyParentCommunication() {
   const router = useRouter()
-  const [activeNav, setActiveNav] = useState('parent')
-  const [sidebarOpen, setSidebarOpen] = useState(true)
   const [messageInput, setMessageInput] = useState('')
   const [meetingsExpanded, setMeetingsExpanded] = useState(false)
   const [toastMessage, setToastMessage] = useState<string | null>(null)
+  const [activeFilter, setActiveFilter] = useState('All')
 
   const showToast = (msg: string) => {
     setToastMessage(msg)
@@ -34,15 +19,13 @@ export default function FacultyParentCommunication() {
   }
 
   const handleTemplateClick = (template: string) => {
-    if (template === 'Attendance Warning') {
-      setMessageInput("Dear Parent, I wanted to inform you that your child's attendance has fallen below the required 75% threshold in [Subject]. Please encourage them to attend all remaining classes.")
-    } else if (template === 'Score Update') {
-      setMessageInput("Dear Parent, this is an update regarding your child's recent performance. Their score in [Subject] has [improved/declined] to [Score]. Let's discuss this.")
-    } else if (template === 'Meeting Request') {
-      setMessageInput("Dear Parent, I would like to schedule a brief meeting to discuss your child's academic progress. Please let me know your availability for next week.")
-    } else if (template === 'Positive Feedback') {
-      setMessageInput("Dear Parent, I'm happy to report that your child is doing exceptionally well in [Subject] practicals. Their recent project was outstanding.")
+    const templates: Record<string, string> = {
+      'Attendance Warning': "Dear Parent, I wanted to inform you that your child's attendance has fallen below the required 75% threshold in [Subject]. Please encourage them to attend all remaining classes.",
+      'Score Update': "Dear Parent, this is an update regarding your child's recent performance. Their score in [Subject] has [improved/declined] to [Score]. Let's discuss this.",
+      'Meeting Request': "Dear Parent, I would like to schedule a brief meeting to discuss your child's academic progress. Please let me know your availability for next week.",
+      'Positive Feedback': "Dear Parent, I'm happy to report that your child is doing exceptionally well in [Subject] practicals. Their recent project was outstanding."
     }
+    setMessageInput(templates[template] || '')
   }
 
   const handleSendMessage = () => {
@@ -52,539 +35,444 @@ export default function FacultyParentCommunication() {
   }
 
   return (
-    <div className="flex h-screen bg-[#F3F4F6] overflow-hidden font-sans">
-      {/* A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•
-          SIDEBAR
-      A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A• */}
-      <aside className={`${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'} flex-shrink-0 bg-white border-r border-gray-100 flex flex-col transition-all duration-300 shadow-sm`}>
-        <div className="p-5 border-b border-gray-50">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style={{ background: 'linear-gradient(135deg, #4338CA, #7C3AED)' }}>
-              {FACULTY_PROFILE.initials}
-            </div>
-            <div className="overflow-hidden">
-              <p className="font-semibold text-sm text-navy truncate">{FACULTY_PROFILE.name}</p>
-              <p className="text-xs text-gray-500 truncate">{FACULTY_PROFILE.department} · {FACULTY_PROFILE.subtitle}</p>
-            </div>
-          </div>
-        </div>
-
-        <nav className="flex-1 p-3 overflow-y-auto">
-          {navLinks.map(link => (
-            <button
-              key={link.id}
-              onClick={() => {
-                if (link.external) { window.open(link.external, '_blank'); return; }
-                if (link.path) {
-                  router.push(link.path)
-                } else {
-                  if (typeof setActiveNav === 'function') setActiveNav(link.id)
-                }
-              }}
-              className="nav-link w-full text-left mb-0.5"
-              style={activeNav === link.id && !link.external ? { background: '#EEF2FF', color: '#3730A3', fontWeight: 600 } : {}}
-            >
-              <link.icon size={17} />
-              <span className="flex-1">{link.label}</span>
-              {link.badge && (
-                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${link.badge === 'New' ? 'bg-indigo-100 text-indigo-700' : 'bg-red-500 text-white'}`}>
-                  {link.badge}
-                </span>
-              )}
-            </button>
-          ))}
-        </nav>
-
-        <div className="p-3 border-t border-gray-50">
-          <button onClick={() => router.push('/login')} className="nav-link w-full text-left text-red-500 hover:bg-red-50 hover:text-red-600">
-            <LogOut size={17} />
-            <span>Switch Role</span>
-          </button>
-        </div>
-      </aside>
-
-      {/* A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•
-          MAIN CONTENT
-      A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A•A• */}
-      <div className="flex-1 flex flex-col overflow-hidden relative">
-        {/* TOP NAV */}
-        <header className="bg-white border-b border-gray-100 px-6 py-3 flex items-center gap-4 flex-shrink-0 shadow-sm z-10">
-          <button onClick={() => setSidebarOpen(v => !v)} className="text-gray-400 hover:text-gray-700 transition">
-            <Settings size={20} />
-          </button>
-          <div className="flex items-center gap-2 mr-4">
-            <div className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs" style={{ background: '#4338CA' }}>EA</div>
-            <span className="font-bold text-navy text-sm hidden sm:block">Educator Analytics OS</span>
-          </div>
-          <div className="flex-1 max-w-md relative">
-            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input type="text" placeholder="Search resources, alerts..." className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-300 transition" />
-          </div>
-          <div className="flex-1" />
-          <button className="relative p-2 rounded-lg hover:bg-gray-100 transition text-gray-500">
-            <Bell size={19} />
-          </button>
-          <div className="flex items-center gap-2 cursor-pointer group">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs" style={{ background: 'linear-gradient(135deg, #4338CA, #7C3AED)' }}>{FACULTY_PROFILE.initials}</div>
-            <ChevronDown size={14} className="text-gray-400 group-hover:text-gray-600 transition" />
-          </div>
-        </header>
-
-        {/* PAGE BODY */}
-        <main className="flex-1 overflow-y-auto bg-[#F3F4F6]">
-          <div className="max-w-[1400px] mx-auto p-6 md:p-8 animate-fade-in space-y-6 pb-20">
-            
-            {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-              <div>
-                <h1 className="text-3xl font-bold text-navy mb-1">Parent Communication</h1>
-                <p className="text-gray-500 text-sm max-w-2xl">Direct messaging with parents, meeting scheduling and automated WhatsApp digest management</p>
-              </div>
-              <button onClick={() => showToast('New message dialog opened')} className="px-5 py-2.5 bg-indigo-600 text-white font-bold text-sm rounded-xl hover:bg-indigo-700 transition shadow-sm flex items-center gap-2">
-                <MessageSquare size={16} /> New Message
-              </button>
-            </div>
-
-            {/* TOP STATS STRIP */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
-                  <MessageSquare size={24} />
-                </div>
-                <div>
-                  <h3 className="text-3xl font-black text-blue-600 leading-none mb-1">24</h3>
-                  <p className="font-bold text-navy text-sm mb-0.5">Conversations</p>
-                  <p className="text-xs text-gray-500">Active parent conversations</p>
-                </div>
-              </div>
-              
-              <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-red-100 text-red-600 flex items-center justify-center shrink-0">
-                  <Bell size={24} />
-                </div>
-                <div>
-                  <h3 className="text-3xl font-black text-red-600 leading-none mb-1">7</h3>
-                  <p className="font-bold text-navy text-sm mb-0.5">Unread</p>
-                  <p className="text-xs text-gray-500">Messages awaiting reply</p>
-                </div>
-              </div>
-
-              <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0">
-                  <Calendar size={24} />
-                </div>
-                <div>
-                  <h3 className="text-3xl font-black text-indigo-500 leading-none mb-1">3</h3>
-                  <p className="font-bold text-navy text-sm mb-0.5">Meetings This Week</p>
-                  <p className="text-xs text-gray-500">Scheduled parent meetings</p>
-                </div>
-              </div>
-
-              <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 flex items-start gap-4">
-                <div className="w-12 h-12 rounded-full bg-green-100 text-green-600 flex items-center justify-center shrink-0">
-                  <Send size={24} />
-                </div>
-                <div>
-                  <h3 className="text-3xl font-black text-green-600 leading-none mb-1">243</h3>
-                  <p className="font-bold text-navy text-sm mb-0.5">WhatsApp Digests Sent</p>
-                  <p className="text-xs text-gray-500">This month to all parents</p>
-                </div>
-              </div>
-            </div>
-
-            {/* MAIN COMMUNICATION AREA */}
-            <div className="flex flex-col lg:flex-row gap-6 h-[700px]">
-              
-              {/* LEFT COLUMN: Conversation List */}
-              <div className="w-full lg:w-[35%] flex flex-col bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="p-4 border-b border-gray-100">
-                  <div className="relative mb-3">
-                    <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                    <input type="text" placeholder="Search parent or student name..." className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-blue-300 focus:ring-1 focus:ring-blue-100" />
-                  </div>
-                  <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
-                    <button className="px-3 py-1 bg-gray-100 text-gray-700 text-xs font-bold rounded-full whitespace-nowrap">All</button>
-                    <button className="px-3 py-1 bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 text-xs font-medium rounded-full whitespace-nowrap">Unread</button>
-                    <button className="px-3 py-1 bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 text-xs font-medium rounded-full whitespace-nowrap">Meetings</button>
-                    <button className="px-3 py-1 bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 text-xs font-medium rounded-full whitespace-nowrap">Alerts</button>
-                  </div>
-                </div>
-
-                <div className="flex-1 overflow-y-auto">
-                  {/* Item 1 - Active */}
-                  <div className="p-4 border-b border-gray-100 bg-blue-50 cursor-pointer relative">
-                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-blue-600"></div>
-                    <div className="flex justify-between items-start mb-1">
-                      <h4 className="font-bold text-navy flex items-center gap-2">
-                        Mr. Ramesh Singh
-                        <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-                      </h4>
-                      <span className="text-xs text-blue-600 font-medium whitespace-nowrap">2 hours ago</span>
-                    </div>
-                    <p className="text-xs text-gray-500 mb-2">Mahesh Singh A· 2CS04</p>
-                    <div className="flex justify-between items-end gap-4">
-                      <p className="text-sm text-gray-700 truncate flex-1 font-medium text-navy">"Thank you for the update. We will make sure he..."</p>
-                      <span className="flex items-center justify-center bg-blue-600 text-white text-[10px] font-bold w-5 h-5 rounded-full shrink-0">2</span>
-                    </div>
-                  </div>
-
-                  {/* Item 2 */}
-                  <div className="p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition">
-                    <div className="flex justify-between items-start mb-1">
-                      <h4 className="font-bold text-navy flex items-center gap-2">
-                        Mrs. Kavya Sharma
-                        <div className="w-2 h-2 rounded-full bg-blue-500"></div>
-                      </h4>
-                      <span className="text-xs text-gray-500 whitespace-nowrap">5 hours ago</span>
-                    </div>
-                    <p className="text-xs text-gray-500 mb-2">Rohit Sharma A· 2CS47</p>
-                    <div className="flex justify-between items-end gap-4">
-                      <p className="text-sm text-gray-600 truncate flex-1 font-medium text-navy">"Is there any way to improve his DBMS scores before..."</p>
-                      <span className="flex items-center justify-center bg-blue-600 text-white text-[10px] font-bold w-5 h-5 rounded-full shrink-0">1</span>
-                    </div>
-                  </div>
-
-                  {/* Item 3 */}
-                  <div className="p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition">
-                    <div className="flex justify-between items-start mb-1">
-                      <h4 className="font-bold text-navy">Mr. Anil Patel</h4>
-                      <span className="text-xs text-gray-500 whitespace-nowrap">Yesterday</span>
-                    </div>
-                    <p className="text-xs text-gray-500 mb-2">Sneha Patel A· 2CS23</p>
-                    <p className="text-sm text-gray-500 truncate">"We have spoken to Sneha. She will attend all..."</p>
-                  </div>
-
-                  {/* Item 4 */}
-                  <div className="p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition">
-                    <div className="flex justify-between items-start mb-1">
-                      <h4 className="font-bold text-navy">Mrs. Deepa Joshi</h4>
-                      <span className="text-xs text-gray-500 whitespace-nowrap">Yesterday</span>
-                    </div>
-                    <p className="text-xs text-gray-500 mb-2">Karan Joshi A· 2CS15</p>
-                    <p className="text-sm text-gray-500 truncate">"Understood. We will monitor her attendance closely..."</p>
-                  </div>
-
-                  {/* Item 5 */}
-                  <div className="p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition">
-                    <div className="flex justify-between items-start mb-1">
-                      <h4 className="font-bold text-navy">Mr. Sunil Mehta</h4>
-                      <span className="text-xs text-gray-500 whitespace-nowrap">2 days ago</span>
-                    </div>
-                    <p className="text-xs text-gray-500 mb-2">Arjun Mehta A· 2CS09</p>
-                    <div className="flex justify-between items-end gap-4">
-                      <p className="text-sm text-gray-500 truncate flex-1">"Can we schedule a meeting next week to discuss..."</p>
-                      <Calendar size={16} className="text-indigo-500 shrink-0" />
-                    </div>
-                  </div>
-
-                  {/* Item 6 */}
-                  <div className="p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition">
-                    <div className="flex justify-between items-start mb-1">
-                      <h4 className="font-bold text-navy">Mrs. Priya Nair</h4>
-                      <span className="text-xs text-gray-500 whitespace-nowrap">3 days ago</span>
-                    </div>
-                    <p className="text-xs text-gray-500 mb-2">Divya Nair A· 2CS31</p>
-                    <p className="text-sm text-gray-500 truncate">"Thank you for the report. Very helpful to understand..."</p>
-                  </div>
-
-                  {/* Item 7 */}
-                  <div className="p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition">
-                    <div className="flex justify-between items-start mb-1">
-                      <h4 className="font-bold text-navy">Mr. Ravi Gupta</h4>
-                      <span className="text-xs text-gray-500 whitespace-nowrap">4 days ago</span>
-                    </div>
-                    <p className="text-xs text-gray-500 mb-2">Ananya Verma A· 2CS07</p>
-                    <p className="text-sm text-gray-500 truncate">"Ananya has been working very hard. We appreciate..."</p>
-                  </div>
-
-                  {/* Item 8 */}
-                  <div className="p-4 hover:bg-gray-50 cursor-pointer transition">
-                    <div className="flex justify-between items-start mb-1">
-                      <h4 className="font-bold text-navy">Mrs. Sonal Kumar</h4>
-                      <span className="text-xs text-gray-500 whitespace-nowrap">5 days ago</span>
-                    </div>
-                    <p className="text-xs text-gray-500 mb-2">Krish Singhal A· 2CS22</p>
-                    <p className="text-sm text-gray-500 truncate">"We received the WhatsApp digest. Had a question about..."</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* RIGHT COLUMN: Active Conversation */}
-              <div className="flex-1 flex flex-col bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                
-                {/* Header */}
-                <div className="p-5 border-b border-gray-100 flex flex-wrap justify-between items-center gap-4 bg-white z-10 shadow-sm relative">
-                  <div>
-                    <h2 className="text-xl font-bold text-navy mb-1">Mr. Ramesh Singh</h2>
-                    <p className="text-xs text-gray-500 font-medium">Parent of Mahesh Singh A· 2CS04 A· CSE 2B</p>
-                  </div>
-                  <div className="flex gap-2">
-                    <button className="w-10 h-10 rounded-xl bg-gray-50 border border-gray-200 text-gray-600 flex items-center justify-center hover:bg-gray-100 transition" title="View Student Profile" onClick={() => router.push('/faculty/student/profile')}>
-                      <User size={18} />
-                    </button>
-                    <button className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 text-blue-600 flex items-center justify-center hover:bg-blue-100 transition" title="Generate Visit QR">
-                      <QrCode size={18} />
-                    </button>
-                    <button className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-200 text-indigo-600 flex items-center justify-center hover:bg-indigo-100 transition" title="Schedule Meeting">
-                      <Calendar size={18} />
-                    </button>
-                  </div>
-                </div>
-
-                {/* Quick Summary Strip */}
-                <div className="bg-blue-50 border-b border-blue-100 px-5 py-3 flex justify-between items-center text-sm z-10 relative">
-                  <div className="flex gap-6">
-                    <span className="text-blue-900"><span className="font-bold">SPI:</span> 72</span>
-                    <span className="text-blue-900"><span className="font-bold">Attendance:</span> 79%</span>
-                    <span className="text-blue-900"><span className="font-bold">Latest Score:</span> 71% DBMS</span>
-                    <span className="text-red-700 font-bold flex items-center gap-1"><AlertTriangle size={14}/> 2 Active Alerts</span>
-                  </div>
-                  <button className="text-blue-700 font-bold hover:underline" onClick={() => router.push('/faculty/student/profile')}>View Full Profile</button>
-                </div>
-
-                {/* Messages Area */}
-                <div className="flex-1 overflow-y-auto p-6 bg-gray-50/50 space-y-6">
-                  
-                  <div className="flex justify-center">
-                    <span className="px-3 py-1 bg-gray-200 text-gray-600 text-xs font-bold rounded-full">April 13, 2026</span>
-                  </div>
-
-                  {/* Msg 1 - Faculty */}
-                  <div className="flex flex-col items-end">
-                    <div className="max-w-[75%] bg-blue-600 text-white p-4 rounded-2xl rounded-tr-sm shadow-sm">
-                      <p className="text-sm leading-relaxed">
-                        Dear Mr. Singh, I wanted to inform you that Mahesh's attendance in Theory of Computation has dropped to 74% A€” just below the 75% minimum threshold. He needs to attend all remaining classes to maintain eligibility.
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-1 mt-1 text-[10px] text-gray-400">
-                      <span>10:34 AM</span>
-                      <CheckCheck size={14} className="text-blue-500" />
-                    </div>
-                  </div>
-
-                  {/* Msg 2 - Parent */}
-                  <div className="flex flex-col items-start">
-                    <div className="max-w-[75%] bg-white border border-gray-200 text-gray-800 p-4 rounded-2xl rounded-tl-sm shadow-sm">
-                      <p className="text-sm leading-relaxed">
-                        Thank you for letting us know, Prof. Kapoor. We will speak with Mahesh today. Is there anything specific we should ask him to focus on for TOC?
-                      </p>
-                    </div>
-                    <div className="mt-1 text-[10px] text-gray-400 ml-1">
-                      <span>11:02 AM</span>
-                    </div>
-                  </div>
-
-                  {/* Msg 3 - Faculty */}
-                  <div className="flex flex-col items-end">
-                    <div className="max-w-[75%] bg-blue-600 text-white p-4 rounded-2xl rounded-tr-sm shadow-sm">
-                      <p className="text-sm leading-relaxed">
-                        Yes, please encourage him to focus on Regular Expressions and Automata Theory concepts A€” these are the specific weak areas from his Unit 2 exam. I can share some revision notes if helpful.
-                      </p>
-                    </div>
-                    <div className="flex items-center gap-1 mt-1 text-[10px] text-gray-400">
-                      <span>11:15 AM</span>
-                      <CheckCheck size={14} className="text-blue-500" />
-                    </div>
-                  </div>
-
-                  <div className="flex justify-center pt-4">
-                    <span className="px-3 py-1 bg-gray-200 text-gray-600 text-xs font-bold rounded-full">April 15, 2026</span>
-                  </div>
-
-                  {/* Msg 4 - Parent */}
-                  <div className="flex flex-col items-start">
-                    <div className="max-w-[75%] bg-white border border-gray-200 text-gray-800 p-4 rounded-2xl rounded-tl-sm shadow-sm">
-                      <p className="text-sm leading-relaxed">
-                        That would be very helpful. Also, Mahesh mentioned his DBMS practical went well A€” we are glad to hear that at least. Please do share the notes.
-                      </p>
-                    </div>
-                    <div className="mt-1 text-[10px] text-gray-400 ml-1">
-                      <span>9:45 AM</span>
-                    </div>
-                  </div>
-
-                  {/* Msg 5 - Parent UNREAD */}
-                  <div className="flex flex-col items-start relative">
-                    <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-1.5 h-1.5 rounded-full bg-blue-600"></div>
-                    <div className="max-w-[75%] bg-white border border-gray-200 text-gray-800 p-4 rounded-2xl rounded-tl-sm shadow-sm relative">
-                      <p className="text-sm leading-relaxed">
-                        Thank you for the update. We will make sure he attends all remaining classes.
-                      </p>
-                    </div>
-                    <div className="mt-1 flex items-center gap-2 ml-1">
-                      <span className="text-[10px] text-gray-400">9:46 AM</span>
-                      <span className="px-1.5 py-0.5 bg-blue-100 text-blue-700 text-[9px] font-bold rounded uppercase tracking-wider">New</span>
-                    </div>
-                  </div>
-
-                </div>
-
-                {/* Input Area */}
-                <div className="p-4 border-t border-gray-100 bg-white">
-                  {/* Templates */}
-                  <div className="flex gap-2 overflow-x-auto hide-scrollbar mb-3 pb-1">
-                    <span className="text-xs text-gray-500 font-bold self-center mr-2 uppercase tracking-wider">Templates:</span>
-                    <button onClick={() => handleTemplateClick('Attendance Warning')} className="px-3 py-1.5 bg-red-50 text-red-700 hover:bg-red-100 text-xs font-medium rounded-full whitespace-nowrap transition border border-red-100">Attendance Warning</button>
-                    <button onClick={() => handleTemplateClick('Score Update')} className="px-3 py-1.5 bg-amber-50 text-amber-700 hover:bg-amber-100 text-xs font-medium rounded-full whitespace-nowrap transition border border-amber-100">Score Update</button>
-                    <button onClick={() => handleTemplateClick('Meeting Request')} className="px-3 py-1.5 bg-indigo-50 text-indigo-700 hover:bg-indigo-100 text-xs font-medium rounded-full whitespace-nowrap transition border border-indigo-100">Meeting Request</button>
-                    <button onClick={() => handleTemplateClick('Positive Feedback')} className="px-3 py-1.5 bg-green-50 text-green-700 hover:bg-green-100 text-xs font-medium rounded-full whitespace-nowrap transition border border-green-100">Positive Feedback</button>
-                  </div>
-                  
-                  <div className="relative">
-                    <textarea 
-                      className="w-full border border-gray-200 rounded-xl pl-4 pr-14 py-3 text-sm focus:outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-100 transition min-h-[80px] resize-none bg-gray-50"
-                      placeholder="Type your message..."
-                      value={messageInput}
-                      onChange={(e) => setMessageInput(e.target.value)}
-                    ></textarea>
-                    <button 
-                      onClick={handleSendMessage}
-                      className={`absolute right-3 bottom-3 w-8 h-8 rounded-lg flex items-center justify-center transition-colors ${messageInput.trim() ? 'bg-blue-600 text-white shadow-sm' : 'bg-gray-200 text-gray-400'}`}
-                      disabled={!messageInput.trim()}
-                    >
-                      <Send size={14} className={messageInput.trim() ? "translate-x-[-1px] translate-y-[1px]" : ""} />
-                    </button>
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex gap-2 mt-3 overflow-x-auto hide-scrollbar">
-                    <button onClick={() => showToast('WhatsApp digest dispatched to parent')} className="px-4 py-2 border border-indigo-200 text-indigo-700 hover:bg-indigo-50 text-xs font-bold rounded-lg whitespace-nowrap transition">Send WhatsApp Digest Now</button>
-                    <button onClick={() => showToast('Meeting scheduler opened')} className="px-4 py-2 border border-blue-200 text-blue-700 hover:bg-blue-50 text-xs font-bold rounded-lg whitespace-nowrap transition">Schedule Parent-Teacher Meeting</button>
-                    <button onClick={() => showToast('Summary PDF generated')} className="px-4 py-2 border border-gray-200 text-gray-700 hover:bg-gray-50 text-xs font-bold rounded-lg whitespace-nowrap transition">Generate Student Summary PDF</button>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-
-            {/* MEETINGS SECTION */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-              <button 
-                onClick={() => setMeetingsExpanded(!meetingsExpanded)}
-                className="w-full p-5 flex justify-between items-center bg-gray-50 hover:bg-gray-100 transition text-left"
-              >
-                <div className="flex items-center gap-3">
-                  <Calendar size={20} className="text-indigo-600" />
-                  <h3 className="font-bold text-navy text-lg">Upcoming Parent-Teacher Meetings (3)</h3>
-                </div>
-                {meetingsExpanded ? <ChevronUp size={20} className="text-gray-500" /> : <ChevronDown size={20} className="text-gray-500" />}
-              </button>
-
-              {meetingsExpanded && (
-                <div className="p-6 border-t border-gray-200">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    
-                    {/* Meeting 1 */}
-                    <div className="border border-gray-200 rounded-xl p-5 hover:shadow-md transition bg-white">
-                      <div className="flex justify-between items-start mb-3">
-                        <span className="px-2.5 py-1 bg-green-100 text-green-700 font-bold text-[10px] uppercase rounded border border-green-200">Confirmed</span>
-                        <div className="w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center"><User size={14} /></div>
-                      </div>
-                      <h4 className="font-bold text-navy text-base">Mr. Sunil Mehta</h4>
-                      <p className="text-xs text-gray-500 mb-4 font-medium">(Parent of Arjun Mehta)</p>
-                      
-                      <div className="space-y-2 mb-5">
-                        <div className="flex items-center gap-2 text-sm text-gray-700">
-                          <Calendar size={14} className="text-gray-400" /> 18 April 2026
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-gray-700">
-                          <Clock size={14} className="text-gray-400" /> 3:00 PM
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-gray-700">
-                          <User size={14} className="text-gray-400" /> Faculty Room 204
-                        </div>
-                      </div>
-                      
-                      <div className="bg-gray-50 p-3 rounded-lg mb-5 border border-gray-100 text-sm text-gray-700">
-                        <span className="font-bold text-navy block mb-1 text-xs uppercase tracking-wider">Agenda:</span>
-                        Discuss 3 missed assignments and TOC performance
-                      </div>
-                      
-                      <div className="flex gap-2">
-                        <button className="flex-1 py-2 bg-white border border-gray-200 text-gray-600 font-bold text-xs rounded-lg hover:bg-gray-50 transition">Reschedule</button>
-                        <button className="flex-1 py-2 bg-white border border-gray-200 text-red-600 font-bold text-xs rounded-lg hover:bg-red-50 transition">Cancel</button>
-                      </div>
-                    </div>
-
-                    {/* Meeting 2 */}
-                    <div className="border border-gray-200 rounded-xl p-5 hover:shadow-md transition bg-white">
-                      <div className="flex justify-between items-start mb-3">
-                        <span className="px-2.5 py-1 bg-amber-100 text-amber-700 font-bold text-[10px] uppercase rounded border border-amber-200">Pending Confirmation</span>
-                        <div className="w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center"><User size={14} /></div>
-                      </div>
-                      <h4 className="font-bold text-navy text-base">Mrs. Kavya Sharma</h4>
-                      <p className="text-xs text-gray-500 mb-4 font-medium">(Parent of Rohit Sharma)</p>
-                      
-                      <div className="space-y-2 mb-5">
-                        <div className="flex items-center gap-2 text-sm text-gray-700">
-                          <Calendar size={14} className="text-gray-400" /> 19 April 2026
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-gray-700">
-                          <Clock size={14} className="text-gray-400" /> 11:00 AM
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-gray-700">
-                          <User size={14} className="text-gray-400" /> Faculty Room 204
-                        </div>
-                      </div>
-                      
-                      <div className="bg-gray-50 p-3 rounded-lg mb-5 border border-gray-100 text-sm text-gray-700">
-                        <span className="font-bold text-navy block mb-1 text-xs uppercase tracking-wider">Agenda:</span>
-                        DBMS score decline across 3 consecutive units
-                      </div>
-                      
-                      <div className="flex gap-2">
-                        <button className="flex-1 py-2 bg-blue-600 text-white font-bold text-xs rounded-lg hover:bg-blue-700 transition">Confirm</button>
-                        <button className="flex-1 py-2 bg-white border border-gray-200 text-gray-600 font-bold text-xs rounded-lg hover:bg-gray-50 transition">Reschedule</button>
-                      </div>
-                    </div>
-
-                    {/* Meeting 3 */}
-                    <div className="border border-indigo-200 border-2 rounded-xl p-5 shadow-md bg-white">
-                      <div className="flex justify-between items-start mb-3">
-                        <span className="px-2.5 py-1 bg-green-100 text-green-700 font-bold text-[10px] uppercase rounded border border-green-200">Confirmed</span>
-                        <div className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center"><Video size={14} /></div>
-                      </div>
-                      <h4 className="font-bold text-navy text-base">Mr. Anil Patel</h4>
-                      <p className="text-xs text-gray-500 mb-4 font-medium">(Parent of Sneha Patel)</p>
-                      
-                      <div className="space-y-2 mb-5">
-                        <div className="flex items-center gap-2 text-sm text-gray-700">
-                          <Calendar size={14} className="text-gray-400" /> 20 April 2026
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-gray-700">
-                          <Clock size={14} className="text-gray-400" /> 2:30 PM
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-blue-700 font-medium">
-                          <Video size={14} className="text-blue-500" /> Online A€” Google Meet
-                        </div>
-                      </div>
-                      
-                      <div className="bg-red-50 p-3 rounded-lg mb-5 border border-red-100 text-sm text-gray-700">
-                        <span className="font-bold text-red-800 block mb-1 text-xs uppercase tracking-wider">Agenda:</span>
-                        <span className="text-red-900">Critical at attendance and multiple risk factors</span>
-                      </div>
-                      
-                      <div className="flex gap-2">
-                        <button className="flex-[2] py-2 bg-indigo-600 text-white font-bold text-xs rounded-lg hover:bg-indigo-700 transition flex items-center justify-center gap-2">
-                          <Video size={14} /> Join Meet
-                        </button>
-                        <button className="flex-1 py-2 bg-white border border-gray-200 text-gray-600 font-bold text-xs rounded-lg hover:bg-gray-50 transition">Cancel</button>
-                      </div>
-                    </div>
-
-                  </div>
-                </div>
-              )}
-            </div>
-
-          </div>
-        </main>
+    <div className="space-y-6 animate-fade-in relative pb-20">
+      
+      {/* Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <PageHeader 
+          title="Parent Communication"
+          description="Direct messaging with parents, meeting scheduling and automated WhatsApp digest management"
+        />
+        <Button onClick={() => showToast('New message dialog opened')} icon={MessageSquare} className="shadow-sm">
+          New Message
+        </Button>
       </div>
+
+      {/* TOP STATS STRIP */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatCard label="Conversations" value="24" hint="Active parent conversations" icon={MessageSquare} tone="blue" />
+        <StatCard label="Unread" value="7" hint="Messages awaiting reply" icon={Bell} tone="red" />
+        <StatCard label="Meetings This Week" value="3" hint="Scheduled parent meetings" icon={Calendar} tone="brand" />
+        <StatCard label="WhatsApp Digests Sent" value="243" hint="This month to all parents" icon={Send} tone="green" />
+      </div>
+
+      {/* MAIN COMMUNICATION AREA */}
+      <div className="flex flex-col xl:flex-row gap-6 h-[700px]">
+        
+        {/* LEFT COLUMN: Conversation List */}
+        <Card className="w-full xl:w-[32%] flex flex-col overflow-hidden p-0 sm:p-0 shadow-sm border-line/50">
+          <div className="p-5 border-b border-line bg-surface-2/30">
+            <div className="relative mb-4">
+              <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
+              <input type="text" placeholder="Search parent or student..." className="w-full pl-10 pr-4 py-2.5 bg-surface border border-line rounded-xl text-sm focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand/30 transition-shadow" />
+            </div>
+            <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
+              {['All', 'Unread', 'Meetings', 'Alerts'].map(filter => (
+                <button 
+                  key={filter}
+                  onClick={() => setActiveFilter(filter)}
+                  className={cn(
+                    "px-4 py-1.5 text-xs font-bold rounded-full whitespace-nowrap transition-colors",
+                    activeFilter === filter 
+                      ? "bg-brand text-surface shadow-sm" 
+                      : "bg-surface-2 text-content-2 hover:bg-surface-3"
+                  )}
+                >
+                  {filter}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex-1 overflow-y-auto bg-surface">
+            {/* Item 1 - Active */}
+            <div className="p-5 border-b border-line bg-brand/[0.03] cursor-pointer relative transition-colors hover:bg-brand/[0.05]">
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-brand rounded-r"></div>
+              <div className="flex justify-between items-start mb-1.5">
+                <h4 className="font-bold text-content flex items-center gap-2">
+                  Mr. Ramesh Singh
+                  <div className="w-2 h-2 rounded-full bg-brand shadow-[0_0_8px_rgba(var(--color-brand),0.6)]"></div>
+                </h4>
+                <span className="text-[11px] text-brand font-bold whitespace-nowrap">2h ago</span>
+              </div>
+              <p className="text-xs text-muted font-medium mb-2.5 flex items-center gap-1.5">
+                <User size={12} /> Mahesh Singh A· 2CS04
+              </p>
+              <div className="flex justify-between items-end gap-4">
+                <p className="text-sm text-content-2 truncate flex-1 font-medium">"Thank you for the update. We will make sure he..."</p>
+                <span className="flex items-center justify-center bg-brand text-surface text-[10px] font-black w-5 h-5 rounded-full shrink-0 shadow-sm">2</span>
+              </div>
+            </div>
+
+            {/* Item 2 */}
+            <div className="p-5 border-b border-line hover:bg-surface-2/50 cursor-pointer transition-colors group">
+              <div className="flex justify-between items-start mb-1.5">
+                <h4 className="font-bold text-content flex items-center gap-2 group-hover:text-brand transition-colors">
+                  Mrs. Kavya Sharma
+                  <div className="w-2 h-2 rounded-full bg-brand opacity-60"></div>
+                </h4>
+                <span className="text-[11px] text-muted font-medium whitespace-nowrap">5h ago</span>
+              </div>
+              <p className="text-xs text-muted font-medium mb-2.5 flex items-center gap-1.5">
+                <User size={12} /> Rohit Sharma A· 2CS47
+              </p>
+              <div className="flex justify-between items-end gap-4">
+                <p className="text-sm text-content-2 truncate flex-1 font-medium">"Is there any way to improve his DBMS scores before..."</p>
+                <span className="flex items-center justify-center bg-brand/80 text-surface text-[10px] font-black w-5 h-5 rounded-full shrink-0">1</span>
+              </div>
+            </div>
+
+            {/* Item 3 */}
+            <div className="p-5 border-b border-line hover:bg-surface-2/50 cursor-pointer transition-colors group">
+              <div className="flex justify-between items-start mb-1.5">
+                <h4 className="font-bold text-content group-hover:text-brand transition-colors">Mr. Anil Patel</h4>
+                <span className="text-[11px] text-muted font-medium whitespace-nowrap">Yesterday</span>
+              </div>
+              <p className="text-xs text-muted font-medium mb-2.5 flex items-center gap-1.5">
+                <User size={12} /> Sneha Patel A· 2CS23
+              </p>
+              <p className="text-sm text-content-2 truncate">"We have spoken to Sneha. She will attend all..."</p>
+            </div>
+
+            {/* Item 4 */}
+            <div className="p-5 border-b border-line hover:bg-surface-2/50 cursor-pointer transition-colors group">
+              <div className="flex justify-between items-start mb-1.5">
+                <h4 className="font-bold text-content group-hover:text-brand transition-colors">Mrs. Deepa Joshi</h4>
+                <span className="text-[11px] text-muted font-medium whitespace-nowrap">Yesterday</span>
+              </div>
+              <p className="text-xs text-muted font-medium mb-2.5 flex items-center gap-1.5">
+                <User size={12} /> Karan Joshi A· 2CS15
+              </p>
+              <p className="text-sm text-content-2 truncate">"Understood. We will monitor her attendance closely..."</p>
+            </div>
+            
+            {/* Item 5 */}
+            <div className="p-5 border-b border-line hover:bg-surface-2/50 cursor-pointer transition-colors group">
+              <div className="flex justify-between items-start mb-1.5">
+                <h4 className="font-bold text-content group-hover:text-brand transition-colors">Mr. Sunil Mehta</h4>
+                <span className="text-[11px] text-muted font-medium whitespace-nowrap">2d ago</span>
+              </div>
+              <p className="text-xs text-muted font-medium mb-2.5 flex items-center gap-1.5">
+                <User size={12} /> Arjun Mehta A· 2CS09
+              </p>
+              <div className="flex justify-between items-end gap-4">
+                <p className="text-sm text-content-2 truncate flex-1">"Can we schedule a meeting next week to discuss..."</p>
+                <Calendar size={16} className="text-brand shrink-0 opacity-70" />
+              </div>
+            </div>
+          </div>
+        </Card>
+
+        {/* RIGHT COLUMN: Active Conversation */}
+        <Card className="flex-1 flex flex-col p-0 sm:p-0 overflow-hidden shadow-sm border-line/50">
+          
+          {/* Header */}
+          <div className="p-6 border-b border-line flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-surface z-10 relative">
+            <div>
+              <h2 className="text-2xl font-black text-content tracking-tight mb-1">Mr. Ramesh Singh</h2>
+              <p className="text-xs text-muted font-bold tracking-wide uppercase">Parent of Mahesh Singh A· 2CS04 A· CSE 2B</p>
+            </div>
+            <div className="flex gap-2">
+              <Button variant="secondary" className="w-10 h-10 p-0 hover:bg-surface-2 border-line/50" title="View Student Profile" onClick={() => router.push('/faculty/student/profile')}>
+                <User size={18} className="text-content-2" />
+              </Button>
+              <Button variant="secondary" className="w-10 h-10 p-0 text-brand border-brand/20 hover:bg-brand/[0.05]" title="Generate Visit QR">
+                <QrCode size={18} />
+              </Button>
+              <Button variant="secondary" className="w-10 h-10 p-0 text-brand border-brand/20 hover:bg-brand/[0.05]" title="Schedule Meeting">
+                <Calendar size={18} />
+              </Button>
+            </div>
+          </div>
+
+          {/* Quick Summary Strip */}
+          <div className="bg-surface-2/50 border-b border-line px-6 py-3 flex justify-between items-center text-sm z-10">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2">
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted font-bold uppercase tracking-wider">SPI</span>
+                <span className="font-black text-content">72</span>
+              </div>
+              <div className="w-1 h-1 rounded-full bg-line hidden sm:block" />
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted font-bold uppercase tracking-wider">Attendance</span>
+                <span className="font-black text-amber">79%</span>
+              </div>
+              <div className="w-1 h-1 rounded-full bg-line hidden lg:block" />
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-muted font-bold uppercase tracking-wider">Latest Score</span>
+                <span className="font-black text-content">71% <span className="text-muted font-medium text-xs">DBMS</span></span>
+              </div>
+              <div className="w-1 h-1 rounded-full bg-line hidden xl:block" />
+              <div className="flex items-center gap-1.5 text-danger font-bold text-xs bg-danger-soft/10 px-2.5 py-1 rounded-full">
+                <AlertTriangle size={12}/> 2 Alerts
+              </div>
+            </div>
+          </div>
+
+          {/* Messages Area */}
+          <div className="flex-1 overflow-y-auto p-6 bg-surface-2/20 space-y-6">
+            
+            <div className="flex justify-center my-2">
+              <span className="px-3 py-1 bg-surface border border-line shadow-sm text-muted text-[11px] font-bold uppercase tracking-wider rounded-full">April 13, 2026</span>
+            </div>
+
+            {/* Msg 1 - Faculty */}
+            <div className="flex flex-col items-end group">
+              <div className="max-w-[85%] sm:max-w-[70%] bg-brand text-surface p-4 rounded-2xl rounded-tr-sm shadow-sm">
+                <p className="text-[14.5px] leading-relaxed font-medium">
+                  Dear Mr. Singh, I wanted to inform you that Mahesh's attendance in Theory of Computation has dropped to 74% — just below the 75% minimum threshold. He needs to attend all remaining classes to maintain eligibility.
+                </p>
+              </div>
+              <div className="flex items-center gap-1.5 mt-1.5 text-[11px] font-medium text-muted mr-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <span>10:34 AM</span>
+                <CheckCheck size={14} className="text-brand opacity-80" />
+              </div>
+            </div>
+
+            {/* Msg 2 - Parent */}
+            <div className="flex flex-col items-start group">
+              <div className="max-w-[85%] sm:max-w-[70%] bg-surface border border-line/60 text-content p-4 rounded-2xl rounded-tl-sm shadow-sm">
+                <p className="text-[14.5px] leading-relaxed">
+                  Thank you for letting us know, Prof. Kapoor. We will speak with Mahesh today. Is there anything specific we should ask him to focus on for TOC?
+                </p>
+              </div>
+              <div className="mt-1.5 text-[11px] font-medium text-muted ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <span>11:02 AM</span>
+              </div>
+            </div>
+
+            {/* Msg 3 - Faculty */}
+            <div className="flex flex-col items-end group">
+              <div className="max-w-[85%] sm:max-w-[70%] bg-brand text-surface p-4 rounded-2xl rounded-tr-sm shadow-sm">
+                <p className="text-[14.5px] leading-relaxed font-medium">
+                  Yes, please encourage him to focus on Regular Expressions and Automata Theory concepts — these are the specific weak areas from his Unit 2 exam. I can share some revision notes if helpful.
+                </p>
+              </div>
+              <div className="flex items-center gap-1.5 mt-1.5 text-[11px] font-medium text-muted mr-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <span>11:15 AM</span>
+                <CheckCheck size={14} className="text-brand opacity-80" />
+              </div>
+            </div>
+
+            <div className="flex justify-center my-6">
+              <span className="px-3 py-1 bg-surface border border-line shadow-sm text-muted text-[11px] font-bold uppercase tracking-wider rounded-full">April 15, 2026</span>
+            </div>
+
+            {/* Msg 4 - Parent */}
+            <div className="flex flex-col items-start group">
+              <div className="max-w-[85%] sm:max-w-[70%] bg-surface border border-line/60 text-content p-4 rounded-2xl rounded-tl-sm shadow-sm">
+                <p className="text-[14.5px] leading-relaxed">
+                  That would be very helpful. Also, Mahesh mentioned his DBMS practical went well — we are glad to hear that at least. Please do share the notes.
+                </p>
+              </div>
+              <div className="mt-1.5 text-[11px] font-medium text-muted ml-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <span>9:45 AM</span>
+              </div>
+            </div>
+
+            {/* Msg 5 - Parent UNREAD */}
+            <div className="flex flex-col items-start relative group">
+              <div className="absolute -left-3 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-brand shadow-[0_0_8px_rgba(var(--color-brand),0.6)]"></div>
+              <div className="max-w-[85%] sm:max-w-[70%] bg-surface border border-line/60 text-content p-4 rounded-2xl rounded-tl-sm shadow-md ring-1 ring-brand/10">
+                <p className="text-[14.5px] leading-relaxed font-medium">
+                  Thank you for the update. We will make sure he attends all remaining classes.
+                </p>
+              </div>
+              <div className="mt-1.5 flex items-center gap-2 ml-1">
+                <span className="text-[11px] font-bold text-brand">9:46 AM</span>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Input Area */}
+          <div className="p-5 border-t border-line bg-surface z-10">
+            {/* Templates */}
+            <div className="flex gap-2 overflow-x-auto hide-scrollbar mb-4 pb-1 items-center">
+              <span className="text-[10px] text-muted font-bold uppercase tracking-widest mr-1">Templates</span>
+              <div className="w-1 h-1 rounded-full bg-line mx-1" />
+              {['Attendance Warning', 'Score Update', 'Meeting Request', 'Positive Feedback'].map(t => (
+                <button 
+                  key={t}
+                  onClick={() => handleTemplateClick(t)} 
+                  className="px-3 py-1 bg-surface-2 hover:bg-surface-3 text-content text-[11px] font-bold rounded-full whitespace-nowrap transition-colors border border-line/50"
+                >
+                  {t}
+                </button>
+              ))}
+            </div>
+            
+            <div className="relative group">
+              <textarea 
+                className="w-full border border-line rounded-2xl pl-5 pr-14 py-3.5 text-sm focus:outline-none focus:border-brand focus:ring-4 focus:ring-brand/10 transition-all min-h-[90px] resize-none bg-surface shadow-sm"
+                placeholder="Type your message to Mr. Ramesh Singh..."
+                value={messageInput}
+                onChange={(e) => setMessageInput(e.target.value)}
+              ></textarea>
+              <button 
+                onClick={handleSendMessage}
+                className={cn(
+                  "absolute right-3 bottom-3 w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-200",
+                  messageInput.trim() 
+                    ? "bg-brand text-surface shadow-md hover:shadow-lg hover:scale-105 active:scale-95" 
+                    : "bg-surface-2 text-muted cursor-not-allowed"
+                )}
+                disabled={!messageInput.trim()}
+              >
+                <Send size={18} className={messageInput.trim() ? "translate-x-[-1px] translate-y-[1px]" : ""} />
+              </button>
+            </div>
+
+            {/* Actions */}
+            <div className="flex gap-3 mt-4 overflow-x-auto hide-scrollbar">
+              <Button variant="secondary" onClick={() => showToast('WhatsApp digest dispatched to parent')} className="text-brand border-brand/20 hover:bg-brand/[0.05] text-xs h-9">
+                Send via WhatsApp
+              </Button>
+              <Button variant="secondary" onClick={() => showToast('Summary PDF generated')} className="text-xs h-9">
+                Generate PDF
+              </Button>
+            </div>
+          </div>
+
+        </Card>
+      </div>
+
+      {/* MEETINGS SECTION */}
+      <Card className="overflow-hidden p-0 sm:p-0 shadow-sm border-line/50">
+        <button 
+          onClick={() => setMeetingsExpanded(!meetingsExpanded)}
+          className="w-full p-6 flex justify-between items-center bg-surface hover:bg-surface-2/50 transition-colors text-left border-b border-line"
+        >
+          <div className="flex items-center gap-4">
+            <div className="w-10 h-10 rounded-xl bg-brand/10 flex items-center justify-center text-brand">
+              <Calendar size={20} />
+            </div>
+            <div>
+              <h3 className="font-black text-content text-lg tracking-tight">Upcoming Parent-Teacher Meetings</h3>
+              <p className="text-xs font-bold text-muted uppercase tracking-wider mt-0.5">3 Meetings Scheduled</p>
+            </div>
+          </div>
+          <div className="w-8 h-8 rounded-full border border-line flex items-center justify-center text-muted bg-surface shadow-sm">
+            {meetingsExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+          </div>
+        </button>
+
+        {meetingsExpanded && (
+          <div className="p-6 bg-surface-2/30">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              
+              {/* Meeting 1 */}
+              <Card className="hover:shadow-md transition-shadow bg-surface border-line/60">
+                <div className="flex justify-between items-start mb-4">
+                  <Badge tone="green" className="shadow-sm">Confirmed</Badge>
+                  <div className="w-10 h-10 rounded-xl bg-surface-2 border border-line text-content-2 flex items-center justify-center shadow-sm">
+                    <User size={18} />
+                  </div>
+                </div>
+                <h4 className="font-bold text-content text-base mb-1">Mr. Sunil Mehta</h4>
+                <p className="text-xs text-muted font-medium mb-5">Parent of Arjun Mehta</p>
+                
+                <div className="space-y-3 mb-6 p-4 rounded-xl bg-surface-2/50 border border-line/50">
+                  <div className="flex items-center gap-3 text-sm text-content-2 font-medium">
+                    <Calendar size={16} className="text-muted" /> 18 April 2026
+                  </div>
+                  <div className="flex items-center gap-3 text-sm text-content-2 font-medium">
+                    <Clock size={16} className="text-muted" /> 3:00 PM
+                  </div>
+                  <div className="flex items-center gap-3 text-sm text-content-2 font-medium">
+                    <User size={16} className="text-muted" /> Faculty Room 204
+                  </div>
+                </div>
+                
+                <div className="mb-6">
+                  <span className="text-[10px] font-bold text-muted uppercase tracking-widest block mb-2">Agenda</span>
+                  <p className="text-sm text-content-2 font-medium leading-relaxed">Discuss 3 missed assignments and TOC performance</p>
+                </div>
+                
+                <div className="flex gap-3">
+                  <Button variant="secondary" className="flex-1 text-xs">Reschedule</Button>
+                  <Button variant="secondary" className="flex-1 text-xs text-danger border-danger/20 hover:bg-danger/[0.05]">Cancel</Button>
+                </div>
+              </Card>
+
+              {/* Meeting 2 */}
+              <Card className="hover:shadow-md transition-shadow bg-surface border-line/60">
+                <div className="flex justify-between items-start mb-4">
+                  <Badge tone="amber" className="shadow-sm">Pending Confirmation</Badge>
+                  <div className="w-10 h-10 rounded-xl bg-surface-2 border border-line text-content-2 flex items-center justify-center shadow-sm">
+                    <User size={18} />
+                  </div>
+                </div>
+                <h4 className="font-bold text-content text-base mb-1">Mrs. Kavya Sharma</h4>
+                <p className="text-xs text-muted font-medium mb-5">Parent of Rohit Sharma</p>
+                
+                <div className="space-y-3 mb-6 p-4 rounded-xl bg-surface-2/50 border border-line/50">
+                  <div className="flex items-center gap-3 text-sm text-content-2 font-medium">
+                    <Calendar size={16} className="text-muted" /> 19 April 2026
+                  </div>
+                  <div className="flex items-center gap-3 text-sm text-content-2 font-medium">
+                    <Clock size={16} className="text-muted" /> 11:00 AM
+                  </div>
+                  <div className="flex items-center gap-3 text-sm text-content-2 font-medium">
+                    <User size={16} className="text-muted" /> Faculty Room 204
+                  </div>
+                </div>
+                
+                <div className="mb-6">
+                  <span className="text-[10px] font-bold text-muted uppercase tracking-widest block mb-2">Agenda</span>
+                  <p className="text-sm text-content-2 font-medium leading-relaxed">DBMS score decline across 3 consecutive units</p>
+                </div>
+                
+                <div className="flex gap-3">
+                  <Button className="flex-1 text-xs shadow-sm">Confirm</Button>
+                  <Button variant="secondary" className="flex-1 text-xs">Reschedule</Button>
+                </div>
+              </Card>
+
+              {/* Meeting 3 */}
+              <Card className="border-brand/30 shadow-md ring-1 ring-brand/5 relative overflow-hidden bg-surface">
+                <div className="absolute top-0 right-0 w-32 h-32 bg-brand/5 rounded-full blur-3xl pointer-events-none"></div>
+                <div className="flex justify-between items-start mb-4 relative z-10">
+                  <Badge tone="green" className="shadow-sm">Confirmed</Badge>
+                  <div className="w-10 h-10 rounded-xl bg-info/10 text-info flex items-center justify-center shadow-sm">
+                    <Video size={18} />
+                  </div>
+                </div>
+                <h4 className="font-bold text-content text-base mb-1 relative z-10">Mr. Anil Patel</h4>
+                <p className="text-xs text-muted font-medium mb-5 relative z-10">Parent of Sneha Patel</p>
+                
+                <div className="space-y-3 mb-6 p-4 rounded-xl bg-surface-2/50 border border-line/50 relative z-10">
+                  <div className="flex items-center gap-3 text-sm text-content-2 font-medium">
+                    <Calendar size={16} className="text-muted" /> 20 April 2026
+                  </div>
+                  <div className="flex items-center gap-3 text-sm text-content-2 font-medium">
+                    <Clock size={16} className="text-muted" /> 2:30 PM
+                  </div>
+                  <div className="flex items-center gap-3 text-sm text-info font-bold">
+                    <Video size={16} className="text-info" /> Online — Google Meet
+                  </div>
+                </div>
+                
+                <div className="mb-6 relative z-10">
+                  <span className="text-[10px] font-bold text-danger uppercase tracking-widest block mb-2">Critical Agenda</span>
+                  <p className="text-sm text-danger font-medium leading-relaxed bg-danger/[0.05] p-3 rounded-lg border border-danger/10">Critical attendance and multiple risk factors</p>
+                </div>
+                
+                <div className="flex gap-3 relative z-10">
+                  <Button className="flex-[2] text-xs bg-brand hover:bg-brand-strong shadow-md" icon={Video}>Join Meet</Button>
+                  <Button variant="secondary" className="flex-1 text-xs">Cancel</Button>
+                </div>
+              </Card>
+
+            </div>
+          </div>
+        )}
+      </Card>
 
       {/* TOAST */}
       {toastMessage && (
-        <div className="fixed bottom-8 right-8 bg-gray-900 text-white px-6 py-3 rounded-xl shadow-xl font-medium text-sm animate-fade-in z-50 flex items-center gap-2">
-          <CheckCircle2 size={16} className="text-green-400" />
+        <div className="fixed bottom-8 right-8 bg-surface-inverted text-surface px-6 py-3.5 rounded-2xl shadow-2xl font-bold text-sm animate-fade-in z-50 flex items-center gap-3">
+          <CheckCircle2 size={18} className="text-green-400" />
           {toastMessage}
         </div>
       )}
@@ -592,5 +480,6 @@ export default function FacultyParentCommunication() {
     </div>
   )
 }
+
 
 

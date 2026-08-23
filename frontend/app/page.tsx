@@ -1,6 +1,6 @@
 'use client'
 
-import { useRouter } from 'next/navigation'
+import Link from 'next/link'
 import {
   ArrowRight, BarChart2, Bell, Users, ShieldCheck,
   TrendingUp, BookOpen, Activity, Brain, User, Building, Settings, Sun, Moon, Zap
@@ -54,7 +54,6 @@ const roles = [
 ]
 
 export default function LandingPage() {
-  const router = useRouter()
   const { theme, toggleTheme } = useTheme()
   const isDark = theme === 'dark'
 
@@ -106,9 +105,9 @@ export default function LandingPage() {
             <button onClick={toggleTheme} className="lp-theme-btn" aria-label="Toggle theme">
               {isDark ? <Sun size={16} /> : <Moon size={16} />}
             </button>
-            <button className="lp-btn-primary !py-[10px] !px-6 !text-[13.5px]" onClick={() => router.push('/login')}>
+            <Link href="/login" className="lp-btn-primary !py-[10px] !px-6 !text-[13.5px] inline-flex">
               Dashboard <ArrowRight size={15} />
-            </button>
+            </Link>
           </div>
         </div>
       </nav>
@@ -136,9 +135,9 @@ export default function LandingPage() {
             </p>
 
             <div className="flex items-center gap-4">
-              <button className="lp-btn-primary" onClick={() => router.push('/login')}>
+              <Link href="/login" className="lp-btn-primary inline-flex">
                 Access Dashboard <ArrowRight size={17} />
-              </button>
+              </Link>
               <button className="lp-btn-secondary"
                 onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}>
                 Explore Platform
@@ -380,7 +379,7 @@ export default function LandingPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {roles.map((r, i) => (
-              <button key={i} className="lp-role-card" onClick={() => router.push(r.path)}>
+              <Link key={i} href={r.path} className="lp-role-card block text-left">
                 <div className="lp-icon-circle mb-6">
                   <r.icon size={22} strokeWidth={1.5} />
                 </div>
@@ -389,7 +388,7 @@ export default function LandingPage() {
                 <div className="lp-arrow-btn">
                   <ArrowRight size={14} />
                 </div>
-              </button>
+              </Link>
             ))}
           </div>
         </div>

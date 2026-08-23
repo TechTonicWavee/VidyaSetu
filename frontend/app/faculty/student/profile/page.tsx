@@ -52,20 +52,6 @@ import {
   PolarRadiusAxis,
 } from "recharts";
 
-const navLinks = [
-  { id: 'dashboard',    label: 'Dashboard',            icon: Home,          badge: null,  path: '/faculty' },
-  { id: 'classes',      label: 'My Classes',           icon: BookOpen,      badge: null,  path: '/faculty/my-classes' },
-  { id: 'intelligence', label: 'Student Reports', icon: Brain, path: '/faculty/student-reports' },
-  { id: 'alerts',       label: 'Student Alerts',       icon: AlertCircle,   badge: '5',   path: '/faculty/alerts' },
-  { id: 'analytics',    label: 'Subject Analytics',    icon: Activity,      badge: null,  path: '/faculty/analytics' },
-  { id: 'profiles',     label: 'Student Profiles',     icon: Users,         badge: null,  path: '/faculty/student/profile' },
-  { id: 'co',           label: 'CO Attainment',        icon: CheckCircle,   badge: null,  path: '/faculty/co-attainment' },
-  { id: 'parent',       label: 'Parent Communication', icon: MessageSquare, badge: null,  path: '/faculty/parent-communication' },
-  { id: 'reports',      label: 'Reports',              icon: FileText,      badge: null,  path: '/faculty/reports' },
-  { id: 'assignments',  label: 'Assignments (Moodle)', icon: ExternalLink,  badge: null,  path: null, external: 'http://lms.kiet.edu/moodle/' },
-  { id: 'attendance',   label: 'Attendance (Vidya)',   icon: ExternalLink,  badge: null,  path: null, external: 'https://kiet.cybervidya.net' },
-];
-
 const dbmsTrend = [
   { unit: "Unit 1", score: 78 },
   { unit: "Unit 2", score: 74 },
@@ -93,8 +79,6 @@ import { apiGet, apiPost } from '@/lib/shared/api/client'
 export default function FacultyStudentProfile() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("Overview");
-  const [activeNav, setActiveNav] = useState("profiles");
-  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [menteesList, setMenteesList] = useState<any[]>([]);
   const [selectedStudent, setSelectedStudent] = useState<any | null>(null);
