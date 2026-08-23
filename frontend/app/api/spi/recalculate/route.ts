@@ -126,8 +126,8 @@ export async function POST(request: NextRequest) {
     const effectiveSemester = currentMonth >= 7 ? effectiveYear * 2 - 1 : effectiveYear * 2
 
     // cgpa and semester are now properly typed after prisma generate
-    const rawCgpa = student.cgpa ?? null
-    const rawSemester = student.semester ?? null
+    const rawCgpa = (student as any).cgpa ?? null
+    const rawSemester = (student as any).semester ?? null
 
     // Run evidence engines
     const githubResult = calcGitHubScore({
@@ -198,8 +198,8 @@ export async function POST(request: NextRequest) {
 
     // ── Update SPI History ──────────────────────────────────────────────────
     let history: any[] = []
-    if (student.spiHistory && Array.isArray(student.spiHistory)) {
-      history = [...student.spiHistory]
+    if ((student as any).spiHistory && Array.isArray((student as any).spiHistory)) {
+      history = [...(student as any).spiHistory]
     }
 
     if (history.length === 0) {

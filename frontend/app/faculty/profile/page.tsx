@@ -26,6 +26,10 @@ interface FacultyProfileData {
   phone: string
   department: string
   profilePicture: string
+  avatarUrl?: string
+  officeLocation?: string
+  officeHours?: string
+  scholarId?: string
   subjects: Subject[]
 }
 
@@ -329,28 +333,31 @@ export default function FacultyProfile() {
                 {formData.subjects.map((sub, index) => (
                   <div key={sub.id} className="p-5 rounded-2xl bg-surface-2 border border-line/60 flex flex-col md:flex-row gap-4 items-end">
                     <div className="flex-1 w-full">
-                       <Input
-                         label={`Subject ${index + 1} Name`}
-                         value={sub.name}
-                         onChange={(e) => handleSubjectChange(sub.id, 'name', e.target.value)}
-                         placeholder="e.g. Database Management Systems"
-                       />
+                       <Field label={`Subject ${index + 1} Name`}>
+                         <Input
+                           value={sub.name}
+                           onChange={(e) => handleSubjectChange(sub.id, 'name', e.target.value)}
+                           placeholder="e.g. Database Management Systems"
+                         />
+                       </Field>
                     </div>
                     <div className="w-full md:w-32">
-                       <Input
-                         label="Section"
-                         value={sub.section}
-                         onChange={(e) => handleSubjectChange(sub.id, 'section', e.target.value)}
-                         placeholder="e.g. A"
-                       />
+                       <Field label="Section">
+                         <Input
+                           value={sub.section}
+                           onChange={(e) => handleSubjectChange(sub.id, 'section', e.target.value)}
+                           placeholder="e.g. A"
+                         />
+                       </Field>
                     </div>
                     <div className="w-full md:w-40">
-                       <Input
-                         label="Year"
-                         value={sub.year}
-                         onChange={(e) => handleSubjectChange(sub.id, 'year', e.target.value)}
-                         placeholder="e.g. 2nd Year"
-                       />
+                       <Field label="Year">
+                         <Input
+                           value={sub.year}
+                           onChange={(e) => handleSubjectChange(sub.id, 'year', e.target.value)}
+                           placeholder="e.g. 2nd Year"
+                         />
+                       </Field>
                     </div>
                     <Button 
                       variant="ghost" 

@@ -46,8 +46,8 @@ export async function GET(request: NextRequest) {
     }
 
     // cgpa and semester are now properly typed after prisma generate
-    const rawCgpa = student.cgpa ?? null
-    const rawSemester = student.semester ?? null
+    const rawCgpa = (student as any).cgpa ?? null
+    const rawSemester = (student as any).semester ?? null
 
     // ── Derive effective year/semester for SPI engines ──────────────────────
     const admissionYear: number | null =
@@ -133,12 +133,12 @@ export async function GET(request: NextRequest) {
         resumeAnalyzedAt: student.resumeAnalyzedAt,
         resumePublicId: student.resumePublicId,
         resumeScore: resumeResult?.score ?? null,
-        spiHistory: student.spiHistory,
-        cgpa: student.cgpa,
-        semester: student.semester,
-        attendance: student.attendance,
-        classesAttended: student.classesAttended,
-        classesTotal: student.classesTotal,
+        spiHistory: (student as any).spiHistory,
+        cgpa: (student as any).cgpa,
+        semester: (student as any).semester,
+        attendance: (student as any).attendance,
+        classesAttended: (student as any).classesAttended,
+        classesTotal: (student as any).classesTotal,
         avatarUrl: student.avatarUrl,
         avatarPublicId: student.avatarPublicId,
         codingProfile: student.codingProfile ? {

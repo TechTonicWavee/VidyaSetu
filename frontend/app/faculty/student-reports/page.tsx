@@ -49,7 +49,7 @@ const BenchTooltip = ({ active, payload, label }: any) => {
   return (
     <div className="bg-surface border border-line rounded-xl shadow-lg px-3 py-2 text-xs">
       <p className="font-bold text-content mb-1">{label}</p>
-      {payload.map((p, i) => (
+      {payload.map((p: any, i: number) => (
         <p key={i} style={{ color: p.fill }}>{p.name}: {p.value}</p>
       ))}
     </div>
