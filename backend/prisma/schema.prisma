@@ -10,49 +10,55 @@ datasource db {
 }
 
 model Student {
-  id               String            @id @default(uuid())
-  universityId     String            @unique
-  fullName         String
-  dob              DateTime?
-  branch           String?
-  year             Int?
-  section          String?
-  email            String?
-  phone            String?
-  password         String?
-  isFirstLogin     Boolean           @default(true)
-  formStatus       String            @default("not_registered")
-  formProgress     Json?
-  formSubmittedAt  DateTime?
-  resumeUrl        String?
-  spiScore         Float?            @default(0)
-  spiHistory       Json?             @default("[]")
-  createdAt        DateTime          @default(now())
-  updatedAt        DateTime          @updatedAt
-  admissionYear    Int?
-  avatarPublicId   String?
-  avatarUrl        String?
-  domain           String?
-  resumeAnalyzedAt DateTime?
-  resumeParsed     Json?
-  resumePublicId   String?
-  cgpa             Float?            @default(0)
-  attendance       Float?
-  classesAttended  Int?
-  classesTotal     Int?
-  semester         Int?
-  certifications   Certification[]
-  codingProfile    CodingProfile?
-  extracurriculars Extracurricular[]
-  hackathons       Hackathon[]
-  internships      Internship[]
-  notifications    Notification[]
-  projects         Project[]
-  refreshTokens    RefreshToken[]
-  invitesReceived  TeamInvite[]      @relation("InviteReceiver")
-  invitesSent      TeamInvite[]      @relation("InviteSender")
-  teamMemberships  TeamMember[]
-  teamsLed         Team[]            @relation("TeamLeader")
+  id                   String                @id @default(uuid())
+  universityId         String                @unique
+  fullName             String
+  dob                  DateTime?
+  branch               String?
+  year                 Int?
+  section              String?
+  email                String?
+  phone                String?
+  fatherPhone          String?
+  gender               String?
+  password             String?
+  isFirstLogin         Boolean               @default(true)
+  formStatus           String                @default("not_registered")
+  formProgress         Json?
+  formSubmittedAt      DateTime?
+  resumeUrl            String?
+  spiScore             Float?                @default(0)
+  spiHistory           Json?                 @default("[]")
+  createdAt            DateTime              @default(now())
+  updatedAt            DateTime              @updatedAt
+  admissionYear        Int?
+  avatarPublicId       String?
+  avatarUrl            String?
+  domain               String?
+  resumeAnalyzedAt     DateTime?
+  resumeParsed         Json?
+  resumePublicId       String?
+  cgpa                 Float?                @default(0)
+  attendance           Float?
+  classesAttended      Int?
+  classesTotal         Int?
+  semester             Int?
+  certifications       Certification[]
+  codingProfile        CodingProfile?
+  extracurriculars     Extracurricular[]
+  hackathons           Hackathon[]
+  internships          Internship[]
+  notifications        Notification[]
+  projects             Project[]
+  refreshTokens        RefreshToken[]
+  invitesReceived      TeamInvite[]          @relation("InviteReceiver")
+  invitesSent          TeamInvite[]          @relation("InviteSender")
+  teamMemberships      TeamMember[]
+  teamsLed             Team[]                @relation("TeamLeader")
+  teammatePosts        TeammatePost[]
+  teammateApplications TeammateApplication[]
+  projectRoles         TeamProjectRole[]
+  projectTasks         TeamProjectTask[]
 
   @@map("students")
 }
@@ -179,6 +185,7 @@ model Team {
   invites     TeamInvite[]
   members     TeamMember[]
   leader      Student      @relation("TeamLeader", fields: [leaderId], references: [universityId])
+  project     TeamProject?
 
   @@index([leaderId])
   @@map("teams")
@@ -245,4 +252,130 @@ model RefreshToken {
 
   @@index([universityId])
   @@map("refresh_tokens")
+}
+
+// ── "Looking for Teammates" marketplace ─────────────────────────────────────
+// A student posts an open requirement (role, event, headcount, tech stack);
+// other students apply; the poster reviews applicants' public profile
+// (GitHub/LinkedIn/skills) and accepts or rejects — both notify the applicant.
+model TeammatePost {
+  id            String                @id @default(uuid())
+  postedBy      String
+  eventName     String
+  role          String
+  membersNeeded Int
+  description   String?
+  techStack     String[]
+  status        String                @default("open") // open | closed
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
+  poster        Student               @relation(fields: [postedBy], references: [universityId])
+  applications  TeammateApplication[]
+
+  @@index([postedBy])
+  @@index([status])
+  @@map("teammate_posts")
+}
+
+model TeammateApplication {
+  id          String       @id @default(uuid())
+  postId      String
+  applicantId String
+  status      String       @default("pending") // pending | accepted | rejected
+  message     String?
+  createdAt   DateTime     @default(now())
+  respondedAt DateTime?
+  post        TeammatePost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  applicant   Student      @relation(fields: [applicantId], references: [universityId])
+
+  @@unique([postId, applicantId])
+  @@index([applicantId])
+  @@map("teammate_applications")
+}
+
+// ── Project Tracker ──────────────────────────────────────────────────────────
+// One project per team. The leader defines ordered phases (each with a
+// mentor name and mandatory GitHub link), marks phase progress, assigns
+// tasks to members, and — once every phase is complete plus a deployed
+// link is supplied — the project awaits mentor approval. The "faculty side"
+// of this (remarks, approval) isn't gated behind real faculty accounts: the
+// faculty portal has no auth system of its own yet, so a mentor identifies
+// themselves by the same name recorded on the phase they're monitoring.
+model TeamProject {
+  id           String              @id @default(uuid())
+  teamId       String              @unique
+  name         String
+  mentorName   String
+  githubLink   String
+  status       String              @default("in_progress") // in_progress | pending_approval | approved | rejected
+  deployedLink String?
+  createdBy    String
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+  team         Team                @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  phases       TeamProjectPhase[]
+  roles        TeamProjectRole[]
+  tasks        TeamProjectTask[]
+  remarks      TeamProjectRemark[]
+
+  @@map("team_projects")
+}
+
+model TeamProjectPhase {
+  id           String      @id @default(uuid())
+  projectId    String
+  name         String
+  order        Int
+  memberIds    String[]    @default([])
+  deployedLink String?
+  status       String      @default("pending") // pending | in_progress | completed
+  completedAt  DateTime?
+  createdAt    DateTime    @default(now())
+  project      TeamProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@map("team_project_phases")
+}
+
+model TeamProjectRole {
+  id           String      @id @default(uuid())
+  projectId    String
+  universityId String
+  role         String?
+  work         String?
+  project      TeamProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  student      Student     @relation(fields: [universityId], references: [universityId])
+
+  @@unique([projectId, universityId])
+  @@map("team_project_roles")
+}
+
+model TeamProjectTask {
+  id          String      @id @default(uuid())
+  projectId   String
+  assignedTo  String
+  title       String
+  description String?
+  status      String      @default("not_done") // not_done | done
+  statusNote  String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  project     TeamProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  assignee    Student     @relation(fields: [assignedTo], references: [universityId])
+
+  @@index([projectId])
+  @@index([assignedTo])
+  @@map("team_project_tasks")
+}
+
+model TeamProjectRemark {
+  id         String      @id @default(uuid())
+  projectId  String
+  authorName String
+  message    String
+  createdAt  DateTime    @default(now())
+  project    TeamProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@map("team_project_remarks")
 }

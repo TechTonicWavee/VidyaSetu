@@ -33,3 +33,16 @@ ehthumbs.db
 .idea/
 *.swp
 *.swo
+
+# Antigravity IDE Files
+.claude/
+agent/skills/
+.agents/
+skills-lock.json
+implementation_plan.md
+stash.patch
+
+# Real student PII (names, personal phone numbers, parents' phone numbers,
+# emails) — never commit this. Ask whoever maintains the roster for a copy
+# to seed a local/dev database instead.
+studentsSeed.json
