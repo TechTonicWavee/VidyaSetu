@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useDeanContext } from '../_context/DeanContext';
 import MeetingCard from '@/components/dean/MeetingCard';
 import { Plus, X, CalendarDays, Search } from 'lucide-react';
+import { PageHeader, Card, StatCard, Button } from '@/components/shared/ui';
+import { cn } from '@/lib/shared/utils/cn';
 
 const TIME_FILTERS = [
   { key: 'all',       label: 'All' },
@@ -51,44 +53,38 @@ export default function MeetingsPage() {
     setShowForm(false);
   };
 
-  const inputCls = "w-full px-3 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-gray-50 placeholder-gray-400";
+  const inputCls = "w-full px-4 py-2.5 text-sm border border-line rounded-xl focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand bg-surface-2 placeholder-muted transition";
 
   return (
-    <main className="dean-page px-8 py-8 min-h-screen">
+    <div className="space-y-6 animate-fade-in">
 
       {/* Header */}
-      <div className="flex items-start justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-[#0D1B2A] tracking-tight">Meetings</h1>
-          <p className="text-gray-500 mt-1">Manage and track all your scheduled meetings</p>
-        </div>
-        <button
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <PageHeader
+          title="Meetings"
+          description="Manage and track all your scheduled meetings"
+        />
+        <Button
           onClick={() => setShowForm(v => !v)}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold transition shadow-sm ${showForm ? 'bg-gray-100 text-gray-600 hover:bg-gray-200' : 'bg-purple-600 text-white hover:bg-purple-700'}`}
+          variant={showForm ? 'secondary' : 'primary'}
+          icon={showForm ? X : Plus}
         >
-          {showForm ? <><X size={15} /> Cancel</> : <><Plus size={15} /> Add Meeting</>}
-        </button>
+          {showForm ? 'Cancel' : 'Add Meeting'}
+        </Button>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
-        {[
-          { label: 'Total Meetings', val: filtered.length,  color: 'text-[#0D1B2A]',  accent: '#0D1B2A' },
-          { label: 'Upcoming',       val: upcomingCount,    color: 'text-purple-600',  accent: '#7C3AED' },
-          { label: 'Completed',      val: doneCount,        color: 'text-green-600',   accent: '#059669' },
-        ].map(s => (
-          <div key={s.label} className="card">
-            <p className="text-[11px] font-semibold uppercase tracking-wider text-gray-500 mb-2">{s.label}</p>
-            <p className={`text-4xl font-black ${s.color}`}>{s.val}</p>
-          </div>
-        ))}
+      <div className="grid grid-cols-3 gap-4">
+        <StatCard label="Total Meetings" value={String(filtered.length)} hint="Matching current filters" tone="blue" />
+        <StatCard label="Upcoming" value={String(upcomingCount)} hint="Yet to be held" tone="brand" />
+        <StatCard label="Completed" value={String(doneCount)} hint="Successfully completed" tone="green" />
       </div>
 
       {/* Add Meeting Form */}
       {showForm && (
-        <div className="card mb-6 space-y-4">
-          <h2 className="text-sm font-bold text-gray-700 uppercase tracking-wider">New Meeting</h2>
-          <div className="grid grid-cols-2 gap-3">
+        <Card>
+          <h2 className="text-sm font-black text-content uppercase tracking-wider mb-4">New Meeting</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <input placeholder="Meeting title *" value={formData.title} onChange={e => setFormData({...formData, title: e.target.value})} className={inputCls} />
             <input placeholder="Location" value={formData.location} onChange={e => setFormData({...formData, location: e.target.value})} className={inputCls} />
             <input type="date" value={formData.date} onChange={e => setFormData({...formData, date: e.target.value})} className={inputCls} />
@@ -97,66 +93,74 @@ export default function MeetingsPage() {
               {['Meeting','Director','Faculty','Senate','External','Academic'].map(t => <option key={t}>{t}</option>)}
             </select>
           </div>
-          <textarea placeholder="Notes (optional)" value={formData.notes} onChange={e => setFormData({...formData, notes: e.target.value})} rows={2} className={`${inputCls} resize-none col-span-2`} />
-          <div className="flex gap-2">
-            <button onClick={handleAdd} className="px-5 py-2 bg-purple-600 text-white text-sm font-semibold rounded-xl hover:bg-purple-700 transition shadow-sm">Save Meeting</button>
-            <button onClick={() => setShowForm(false)} className="px-5 py-2 bg-gray-100 text-gray-600 text-sm font-semibold rounded-xl hover:bg-gray-200 transition">Cancel</button>
+          <textarea placeholder="Notes (optional)" value={formData.notes} onChange={e => setFormData({...formData, notes: e.target.value})} rows={2} className={`${inputCls} resize-none mt-3`} />
+          <div className="flex gap-3 mt-4">
+            <Button onClick={handleAdd} className="shadow-sm">Save Meeting</Button>
+            <Button onClick={() => setShowForm(false)} variant="secondary">Cancel</Button>
           </div>
-        </div>
+        </Card>
       )}
 
-      {/* Two-column layout: filters left, list right */}
+      {/* Two-column layout */}
       <div className="flex gap-6 items-start">
 
         {/* Filters panel */}
-        <div className="w-64 flex-shrink-0 card space-y-5 sticky top-8">
+        <Card className="w-52 shrink-0 space-y-5 sticky top-8">
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-2">When</p>
+            <p className="text-[10px] font-bold uppercase tracking-wider text-muted mb-3">When</p>
             <div className="flex flex-col gap-1">
               {TIME_FILTERS.map(f => (
                 <button key={f.key} onClick={() => setFilter(f.key)}
-                  className={`w-full text-left px-3 py-2 text-sm font-medium rounded-lg transition ${filter === f.key ? 'bg-purple-50 text-purple-700 font-semibold' : 'text-gray-600 hover:bg-gray-50'}`}>
+                  className={cn(
+                    "w-full text-left px-3 py-2 text-sm font-medium rounded-lg transition",
+                    filter === f.key ? 'bg-brand/10 text-brand font-bold' : 'text-content-2 hover:bg-surface-2'
+                  )}>
                   {f.label}
                 </button>
               ))}
             </div>
           </div>
 
-          <div className="border-t border-gray-100 pt-4">
-            <p className="text-[11px] font-bold uppercase tracking-wider text-gray-400 mb-2">Type</p>
+          <div className="border-t border-line pt-5">
+            <p className="text-[10px] font-bold uppercase tracking-wider text-muted mb-3">Type</p>
             <div className="flex flex-col gap-1">
               {TYPE_FILTERS.map(t => (
                 <button key={t} onClick={() => setTypeFilter(t === 'All' ? 'all' : t)}
-                  className={`w-full text-left px-3 py-2 text-sm font-medium rounded-lg transition ${(t === 'All' ? typeFilter === 'all' : typeFilter === t) ? 'bg-purple-50 text-purple-700 font-semibold' : 'text-gray-600 hover:bg-gray-50'}`}>
+                  className={cn(
+                    "w-full text-left px-3 py-2 text-sm font-medium rounded-lg transition",
+                    (t === 'All' ? typeFilter === 'all' : typeFilter === t)
+                      ? 'bg-brand/10 text-brand font-bold'
+                      : 'text-content-2 hover:bg-surface-2'
+                  )}>
                   {t}
                 </button>
               ))}
             </div>
           </div>
-        </div>
+        </Card>
 
         {/* Meeting list */}
         <div className="flex-1 min-w-0 space-y-3">
-          {/* Search */}
           <div className="relative mb-4">
-            <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+            <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
             <input type="text" placeholder="Search meetings..."
               value={search} onChange={e => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 text-sm border border-gray-200 rounded-xl bg-white focus:outline-none focus:ring-2 focus:ring-purple-500 placeholder-gray-400 shadow-sm"
+              className="w-full pl-10 pr-4 py-2.5 text-sm border border-line rounded-xl bg-surface focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand placeholder-muted shadow-sm transition"
             />
           </div>
 
           {filtered.length === 0 ? (
-            <div className="card py-16 text-center">
-              <CalendarDays size={36} className="mx-auto text-gray-300 mb-3" />
-              <p className="text-sm font-semibold text-gray-400">No meetings match your filters</p>
+            <div className="flex flex-col items-center justify-center py-16 bg-surface border border-dashed border-line rounded-2xl">
+              <CalendarDays size={36} className="text-muted mb-3 opacity-40" />
+              <p className="text-sm font-bold text-muted">No meetings match your filters</p>
             </div>
           ) : filtered.map(m => (
             <MeetingCard key={m.id} meeting={m} onMarkComplete={markMeetingComplete} onDelete={deleteMeeting} compact={false} />
           ))}
         </div>
       </div>
-    </main>
+    </div>
   );
 }
+
 

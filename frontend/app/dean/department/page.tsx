@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { TrendingUp, Download, Lightbulb, CheckCircle, X } from 'lucide-react'
+import { PageHeader } from '@/components/shared/ui'
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip as RechartsTooltip, ResponsiveContainer, Cell,
   LineChart, Line, CartesianGrid, Legend
@@ -91,14 +92,13 @@ export default function DeanDepartmentPage() {
   }
 
   return (
-    <main className="dean-page px-8 py-8">
-      <div className="max-w-7xl mx-auto space-y-8 animate-fade-in pb-10">
+    <>
+    <div className="space-y-8 animate-fade-in pb-20">
 
             {/* HEADER */}
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-2">
               <div>
-                <h1 className="text-3xl font-bold text-navy mb-1">Department Overview</h1>
-                <p className="text-gray-500 text-sm max-w-xl">Complete CSE health snapshot across batches and faculty — updated in real time</p>
+                <PageHeader title="Department Overview" description="Complete CSE health snapshot across batches and faculty — updated in real time" />
                 <div className="mt-4 flex flex-wrap items-center gap-3">
                   <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mr-1">External Systems Status</p>
                   <button onClick={() => setSyncModalData({ name: 'Moodle LMS', since: 'Aug 2024', records: '14,230', last: '2 mins ago' })} className="flex items-center gap-2 px-3 py-1 bg-white border border-orange-100 rounded-full hover:bg-orange-50 transition shadow-sm group">
@@ -479,7 +479,7 @@ export default function DeanDepartmentPage() {
         </div>
       )}
 
-    </main>
+    </>
   )
 }
 

@@ -167,13 +167,12 @@ export default function CurriculumGapAnalysis() {
 
   return (
     <>
-    <main className="dean-page px-8 py-8">
-          <div className="max-w-[1400px] mx-auto p-6 md:p-8 animate-fade-in space-y-8 pb-20">
+    <div className="space-y-8 animate-fade-in pb-20">
             
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
               <div>
-                <h1 className="text-3xl font-bold text-navy mb-1">Curriculum Gap Analysis</h1>
+                <h1 className="text-3xl font-bold text-content mb-1">Curriculum Gap Analysis</h1>
                 <p className="text-gray-500 text-sm max-w-2xl leading-relaxed">
                   Topics failing consistently across multiple batches and faculty — evidence-based signals for curriculum revision and faculty development.
                 </p>
@@ -283,12 +282,12 @@ export default function CurriculumGapAnalysis() {
 
               {/* GAP CARD 1 */}
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                <div className="bg-red-900 px-6 py-4 flex items-center justify-between">
+                <div className="bg-red-600 px-6 py-4 flex items-center justify-between">
                   <div>
                     <h3 className="font-bold text-white text-lg">Database Normalization (1NF-3NF)</h3>
                   </div>
                   <span className="bg-white/20 text-white border border-white/30 px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider backdrop-blur-sm">
-                    Severity: CRITICAL
+                    CRITICAL
                   </span>
                 </div>
                 
@@ -377,12 +376,12 @@ export default function CurriculumGapAnalysis() {
 
               {/* GAP CARD 2 */}
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                <div className="bg-red-900 px-6 py-3 flex items-center justify-between">
+                <div className="bg-amber-500 px-6 py-3 flex items-center justify-between">
                   <div>
                     <h3 className="font-bold text-white text-base">Regular Expressions and Automata</h3>
                   </div>
                   <span className="bg-white/20 text-white border border-white/30 px-2.5 py-0.5 rounded text-xs font-bold uppercase tracking-wider">
-                    CRITICAL
+                    MODERATE
                   </span>
                 </div>
                 
@@ -444,12 +443,12 @@ export default function CurriculumGapAnalysis() {
 
               {/* GAP CARD 3 */}
               <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                <div className="bg-red-600 px-6 py-3 flex items-center justify-between">
+                <div className="bg-green-600 px-6 py-3 flex items-center justify-between">
                   <div>
                     <h3 className="font-bold text-white text-base">Process Scheduling Algorithms</h3>
                   </div>
                   <span className="bg-white/20 text-white border border-white/30 px-2.5 py-0.5 rounded text-xs font-bold uppercase tracking-wider">
-                    CRITICAL
+                    GOOD
                   </span>
                 </div>
                 
@@ -556,12 +555,11 @@ export default function CurriculumGapAnalysis() {
             </div>
 
           </div>
-        </main>
 
       {/* TOAST */}
       {toastMessage && (
-        <div className="fixed bottom-8 right-8 bg-gray-900 text-white px-6 py-3 rounded-xl shadow-xl font-medium text-sm animate-fade-in z-50 flex items-center gap-2">
-          <CheckCircle2 size={16} className="text-green-400" />
+        <div className="fixed bottom-8 right-8 bg-content text-surface px-6 py-3 rounded-xl shadow-xl font-medium text-sm animate-fade-in z-50 flex items-center gap-2">
+          <CheckCircle2 size={16} className="text-success" />
           {toastMessage}
         </div>
       )}

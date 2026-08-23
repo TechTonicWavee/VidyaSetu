@@ -2,22 +2,16 @@
 
 import { useState, type ReactNode } from 'react';
 import { useDeanContext } from '../_context/DeanContext';
-import { Bell, Bot, AlertTriangle, Calendar, Info } from 'lucide-react';
+import { Bell, Bot, AlertTriangle, Calendar, Info, CheckCheck } from 'lucide-react';
+import { PageHeader, Badge, Button } from '@/components/shared/ui';
+import { cn } from '@/lib/shared/utils/cn';
 
-const notificationIcons: Record<string, ReactNode> = {
-  reminder: <Bell className="w-6 h-6 text-blue-600" />,
-  agent: <Bot className="w-6 h-6 text-green-600" />,
-  deadline: <AlertTriangle className="w-6 h-6 text-red-600" />,
-  update: <Calendar className="w-6 h-6 text-amber-600" />,
-  system: <Info className="w-6 h-6 text-gray-600" />,
-};
-
-const notificationColors: Record<string, string> = {
-  reminder: 'border-l-4 border-blue-400 bg-blue-50',
-  agent: 'border-l-4 border-green-400 bg-green-50',
-  deadline: 'border-l-4 border-red-400 bg-red-50',
-  update: 'border-l-4 border-amber-400 bg-amber-50',
-  system: 'border-l-4 border-gray-400 bg-gray-50',
+const notificationConfig: Record<string, { icon: ReactNode; tone: string; label: string }> = {
+  reminder: { icon: <Bell size={18} />, tone: 'blue', label: 'Reminder' },
+  agent:    { icon: <Bot size={18} />, tone: 'green', label: 'AI Agent' },
+  deadline: { icon: <AlertTriangle size={18} />, tone: 'red', label: 'Deadline' },
+  update:   { icon: <Calendar size={18} />, tone: 'amber', label: 'Update' },
+  system:   { icon: <Info size={18} />, tone: 'default', label: 'System' },
 };
 
 export default function NotificationsPage() {
@@ -25,75 +19,97 @@ export default function NotificationsPage() {
   const [filter, setFilter] = useState('all');
 
   let filtered = notifications;
-  if (filter === 'unread') filtered = notifications.filter(n => !n.read);
-  if (filter === 'meetings') filtered = notifications.filter(n => n.type === 'reminder' || n.type === 'update');
+  if (filter === 'unread')    filtered = notifications.filter(n => !n.read);
+  if (filter === 'meetings')  filtered = notifications.filter(n => n.type === 'reminder' || n.type === 'update');
   if (filter === 'deadlines') filtered = notifications.filter(n => n.type === 'deadline');
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
+  const filters = [
+    { key: 'all',       label: 'All' },
+    { key: 'unread',    label: 'Unread' },
+    { key: 'meetings',  label: 'Meetings' },
+    { key: 'deadlines', label: 'Deadlines' },
+  ];
+
   return (
-    <main className="dean-page px-8 py-8">
-      <div className="max-w-7xl mx-auto space-y-7">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-[#0D1B2A] tracking-tight">Notifications</h1>
-          <p className="text-gray-600 mt-1">
-            {unreadCount} unread • {notifications.length} total
-          </p>
-        </div>
-        <button
-          onClick={markAllRead}
-          className="px-4 py-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition font-semibold shadow-sm"
-        >
-          Mark All as Read
-        </button>
+    <div className="space-y-6 animate-fade-in">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <PageHeader
+          title="Notifications"
+          description={`${unreadCount} unread · ${notifications.length} total notifications`}
+        />
+        <Button onClick={markAllRead} variant="secondary" icon={CheckCheck}>
+          Mark All Read
+        </Button>
       </div>
 
-      {/* Filter Tabs */}
-      <div className="flex gap-2">
-        {['all', 'unread', 'meetings', 'deadlines'].map(f => (
+      <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
+        {filters.map(f => (
           <button
-            key={f}
-            onClick={() => setFilter(f)}
-            className={`px-4 py-2 rounded-lg transition ${
-              filter === f ? 'bg-purple-600 text-white font-semibold shadow-sm' : 'bg-gray-100 text-gray-700 hover:bg-purple-50 hover:text-purple-700'
-            }`}
+            key={f.key}
+            onClick={() => setFilter(f.key)}
+            className={cn(
+              "px-4 py-1.5 text-xs font-bold rounded-full whitespace-nowrap transition-colors",
+              filter === f.key
+                ? "bg-brand text-surface shadow-sm"
+                : "bg-surface-2 text-content-2 hover:bg-surface-3"
+            )}
           >
-            {f === 'all' ? 'All' : f === 'unread' ? 'Unread' : f === 'meetings' ? 'Meetings' : 'Deadlines'}
+            {f.label}
+            {f.key === 'unread' && unreadCount > 0 && (
+              <span className="ml-1.5 bg-brand/20 text-brand text-[10px] rounded-full px-1.5 py-0.5">{unreadCount}</span>
+            )}
           </button>
         ))}
       </div>
 
-      {/* Notifications List */}
       <div className="space-y-3">
         {filtered.length === 0 ? (
-          <p className="text-gray-500 text-center py-8">No notifications</p>
+          <div className="flex flex-col items-center justify-center py-20 bg-surface border border-dashed border-line rounded-2xl">
+            <Bell size={36} className="text-muted mb-3 opacity-40" />
+            <p className="text-sm font-bold text-muted">No notifications</p>
+            <p className="text-xs text-muted mt-1 opacity-60">You&apos;re all caught up!</p>
+          </div>
         ) : (
-          filtered.map(notif => (
-            <div
-              key={notif.id}
-              className={`${notificationColors[notif.type] || 'border-l-4 border-gray-400 bg-white'} p-4 rounded-lg flex items-start justify-between cursor-pointer transition hover:shadow-md`}
-              onClick={() => !notif.read && markAsRead(notif.id)}
-            >
-              <div className="flex items-start gap-4 flex-1">
-                <div className="mt-1">{notificationIcons[notif.type]}</div>
-                <div className="flex-1">
-                  <p className={`font-semibold ${!notif.read ? 'text-gray-900' : 'text-gray-600'}`}>
+          filtered.map(notif => {
+            const cfg = notificationConfig[notif.type] || notificationConfig.system;
+            return (
+              <div
+                key={notif.id}
+                onClick={() => !notif.read && markAsRead(notif.id)}
+                className={cn(
+                  "group relative flex items-start gap-4 p-5 rounded-2xl border transition-all cursor-pointer",
+                  notif.read
+                    ? "bg-surface border-line/50 hover:bg-surface-2/50"
+                    : "bg-surface border-brand/20 shadow-sm ring-1 ring-brand/5 hover:border-brand/30"
+                )}
+              >
+                {!notif.read && (
+                  <div className="absolute top-5 right-5 w-2 h-2 rounded-full bg-brand" />
+                )}
+                <div className={cn(
+                  "w-10 h-10 rounded-xl flex items-center justify-center shrink-0",
+                  !notif.read ? "bg-brand/10 text-brand" : "bg-surface-2 text-muted"
+                )}>
+                  {cfg.icon}
+                </div>
+                <div className="flex-1 min-w-0 pr-6">
+                  <div className="flex items-center gap-2 mb-1.5">
+                    <Badge tone={cfg.tone as any} className="text-[10px]">{cfg.label}</Badge>
+                  </div>
+                  <p className={cn("font-bold text-sm mb-1 leading-snug", notif.read ? "text-content-2" : "text-content")}>
                     {notif.title}
                   </p>
-                  <p className="text-sm text-gray-600 mt-1">{notif.description}</p>
-                  <p className="text-xs text-gray-500 mt-2">{notif.time}</p>
+                  <p className="text-xs text-muted leading-relaxed">{notif.description}</p>
+                  <p className="text-[11px] text-muted mt-2 font-medium">{notif.time}</p>
                 </div>
               </div>
-              {!notif.read && (
-                <div className="ml-4 w-3 h-3 rounded-full bg-purple-600 flex-shrink-0 mt-1" />
-              )}
-            </div>
-          ))
+            );
+          })
         )}
       </div>
-      </div>
-    </main>
+    </div>
   );
 }
 
