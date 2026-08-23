@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { Menu, Bell, Sun, Moon, ChevronDown, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/shared/utils/cn';
@@ -47,10 +48,17 @@ export function AppTopbar({ onOpenMobile }: { onOpenMobile: () => void }) {
           <Menu size={22} className="stroke-[1.5]" />
         </button>
         
-        <Link href="/" className="group flex lg:hidden items-center gap-2">
-          <span className="text-xl font-serif font-black tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-content to-content-2 group-hover:to-brand transition-all duration-300">
-            VidyaSetu
-          </span>
+        <Link href="/" className="group flex lg:hidden items-center" aria-label="VidyaSetu Home">
+          <Image
+            src={theme === 'dark' ? '/logos/logo-dark.png' : '/logos/logo-light.png'}
+            alt="VidyaSetu"
+            width={130}
+            height={58}
+            quality={100}
+            priority
+            className="object-contain"
+            style={{ height: '30px', width: 'auto', maxWidth: '150px' }}
+          />
         </Link>
       </div>
 

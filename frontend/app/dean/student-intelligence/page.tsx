@@ -56,7 +56,7 @@ const PieTooltip = ({ active, payload }: { active?: boolean; payload?: { payload
   if (!active || !payload?.length) return null
   const d = payload[0].payload
   return (
-    <div className="bg-white border border-gray-200 rounded-xl shadow-lg px-4 py-2.5 text-xs">
+    <div className="bg-surface border border-line rounded-xl shadow-lg px-4 py-2.5 text-xs">
       <p className="font-bold text-gray-800 mb-0.5">{d.label}</p>
       <p style={{ color: d.color }}>{d.count} students · {d.pct}%</p>
     </div>
@@ -183,7 +183,7 @@ export default function StudentIntelligence() {
                 </div>
                 <h1 className="text-2xl font-black text-content">Student Intelligence Engine</h1>
               </div>
-              <p className="text-gray-500 text-sm ml-11">AI-driven segmentation — showing what each student is actually doing and suited for</p>
+              <p className="text-muted text-sm ml-11">AI-driven segmentation — showing what each student is actually doing and suited for</p>
             </div>
             <div className="flex items-center gap-2 ml-11 sm:ml-0 flex-wrap">
               <span className="text-xs px-3 py-1.5 rounded-full border font-semibold" style={{ background: '#EEF2FF', borderColor: '#C7D2FE', color: '#4338CA' }}>
@@ -199,20 +199,20 @@ export default function StudentIntelligence() {
           </div>
 
           {/* ── Filters ────────────────────────────────────────────────────── */}
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
+          <div className="bg-surface rounded-2xl border border-line shadow-sm p-5">
             <div className="flex items-center gap-2 mb-3">
-              <SlidersHorizontal size={14} className="text-gray-400" />
-              <span className="text-xs font-bold text-gray-500 uppercase tracking-wide">Filters</span>
+              <SlidersHorizontal size={14} className="text-muted" />
+              <span className="text-xs font-bold text-muted uppercase tracking-wide">Filters</span>
             </div>
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 items-end">
               {/* Branch */}
               <div className="lg:col-span-2 flex flex-col justify-end">
-                <p className="text-[10px] font-bold text-gray-400 uppercase mb-1.5">Branch</p>
+                <p className="text-[10px] font-bold text-muted uppercase mb-1.5">Branch</p>
                 <div className="flex gap-1.5">
                   {['CSE'].map(b => (
                     <button key={b} onClick={() => setFilterBranch(b)}
                       style={filterBranch === b ? { background: '#4338CA', color: '#fff', borderColor: '#4338CA' } : {}}
-                      className="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-semibold text-gray-600 hover:border-purple-300 hover:bg-purple-50 transition">
+                      className="px-3 py-1.5 rounded-lg border border-line text-xs font-semibold text-content-2 hover:border-purple-300 hover:bg-purple-50 transition">
                       {b}
                     </button>
                   ))}
@@ -220,12 +220,12 @@ export default function StudentIntelligence() {
               </div>
               {/* Year */}
               <div className="lg:col-span-3 flex flex-col justify-end">
-                <p className="text-[10px] font-bold text-gray-400 uppercase mb-1.5">Year</p>
+                <p className="text-[10px] font-bold text-muted uppercase mb-1.5">Year</p>
                 <div className="flex gap-1.5">
                   {['ALL', '1', '2', '3', '4'].map(y => (
                     <button key={y} onClick={() => setFilterYear(y)}
                       style={filterYear === y ? { background: '#4338CA', color: '#fff', borderColor: '#4338CA' } : {}}
-                      className="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-semibold text-gray-600 hover:border-purple-300 hover:bg-purple-50 transition">
+                      className="px-3 py-1.5 rounded-lg border border-line text-xs font-semibold text-content-2 hover:border-purple-300 hover:bg-purple-50 transition">
                       {y === 'ALL' ? 'All' : `Y${y}`}
                     </button>
                   ))}
@@ -233,18 +233,18 @@ export default function StudentIntelligence() {
               </div>
               {/* Search */}
               <div className="lg:col-span-7 flex flex-col justify-end">
-                <p className="text-[10px] font-bold text-gray-400 uppercase mb-1.5">Search Student</p>
+                <p className="text-[10px] font-bold text-muted uppercase mb-1.5">Search Student</p>
                 <div className="relative">
-                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
                   <input
                     type="text"
                     placeholder="Name or roll number…"
                     value={search}
                     onChange={e => { setSearch(e.target.value); setSelectedStudent(null) }}
-                    className="w-full h-10 pl-9 pr-8 text-sm border border-gray-200 rounded-lg bg-gray-50 focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-300 placeholder-gray-400"
+                    className="w-full h-10 pl-9 pr-8 text-sm border border-line rounded-lg bg-surface-2 focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-300 placeholder-gray-400"
                   />
                   {search && (
-                    <button onClick={() => { setSearch(''); setSelectedStudent(null) }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                    <button onClick={() => { setSearch(''); setSelectedStudent(null) }} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted hover:text-content-2">
                       <X size={12} />
                     </button>
                   )}
@@ -252,17 +252,17 @@ export default function StudentIntelligence() {
               </div>
               {/* Category */}
               <div className="lg:col-span-12">
-                <p className="text-[10px] font-bold text-gray-400 uppercase mb-1.5">Category</p>
+                <p className="text-[10px] font-bold text-muted uppercase mb-1.5">Category</p>
                 <div className="flex flex-wrap gap-1.5">
                   <button onClick={() => setFilterCategory('ALL')}
                     style={filterCategory === 'ALL' ? { background: '#4338CA', color: '#fff', borderColor: '#4338CA' } : {}}
-                    className="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-semibold text-gray-600 hover:border-purple-300 hover:bg-purple-50 transition">
+                    className="px-3 py-1.5 rounded-lg border border-line text-xs font-semibold text-content-2 hover:border-purple-300 hover:bg-purple-50 transition">
                     All
                   </button>
                   {Object.values(CATEGORIES).map(cat => (
                     <button key={cat.id} onClick={() => setFilterCategory(cat.id)}
                       style={filterCategory === cat.id ? { background: '#4338CA', color: '#fff', borderColor: '#4338CA' } : {}}
-                      className="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-semibold text-gray-700 hover:border-purple-300 hover:bg-purple-50 transition"
+                      className="px-3 py-1.5 rounded-lg border border-line text-xs font-semibold text-content-2 hover:border-purple-300 hover:bg-purple-50 transition"
                       >
                       {cat.label}
                     </button>
@@ -280,18 +280,18 @@ export default function StudentIntelligence() {
               { label: 'Avg Composite',   value: filtered.length ? Math.round(filtered.reduce((s,x)=>s+x.composite,0)/filtered.length) : 0, icon: Target, color: '#4338CA', sub: '/ 100' },
               { label: 'All-Rounders',    value: filtered.filter(s => s.category === 'all_rounder').length, icon: Star, color: '#4338CA', sub: 'leadership pipeline' },
             ].map((k, i) => (
-              <div key={i} className="bg-white rounded-2xl border border-gray-200 shadow-sm p-5 relative overflow-hidden min-h-[126px] flex flex-col">
+              <div key={i} className="bg-surface rounded-2xl border border-line shadow-sm p-5 relative overflow-hidden min-h-[126px] flex flex-col">
                 <div className="absolute top-0 right-0 w-16 h-16 rounded-full -translate-y-4 translate-x-4 opacity-[0.07]" style={{ background: k.color }} />
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: k.color + '18' }}>
                     <k.icon size={14} color={k.color} />
                   </div>
-                  <p className="text-xs font-semibold text-gray-500">{k.label}</p>
+                  <p className="text-xs font-semibold text-muted">{k.label}</p>
                 </div>
                 <p className="text-3xl font-black" style={{ color: k.color }}>
                   <CountUp to={k.value} />
                 </p>
-                <p className="text-xs text-gray-400 mt-0.5">{k.sub}</p>
+                <p className="text-xs text-muted mt-0.5">{k.sub}</p>
               </div>
             ))}
           </div>
@@ -300,9 +300,9 @@ export default function StudentIntelligence() {
           <div className="grid grid-cols-1 xl:grid-cols-5 gap-6">
 
             {/* Pie chart */}
-            <div className="xl:col-span-2 bg-white rounded-2xl border border-gray-200 shadow-sm p-5">
-              <h2 className="font-bold text-sm text-[#0D1B2A] mb-1">Student Distribution</h2>
-              <p className="text-xs text-gray-400 mb-4">Category breakdown of {filtered.length} students</p>
+            <div className="xl:col-span-2 bg-surface rounded-2xl border border-line shadow-sm p-5">
+              <h2 className="font-bold text-sm text-content mb-1">Student Distribution</h2>
+              <p className="text-xs text-muted mb-4">Category breakdown of {filtered.length} students</p>
               <ResponsiveContainer width="100%" height={220}>
                 <PieChart>
                   <Pie data={distribution.filter(d => d.count > 0)} dataKey="count" nameKey="label"
@@ -320,10 +320,10 @@ export default function StudentIntelligence() {
               <div className="grid grid-cols-2 gap-1.5 mt-2">
                 {distribution.filter(d => d.count > 0).map((d, i) => (
                   <button key={i} onClick={() => setSelectedCategory(selectedCategory === d.id ? null : d.id)}
-                    className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-gray-50 transition text-left"
+                    className="flex items-center gap-2 px-2 py-1.5 rounded-lg hover:bg-surface-2 transition text-left"
                     style={selectedCategory === d.id ? { background: d.bg, borderRadius: 8 } : {}}>
                     <div className="w-2.5 h-2.5 rounded-sm flex-shrink-0" style={{ background: d.color }} />
-                    <span className="text-xs text-gray-600 truncate">{d.label}</span>
+                    <span className="text-xs text-content-2 truncate">{d.label}</span>
                     <span className="text-xs font-bold ml-auto" style={{ color: d.color }}>{d.count}</span>
                   </button>
                 ))}
@@ -331,18 +331,18 @@ export default function StudentIntelligence() {
             </div>
 
             {/* Insight panel */}
-            <div className="xl:col-span-3 bg-white rounded-2xl border border-gray-200 shadow-sm p-5 flex flex-col">
+            <div className="xl:col-span-3 bg-surface rounded-2xl border border-line shadow-sm p-5 flex flex-col">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: '#EEF2FF' }}>
                     <Zap size={15} color="#4338CA" />
                   </div>
                   <div>
-                    <h2 className="font-bold text-sm text-[#0D1B2A]">AI Intelligence Insights</h2>
-                    <p className="text-xs text-gray-400">Auto-generated from current cohort data</p>
+                    <h2 className="font-bold text-sm text-content">AI Intelligence Insights</h2>
+                    <p className="text-xs text-muted">Auto-generated from current cohort data</p>
                   </div>
                 </div>
-                <button onClick={() => setInsightOpen(v => !v)} className="text-gray-400 hover:text-gray-600 transition">
+                <button onClick={() => setInsightOpen(v => !v)} className="text-muted hover:text-content-2 transition">
                   {insightOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                 </button>
               </div>
@@ -371,8 +371,8 @@ export default function StudentIntelligence() {
           {/* ── Category Cards ──────────────────────────────────────────────── */}
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <h2 className="font-bold text-base text-[#0D1B2A]">Category Breakdown</h2>
-              <span className="text-xs text-gray-400 font-normal">— click a card to explore top students</span>
+              <h2 className="font-bold text-base text-content">Category Breakdown</h2>
+              <span className="text-xs text-muted font-normal">— click a card to explore top students</span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
               {distribution.map((cat, i) => {
@@ -380,24 +380,24 @@ export default function StudentIntelligence() {
                 const isSelected = selectedCategory === cat.id
                 return (
                   <button key={i} onClick={() => setSelectedCategory(isSelected ? null : cat.id)}
-                    className="bg-white rounded-2xl border shadow-sm p-5 text-left transition-all hover:shadow-md active:scale-[0.99] relative overflow-hidden"
+                    className="bg-surface rounded-2xl border shadow-sm p-5 text-left transition-all hover:shadow-md active:scale-[0.99] relative overflow-hidden"
                     style={{ borderColor: isSelected ? cat.color : '#E5E7EB', outline: isSelected ? `2px solid ${cat.color}` : 'none' }}>
                     <div className="absolute top-0 right-0 w-20 h-20 rounded-full -translate-y-6 translate-x-6 opacity-[0.06]" style={{ background: cat.color }} />
                     <div className="flex items-start justify-between mb-3">
                       <div className="text-xl"><BarChart2 size={18} style={{ color: cat.color }} /></div>
                       <SeverityBadge severity={cat.severity} label={cat.severity === 'critical' ? 'CRITICAL' : cat.severity === 'warn' ? 'WATCH' : cat.severity === 'good' ? 'STRONG' : 'INFO'} />
                     </div>
-                    <p className="font-bold text-sm text-[#0D1B2A] mb-0.5">{cat.label}</p>
+                    <p className="font-bold text-sm text-content mb-0.5">{cat.label}</p>
                     <p className="text-3xl font-black mb-2" style={{ color: cat.color }}>
                       <CountUp to={cat.count} />
-                      <span className="text-base font-semibold text-gray-400 ml-1">/ {filtered.length}</span>
+                      <span className="text-base font-semibold text-muted ml-1">/ {filtered.length}</span>
                     </p>
                     <div className="mb-3">
                       <ScoreBar value={cat.pct} color={cat.color} />
-                      <p className="text-[10px] text-gray-400 mt-1">{cat.pct}% of cohort</p>
+                      <p className="text-[10px] text-muted mt-1">{cat.pct}% of cohort</p>
                     </div>
                     <div className="border-t pt-3" style={{ borderColor: cat.border }}>
-                      <p className="text-[11px] text-gray-500 leading-relaxed mb-1.5">
+                      <p className="text-[11px] text-muted leading-relaxed mb-1.5">
                         <span className="font-bold" style={{ color: cat.color }}>Issue: </span>{meta.issue}
                       </p>
                       <p className="text-[11px] leading-relaxed" style={{ color: '#374151' }}>
@@ -412,24 +412,24 @@ export default function StudentIntelligence() {
 
           {/* ── Selected Category Detail ────────────────────────────────────── */}
           {selectedCategory && (
-            <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+            <div className="bg-surface rounded-2xl border border-line shadow-sm overflow-hidden">
               {(() => {
                 const cat = CATEGORIES[selectedCategory.toUpperCase()] || Object.values(CATEGORIES).find(c => c.id === selectedCategory)
                 const meta = CATEGORY_META[selectedCategory] || {}
                 return (
                   <>
-                    <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between" style={{ background: cat?.bg || '#F9FAFB' }}>
+                    <div className="px-6 py-4 border-b border-line flex items-center justify-between" style={{ background: cat?.bg || '#F9FAFB' }}>
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-xl flex items-center justify-center text-xl"><BarChart2 size={18} style={{ color: cat.color }} /></div>
                         <div>
-                          <h3 className="font-bold text-[#0D1B2A]">{cat?.label} — Top Performers</h3>
-                          <p className="text-xs text-gray-500">Ranked by composite score · Click row to dismiss</p>
+                          <h3 className="font-bold text-content">{cat?.label} — Top Performers</h3>
+                          <p className="text-xs text-muted">Ranked by composite score · Click row to dismiss</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3">
                         {categoryRadar.length > 0 && (
                           <div style={{ width: 120, height: 80 }}>
-                            <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 500, height: 300 }}>
+                            <ResponsiveContainer width="100%" height="100%">
                               <RadarChart data={categoryRadar} outerRadius="70%">
                                 <PolarGrid stroke="#e5e7eb" />
                                 <PolarAngleAxis dataKey="skill" tick={{ fontSize: 8, fill: '#9ca3af' }} />
@@ -438,34 +438,34 @@ export default function StudentIntelligence() {
                             </ResponsiveContainer>
                           </div>
                         )}
-                        <button onClick={() => setSelectedCategory(null)} className="p-2 rounded-lg hover:bg-white text-gray-400 hover:text-gray-700 transition">
+                        <button onClick={() => setSelectedCategory(null)} className="p-2 rounded-lg hover:bg-surface-2 text-muted hover:text-content transition">
                           <X size={16} />
                         </button>
                       </div>
                     </div>
                     <div className="p-4">
                       {selectedTop.length === 0 ? (
-                        <p className="text-sm text-gray-400 text-center py-6">No students in this category for the current filter.</p>
+                        <p className="text-sm text-muted text-center py-6">No students in this category for the current filter.</p>
                       ) : (
                         <div className="space-y-2">
                           {selectedTop.map((s, idx) => (
-                            <div key={s.id} className="flex items-center gap-4 p-3 rounded-xl hover:bg-gray-50 transition border border-transparent hover:border-gray-200">
+                            <div key={s.id} className="flex items-center gap-4 p-3 rounded-xl hover:bg-surface-2 transition border border-transparent hover:border-line">
                               <span className="text-sm font-black w-6 text-center" style={{ color: cat?.color }}>#{idx + 1}</span>
                               <div className="flex-1 min-w-0">
-                                <p className="text-sm font-semibold text-[#0D1B2A] truncate">{s.name}</p>
-                                <p className="text-xs text-gray-400">{s.roll} · {s.branch} · Year {s.year}</p>
+                                <p className="text-sm font-semibold text-content truncate">{s.name}</p>
+                                <p className="text-xs text-muted">{s.roll} · {s.branch} · Year {s.year}</p>
                               </div>
                               <div className="hidden sm:flex items-center gap-4 text-xs">
                                 <div className="text-center">
-                                  <p className="text-[10px] text-gray-400">Composite</p>
+                                  <p className="text-[10px] text-muted">Composite</p>
                                   <p className="font-bold" style={{ color: cat?.color }}>{s.composite}</p>
                                 </div>
                                 <div className="text-center">
-                                  <p className="text-[10px] text-gray-400">Strength</p>
+                                  <p className="text-[10px] text-muted">Strength</p>
                                   <p className="font-semibold text-green-600">{s.strength}</p>
                                 </div>
                                 <div className="text-center">
-                                  <p className="text-[10px] text-gray-400">Weakness</p>
+                                  <p className="text-[10px] text-muted">Weakness</p>
                                   <p className="font-semibold text-red-500">{s.weakness}</p>
                                 </div>
                               </div>
@@ -481,8 +481,8 @@ export default function StudentIntelligence() {
           )}
 
           {/* ── Worst Performing Cluster ────────────────────────────────────── */}
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-100" style={{ background: '#FEF2F2' }}>
+          <div className="bg-surface rounded-2xl border border-line shadow-sm overflow-hidden">
+            <div className="px-6 py-4 border-b border-line" style={{ background: '#FEF2F2' }}>
               <div className="flex items-center gap-2">
                 <AlertTriangle size={16} color="#DC2626" />
                 <h3 className="font-bold text-sm" style={{ color: '#991B1B' }}>Worst Performing Cluster</h3>
@@ -492,9 +492,9 @@ export default function StudentIntelligence() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-gray-100 bg-gray-50">
+                  <tr className="border-b border-line bg-surface-2">
                     {['Rank','Name','Branch','Composite','Academic','DSA','Attendance','Category'].map(h => (
-                      <th key={h} className="text-left text-[11px] font-bold text-gray-400 uppercase px-4 py-2.5 whitespace-nowrap">{h}</th>
+                      <th key={h} className="text-left text-[11px] font-bold text-muted uppercase px-4 py-2.5 whitespace-nowrap">{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -502,24 +502,24 @@ export default function StudentIntelligence() {
                   {worstCluster.map((s, i) => {
                     const cat = CATEGORIES[s.category.toUpperCase()] || Object.values(CATEGORIES).find(c => c.id === s.category)
                     return (
-                      <tr key={s.id} className="border-b border-gray-50 hover:bg-gray-50 transition">
+                      <tr key={s.id} className="border-b border-gray-50 hover:bg-surface-2 transition">
                         <td className="px-4 py-3 font-black text-red-500">#{i + 1}</td>
                         <td className="px-4 py-3">
-                          <p className="font-semibold text-[#0D1B2A]">{s.name}</p>
-                          <p className="text-xs text-gray-400">{s.roll}</p>
+                          <p className="font-semibold text-content">{s.name}</p>
+                          <p className="text-xs text-muted">{s.roll}</p>
                         </td>
-                        <td className="px-4 py-3 text-gray-600">{s.branch}</td>
+                        <td className="px-4 py-3 text-content-2">{s.branch}</td>
                         <td className="px-4 py-3">
                           <span className="font-black text-red-600">{s.composite}</span>
                         </td>
                         <td className="px-4 py-3">
-                          <span className={s.academicScore < 50 ? 'text-red-500 font-bold' : 'text-gray-600'}>{s.academicScore}</span>
+                          <span className={s.academicScore < 50 ? 'text-red-500 font-bold' : 'text-content-2'}>{s.academicScore}</span>
                         </td>
                         <td className="px-4 py-3">
-                          <span className={s.dsaScore < 40 ? 'text-red-500 font-bold' : 'text-gray-600'}>{s.dsaScore}</span>
+                          <span className={s.dsaScore < 40 ? 'text-red-500 font-bold' : 'text-content-2'}>{s.dsaScore}</span>
                         </td>
                         <td className="px-4 py-3">
-                          <span className={s.attendance < 75 ? 'text-red-500 font-bold' : 'text-gray-600'}>{s.attendance}%</span>
+                          <span className={s.attendance < 75 ? 'text-red-500 font-bold' : 'text-content-2'}>{s.attendance}%</span>
                         </td>
                         <td className="px-4 py-3">
                           <span className="text-xs font-bold px-2 py-1 rounded-full border" style={{ background: cat?.bg, color: cat?.color, borderColor: cat?.border }}>
@@ -535,15 +535,15 @@ export default function StudentIntelligence() {
           </div>
 
           {/* ── Main Student Table ──────────────────────────────────────────── */}
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
-            <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+          <div className="bg-surface rounded-2xl border border-line shadow-sm overflow-hidden">
+            <div className="px-6 py-4 border-b border-line flex items-center justify-between">
               <div>
-                <h2 className="font-bold text-sm text-[#0D1B2A]">All Students</h2>
-                <p className="text-xs text-gray-400 mt-0.5">Showing {sortedTable.length} of {filtered.length} · sorted by {sortKey}</p>
+                <h2 className="font-bold text-sm text-content">All Students</h2>
+                <p className="text-xs text-muted mt-0.5">Showing {sortedTable.length} of {filtered.length} · sorted by {sortKey}</p>
               </div>
               <div className="flex items-center gap-2">
                 <select value={sortKey} onChange={e => setSortKey(e.target.value as keyof EnrichedStudent)}
-                  className="text-xs border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-100">
+                  className="text-xs border border-line rounded-lg px-3 py-1.5 bg-surface text-content-2 focus:outline-none focus:ring-2 focus:ring-indigo-100">
                   <option value="composite">Composite ↓</option>
                   <option value="academicScore">Academic</option>
                   <option value="dsaScore">DSA</option>
@@ -552,7 +552,7 @@ export default function StudentIntelligence() {
                   <option value="aptitudeScore">Aptitude</option>
                   <option value="name">Name</option>
                 </select>
-                <button onClick={() => setSortAsc(v => !v)} className="p-1.5 rounded-lg border border-gray-200 text-gray-400 hover:text-gray-700 transition">
+                <button onClick={() => setSortAsc(v => !v)} className="p-1.5 rounded-lg border border-line text-muted hover:text-content-2 transition">
                   <ArrowUpDown size={14} />
                 </button>
               </div>
@@ -560,7 +560,7 @@ export default function StudentIntelligence() {
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-gray-100 bg-gray-50">
+                  <tr className="border-b border-line bg-surface-2">
                     {[
                       { label: 'Student', key: 'name' },
                       { label: 'Branch / Year', key: null },
@@ -574,7 +574,7 @@ export default function StudentIntelligence() {
                       { label: 'Recommendation', key: null },
                     ].map(col => (
                       <th key={col.label}
-                        className="text-left text-[11px] font-bold text-gray-400 uppercase px-4 py-2.5 whitespace-nowrap cursor-pointer hover:text-gray-600 transition select-none"
+                        className="text-left text-[11px] font-bold text-muted uppercase px-4 py-2.5 whitespace-nowrap cursor-pointer hover:text-content-2 transition select-none"
                         onClick={() => col.key && toggleSort(col.key as keyof EnrichedStudent)}>
                         <span className="flex items-center gap-1">
                           {col.label}
@@ -603,12 +603,12 @@ export default function StudentIntelligence() {
                               {s.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
                             </div>
                             <div>
-                              <p className="font-semibold text-[#0D1B2A] whitespace-nowrap">{s.name}</p>
-                              <p className="text-[10px] text-gray-400">{s.roll}</p>
+                              <p className="font-semibold text-content whitespace-nowrap">{s.name}</p>
+                              <p className="text-[10px] text-muted">{s.roll}</p>
                             </div>
                           </div>
                         </td>
-                        <td className="px-4 py-3 text-gray-600 whitespace-nowrap">{s.branch} · Y{s.year}</td>
+                        <td className="px-4 py-3 text-content-2 whitespace-nowrap">{s.branch} · Y{s.year}</td>
                         <td className="px-4 py-3">
                           <span className="text-[11px] font-bold px-2 py-1 rounded-full border whitespace-nowrap"
                             style={{ background: cat?.bg, color: cat?.color, borderColor: cat?.border }}>
@@ -622,22 +622,22 @@ export default function StudentIntelligence() {
                         </td>
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-1.5">
-                            <span className={`font-semibold text-xs ${s.academicScore < 50 ? 'text-red-500' : 'text-gray-700'}`}>{s.academicScore}</span>
+                            <span className={`font-semibold text-xs ${s.academicScore < 50 ? 'text-red-500' : 'text-content-2'}`}>{s.academicScore}</span>
                             <div className="w-12 bg-gray-100 rounded-full h-1 overflow-hidden">
                               <div className="h-full rounded-full" style={{ width: `${s.academicScore}%`, background: s.academicScore < 50 ? '#EF4444' : '#4338CA' }} />
                             </div>
                           </div>
                         </td>
-                        <td className="px-4 py-3 text-gray-600 text-xs font-medium">{s.dsaScore}</td>
-                        <td className="px-4 py-3 text-gray-600 text-xs font-medium">{s.devScore}</td>
+                        <td className="px-4 py-3 text-content-2 text-xs font-medium">{s.dsaScore}</td>
+                        <td className="px-4 py-3 text-content-2 text-xs font-medium">{s.devScore}</td>
                         <td className="px-4 py-3">
-                          <span className={`text-xs font-semibold ${s.attendance < 75 ? 'text-red-500' : 'text-gray-600'}`}>{s.attendance}%</span>
+                          <span className={`text-xs font-semibold ${s.attendance < 75 ? 'text-red-500' : 'text-content-2'}`}>{s.attendance}%</span>
                         </td>
                         <td className="px-4 py-3">
                           <span className="text-xs px-2 py-0.5 rounded-md font-medium" style={{ background: '#F0FDF4', color: '#16A34A' }}>{s.strength}</span>
                         </td>
                         <td className="px-4 py-3 max-w-[200px]">
-                          <p className="text-[11px] text-gray-500 leading-relaxed line-clamp-2">{s.recommendation}</p>
+                          <p className="text-[11px] text-muted leading-relaxed line-clamp-2">{s.recommendation}</p>
                         </td>
                       </tr>
                     )
@@ -646,7 +646,7 @@ export default function StudentIntelligence() {
               </table>
             </div>
             {filtered.length > 15 && (
-              <div className="px-6 py-3 border-t border-gray-100 text-center">
+              <div className="px-6 py-3 border-t border-line text-center">
                 <button onClick={() => setTableExpanded(v => !v)}
                   className="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1.5 mx-auto">
                   {tableExpanded ? <><ChevronUp size={13} />Show less</> : <><ChevronDown size={13} />Show all {filtered.length} students</>}
@@ -671,65 +671,65 @@ export default function StudentIntelligence() {
             return (
               <div className="fixed inset-0 z-50 flex justify-end bg-black/40 backdrop-blur-sm transition-opacity" onClick={() => setSelectedStudent(null)}>
                 <div 
-                  className="w-full max-w-md bg-white h-full shadow-2xl flex flex-col transform transition-transform duration-300 ease-in-out translate-x-0" 
+                  className="w-full max-w-md bg-surface h-full shadow-2xl flex flex-col transform transition-transform duration-300 ease-in-out translate-x-0" 
                   onClick={e => e.stopPropagation()}
                   style={{ borderLeft: `4px solid ${cat?.color || '#4338CA'}` }}
                 >
                   {/* Header */}
-                  <div className="px-6 py-6 flex items-start justify-between shrink-0 border-b border-gray-100" style={{ background: cat?.bg || '#EEF2FF' }}>
+                  <div className="px-6 py-6 flex items-start justify-between shrink-0 border-b border-line" style={{ background: cat?.bg || '#EEF2FF' }}>
                     <div className="flex items-center gap-4">
                       <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-lg font-black flex-shrink-0 shadow-sm"
                         style={{ background: cat?.color || '#4338CA' }}>
                         {s.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
                       </div>
                       <div>
-                        <h2 className="text-xl font-black text-[#0D1B2A]">{s.name}</h2>
-                        <p className="text-sm text-gray-500">{s.roll} · {s.branch} · Year {s.year}</p>
+                        <h2 className="text-xl font-black text-content">{s.name}</h2>
+                        <p className="text-sm text-muted">{s.roll} · {s.branch} · Year {s.year}</p>
                         <span className="inline-flex mt-1.5 text-[11px] font-bold px-2.5 py-1 rounded-full border" style={{ background: cat?.bg, color: cat?.color, borderColor: cat?.border }}>
                           {cat?.label}
                         </span>
                       </div>
                     </div>
-                    <button onClick={() => setSelectedStudent(null)} className="p-2 rounded-xl hover:bg-white/60 text-gray-400 hover:text-gray-700 transition">
+                    <button onClick={() => setSelectedStudent(null)} className="p-2 rounded-xl hover:bg-surface/60 text-muted hover:text-content-2 transition">
                       <X size={18} />
                     </button>
                   </div>
 
                   {/* Body */}
-                  <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-gray-50/50">
+                  <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-surface-2/50">
                     
                     {/* Key Metrics */}
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-bold text-sm text-[#0D1B2A] flex items-center gap-2">
+                      <h3 className="font-bold text-sm text-content flex items-center gap-2">
                         <Target size={16} className="text-indigo-600" /> Overall Performance
                       </h3>
                       <div className="flex items-center gap-1.5">
-                        <span className="text-xs text-gray-400">Composite: </span>
+                        <span className="text-xs text-muted">Composite: </span>
                         <span className="text-lg font-black" style={{ color: s.composite < 50 ? '#DC2626' : s.composite > 75 ? '#16A34A' : '#D97706' }}>{s.composite}/100</span>
                       </div>
                     </div>
 
                     {/* Skill Radar */}
-                    <div className="bg-white rounded-xl border border-gray-100 p-4 shadow-sm flex flex-col items-center justify-center">
-                      <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">Skill Radar</p>
+                    <div className="bg-surface rounded-xl border border-line p-4 shadow-sm flex flex-col items-center justify-center">
+                      <p className="text-xs font-bold text-muted uppercase tracking-wider mb-2">Skill Radar</p>
                       <ResponsiveContainer width="100%" height={220}>
                         <RadarChart data={radarData} outerRadius="70%">
                           <PolarGrid stroke="#e5e7eb" />
                           <PolarAngleAxis dataKey="skill" tick={{ fontSize: 10, fill: '#6b7280' }} />
-                          <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
-                          <Radar dataKey="value" stroke={cat?.color || '#4338CA'} fill={cat?.color || '#4338CA'} fillOpacity={0.25} />
-                          <Tooltip contentStyle={{ borderRadius: 10, fontSize: 12 }} />
+                          <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
+                          <Radar name="Student" dataKey="value" stroke={cat?.color || '#4338CA'} fill={cat?.color || '#4338CA'} fillOpacity={0.25} />
+                          <Tooltip contentStyle={{ borderRadius: 10, fontSize: 12, background: 'var(--surface)', borderColor: 'var(--line)', color: 'var(--content)' }} />
                         </RadarChart>
                       </ResponsiveContainer>
                     </div>
 
                     {/* Score Bars */}
-                    <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm space-y-4">
-                      <h3 className="font-bold text-sm text-[#0D1B2A] mb-3">Detailed Scores</h3>
+                    <div className="bg-surface rounded-xl border border-line p-5 shadow-sm space-y-4">
+                      <h3 className="font-bold text-sm text-content mb-3">Detailed Scores</h3>
                       {scores.map(sc => (
                         <div key={sc.label}>
                           <div className="flex justify-between text-xs mb-1.5">
-                            <span className="font-semibold text-gray-600">{sc.label}</span>
+                            <span className="font-semibold text-content-2">{sc.label}</span>
                             <span className="font-black" style={{ color: sc.color }}>{sc.val}{sc.label === 'Attendance' ? '%' : '/100'}</span>
                           </div>
                           <div className="w-full bg-gray-100 rounded-full h-2.5 overflow-hidden">
@@ -758,21 +758,21 @@ export default function StudentIntelligence() {
                     </div>
 
                     {/* Extracurriculars & Beyond Studies */}
-                    <div className="bg-white rounded-xl border border-gray-100 p-5 shadow-sm">
-                      <h3 className="font-bold text-sm text-[#0D1B2A] mb-4 flex items-center gap-2">
+                    <div className="bg-surface rounded-xl border border-line p-5 shadow-sm">
+                      <h3 className="font-bold text-sm text-content mb-4 flex items-center gap-2">
                         <Award size={16} className="text-amber-500" /> Beyond Studies
                       </h3>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Hackathons</p>
-                          <p className="text-lg font-black text-gray-800">{s.hackathonParticipation} <span className="text-xs font-medium text-gray-400 ml-1">events</span></p>
+                          <p className="text-[10px] font-bold text-muted uppercase tracking-wider mb-1">Hackathons</p>
+                          <p className="text-lg font-black text-gray-800">{s.hackathonParticipation} <span className="text-xs font-medium text-muted ml-1">events</span></p>
                         </div>
                         <div>
-                          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Internships</p>
-                          <p className="text-lg font-black text-gray-800">{s.internshipCount} <span className="text-xs font-medium text-gray-400 ml-1">completed</span></p>
+                          <p className="text-[10px] font-bold text-muted uppercase tracking-wider mb-1">Internships</p>
+                          <p className="text-lg font-black text-gray-800">{s.internshipCount} <span className="text-xs font-medium text-muted ml-1">completed</span></p>
                         </div>
                         <div className="col-span-2 mt-2">
-                          <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Extracurricular Rating</p>
+                          <p className="text-[10px] font-bold text-muted uppercase tracking-wider mb-1">Extracurricular Rating</p>
                           <div className="flex items-center gap-2">
                             <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden flex-1">
                               <div className="h-full rounded-full bg-amber-400" style={{ width: `${s.extracurricularScore}%` }} />
@@ -799,9 +799,9 @@ export default function StudentIntelligence() {
           })()}
 
           {/* ── Bar Chart: Score distribution per category ──────────────────── */}
-          <div className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
-            <h2 className="font-bold text-sm text-[#0D1B2A] mb-1">Avg. Scores by Category</h2>
-            <p className="text-xs text-gray-400 mb-5">Composite, Academic & Attendance averages per segment</p>
+          <div className="bg-surface rounded-2xl border border-line shadow-sm p-6">
+            <h2 className="font-bold text-sm text-content mb-1">Avg. Scores by Category</h2>
+            <p className="text-xs text-muted mb-5">Composite, Academic & Attendance averages per segment</p>
             <ResponsiveContainer width="100%" height={240}>
               <BarChart
                 data={distribution.filter(d => d.count > 0).map(d => {

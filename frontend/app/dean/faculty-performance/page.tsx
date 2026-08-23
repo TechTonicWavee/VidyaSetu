@@ -409,60 +409,60 @@ export default function FacultyPerformanceDeepDive() {
 
             {/* TOP - Department Faculty Summary */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex items-center justify-between">
+              <div className="bg-surface rounded-2xl shadow-sm border border-line p-6 flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">
+                  <p className="text-xs font-bold text-muted uppercase tracking-widest mb-1">
                     Total Faculty
                   </p>
-                  <p className="font-bold text-blue-600 text-4xl mb-1">48</p>
-                  <p className="text-xs text-gray-500">CSE Department</p>
+                  <p className="font-bold text-blue-600 dark:text-blue-400 text-4xl mb-1">48</p>
+                  <p className="text-xs text-content-2">CSE Department</p>
                 </div>
-                <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
+                <div className="w-12 h-12 rounded-full bg-blue-50 dark:bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400">
                   <Users size={24} />
                 </div>
               </div>
 
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex items-center justify-between">
+              <div className="bg-surface rounded-2xl shadow-sm border border-line p-6 flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">
+                  <p className="text-xs font-bold text-muted uppercase tracking-widest mb-1">
                     Above Target
                   </p>
-                  <p className="font-bold text-green-600 text-4xl mb-1">31</p>
-                  <p className="text-xs text-gray-500">
+                  <p className="font-bold text-green-600 dark:text-green-400 text-4xl mb-1">31</p>
+                  <p className="text-xs text-content-2">
                     Effectiveness score above 75
                   </p>
                 </div>
-                <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center text-green-600">
+                <div className="w-12 h-12 rounded-full bg-green-50 dark:bg-green-500/10 flex items-center justify-center text-green-600 dark:text-green-400">
                   <TrendingUp size={24} />
                 </div>
               </div>
 
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex items-center justify-between">
+              <div className="bg-surface rounded-2xl shadow-sm border border-line p-6 flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">
+                  <p className="text-xs font-bold text-muted uppercase tracking-widest mb-1">
                     Need Support
                   </p>
                   <p className="font-bold text-amber-500 text-4xl mb-1">11</p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-content-2">
                     Effectiveness score 60-74
                   </p>
                 </div>
-                <div className="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center text-amber-500">
+                <div className="w-12 h-12 rounded-full bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center text-amber-500">
                   <UserCheck size={24} />
                 </div>
               </div>
 
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex items-center justify-between">
+              <div className="bg-surface rounded-2xl shadow-sm border border-line p-6 flex items-center justify-between">
                 <div>
-                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">
+                  <p className="text-xs font-bold text-muted uppercase tracking-widest mb-1">
                     Critical Attention
                   </p>
                   <p className="font-bold text-red-500 text-4xl mb-1">6</p>
-                  <p className="text-xs text-gray-500">
+                  <p className="text-xs text-content-2">
                     Effectiveness below 60
                   </p>
                 </div>
-                <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center text-red-500">
+                <div className="w-12 h-12 rounded-full bg-red-50 dark:bg-red-500/10 flex items-center justify-center text-red-500">
                   <AlertTriangle size={24} />
                 </div>
               </div>
@@ -471,8 +471,8 @@ export default function FacultyPerformanceDeepDive() {
             {/* SECTION B - Two Columns */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Effectiveness Distribution */}
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col">
-                <h2 className="text-xl font-bold text-navy mb-6">
+              <div className="bg-surface rounded-2xl shadow-sm border border-line p-6 flex flex-col">
+                <h2 className="text-xl font-bold text-content mb-6">
                   Effectiveness Distribution
                 </h2>
 
@@ -494,7 +494,9 @@ export default function FacultyPerformanceDeepDive() {
                         <Tooltip
                           contentStyle={{
                             borderRadius: "8px",
-                            border: "none",
+                            border: "1px solid var(--line)",
+                            background: "var(--surface)",
+                            color: "var(--content)",
                             boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
                           }}
                         />
@@ -510,10 +512,10 @@ export default function FacultyPerformanceDeepDive() {
                           style={{ backgroundColor: item.fill }}
                         ></div>
                         <div>
-                          <p className="text-sm font-bold text-navy">
+                          <p className="text-sm font-bold text-content">
                             {item.name}
                           </p>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-muted">
                             {item.value} faculty —{" "}
                             {Math.round((item.value / 48) * 100)}%
                           </p>
@@ -523,8 +525,8 @@ export default function FacultyPerformanceDeepDive() {
                   </div>
                 </div>
 
-                <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 mt-auto">
-                  <p className="text-gray-700 text-sm font-medium">
+                <div className="bg-surface-2 border border-line rounded-xl p-4 mt-auto">
+                  <p className="text-content-2 text-sm font-medium">
                     79% of faculty are performing above target. 6 faculty need
                     structured support programs.
                   </p>
@@ -532,8 +534,8 @@ export default function FacultyPerformanceDeepDive() {
               </div>
 
               {/* Improvement Rate Trend */}
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col">
-                <h2 className="text-xl font-bold text-navy mb-6">
+              <div className="bg-surface rounded-2xl shadow-sm border border-line p-6 flex flex-col">
+                <h2 className="text-xl font-bold text-content mb-6">
                   Department Average Faculty Effectiveness — 4 Semesters
                 </h2>
 
@@ -566,25 +568,27 @@ export default function FacultyPerformanceDeepDive() {
                       <CartesianGrid
                         strokeDasharray="3 3"
                         vertical={false}
-                        stroke="#f3f4f6"
+                        stroke="var(--line)"
                       />
                       <XAxis
                         dataKey="term"
                         axisLine={false}
                         tickLine={false}
-                        tick={{ fontSize: 11, fill: "#6b7280" }}
+                        tick={{ fontSize: 11, fill: "var(--muted)" }}
                         dy={10}
                       />
                       <YAxis
                         axisLine={false}
                         tickLine={false}
-                        tick={{ fontSize: 11, fill: "#6b7280" }}
+                        tick={{ fontSize: 11, fill: "var(--muted)" }}
                         domain={[50, 85]}
                       />
                       <Tooltip
                         contentStyle={{
                           borderRadius: "8px",
-                          border: "1px solid #e5e7eb",
+                          border: "1px solid var(--line)",
+                          background: "var(--surface)",
+                          color: "var(--content)",
                           boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
                         }}
                       />
@@ -605,8 +609,8 @@ export default function FacultyPerformanceDeepDive() {
                   </ResponsiveContainer>
                 </div>
 
-                <div className="bg-green-50 border border-green-200 rounded-xl p-4 mt-auto">
-                  <p className="text-green-800 text-sm font-medium leading-relaxed">
+                <div className="bg-success-soft border border-success/20 rounded-xl p-4 mt-auto">
+                  <p className="text-success text-sm font-medium leading-relaxed">
                     CSE department shows consistent faculty effectiveness
                     improvement across all semesters. The upward trend follows
                     the peer observation sessions and structured CO attainment
@@ -617,32 +621,32 @@ export default function FacultyPerformanceDeepDive() {
             </div>
 
             {/* MAIN - Faculty Leaderboard */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-              <div className="p-6 border-b border-gray-100 flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-gray-50/50">
+            <div className="bg-surface rounded-2xl shadow-sm border border-line overflow-hidden">
+              <div className="p-6 border-b border-line flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-surface-2/50">
                 <div>
-                  <h2 className="text-xl font-bold text-navy mb-1">
+                  <h2 className="text-xl font-bold text-content mb-1">
                     Faculty Effectiveness Rankings
                   </h2>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-muted">
                     Ranked by student improvement rate — updated every semester
                   </p>
                 </div>
 
                 <div className="flex flex-wrap gap-3">
                   <select
-                    className="text-sm border border-gray-300 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 font-medium text-gray-700 cursor-pointer"
+                    className="text-sm border border-line rounded-lg px-3 py-2 bg-surface focus:outline-none focus:ring-1 focus:ring-blue-500 font-medium text-content cursor-pointer"
                     value={selectedBranchFilter}
                     onChange={(e) => setSelectedBranchFilter(e.target.value)}
                   >
                     <option value="CSE">CSE Only</option>
                   </select>
-                  <select className="text-sm border border-gray-300 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 font-medium text-gray-700 cursor-pointer">
+                  <select className="text-sm border border-line rounded-lg px-3 py-2 bg-surface focus:outline-none focus:ring-1 focus:ring-blue-500 font-medium text-content cursor-pointer">
                     <option>Dept: CSE</option>
                     <option>Core CS</option>
                     <option>Mathematics</option>
                     <option>Humanities</option>
                   </select>
-                  <select className="text-sm border border-gray-300 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 font-medium text-gray-700 cursor-pointer">
+                  <select className="text-sm border border-line rounded-lg px-3 py-2 bg-surface focus:outline-none focus:ring-1 focus:ring-blue-500 font-medium text-content cursor-pointer">
                     <option>Sort: By Effectiveness</option>
                     <option>Sort: By Students</option>
                     <option>Sort: By CO Attainment</option>
@@ -653,7 +657,7 @@ export default function FacultyPerformanceDeepDive() {
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse min-w-[1000px]">
                   <thead>
-                    <tr className="bg-white border-b border-gray-200 text-xs font-bold text-gray-500 uppercase tracking-wider">
+                    <tr className="bg-surface border-b border-line text-xs font-bold text-muted uppercase tracking-wider">
                       <th className="p-4 pl-6 w-16">Rank</th>
                       <th className="p-4">Name</th>
                       <th className="p-4">Branch</th>
@@ -670,13 +674,13 @@ export default function FacultyPerformanceDeepDive() {
                     {filteredFaculty.map((f, i) => (
                       <tr
                         key={f.id}
-                        className="border-b border-gray-100 hover:bg-gray-50/80 transition-colors"
+                        className="border-b border-line hover:bg-surface-2/80 transition-colors"
                       >
-                        <td className="p-4 pl-6 font-bold text-gray-400">
+                        <td className="p-4 pl-6 font-bold text-muted">
                           #{f.rank}
                         </td>
-                        <td className="p-4 font-bold text-navy flex items-center gap-3">
-                          <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-bold text-gray-600">
+                        <td className="p-4 font-bold text-content flex items-center gap-3">
+                          <div className="w-8 h-8 rounded-full bg-surface-2 flex items-center justify-center text-xs font-bold text-content-2">
                             {f.name
                               .split(" ")
                               .map((n) => n[0])
@@ -687,22 +691,22 @@ export default function FacultyPerformanceDeepDive() {
                           </div>
                           {f.name}
                         </td>
-                        <td className="p-4 font-medium text-gray-600">
+                        <td className="p-4 font-medium text-content-2">
                           {f.branch}
                         </td>
-                        <td className="p-4 text-gray-600 truncate max-w-[150px]">
+                        <td className="p-4 text-content-2 truncate max-w-[150px]">
                           {f.subjects}
                         </td>
-                        <td className="p-4 text-center text-gray-600 font-medium">
+                        <td className="p-4 text-center text-content-2 font-medium">
                           {f.students}
                         </td>
-                        <td className="p-4 text-center font-bold text-green-600">
+                        <td className="p-4 text-center font-bold text-success">
                           +{f.improvement}%
                         </td>
-                        <td className="p-4 text-center font-bold text-gray-700">
+                        <td className="p-4 text-center font-bold text-content-2">
                           {f.co}%
                         </td>
-                        <td className="p-4 text-center text-gray-600">
+                        <td className="p-4 text-center text-content-2">
                           {f.alerts}
                         </td>
                         <td className="p-4">
@@ -711,7 +715,7 @@ export default function FacultyPerformanceDeepDive() {
                         <td className="p-4 pr-6 text-right">
                           <button
                             onClick={() => openFacultyDetails(f)}
-                            className="text-blue-600 hover:text-blue-800 font-bold text-xs flex items-center gap-1 justify-end w-full"
+                            className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 font-bold text-xs flex items-center gap-1 justify-end w-full"
                           >
                             View Details <ArrowRight size={14} />
                           </button>
@@ -721,7 +725,7 @@ export default function FacultyPerformanceDeepDive() {
                   </tbody>
                 </table>
                 {filteredFaculty.length === 0 && (
-                  <div className="p-8 text-center text-gray-500 font-medium">
+                  <div className="p-8 text-center text-muted font-medium">
                     No faculty found for the selected filters.
                   </div>
                 )}
@@ -735,15 +739,15 @@ export default function FacultyPerformanceDeepDive() {
       {isPanelOpen && selectedFaculty && (
         <>
           <div
-            className="fixed inset-0 bg-navy/40 backdrop-blur-sm z-40 animate-fade-in"
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 animate-fade-in"
             onClick={() => setIsPanelOpen(false)}
           ></div>
-          <div className="fixed inset-y-0 right-0 w-full max-w-[600px] bg-bg-base shadow-2xl z-50 flex flex-col transform transition-transform duration-300 animate-slide-left border-l border-gray-200">
+          <div className="fixed inset-y-0 right-0 w-full max-w-[600px] bg-surface shadow-2xl z-50 flex flex-col transform transition-transform duration-300 animate-slide-left border-l border-line">
             {/* Panel Header */}
-            <div className="bg-white p-6 border-b border-gray-200 flex-shrink-0">
+            <div className="bg-surface p-6 border-b border-line flex-shrink-0">
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center gap-4">
-                  <div className="w-14 h-14 rounded-full bg-navy flex items-center justify-center text-xl font-bold text-white">
+                  <div className="w-14 h-14 rounded-full bg-blue-600 flex items-center justify-center text-xl font-bold text-white">
                     {selectedFaculty.name
                       .split(" ")
                       .map((n) => n[0])
@@ -753,10 +757,10 @@ export default function FacultyPerformanceDeepDive() {
                       .substring(0, 2)}
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-navy mb-1">
+                    <h2 className="text-xl font-bold text-content mb-1">
                       {selectedFaculty.name}
                     </h2>
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-muted">
                       {selectedFaculty.branch} · {selectedFaculty.subjects} · 7
                       years exp.
                     </p>
@@ -764,26 +768,26 @@ export default function FacultyPerformanceDeepDive() {
                 </div>
                 <button
                   onClick={() => setIsPanelOpen(false)}
-                  className="text-gray-400 hover:text-gray-600 transition p-1"
+                  className="text-muted hover:text-content transition p-1"
                 >
                   <XCircle size={24} />
                 </button>
               </div>
               <div className="mt-2">
-                <span className="bg-green-100 text-green-800 border border-green-300 px-3 py-1 rounded-lg text-sm font-black">
+                <span className="bg-success-soft text-success border border-success/20 px-3 py-1 rounded-lg text-sm font-black">
                   {selectedFaculty.score}/100 — {selectedFaculty.category}
                 </span>
               </div>
             </div>
 
             {/* Tab Bar */}
-            <div className="bg-white px-6 border-b border-gray-200 flex gap-6 flex-shrink-0">
+            <div className="bg-surface px-6 border-b border-line flex gap-6 flex-shrink-0">
               {["Overview", "Students", "CO Attainment", "Recommendations"].map(
                 (tab) => (
                   <button
                     key={tab}
                     onClick={() => setActiveTab(tab)}
-                    className={`py-4 text-sm font-bold border-b-2 transition-colors ${activeTab === tab ? "border-blue-600 text-blue-600" : "border-transparent text-gray-500 hover:text-gray-800"}`}
+                    className={`py-4 text-sm font-bold border-b-2 transition-colors ${activeTab === tab ? "border-blue-600 text-blue-600 dark:text-blue-400" : "border-transparent text-muted hover:text-content"}`}
                   >
                     {tab}
                   </button>
@@ -797,71 +801,71 @@ export default function FacultyPerformanceDeepDive() {
                 <div className="animate-fade-in space-y-6">
                   {/* 6 Mini Stat Cards */}
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm text-center">
-                      <p className="text-xs font-bold text-gray-400 uppercase mb-1">
+                    <div className="bg-surface p-4 rounded-xl border border-line shadow-sm text-center">
+                      <p className="text-xs font-bold text-muted uppercase mb-1">
                         Students
                       </p>
-                      <p className="font-black text-xl text-navy">
+                      <p className="font-black text-xl text-content">
                         {selectedFaculty.students}
                       </p>
                     </div>
-                    <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm text-center">
-                      <p className="text-xs font-bold text-gray-400 uppercase mb-1">
+                    <div className="bg-surface p-4 rounded-xl border border-line shadow-sm text-center">
+                      <p className="text-xs font-bold text-muted uppercase mb-1">
                         Improvement
                       </p>
-                      <p className="font-black text-xl text-green-600">
+                      <p className="font-black text-xl text-success">
                         +{selectedFaculty.improvement}%
                       </p>
                     </div>
-                    <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm text-center">
-                      <p className="text-xs font-bold text-gray-400 uppercase mb-1">
+                    <div className="bg-surface p-4 rounded-xl border border-line shadow-sm text-center">
+                      <p className="text-xs font-bold text-muted uppercase mb-1">
                         Avg Attendance
                       </p>
-                      <p className={`font-black text-xl ${selectedFaculty.avgAttendance >= 75 ? 'text-navy' : 'text-red-500'}`}>
+                      <p className={`font-black text-xl ${selectedFaculty.avgAttendance >= 75 ? 'text-content' : 'text-danger'}`}>
                         {selectedFaculty.avgAttendance}%
                       </p>
                     </div>
-                    <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm text-center">
-                      <p className="text-xs font-bold text-gray-400 uppercase mb-1">
+                    <div className="bg-surface p-4 rounded-xl border border-line shadow-sm text-center">
+                      <p className="text-xs font-bold text-muted uppercase mb-1">
                         Avg Subject Score
                       </p>
-                      <p className={`font-black text-xl ${selectedFaculty.avgSubjectScore >= 60 ? 'text-navy' : 'text-amber-500'}`}>
+                      <p className={`font-black text-xl ${selectedFaculty.avgSubjectScore >= 60 ? 'text-content' : 'text-amber-500'}`}>
                         {selectedFaculty.avgSubjectScore}/100
                       </p>
                     </div>
-                    <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm text-center">
-                      <p className="text-xs font-bold text-gray-400 uppercase mb-1">
+                    <div className="bg-surface p-4 rounded-xl border border-line shadow-sm text-center">
+                      <p className="text-xs font-bold text-muted uppercase mb-1">
                         CO Avg
                       </p>
-                      <p className="font-black text-xl text-navy">
+                      <p className="font-black text-xl text-content">
                         {selectedFaculty.co}%
                       </p>
                     </div>
-                    <div className="bg-white p-4 rounded-xl border border-gray-200 shadow-sm text-center relative">
-                      <p className="text-xs font-bold text-gray-400 uppercase mb-1">
+                    <div className="bg-surface p-4 rounded-xl border border-line shadow-sm text-center relative">
+                      <p className="text-xs font-bold text-muted uppercase mb-1">
                         Alerts
                       </p>
-                      <p className={`font-black text-xl ${selectedFaculty.alerts > 15 ? 'text-red-500' : 'text-navy'}`}>
+                      <p className={`font-black text-xl ${selectedFaculty.alerts > 15 ? 'text-danger' : 'text-content'}`}>
                         {selectedFaculty.alerts}
                       </p>
                     </div>
                   </div>
 
                   {/* AI Insights & Dean Notices */}
-                  <div className="bg-indigo-50 border border-indigo-100 p-6 rounded-xl shadow-sm">
+                  <div className="bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 p-6 rounded-xl shadow-sm">
                     <div className="flex items-center gap-2 mb-4">
-                      <Brain size={18} className="text-indigo-600" />
-                      <h3 className="font-bold text-indigo-900 text-base">
+                      <Brain size={18} className="text-indigo-600 dark:text-indigo-400" />
+                      <h3 className="font-bold text-indigo-900 dark:text-indigo-200 text-base">
                         AI Insights for Dean
                       </h3>
                     </div>
                     <ul className="space-y-3">
                       {selectedFaculty.aiInsights?.map((insight, idx) => (
                         <li key={idx} className="flex items-start gap-3">
-                          <span className="text-indigo-500 mt-0.5">
+                          <span className="text-indigo-500 dark:text-indigo-400 mt-0.5">
                             <Zap size={16} />
                           </span>
-                          <span className="text-sm text-indigo-900 font-medium leading-relaxed">
+                          <span className="text-sm text-indigo-900 dark:text-indigo-200 font-medium leading-relaxed">
                             {insight}
                           </span>
                         </li>
@@ -870,39 +874,39 @@ export default function FacultyPerformanceDeepDive() {
                   </div>
 
                   {/* Student Reviews & Voice */}
-                  <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                  <div className="bg-surface p-6 rounded-xl border border-line shadow-sm">
                     <div className="flex justify-between items-center mb-4">
-                      <h3 className="font-bold text-navy text-base flex items-center gap-2">
+                      <h3 className="font-bold text-content text-base flex items-center gap-2">
                         <UserCheck size={18} className="text-blue-500" /> Student Voice
                       </h3>
-                      <span className="text-xs font-bold bg-blue-50 text-blue-700 px-2.5 py-1 rounded-lg border border-blue-100">
+                      <span className="text-xs font-bold bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 px-2.5 py-1 rounded-lg border border-blue-100 dark:border-blue-500/20">
                         Style: {selectedFaculty.teachingStyle}
                       </span>
                     </div>
                     
                     <div className="space-y-4">
                       {selectedFaculty.studentReviews?.map((review, idx) => (
-                        <div key={idx} className="bg-gray-50 p-4 rounded-lg border border-gray-100">
+                        <div key={idx} className="bg-surface-2 p-4 rounded-lg border border-line">
                           <div className="flex justify-between items-center mb-2">
                             <div className="flex text-amber-400">
                               {[...Array(5)].map((_, i) => (
-                                <svg key={i} className={`w-4 h-4 ${i < Math.floor(review.rating) ? 'fill-current' : 'text-gray-300'}`} viewBox="0 0 20 20" fill="currentColor">
+                                <svg key={i} className={`w-4 h-4 ${i < Math.floor(review.rating) ? 'fill-current' : 'text-gray-300 dark:text-gray-600'}`} viewBox="0 0 20 20" fill="currentColor">
                                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                 </svg>
                               ))}
-                              <span className="text-xs text-gray-500 ml-2 font-bold">{review.rating}</span>
+                              <span className="text-xs text-muted ml-2 font-bold">{review.rating}</span>
                             </div>
-                            <span className="text-[10px] text-gray-400 font-bold uppercase">Anonymous</span>
+                            <span className="text-[10px] text-muted font-bold uppercase">Anonymous</span>
                           </div>
-                          <p className="text-sm text-gray-700 italic">"{review.text}"</p>
+                          <p className="text-sm text-content-2 italic">"{review.text}"</p>
                         </div>
                       ))}
                     </div>
                   </div>
 
                   {/* Why This Score */}
-                  <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                    <h3 className="font-bold text-navy text-base mb-4">
+                  <div className="bg-surface p-6 rounded-xl border border-line shadow-sm">
+                    <h3 className="font-bold text-content text-base mb-4">
                       Why This Score
                     </h3>
                     <ul className="space-y-3">
@@ -910,7 +914,7 @@ export default function FacultyPerformanceDeepDive() {
                         <span className="text-green-500 mt-0.5">
                           <CheckCircle2 size={18} />
                         </span>
-                        <span className="text-sm text-gray-700">
+                        <span className="text-sm text-content-2">
                           Highest student improvement rate in department — 14.2%
                         </span>
                       </li>
@@ -918,7 +922,7 @@ export default function FacultyPerformanceDeepDive() {
                         <span className="text-green-500 mt-0.5">
                           <CheckCircle2 size={18} />
                         </span>
-                        <span className="text-sm text-gray-700">
+                        <span className="text-sm text-content-2">
                           CO1 and CO2 attainment both exceed 80% — above NBA
                           target
                         </span>
@@ -927,7 +931,7 @@ export default function FacultyPerformanceDeepDive() {
                         <span className="text-green-500 mt-0.5">
                           <CheckCircle2 size={18} />
                         </span>
-                        <span className="text-sm text-gray-700">
+                        <span className="text-sm text-content-2">
                           Only 4 alerts generated — lowest in CSE faculty
                         </span>
                       </li>
@@ -935,7 +939,7 @@ export default function FacultyPerformanceDeepDive() {
                         <span className="text-green-500 mt-0.5">
                           <CheckCircle2 size={18} />
                         </span>
-                        <span className="text-sm text-gray-700">
+                        <span className="text-sm text-content-2">
                           Students show consistent growth across all 3 units
                         </span>
                       </li>
@@ -943,11 +947,11 @@ export default function FacultyPerformanceDeepDive() {
                   </div>
 
                   {/* Teaching Approach Analysis */}
-                  <div className="bg-teal-50 p-6 rounded-xl border border-teal-100 shadow-sm">
-                    <h3 className="font-bold text-teal-900 text-base mb-3">
+                  <div className="bg-teal-50 dark:bg-teal-500/10 p-6 rounded-xl border border-teal-100 dark:border-teal-500/20 shadow-sm">
+                    <h3 className="font-bold text-teal-900 dark:text-teal-200 text-base mb-3">
                       Teaching Approach Analysis
                     </h3>
-                    <p className="text-sm text-teal-800 leading-relaxed mb-6">
+                    <p className="text-sm text-teal-800 dark:text-teal-300 leading-relaxed mb-6">
                       Based on student performance patterns,{" "}
                       {selectedFaculty.name.split(" ")[0]}'s teaching approach
                       appears to be strongly practical-oriented. Her DSA
@@ -958,7 +962,7 @@ export default function FacultyPerformanceDeepDive() {
                       diagram-based problem solving.
                     </p>
 
-                    <div className="h-[150px] w-full bg-white rounded-lg p-3 border border-teal-100">
+                    <div className="h-[150px] w-full bg-surface rounded-lg p-3 border border-teal-100 dark:border-teal-500/20">
                       <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 500, height: 300 }}>
                         <RechartsLineChart
                           data={facultyImprovementChartData}
@@ -967,19 +971,19 @@ export default function FacultyPerformanceDeepDive() {
                           <CartesianGrid
                             strokeDasharray="3 3"
                             vertical={false}
-                            stroke="#f3f4f6"
+                            stroke="var(--line)"
                           />
                           <XAxis
                             dataKey="unit"
                             axisLine={false}
                             tickLine={false}
-                            tick={{ fontSize: 10, fill: "#6b7280" }}
+                            tick={{ fontSize: 10, fill: "var(--muted)" }}
                             dy={5}
                           />
                           <YAxis
                             axisLine={false}
                             tickLine={false}
-                            tick={{ fontSize: 10, fill: "#6b7280" }}
+                            tick={{ fontSize: 10, fill: "var(--muted)" }}
                             domain={[60, 90]}
                           />
                           <Tooltip
@@ -988,6 +992,8 @@ export default function FacultyPerformanceDeepDive() {
                               border: "none",
                               boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
                               fontSize: "12px",
+                              background: "var(--surface)",
+                              color: "var(--content)",
                             }}
                           />
                           <Line
@@ -1004,12 +1010,12 @@ export default function FacultyPerformanceDeepDive() {
                   </div>
 
                   {/* Department Recommendation */}
-                  <div className="bg-blue-50 border border-blue-200 p-6 rounded-xl shadow-sm relative overflow-hidden">
+                  <div className="bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 p-6 rounded-xl shadow-sm relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
-                    <h3 className="font-bold text-blue-900 text-base mb-2">
+                    <h3 className="font-bold text-blue-900 dark:text-blue-200 text-base mb-2">
                       Department Recommendation
                     </h3>
-                    <p className="text-sm text-blue-800 leading-relaxed mb-5">
+                    <p className="text-sm text-blue-800 dark:text-blue-300 leading-relaxed mb-5">
                       {selectedFaculty.name.split(" ")[0]}'s practical
                       visualization methodology should be documented and shared
                       as a best practice with other DSA faculty. Recommend
@@ -1025,7 +1031,7 @@ export default function FacultyPerformanceDeepDive() {
                       </button>
                       <button
                         onClick={() => setIsPanelOpen(false)}
-                        className="px-4 py-2 bg-white border border-gray-300 text-gray-700 font-bold text-sm rounded-lg hover:bg-gray-50 transition"
+                        className="px-4 py-2 bg-surface border border-line text-content font-bold text-sm rounded-lg hover:bg-surface-2 transition"
                       >
                         Close
                       </button>
@@ -1034,7 +1040,7 @@ export default function FacultyPerformanceDeepDive() {
                 </div>
               )}
               {activeTab !== "Overview" && (
-                <div className="p-8 text-center text-gray-500 font-medium">
+                <div className="p-8 text-center text-muted font-medium">
                   This tab content is available in the full version.
                 </div>
               )}
@@ -1045,68 +1051,68 @@ export default function FacultyPerformanceDeepDive() {
 
       {/* MODAL: Schedule Knowledge Share */}
       {isModalOpen && (
-        <div className="fixed inset-0 bg-navy/80 backdrop-blur-sm z-[60] flex items-center justify-center p-4 animate-fade-in">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[60] flex items-center justify-center p-4 animate-fade-in">
           <div
-            className="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden"
+            className="bg-surface rounded-2xl w-full max-w-md shadow-2xl overflow-hidden border border-line"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex justify-between items-center p-6 border-b border-gray-100 bg-teal-50/50">
-              <h2 className="text-lg font-bold text-navy flex items-center gap-2">
+            <div className="flex justify-between items-center p-6 border-b border-line bg-teal-50/50 dark:bg-teal-500/10">
+              <h2 className="text-lg font-bold text-content flex items-center gap-2">
                 <Calendar size={20} className="text-teal-600" /> Schedule
                 Session
               </h2>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="text-gray-400 hover:text-gray-600 transition"
+                className="text-muted hover:text-content transition"
               >
                 <XCircle size={24} />
               </button>
             </div>
 
             <form onSubmit={handleScheduleSubmit} className="p-6">
-              <div className="mb-4 bg-gray-50 p-3 rounded-lg border border-gray-200">
-                <p className="text-sm text-gray-700">
+              <div className="mb-4 bg-surface-2 p-3 rounded-lg border border-line">
+                <p className="text-sm text-content-2">
                   Topic: <strong>Practical Visualization Methodology</strong>
                 </p>
-                <p className="text-sm text-gray-700">
+                <p className="text-sm text-content-2">
                   Speaker: <strong>{selectedFaculty?.name}</strong>
                 </p>
               </div>
 
               <div className="space-y-4 mb-6">
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">
+                  <label className="block text-sm font-bold text-content-2 mb-1">
                     Date
                   </label>
                   <input
                     type="date"
-                    className="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 text-gray-700"
+                    className="w-full border border-line bg-surface rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 text-content"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">
+                  <label className="block text-sm font-bold text-content-2 mb-1">
                     Time
                   </label>
                   <div className="relative">
                     <Clock
                       size={16}
-                      className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+                      className="absolute left-3 top-1/2 -translate-y-1/2 text-muted"
                     />
                     <input
                       type="time"
-                      className="w-full border border-gray-300 rounded-xl pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 text-gray-700"
+                      className="w-full border border-line bg-surface rounded-xl pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 text-content"
                       required
                       defaultValue="14:00"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-bold text-gray-700 mb-1">
+                  <label className="block text-sm font-bold text-content-2 mb-1">
                     Participants
                   </label>
                   <select
-                    className="w-full border border-gray-300 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 text-gray-700"
+                    className="w-full border border-line bg-surface rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-teal-500 focus:ring-1 focus:ring-teal-500 text-content"
                     required
                   >
                     <option value="">Select Audience...</option>
@@ -1119,11 +1125,11 @@ export default function FacultyPerformanceDeepDive() {
                 </div>
               </div>
 
-              <div className="flex gap-3 justify-end pt-4 border-t border-gray-100">
+              <div className="flex gap-3 justify-end pt-4 border-t border-line">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-5 py-2.5 text-gray-600 font-bold text-sm rounded-xl hover:bg-gray-100 transition"
+                  className="px-5 py-2.5 text-content font-bold text-sm rounded-xl hover:bg-surface-2 transition"
                 >
                   Cancel
                 </button>

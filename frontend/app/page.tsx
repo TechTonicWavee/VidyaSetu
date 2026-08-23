@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import {
   ArrowRight, BarChart2, Bell, Users, ShieldCheck,
   TrendingUp, BookOpen, Activity, Brain, User, Building, Settings, Sun, Moon, Zap
@@ -77,9 +78,18 @@ export default function LandingPage() {
         <div className="max-w-[1300px] mx-auto flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-2 w-1/3">
-            <div className="w-6 h-6 rounded-[6px] flex items-center justify-center text-[11px] font-black"
-              style={{ background: 'var(--lp-accent)', color: 'var(--lp-accent-fg)' }}>VS</div>
-            <span className="font-sans font-black text-[20px] tracking-tight lp-text-primary">VidyaSetu</span>
+            <Link href="/" aria-label="VidyaSetu Home" className="flex items-center">
+              <Image
+                src={isDark ? '/logos/logo-dark.png' : '/logos/logo-light.png'}
+                alt="VidyaSetu"
+                width={160}
+                height={72}
+                quality={100}
+                priority
+                className="object-contain"
+                style={{ height: '38px', width: 'auto' }}
+              />
+            </Link>
           </div>
 
           {/* Center links */}
@@ -399,10 +409,18 @@ export default function LandingPage() {
       {/* ═══ FOOTER ═══ */}
       <footer className="border-t py-10 px-6" style={{ borderColor: 'var(--lp-border)', background: 'var(--lp-surface)' }}>
         <div className="max-w-[1200px] mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <div className="w-5 h-5 rounded-[5px] flex items-center justify-center text-[10px] font-black"
-              style={{ background: 'var(--lp-accent)', color: 'var(--lp-accent-fg)' }}>VS</div>
-            <span className="font-bold text-[14px]" style={{ color: 'var(--lp-text-primary)' }}>VidyaSetu</span>
+          <div className="flex items-center">
+            <Link href="/" aria-label="VidyaSetu Home">
+              <Image
+                src={isDark ? '/logos/logo-dark.png' : '/logos/logo-light.png'}
+                alt="VidyaSetu"
+                width={130}
+                height={58}
+                quality={100}
+                className="object-contain"
+                style={{ height: '30px', width: 'auto' }}
+              />
+            </Link>
           </div>
           <p className="text-[13px]" style={{ color: 'var(--lp-text-muted)' }}>
             © {new Date().getFullYear()} VidyaSetu. All rights reserved.

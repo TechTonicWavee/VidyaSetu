@@ -2,6 +2,7 @@
 
 import { useState, type FocusEvent } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { useTheme } from "@/components/shared/ThemeProvider";
 import { setAccessToken, setPendingLoginSession } from "@/lib/shared/auth/tokenStore";
 import { useToast } from "@/components/shared/ToastContext";
@@ -257,6 +258,28 @@ function StudentLoginForm({ portal, onSwitchPortal, portals: allPortals }: { por
         className="rounded-t-2xl px-8 pt-10 pb-8 text-center border border-b-0"
         style={{ background: 'var(--lp-surface)', borderColor: 'var(--lp-border)' }}
       >
+        <div className="flex justify-center mb-5">
+          <Image
+            src={'/logos/logo-light.png'}
+            alt="VidyaSetu"
+            width={160}
+            height={72}
+            quality={100}
+            priority
+            className="object-contain dark:hidden"
+            style={{ height: '40px', width: 'auto' }}
+          />
+          <Image
+            src={'/logos/logo-dark.png'}
+            alt="VidyaSetu"
+            width={160}
+            height={72}
+            quality={100}
+            priority
+            className="object-contain hidden dark:block"
+            style={{ height: '40px', width: 'auto' }}
+          />
+        </div>
         <div className="flex justify-center mb-4">
           <div className="lp-icon-circle" style={{ width: 52, height: 52 }}>
             <portal.icon size={22} strokeWidth={1.5} />
@@ -583,6 +606,28 @@ function GenericLoginForm({ portal, onSwitchPortal, onBack }: { portal: (typeof 
         className="rounded-t-2xl px-8 pt-10 pb-8 text-center border border-b-0"
         style={{ background: 'var(--lp-surface)', borderColor: 'var(--lp-border)' }}
       >
+        <div className="flex justify-center mb-5">
+          <Image
+            src={'/logos/logo-light.png'}
+            alt="VidyaSetu"
+            width={160}
+            height={72}
+            quality={100}
+            priority
+            className="object-contain dark:hidden"
+            style={{ height: '40px', width: 'auto' }}
+          />
+          <Image
+            src={'/logos/logo-dark.png'}
+            alt="VidyaSetu"
+            width={160}
+            height={72}
+            quality={100}
+            priority
+            className="object-contain hidden dark:block"
+            style={{ height: '40px', width: 'auto' }}
+          />
+        </div>
         <div className="flex justify-center mb-4">
           <div className="lp-icon-circle" style={{ width: 52, height: 52 }}>
             <portal.icon size={22} strokeWidth={1.5} />
@@ -684,14 +729,19 @@ export default function LoginPage() {
               onError={(e) => { e.currentTarget.style.display = 'none'; }}
             />
             <div className="h-10 w-px flex-shrink-0" style={{ background: 'var(--lp-border)' }} />
-            <div
-              className="w-11 h-11 rounded-xl flex items-center justify-center font-bold text-sm flex-shrink-0"
-              style={{ background: "var(--lp-accent)", color: "var(--lp-accent-fg)" }}
-            >
-              VS
+            <div className="flex items-center flex-shrink-0">
+              <Image
+                src={isDark ? '/logos/logo-dark.png' : '/logos/logo-light.png'}
+                alt="VidyaSetu"
+                width={150}
+                height={68}
+                quality={100}
+                priority
+                className="object-contain"
+                style={{ height: '36px', width: 'auto' }}
+              />
             </div>
             <div>
-              <p className="font-bold text-base leading-tight" style={{ color: 'var(--lp-text-primary)' }}>VidyaSetu</p>
               <p className="text-sm mt-0.5" style={{ color: 'var(--lp-text-muted)' }}>CSE Department · KIET Group of Institutions</p>
             </div>
           </div>

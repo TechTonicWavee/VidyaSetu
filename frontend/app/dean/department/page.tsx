@@ -100,20 +100,20 @@ export default function DeanDepartmentPage() {
               <div>
                 <PageHeader title="Department Overview" description="Complete CSE health snapshot across batches and faculty — updated in real time" />
                 <div className="mt-4 flex flex-wrap items-center gap-3">
-                  <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mr-1">External Systems Status</p>
-                  <button onClick={() => setSyncModalData({ name: 'Moodle LMS', since: 'Aug 2024', records: '14,230', last: '2 mins ago' })} className="flex items-center gap-2 px-3 py-1 bg-white border border-orange-100 rounded-full hover:bg-orange-50 transition shadow-sm group">
+                  <p className="text-[10px] font-black text-muted uppercase tracking-widest mr-1">External Systems Status</p>
+                  <button onClick={() => setSyncModalData({ name: 'Moodle LMS', since: 'Aug 2024', records: '14,230', last: '2 mins ago' })} className="flex items-center gap-2 px-3 py-1 bg-surface border border-orange-100 dark:border-orange-500/20 rounded-full hover:bg-orange-50 dark:hover:bg-orange-500/10 transition shadow-sm group">
                     <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                    <span className="text-[10px] font-bold text-orange-600 uppercase tracking-tight group-hover:text-orange-700 transition">Moodle LMS — Syncing</span>
+                    <span className="text-[10px] font-bold text-orange-600 dark:text-orange-400 uppercase tracking-tight transition">Moodle LMS — Syncing</span>
                   </button>
-                  <button onClick={() => setSyncModalData({ name: 'Cyber Vidya', since: 'July 2024', records: '198,421', last: '5 mins ago' })} className="flex items-center gap-2 px-3 py-1 bg-white border border-teal-100 rounded-full hover:bg-teal-50 transition shadow-sm group">
+                  <button onClick={() => setSyncModalData({ name: 'Cyber Vidya', since: 'July 2024', records: '198,421', last: '5 mins ago' })} className="flex items-center gap-2 px-3 py-1 bg-surface border border-teal-100 dark:border-teal-500/20 rounded-full hover:bg-teal-50 dark:hover:bg-teal-500/10 transition shadow-sm group">
                     <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                    <span className="text-[10px] font-bold text-teal-600 uppercase tracking-tight group-hover:text-teal-700 transition">Cyber Vidya — Syncing</span>
+                    <span className="text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-tight transition">Cyber Vidya — Syncing</span>
                   </button>
-                  <span className="text-[10px] text-gray-400 font-medium ml-1">1,240 students · Data flowing in real-time</span>
+                  <span className="text-[10px] text-muted font-medium ml-1">1,240 students · Data flowing in real-time</span>
                 </div>
               </div>
               <div className="flex gap-3 w-full sm:w-auto">
-                <button className="flex-1 sm:flex-none px-4 py-2.5 border border-gray-300 text-gray-700 font-bold text-sm rounded-xl hover:bg-gray-50 transition whitespace-nowrap flex items-center justify-center gap-2">
+                <button className="flex-1 sm:flex-none px-4 py-2.5 border border-line text-content font-bold text-sm rounded-xl hover:bg-surface-2 transition whitespace-nowrap flex items-center justify-center gap-2">
                   <Download size={16} /> Export Data
                 </button>
                 <button onClick={handleGenerateReport} className="flex-1 sm:flex-none px-4 py-2.5 bg-blue-600 text-white font-bold text-sm rounded-xl hover:bg-blue-700 transition shadow-sm whitespace-nowrap">
@@ -196,41 +196,41 @@ export default function DeanDepartmentPage() {
             </div>
 
             {/* SECTION A - BRANCH HEALTH OVERVIEW */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-              <div className="p-6 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="bg-surface rounded-2xl shadow-sm border border-line overflow-hidden">
+              <div className="p-6 border-b border-line flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                  <h2 className="text-lg font-bold text-navy mb-1">CSE Health Overview</h2>
-                  <p className="text-gray-500 text-sm">Real-time health scores for CSE cohorts</p>
+                  <h2 className="text-lg font-bold text-content mb-1">CSE Health Overview</h2>
+                  <p className="text-muted text-sm">Real-time health scores for CSE cohorts</p>
                 </div>
-                <div className="px-3 py-1.5 rounded-lg text-xs font-bold border border-purple-200 bg-purple-50 text-purple-700">CSE ONLY</div>
+                <div className="px-3 py-1.5 rounded-lg text-xs font-bold border border-purple-200 bg-purple-50 text-purple-700 dark:border-purple-500/20 dark:bg-purple-500/10 dark:text-purple-400">CSE ONLY</div>
               </div>
 
               <div className="p-6 animate-fade-in" key={activeTab}>
                 {/* 4 Stat Cards */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                  <div className="p-4 rounded-xl border border-gray-100 bg-gray-50/50">
-                    <p className="text-xs font-bold text-gray-500 uppercase mb-1">Students</p>
-                    <p className="text-2xl font-black text-blue-600">{branchDataMap[activeTab].students}</p>
+                  <div className="p-4 rounded-xl border border-line bg-surface-2/50">
+                    <p className="text-xs font-bold text-muted uppercase mb-1">Students</p>
+                    <p className="text-2xl font-black text-blue-600 dark:text-blue-400">{branchDataMap[activeTab].students}</p>
                   </div>
-                  <div className="p-4 rounded-xl border border-gray-100 bg-green-50">
-                    <p className="text-xs font-bold text-green-700 uppercase mb-1">Health Score</p>
-                    <p className="text-2xl font-black text-green-700">{branchDataMap[activeTab].health}/100</p>
+                  <div className="p-4 rounded-xl border border-success/20 bg-success-soft">
+                    <p className="text-xs font-bold text-success uppercase mb-1">Health Score</p>
+                    <p className="text-2xl font-black text-success">{branchDataMap[activeTab].health}/100</p>
                   </div>
-                  <div className="p-4 rounded-xl border border-gray-100 bg-gray-50/50">
-                    <p className="text-xs font-bold text-gray-500 uppercase mb-1">Placement Ready</p>
-                    <p className="text-2xl font-black text-teal-600">{branchDataMap[activeTab].placement}</p>
+                  <div className="p-4 rounded-xl border border-line bg-surface-2/50">
+                    <p className="text-xs font-bold text-muted uppercase mb-1">Placement Ready</p>
+                    <p className="text-2xl font-black text-teal-600 dark:text-teal-400">{branchDataMap[activeTab].placement}</p>
                   </div>
-                  <div className="p-4 rounded-xl border border-gray-100 bg-red-50">
-                    <p className="text-xs font-bold text-red-700 uppercase mb-1">Critical Alerts</p>
-                    <p className="text-2xl font-black text-red-600">{branchDataMap[activeTab].alerts}</p>
+                  <div className="p-4 rounded-xl border border-danger/20 bg-danger-soft">
+                    <p className="text-xs font-bold text-danger uppercase mb-1">Critical Alerts</p>
+                    <p className="text-2xl font-black text-danger">{branchDataMap[activeTab].alerts}</p>
                   </div>
                 </div>
 
                 {/* Year Table */}
-                <div className="overflow-x-auto border border-gray-200 rounded-xl">
+                <div className="overflow-x-auto border border-line rounded-xl">
                   <table className="w-full text-left border-collapse whitespace-nowrap">
                     <thead>
-                      <tr className="bg-gray-50 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                      <tr className="bg-surface-2 text-xs font-bold text-muted uppercase tracking-wider border-b border-line">
                         <th className="px-6 py-4">Year</th>
                         <th className="px-4 py-4 text-center">Students</th>
                         <th className="px-4 py-4 text-center">Avg SPI</th>
@@ -240,15 +240,15 @@ export default function DeanDepartmentPage() {
                         <th className="px-6 py-4 text-right">Health Score</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-100 text-sm font-medium">
+                    <tbody className="divide-y divide-line text-sm font-medium">
                       {branchDataMap[activeTab].years.map((y, i) => (
-                        <tr key={i} className="hover:bg-gray-50/50">
-                          <td className="px-6 py-4 text-navy font-bold">{y.year}</td>
-                          <td className="px-4 py-4 text-center text-gray-600">{y.students}</td>
-                          <td className="px-4 py-4 text-center text-gray-600">{y.spi}</td>
-                          <td className="px-4 py-4 text-center text-gray-600">{y.cgpa}</td>
-                          <td className="px-4 py-4 text-center text-red-500 font-bold">{y.alerts}</td>
-                          <td className="px-4 py-4 text-center text-gray-600">{y.ready}</td>
+                        <tr key={i} className="hover:bg-surface-2/50">
+                          <td className="px-6 py-4 text-content font-bold">{y.year}</td>
+                          <td className="px-4 py-4 text-center text-content-2">{y.students}</td>
+                          <td className="px-4 py-4 text-center text-content-2">{y.spi}</td>
+                          <td className="px-4 py-4 text-center text-content-2">{y.cgpa}</td>
+                          <td className="px-4 py-4 text-center text-danger font-bold">{y.alerts}</td>
+                          <td className="px-4 py-4 text-center text-content-2">{y.ready}</td>
                           <td className="px-6 py-4 text-right">
                             <span className={`inline-flex px-3 py-1 rounded-md text-white font-bold bg-${y.sColor === 'green-700' ? 'green-700' : `${y.sColor}-500`}`}>
                               {y.score}
@@ -266,15 +266,15 @@ export default function DeanDepartmentPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               
               {/* SPI Dist */}
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col">
-                <h3 className="text-lg font-bold text-navy mb-6">SPI Distribution — CSE Students</h3>
+              <div className="bg-surface rounded-2xl shadow-sm border border-line p-6 flex flex-col">
+                <h3 className="text-lg font-bold text-content mb-6">SPI Distribution — CSE Students</h3>
                 <div className="h-64 w-full">
                   <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 500, height: 300 }}>
                     <BarChart data={spiDistData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
-                      <XAxis dataKey="range" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} dy={10} />
-                      <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} />
-                      <RechartsTooltip cursor={{ fill: '#f3f4f6' }} contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--line)" />
+                      <XAxis dataKey="range" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: 'var(--muted)' }} dy={10} />
+                      <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: 'var(--muted)' }} />
+                      <RechartsTooltip cursor={{ fill: 'var(--surface-2)' }} contentStyle={{ borderRadius: '8px', border: '1px solid var(--line)', background: 'var(--surface)', color: 'var(--content)', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
                       <Bar dataKey="students" radius={[4, 4, 0, 0]}>
                         {spiDistData.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={entry.color} />
@@ -283,25 +283,25 @@ export default function DeanDepartmentPage() {
                     </BarChart>
                   </ResponsiveContainer>
                 </div>
-                <div className="mt-4 pt-4 border-t border-gray-100 text-center">
-                  <p className="text-sm text-gray-600">
-                    Average SPI: <span className="font-bold text-navy">67.3</span> · 
-                    Top performers (75+): <span className="font-bold text-green-600">285 students</span> · 
-                    At risk (below 55): <span className="font-bold text-red-500">209 students</span>
+                <div className="mt-4 pt-4 border-t border-line text-center">
+                  <p className="text-sm text-content-2">
+                    Average SPI: <span className="font-bold text-content">67.3</span> · 
+                    Top performers (75+): <span className="font-bold text-success">285 students</span> · 
+                    At risk (below 55): <span className="font-bold text-danger">209 students</span>
                   </p>
                 </div>
               </div>
 
               {/* Trend */}
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 flex flex-col">
-                <h3 className="text-lg font-bold text-navy mb-6">Department Health Score — 3 Year Trend</h3>
+              <div className="bg-surface rounded-2xl shadow-sm border border-line p-6 flex flex-col">
+                <h3 className="text-lg font-bold text-content mb-6">Department Health Score — 3 Year Trend</h3>
                 <div className="h-64 w-full">
                   <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 500, height: 300 }}>
                     <LineChart data={trendData} margin={{ top: 5, right: 20, left: -20, bottom: 5 }}>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f3f4f6" />
-                      <XAxis dataKey="semester" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} dy={10} />
-                      <YAxis domain={[50, 90]} axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#6b7280' }} />
-                      <RechartsTooltip contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--line)" />
+                      <XAxis dataKey="semester" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: 'var(--muted)' }} dy={10} />
+                      <YAxis domain={[50, 90]} axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: 'var(--muted)' }} />
+                      <RechartsTooltip contentStyle={{ borderRadius: '8px', border: '1px solid var(--line)', background: 'var(--surface)', color: 'var(--content)', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} />
                       <Legend verticalAlign="bottom" height={36} iconType="circle" wrapperStyle={{ fontSize: '12px', paddingTop: '10px' }} />
                       <Line type="monotone" dataKey="CSE" stroke="#3B82F6" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 6 }} />
                     </LineChart>
@@ -312,15 +312,15 @@ export default function DeanDepartmentPage() {
             </div>
 
             {/* SECTION C - FACULTY RANKINGS */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-              <div className="p-6 border-b border-gray-100">
-                <h3 className="text-lg font-bold text-navy mb-1">Faculty Effectiveness Rankings</h3>
-                <p className="text-sm text-gray-500">Ranked by student improvement rate under their teaching — not by student ratings</p>
+            <div className="bg-surface rounded-2xl shadow-sm border border-line overflow-hidden">
+              <div className="p-6 border-b border-line">
+                <h3 className="text-lg font-bold text-content mb-1">Faculty Effectiveness Rankings</h3>
+                <p className="text-sm text-muted">Ranked by student improvement rate under their teaching — not by student ratings</p>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse whitespace-nowrap">
                   <thead>
-                    <tr className="bg-gray-50 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                    <tr className="bg-surface-2 text-xs font-bold text-muted uppercase tracking-wider border-b border-line">
                       <th className="px-6 py-4">Rank</th>
                       <th className="px-6 py-4">Faculty Name</th>
                       <th className="px-4 py-4">Department</th>
@@ -330,17 +330,17 @@ export default function DeanDepartmentPage() {
                       <th className="px-6 py-4 text-right">Effectiveness Score</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100 text-sm font-medium">
+                  <tbody className="divide-y divide-line text-sm font-medium">
                     {facultyData.map((row) => (
-                      <tr key={row.rank} className="hover:bg-gray-50/50">
-                        <td className="px-6 py-4 text-gray-500">#{row.rank}</td>
-                        <td className="px-6 py-4 text-navy font-bold">{row.name}</td>
-                        <td className="px-4 py-4 text-gray-500">{row.dept}</td>
-                        <td className="px-4 py-4 text-center text-gray-600">{row.students}</td>
-                        <td className="px-6 py-4 text-center font-bold text-green-600">{row.imp}</td>
-                        <td className="px-6 py-4 text-center text-gray-700">{row.co}</td>
+                      <tr key={row.rank} className="hover:bg-surface-2/50">
+                        <td className="px-6 py-4 text-muted">#{row.rank}</td>
+                        <td className="px-6 py-4 text-content font-bold">{row.name}</td>
+                        <td className="px-4 py-4 text-muted">{row.dept}</td>
+                        <td className="px-4 py-4 text-center text-content-2">{row.students}</td>
+                        <td className="px-6 py-4 text-center font-bold text-success">{row.imp}</td>
+                        <td className="px-6 py-4 text-center text-content-2">{row.co}</td>
                         <td className="px-6 py-4 text-right">
-                          <span className={`inline-flex px-3 py-1 rounded font-bold bg-${row.color}-50 text-${row.color}-700 border border-${row.color}-200`}>
+                          <span className={`inline-flex px-3 py-1 rounded font-bold bg-${row.color}-50 text-${row.color}-700 border border-${row.color}-200 dark:bg-${row.color}-500/10 dark:text-${row.color}-400 dark:border-${row.color}-500/20`}>
                             {row.score}
                           </span>
                         </td>
@@ -349,13 +349,13 @@ export default function DeanDepartmentPage() {
                   </tbody>
                 </table>
               </div>
-              <div className="p-6 bg-gray-50 border-t border-gray-100">
-                <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 flex gap-4 shadow-sm items-start">
-                  <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mt-0.5 flex-shrink-0">
+              <div className="p-6 bg-surface-2 border-t border-line">
+                <div className="bg-blue-50 border border-blue-100 dark:bg-blue-500/10 dark:border-blue-500/20 rounded-xl p-4 flex gap-4 shadow-sm items-start">
+                  <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400 flex items-center justify-center mt-0.5 flex-shrink-0">
                     <Lightbulb size={16} />
                   </div>
                   <div>
-                    <p className="text-sm text-blue-900 font-medium leading-relaxed">
+                    <p className="text-sm text-blue-900 dark:text-blue-200 font-medium leading-relaxed">
                       <span className="font-bold">Dr. Anita Sharma's students show the highest improvement rate at 14.2%.</span> Analysis suggests her practical-heavy teaching approach significantly outperforms theory-only delivery. Recommendation: Share her teaching methodology with other faculty.
                     </p>
                   </div>
@@ -364,15 +364,15 @@ export default function DeanDepartmentPage() {
             </div>
 
             {/* SECTION D - CURRICULUM GAP */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-              <div className="p-6 border-b border-gray-100">
-                <h3 className="text-lg font-bold text-navy mb-1">Curriculum Gap Analysis</h3>
-                <p className="text-sm text-gray-500">Topics that are consistently failing across multiple batches and multiple faculty — signals for curriculum revision</p>
+            <div className="bg-surface rounded-2xl shadow-sm border border-line overflow-hidden">
+              <div className="p-6 border-b border-line">
+                <h3 className="text-lg font-bold text-content mb-1">Curriculum Gap Analysis</h3>
+                <p className="text-sm text-muted">Topics that are consistently failing across multiple batches and multiple faculty — signals for curriculum revision</p>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse whitespace-nowrap">
                   <thead>
-                    <tr className="bg-gray-50 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200">
+                    <tr className="bg-surface-2 text-xs font-bold text-muted uppercase tracking-wider border-b border-line">
                       <th className="px-6 py-4">Topic</th>
                       <th className="px-6 py-4">Subject</th>
                       <th className="px-6 py-4">Failing Rate</th>
@@ -381,16 +381,16 @@ export default function DeanDepartmentPage() {
                       <th className="px-6 py-4">Severity</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-gray-100 text-sm font-medium">
+                  <tbody className="divide-y divide-line text-sm font-medium">
                     {curriculumGaps.map((row, i) => (
-                      <tr key={i} className="hover:bg-gray-50/50">
-                        <td className="px-6 py-4 text-navy font-bold">{row.topic}</td>
-                        <td className="px-6 py-4 text-gray-600">{row.sub}</td>
-                        <td className="px-6 py-4 font-bold text-red-500">{row.fail} failing</td>
-                        <td className="px-6 py-4 text-gray-600">{row.batches}</td>
-                        <td className="px-6 py-4 text-gray-600">{row.yrs}</td>
+                      <tr key={i} className="hover:bg-surface-2/50">
+                        <td className="px-6 py-4 text-content font-bold">{row.topic}</td>
+                        <td className="px-6 py-4 text-content-2">{row.sub}</td>
+                        <td className="px-6 py-4 font-bold text-danger">{row.fail} failing</td>
+                        <td className="px-6 py-4 text-content-2">{row.batches}</td>
+                        <td className="px-6 py-4 text-content-2">{row.yrs}</td>
                         <td className="px-6 py-4">
-                          <span className={`inline-flex px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest bg-${row.color}-100 text-${row.color}-700`}>
+                          <span className={`inline-flex px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-widest bg-${row.color}-100 text-${row.color}-700 dark:bg-${row.color}-500/10 dark:text-${row.color}-400`}>
                             {row.sev}
                           </span>
                         </td>
@@ -399,11 +399,11 @@ export default function DeanDepartmentPage() {
                   </tbody>
                 </table>
               </div>
-              <div className="p-6 bg-gray-50 border-t border-gray-100 flex flex-col sm:flex-row gap-3">
+              <div className="p-6 bg-surface-2 border-t border-line flex flex-col sm:flex-row gap-3">
                 <button className="px-5 py-2.5 bg-blue-600 text-white font-bold text-sm rounded-xl hover:bg-blue-700 transition shadow-sm whitespace-nowrap">
                   Generate Curriculum Revision Recommendations
                 </button>
-                <button className="px-5 py-2.5 border border-gray-300 text-gray-700 font-bold text-sm rounded-xl hover:bg-gray-100 transition whitespace-nowrap">
+                <button className="px-5 py-2.5 border border-line text-content font-bold text-sm rounded-xl hover:bg-surface-2 transition whitespace-nowrap">
                   Download Full Report
                 </button>
               </div>
@@ -414,28 +414,28 @@ export default function DeanDepartmentPage() {
       {/* REPORT MODAL */}
       {reportModalOpen && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden animate-fade-in p-6 flex flex-col items-center text-center">
+          <div className="bg-surface rounded-2xl shadow-xl w-full max-w-sm overflow-hidden animate-fade-in p-6 flex flex-col items-center text-center">
             {reportReady ? (
               <>
-                <div className="w-16 h-16 rounded-full bg-green-100 text-green-600 flex items-center justify-center mb-4">
+                <div className="w-16 h-16 rounded-full bg-success-soft text-success flex items-center justify-center mb-4">
                   <CheckCircle size={32} />
                 </div>
-                <h2 className="font-bold text-xl text-navy mb-2">Report Ready</h2>
-                <p className="text-sm text-gray-500 mb-6">The comprehensive department report has been generated successfully.</p>
+                <h2 className="font-bold text-xl text-content mb-2">Report Ready</h2>
+                <p className="text-sm text-muted mb-6">The comprehensive department report has been generated successfully.</p>
                 <button onClick={() => setReportModalOpen(false)} className="w-full py-2.5 bg-blue-600 text-white font-bold text-sm rounded-xl hover:bg-blue-700 transition shadow-sm">
                   Download PDF
                 </button>
               </>
             ) : (
               <>
-                <div className="w-16 h-16 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mb-4 animate-spin">
-                  <svg className="w-8 h-8 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <div className="w-16 h-16 rounded-full bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 flex items-center justify-center mb-4 animate-spin">
+                  <svg className="w-8 h-8 text-blue-600 dark:text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>
                 </div>
-                <h2 className="font-bold text-xl text-navy mb-2">Generating report...</h2>
-                <p className="text-sm text-gray-500">This may take a moment. Gathering real-time CSE cohort data.</p>
+                <h2 className="font-bold text-xl text-content mb-2">Generating report...</h2>
+                <p className="text-sm text-muted">This may take a moment. Gathering real-time CSE cohort data.</p>
               </>
             )}
           </div>
@@ -445,33 +445,33 @@ export default function DeanDepartmentPage() {
       {/* SYNC MODAL */}
       {syncModalData && (
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden animate-fade-in">
-             <div className="bg-navy p-5 flex justify-between items-center">
-                <h2 className="text-white font-bold text-base">{syncModalData.name} Integration</h2>
-                <button onClick={() => setSyncModalData(null)} className="text-gray-400 hover:text-white transition"><X size={18} /></button>
+          <div className="bg-surface rounded-2xl shadow-xl w-full max-w-sm overflow-hidden animate-fade-in border border-line">
+             <div className="bg-surface-2 border-b border-line p-5 flex justify-between items-center">
+                <h2 className="text-content font-bold text-base">{syncModalData.name} Integration</h2>
+                <button onClick={() => setSyncModalData(null)} className="text-muted hover:text-content transition"><X size={18} /></button>
              </div>
              <div className="p-6">
-                <div className="flex items-center gap-3 mb-6 bg-green-50 p-3 rounded-xl border border-green-100">
-                   <div className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse" />
-                   <p className="text-xs font-bold text-green-700 uppercase tracking-widest">Connection Healthy</p>
+                <div className="flex items-center gap-3 mb-6 bg-success-soft p-3 rounded-xl border border-success/20">
+                   <div className="w-2.5 h-2.5 bg-success rounded-full animate-pulse" />
+                   <p className="text-xs font-bold text-success uppercase tracking-widest">Connection Healthy</p>
                 </div>
                 <div className="space-y-4 mb-8">
                    <div className="flex justify-between items-center">
-                      <span className="text-xs text-gray-500 font-medium">Connected Since</span>
-                      <span className="text-xs text-navy font-bold">{syncModalData.since}</span>
+                      <span className="text-xs text-muted font-medium">Connected Since</span>
+                      <span className="text-xs text-content font-bold">{syncModalData.since}</span>
                    </div>
                    <div className="flex justify-between items-center">
-                      <span className="text-xs text-gray-500 font-medium">Records Synced Today</span>
-                      <span className="text-xs text-navy font-bold">{syncModalData.records}</span>
+                      <span className="text-xs text-muted font-medium">Records Synced Today</span>
+                      <span className="text-xs text-content font-bold">{syncModalData.records}</span>
                    </div>
                    <div className="flex justify-between items-center">
-                      <span className="text-xs text-gray-500 font-medium">Last Sync</span>
-                      <span className="text-xs text-navy font-bold">{syncModalData.last}</span>
+                      <span className="text-xs text-muted font-medium">Last Sync</span>
+                      <span className="text-xs text-content font-bold">{syncModalData.last}</span>
                    </div>
                 </div>
-                <div className="bg-gray-50 p-4 rounded-xl border border-gray-100 mb-6">
-                   <p className="text-[10px] font-bold text-gray-400 uppercase mb-2">Live Status</p>
-                   <p className="text-xs text-navy leading-relaxed font-medium">The data pipeline between Educator Analytics and {syncModalData.name} is fully operational. CSE student records are being updated in real-time.</p>
+                <div className="bg-surface-2 p-4 rounded-xl border border-line mb-6">
+                   <p className="text-[10px] font-bold text-muted uppercase mb-2">Live Status</p>
+                   <p className="text-xs text-content-2 leading-relaxed font-medium">The data pipeline between Educator Analytics and {syncModalData.name} is fully operational. CSE student records are being updated in real-time.</p>
                 </div>
                 <button onClick={() => setSyncModalData(null)} className="w-full py-3 bg-indigo-600 text-white font-bold text-sm rounded-xl hover:bg-indigo-700 transition shadow-lg">Close Details</button>
              </div>
