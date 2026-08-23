@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
       select: { universityId: true, id: true }
     });
     
-    const existingSet = new Set(existingStudents.map(s => s.universityId));
+    const existingSet = new Set(existingStudents.map((s: { universityId: string; id: string }) => s.universityId));
 
     let updatedCount = 0;
     

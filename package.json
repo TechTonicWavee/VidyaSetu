@@ -1,10 +1,10 @@
 {
   "private": true,
-  "workspaces": ["frontend"],
   "scripts": {
-    "dev": "npm --workspace frontend run dev",
-    "build": "npm --workspace frontend run build",
-    "start": "npm --workspace frontend run start",
-    "lint": "npm --workspace frontend run lint"
+    "postinstall": "npm install --prefix frontend && npm install --prefix backend",
+    "dev": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build",
+    "start": "npm --prefix frontend run start",
+    "lint": "npm --prefix frontend run lint"
   }
 }
