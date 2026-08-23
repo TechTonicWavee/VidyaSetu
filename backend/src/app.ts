@@ -11,6 +11,8 @@ import { directoryRouter } from './routes/directory.routes';
 import { notificationRouter } from './routes/notification.routes';
 import { attendanceRouter } from './routes/attendance.routes';
 
+import facultyRouter from './routes/faculty.routes';
+
 export function createApp() {
   const app = express();
 
@@ -27,6 +29,7 @@ export function createApp() {
   app.use('/api/directory', directoryRouter);
   app.use('/api/notifications', notificationRouter);
   app.use('/api/attendance', attendanceRouter);
+  app.use('/api/faculty', facultyRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);

@@ -17,76 +17,45 @@ import {
   CartesianGrid,
 } from "recharts";
 
-const SUBJECTS = {
-  cls_dbms_a: {
-    name: 'DBMS', fullName: 'Database Management Systems', section: 'A', code: 'CSE 2B',
-    totalStudents: 62, avg: 64, co: 71, atRisk: 8, topScorer: 'Siddharth Rao', topScore: 94,
-    belowSixty: 19,
-    scoreDistData: [
-      { range: '90-100', students: 4, color: '#10B981' },
-      { range: '80-89', students: 9, color: '#4338CA' },
-      { range: '70-79', students: 14, color: '#3B82F6' },
-      { range: '60-69', students: 16, color: '#F59E0B' },
-      { range: '50-59', students: 11, color: '#F97316' },
-      { range: 'Below 50', students: 8, color: '#EF4444' },
-    ],
-    unitTrendData: [{ unit: 'Unit 1', score: 71 }, { unit: 'Unit 2', score: 68 }, { unit: 'Unit 3', score: 64 }, { unit: 'Unit 4', score: null }],
-  },
-  cls_os_b: {
-    name: 'OS', fullName: 'Operating Systems', section: 'B', code: 'CSE 2A',
-    totalStudents: 58, avg: 58, co: 67, atRisk: 11, topScorer: 'Ananya Verma', topScore: 91,
-    belowSixty: 22,
-    scoreDistData: [
-      { range: '90-100', students: 3, color: '#10B981' },
-      { range: '80-89', students: 6, color: '#4338CA' },
-      { range: '70-79', students: 11, color: '#3B82F6' },
-      { range: '60-69', students: 14, color: '#F59E0B' },
-      { range: '50-59', students: 13, color: '#F97316' },
-      { range: 'Below 50', students: 11, color: '#EF4444' },
-    ],
-    unitTrendData: [{ unit: 'Unit 1', score: 63 }, { unit: 'Unit 2', score: 60 }, { unit: 'Unit 3', score: 58 }, { unit: 'Unit 4', score: null }],
-  },
-  cls_toc_a: {
-    name: 'TOC', fullName: 'Theory of Computation', section: 'A', code: 'CSE 2C',
-    totalStudents: 60, avg: 61, co: 69, atRisk: 7, topScorer: 'Priyanshu Raj', topScore: 88,
-    belowSixty: 16,
-    scoreDistData: [
-      { range: '90-100', students: 2, color: '#10B981' },
-      { range: '80-89', students: 8, color: '#4338CA' },
-      { range: '70-79', students: 16, color: '#3B82F6' },
-      { range: '60-69', students: 17, color: '#F59E0B' },
-      { range: '50-59', students: 10, color: '#F97316' },
-      { range: 'Below 50', students: 7, color: '#EF4444' },
-    ],
-    unitTrendData: [{ unit: 'Unit 1', score: 67 }, { unit: 'Unit 2', score: 63 }, { unit: 'Unit 3', score: 61 }, { unit: 'Unit 4', score: null }],
-  },
-  cls_dsa_c: {
-    name: 'Data Structures', fullName: 'Data Structures', section: 'C', code: 'CSE 1A',
-    totalStudents: 63, avg: 72, co: 81, atRisk: 3, topScorer: 'Aryan Mehta', topScore: 96,
-    belowSixty: 8,
-    scoreDistData: [
-      { range: '90-100', students: 9, color: '#10B981' },
-      { range: '80-89', students: 16, color: '#4338CA' },
-      { range: '70-79', students: 19, color: '#3B82F6' },
-      { range: '60-69', students: 11, color: '#F59E0B' },
-      { range: '50-59', students: 5, color: '#F97316' },
-      { range: 'Below 50', students: 3, color: '#EF4444' },
-    ],
-    unitTrendData: [{ unit: 'Unit 1', score: 76 }, { unit: 'Unit 2', score: 73 }, { unit: 'Unit 3', score: 72 }, { unit: 'Unit 4', score: null }],
-  },
-};
+import { apiGet } from '@/lib/api/client'
 
 function SubjectAnalyticsContent() {
   const searchParams = useSearchParams();
-  const [subjectKey, setSubjectKey] = useState<keyof typeof SUBJECTS>(() => {
-    const p = searchParams?.get('subject');
-    return p && SUBJECTS[p as keyof typeof SUBJECTS] ? (p as keyof typeof SUBJECTS) : 'cls_dbms_a';
+  const [subjectsMap, setSubjectsMap] = useState<Record<string, any>>({});
+  const [loading, setLoading] = useState(true);
+  
+  const [subjectKey, setSubjectKey] = useState<string>(() => {
+    return searchParams?.get('subject') || '';
   });
 
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  const s = SUBJECTS[subjectKey];
+  useEffect(() => {
+    const fetchAnalytics = async () => {
+      try {
+        const data = await apiGet<any>('/api/faculty/reports/analytics');
+        if (data.subjects) {
+          setSubjectsMap(data.subjects);
+          if (!subjectKey || !data.subjects[subjectKey]) {
+            const keys = Object.keys(data.subjects);
+            if (keys.length > 0) setSubjectKey(keys[0]);
+          }
+        }
+      } catch (error) {
+        console.error('Failed to fetch analytics', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchAnalytics();
+  }, [subjectKey]);
+
+  if (!mounted || loading) return <div className="text-center py-10">Loading analytics...</div>;
+
+  const s = subjectsMap[subjectKey];
+  if (!s) return <div className="text-center py-10">No analytics data available for this class.</div>;
 
   return (
     <div className="space-y-6">
@@ -99,12 +68,11 @@ function SubjectAnalyticsContent() {
         <div className="relative min-w-[220px]">
           <select
             value={subjectKey}
-            onChange={e => setSubjectKey(e.target.value as keyof typeof SUBJECTS)}
+            onChange={e => setSubjectKey(e.target.value)}
             className="w-full appearance-none bg-surface border border-line text-content font-semibold text-sm rounded-xl px-4 py-2.5 pr-10 focus:outline-none focus:ring-2 focus:ring-brand-soft focus:border-brand shadow-sm cursor-pointer">
-            <option value="cls_dbms_a">DBMS — CSE 2B</option>
-            <option value="cls_os_b">Operating Systems — CSE 2A</option>
-            <option value="cls_toc_a">Theory of Computation — CSE 2C</option>
-            <option value="cls_dsa_c">Data Structures — CSE 1A</option>
+            {Object.values(subjectsMap).map((sub: any) => (
+              <option key={sub.id} value={sub.id}>{sub.name} — {sub.code}</option>
+            ))}
           </select>
           <ChevronDown
             size={16}
@@ -144,7 +112,7 @@ function SubjectAnalyticsContent() {
                     contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
                   />
                   <Bar dataKey="students" radius={[4, 4, 0, 0]}>
-                    {s.scoreDistData.map((entry, index) => (
+                    {s.scoreDistData.map((entry: any, index: number) => (
                       <Cell key={`cell-${index}`} fill={entry.color} />
                     ))}
                   </Bar>

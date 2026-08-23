@@ -6,6 +6,14 @@ const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ['unpdf'],
   },
+  async rewrites() {
+    return [
+      {
+        source: '/api/faculty/:path*',
+        destination: 'http://localhost:4000/api/faculty/:path*',
+      },
+    ];
+  },
 };
 
 export default nextConfig;
