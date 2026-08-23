@@ -39,7 +39,32 @@ export async function listNotifications(universityId: string, page: number, limi
     prisma.notification.count({ where }),
   ]);
 
-  return { items, total, page, limit, totalPages: Math.max(1, Math.ceil(total / limit)) };
+  // Filter out team_invite notifications whose underlying invite is no longer
+  // pending (already accepted, declined, or cancelled). Without this, stale
+  // actionable cards re-appear on every page refresh even after the user has
+  // already responded to the invite.
+  const inviteNotifs = items.filter(
+    (n) => n.type === 'team_invite' && typeof (n.payload as Record<string, unknown>)?.inviteId === 'string'
+  );
+
+  let pendingInviteIds = new Set<string>();
+  if (inviteNotifs.length > 0) {
+    const inviteIds = inviteNotifs.map((n) => (n.payload as Record<string, unknown>).inviteId as string);
+    const pendingInvites = await prisma.teamInvite.findMany({
+      where: { id: { in: inviteIds }, status: 'pending' },
+      select: { id: true },
+    });
+    pendingInviteIds = new Set(pendingInvites.map((i) => i.id));
+  }
+
+  const filtered = items.filter((n) => {
+    if (n.type !== 'team_invite') return true;
+    const inviteId = (n.payload as Record<string, unknown>)?.inviteId as string | undefined;
+    if (!inviteId) return true; // no inviteId in payload — keep it
+    return pendingInviteIds.has(inviteId);
+  });
+
+  return { items: filtered, total, page, limit, totalPages: Math.max(1, Math.ceil(total / limit)) };
 }
 
 export async function unreadCount(universityId: string) {
