@@ -1565,9 +1565,12 @@ export default function ProfileEditPage() {
       <div className="p-6 max-w-5xl mx-auto">
         <button
           onClick={() => router.push('/student/profile')}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-surface hover:bg-surface-2 text-content rounded-lg text-sm font-medium border border-line transition shadow-sm mb-6"
+          className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-content-2 bg-surface border border-line hover:border-brand/40 hover:text-brand hover:bg-brand-soft transition-all duration-200 shadow-sm mb-6"
         >
-          â† Back to Profile
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="m12 19-7-7 7-7"/><path d="M19 12H5"/>
+          </svg>
+          Back to Profile
         </button>
 
         {/* Profile Completion Bar */}

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Menu, Search, Bell, Sun, Moon, ChevronDown, Sparkles } from 'lucide-react';
+import { Menu, Bell, Sun, Moon, ChevronDown, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/shared/utils/cn';
 import { useAuth } from '@/lib/shared/auth/AuthProvider';
 import { useTheme } from '@/components/shared/ThemeProvider';
@@ -14,7 +14,6 @@ export function AppTopbar({ onOpenMobile }: { onOpenMobile: () => void }) {
   const { student } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const [scrolled, setScrolled] = useState(false);
-  const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
 
   useEffect(() => {
@@ -56,22 +55,6 @@ export function AppTopbar({ onOpenMobile }: { onOpenMobile: () => void }) {
       </div>
 
       <div className="flex items-center gap-2 sm:gap-4 relative z-10">
-        {/* Advanced Search */}
-        <div className={cn(
-          "hidden md:flex items-center gap-2 px-3 py-2 rounded-full border transition-all duration-300 mr-2",
-          isSearchFocused 
-            ? "bg-surface border-brand/40 shadow-[0_0_0_2px_rgba(var(--color-brand),0.1)] w-64" 
-            : "bg-surface-2 border-transparent hover:bg-surface-3 w-56"
-        )}>
-          <Search size={16} className={cn("transition-colors", isSearchFocused ? "text-brand" : "text-muted")} />
-          <input 
-            type="text" 
-            placeholder="Search anything..." 
-            className="bg-transparent border-none outline-none text-sm w-full text-content placeholder:text-muted"
-            onFocus={() => setIsSearchFocused(true)}
-            onBlur={() => setIsSearchFocused(false)}
-          />
-        </div>
 
         {/* Action Buttons */}
         <div className="flex items-center gap-1 sm:gap-1.5">

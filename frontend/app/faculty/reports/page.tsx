@@ -14,7 +14,7 @@ import { FACULTY_PROFILE } from '@/lib/faculty/mock-data'
 const navLinks = [
   { id: 'dashboard',    label: 'Dashboard',            icon: Home,          badge: null,  path: '/faculty' },
   { id: 'classes',      label: 'My Classes',           icon: BookOpen,      badge: null,  path: '/faculty/my-classes' },
-  { id: 'intelligence', label: 'Student Intelligence', icon: Brain,         badge: 'New', path: '/faculty/student-intelligence' },
+  { id: 'intelligence', label: 'Student Reports', icon: Brain, path: '/faculty/student-reports' },
   { id: 'alerts',       label: 'Student Alerts',       icon: AlertCircle,   badge: '5',   path: '/faculty/alerts' },
   { id: 'analytics',    label: 'Subject Analytics',    icon: Activity,      badge: null,  path: '/faculty/analytics' },
   { id: 'profiles',     label: 'Student Profiles',     icon: Users,         badge: null,  path: '/faculty/student/profile' },

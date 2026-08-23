@@ -1,324 +1,246 @@
-/* eslint-disable react/no-unescaped-entities */
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { FACULTY_PROFILE } from '@/lib/faculty/mock-data'
-import { Home, BookOpen, Bell, BarChart2, Users, Target, MessageCircle, FileText, Settings, LogOut, Search, ChevronDown, AlertTriangle, Calendar, Clock, ExternalLink, User, Activity, TrendingUp, Award, Grid, CheckCircle, Zap, AlertCircle, Plug, Brain } from 'lucide-react'
-
-const navLinks = [
-  { id: 'dashboard',    label: 'Dashboard',            icon: Home,          badge: null,  path: '/faculty' },
-  { id: 'classes',      label: 'My Classes',           icon: BookOpen,      badge: null,  path: '/faculty/my-classes' },
-  { id: 'intelligence', label: 'Student Intelligence', icon: Brain,         badge: 'New', path: '/faculty/student-intelligence' },
-  { id: 'alerts',       label: 'Student Alerts',       icon: AlertCircle,   badge: '5',   path: '/faculty/alerts' },
-  { id: 'analytics',    label: 'Subject Analytics',    icon: Activity,      badge: null,  path: '/faculty/analytics' },
-  { id: 'profiles',     label: 'Student Profiles',     icon: Users,         badge: null,  path: '/faculty/student/profile' },
-  { id: 'co',           label: 'CO Attainment',        icon: CheckCircle,   badge: null,  path: '/faculty/co-attainment' },
-  { id: 'parent',       label: 'Parent Communication', icon: MessageCircle, badge: null,  path: '/faculty/parent-communication' },
-  { id: 'reports',      label: 'Reports',              icon: FileText,      badge: null,  path: '/faculty/reports' },
-  { id: 'assignments',  label: 'Assignments (Moodle)', icon: ExternalLink,  badge: null,  path: null, external: 'http://lms.kiet.edu/moodle/' },
-  { id: 'attendance',   label: 'Attendance (Vidya)',   icon: ExternalLink,  badge: null,  path: null, external: 'https://kiet.cybervidya.net' },
-]
-
-const mockClasses = [
-  {
-    id: 'cls_dbms_a',
-    subject: 'Database Management Systems',
-    code: 'CSE-DBMS-401',
-    section: 'A',
-    semester: 'IV',
-    schedule: 'Mon/Wed/Fri',
-    time: '10:00–10:50',
-    room: 'B-204',
-    students: 62,
-    attendance: 78,
-    atRisk: 8,
-    nextSession: 'Tue, 05 May 2026 · 10:00',
-  },
-  {
-    id: 'cls_os_b',
-    subject: 'Operating Systems',
-    code: 'CSE-OS-402',
-    section: 'B',
-    semester: 'IV',
-    schedule: 'Tue/Thu',
-    time: '11:00–12:15',
-    room: 'C-112',
-    students: 58,
-    attendance: 71,
-    atRisk: 11,
-    nextSession: 'Tue, 05 May 2026 · 11:00',
-  },
-  {
-    id: 'cls_toc_a',
-    subject: 'Theory of Computation',
-    code: 'CSE-TOC-403',
-    section: 'A',
-    semester: 'IV',
-    schedule: 'Mon/Thu',
-    time: '02:00–03:15',
-    room: 'A-305',
-    students: 60,
-    attendance: 74,
-    atRisk: 7,
-    nextSession: 'Thu, 07 May 2026 · 02:00',
-  },
-  {
-    id: 'cls_dsa_c',
-    subject: 'Data Structures',
-    code: 'CSE-DSA-301',
-    section: 'C',
-    semester: 'III',
-    schedule: 'Tue/Fri',
-    time: '09:00–10:15',
-    room: 'Lab-2',
-    students: 63,
-    attendance: 84,
-    atRisk: 3,
-    nextSession: 'Fri, 08 May 2026 · 09:00',
-  },
-]
+import { 
+  BookOpen, Users, AlertTriangle, Calendar, Clock, ExternalLink, 
+  Search, ChevronDown, Activity
+} from 'lucide-react'
+import { PageHeader, StatCard, Card, Badge } from '@/components/shared/ui'
+import { apiGet } from '@/lib/shared/api/client'
 
 function attendanceBarClass(pct: number) {
-  if (pct >= 75) return 'bg-green-500'
-  if (pct >= 60) return 'bg-yellow-400'
-  if (pct >= 45) return 'bg-blue-500'
-  return 'bg-red-500'
+  if (pct >= 75) return 'bg-success'
+  if (pct >= 60) return 'bg-warning'
+  if (pct >= 45) return 'bg-info'
+  return 'bg-danger'
 }
 
 export default function MyClassesPage() {
   const router = useRouter()
-  const [activeNav, setActiveNav] = useState('classes')
-  const [sidebarOpen, setSidebarOpen] = useState(true)
-
+  const [classes, setClasses] = useState<any[]>([])
   const [semester, setSemester] = useState('All Semesters')
   const [query, setQuery] = useState('')
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchClasses = async () => {
+      try {
+        const data = await apiGet<any[]>('/api/faculty/classes');
+        setClasses(data);
+      } catch (error) {
+        console.error('Failed to fetch classes', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchClasses();
+  }, []);
 
   const semesters = useMemo(() => {
-    const unique = Array.from(new Set(mockClasses.map(c => c.semester))).sort()
+    const unique = Array.from(new Set(classes.map(c => c.semester))).sort()
     return ['All Semesters', ...unique.map(s => `Sem ${s}`)]
-  }, [])
+  }, [classes])
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
-    return mockClasses.filter(c => {
+    return classes.filter(c => {
       const semOk = semester === 'All Semesters' || semester === `Sem ${c.semester}`
       const qOk = !q || `${c.subject} ${c.code} ${c.section} ${c.room}`.toLowerCase().includes(q)
       return semOk && qOk
     })
-  }, [semester, query])
+  }, [classes, semester, query])
 
-  const totalStudents = mockClasses.reduce((sum, c) => sum + c.students, 0)
-  const totalAtRisk = mockClasses.reduce((sum, c) => sum + c.atRisk, 0)
-  const avgAttendance = Math.round(mockClasses.reduce((sum, c) => sum + c.attendance, 0) / mockClasses.length)
+  const totalStudents = classes.reduce((sum, c) => sum + c.students, 0)
+  const totalAtRisk = classes.reduce((sum, c) => sum + c.atRisk, 0)
+  const avgAttendance = classes.length ? Math.round(classes.reduce((sum, c) => sum + c.attendance, 0) / classes.length) : 0
+
+  // Calculate avg attendance by subject for the breakdown
+  const attendanceBySubject = useMemo(() => {
+    const map = new Map<string, { totalAtt: number, count: number }>()
+    classes.forEach(c => {
+      const existing = map.get(c.subject) || { totalAtt: 0, count: 0 }
+      existing.totalAtt += c.attendance
+      existing.count += 1
+      map.set(c.subject, existing)
+    })
+    
+    return Array.from(map.entries()).map(([subject, data]) => ({
+      subject,
+      avgAttendance: Math.round(data.totalAtt / data.count)
+    }))
+  }, [classes])
 
   return (
-    <div className="flex h-screen bg-[#F3F4F6] overflow-hidden font-sans">
-      {/* SIDEBAR */}
-      <aside className={`${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'} flex-shrink-0 bg-white border-r border-gray-100 flex flex-col transition-all duration-300 shadow-sm`}>
-        <div className="p-5 border-b border-gray-50">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0" style={{ background: 'linear-gradient(135deg, #4338CA, #7C3AED)' }}>
-              {FACULTY_PROFILE.initials}
-            </div>
-            <div className="overflow-hidden">
-              <p className="font-semibold text-sm text-navy truncate">{FACULTY_PROFILE.name}</p>
-              <p className="text-xs text-gray-500 truncate">{FACULTY_PROFILE.department} · {FACULTY_PROFILE.subtitle}</p>
-            </div>
-          </div>
-        </div>
+    <div className="space-y-6">
+      <PageHeader
+        title="My Classes"
+        description="Manage your class sections, students, and attendance performance."
+      />
 
-        <nav className="flex-1 p-3 overflow-y-auto">
-          {navLinks.map(link => (
-            <button
-              key={link.id}
-              onClick={() => {
-                if (link.external) { window.open(link.external, '_blank'); return; }
-                if (link.path) {
-                  router.push(link.path)
-                } else {
-                  if (typeof setActiveNav === 'function') setActiveNav(link.id)
-                }
-              }}
-              className="nav-link w-full text-left mb-0.5"
-              style={activeNav === link.id && !link.external ? { background: '#EEF2FF', color: '#3730A3', fontWeight: 600 } : {}}
-            >
-              <link.icon size={17} />
-              <span className="flex-1">{link.label}</span>
-              {link.badge && (
-                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${link.badge === 'New' ? 'bg-indigo-100 text-indigo-700' : 'bg-red-500 text-white'}`}>
-                  {link.badge}
-                </span>
-              )}
-            </button>
-          ))}
-        </nav>
-
-        <div className="p-3 border-t border-gray-50">
-          <button onClick={() => router.push('/login')} className="nav-link w-full text-left text-red-500 hover:bg-red-50 hover:text-red-600">
-            <LogOut size={17} />
-            <span>Switch Role</span>
-          </button>
-        </div>
-      </aside>
-
-      {/* MAIN CONTENT */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <header className="bg-white border-b border-gray-100 px-6 py-3 flex items-center gap-4 flex-shrink-0 shadow-sm">
-          <button onClick={() => setSidebarOpen(v => !v)} className="text-gray-400 hover:text-gray-700 transition" aria-label="Toggle sidebar">
-            <Settings size={20} />
-          </button>
-          <div className="flex items-center gap-2 mr-4">
-            <div className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs" style={{ background: '#4338CA' }}>EA</div>
-            <span className="font-bold text-navy text-sm hidden sm:block">Educator Analytics OS</span>
-          </div>
-          <div className="flex-1 max-w-md relative">
-            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input type="text" placeholder="Search students, subjects, features..." className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-300 transition" />
-          </div>
-          <div className="flex-1" />
-          <button className="relative p-2 rounded-lg hover:bg-gray-100 transition text-gray-500" aria-label="Notifications">
-            <Bell size={19} />
-            <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">{Math.min(totalAtRisk, 9)}</span>
-          </button>
-          <div className="flex items-center gap-2 cursor-pointer group" aria-label="Profile menu">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs" style={{ background: 'linear-gradient(135deg, #4338CA, #7C3AED)' }}>{FACULTY_PROFILE.initials}</div>
-            <ChevronDown size={14} className="text-gray-400 group-hover:text-gray-600 transition" />
-          </div>
-        </header>
-
-        <main className="flex-1 overflow-y-auto p-6">
-          <div className="mb-6 animate-fade-in">
-            <h1 className="text-2xl font-bold text-navy">My Classes</h1>
-            <p className="text-gray-500 text-sm mt-1">Manage class sections, schedules, and attendance performance</p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-            {[
-              { label: 'Active Classes', value: `${mockClasses.length}`, sub: 'This semester', icon: BookOpen, iconBg: 'bg-indigo-100', iconColor: '#4338CA' },
-              { label: 'Total Students', value: `${totalStudents}`, sub: 'Across all sections', icon: Users, iconBg: 'bg-blue-100', iconColor: '#1A56DB' },
-              { label: 'Avg Attendance', value: `${avgAttendance}%`, sub: 'Rolling 2 weeks', icon: Calendar, iconBg: 'bg-amber-100', iconColor: '#D97706' },
-              { label: 'At-Risk', value: `${totalAtRisk}`, sub: 'Needs attention', icon: AlertTriangle, iconBg: 'bg-red-100', iconColor: '#DC2626' },
-            ].map((card, idx) => (
-              <div key={card.label} className="card rounded-2xl shadow-sm border border-gray-100 animate-fade-in" style={{ animationDelay: `${0.06 + idx * 0.04}s` }}>
-                <div className="flex items-start justify-between mb-3">
-                  <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">{card.label}</p>
-                  <div className={`w-8 h-8 rounded-lg ${card.iconBg} flex items-center justify-center`}>
-                    <card.icon size={16} color={card.iconColor} />
-                  </div>
-                </div>
-                <p className="text-2xl font-bold text-navy mb-1">{card.value}</p>
-                <p className="text-xs font-medium text-gray-500">{card.sub}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="card rounded-2xl shadow-sm border border-gray-100 mb-6 animate-fade-in" style={{ animationDelay: '0.1s' }}>
-            <div className="flex flex-col lg:flex-row lg:items-center gap-4">
-              <div className="flex items-center gap-2 text-sm font-semibold text-navy">
-                <BookOpen size={16} className="text-indigo-600" />
-                <span>{filtered.length} classes</span>
-                <span className="text-gray-300">·</span>
-                <span className="text-red-600">{totalAtRisk} at-risk</span>
-              </div>
-
-              <div className="flex-1" />
-
-              <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
-                <div className="relative w-full sm:w-48">
-                  <select
-                    value={semester}
-                    onChange={(e) => setSemester(e.target.value)}
-                    className="w-full appearance-none bg-white border border-gray-200 text-gray-700 text-sm rounded-lg px-4 py-2 pr-9 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-300"
-                    aria-label="Filter by semester"
-                  >
-                    {semesters.map(s => (
-                      <option key={s} value={s}>{s}</option>
-                    ))}
-                  </select>
-                  <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
-                </div>
-
-                <div className="relative w-full sm:w-64">
-                  <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-                  <input
-                    value={query}
-                    onChange={(e) => setQuery(e.target.value)}
-                    type="text"
-                    placeholder="Search subject, code, room..."
-                    className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-300"
-                    aria-label="Search classes"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="card rounded-2xl shadow-sm border border-gray-100 animate-fade-in p-0 overflow-hidden" style={{ animationDelay: '0.14s' }}>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse whitespace-nowrap">
-                <thead>
-                  <tr className="bg-gray-50 text-xs font-bold text-gray-500 uppercase tracking-wider border-b border-gray-200">
-                    <th className="px-6 py-4">Class</th>
-                    <th className="px-4 py-4">Schedule</th>
-                    <th className="px-4 py-4 text-center">Students</th>
-                    <th className="px-4 py-4 text-center">Attendance</th>
-                    <th className="px-4 py-4 text-center">At Risk</th>
-                    <th className="px-6 py-4 text-right">Action</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100 text-sm font-medium">
-                  {filtered.map((c) => (
-                    <tr key={c.id} className="hover:bg-gray-50/50">
-                      <td className="px-6 py-4">
-                        <p className="font-semibold text-navy">{c.subject}</p>
-                        <p className="text-xs text-gray-500 mt-1">
-                          {c.code} · Sec {c.section} · Sem {c.semester} · Room {c.room}
-                        </p>
-                      </td>
-                      <td className="px-4 py-4 text-gray-700">
-                        <div className="flex items-center gap-2 text-xs text-gray-500 mb-1">
-                          <Calendar size={14} className="text-gray-400" /> {c.schedule}
-                        </div>
-                        <div className="flex items-center gap-2 text-xs text-gray-500">
-                          <Clock size={14} className="text-gray-400" /> {c.time}
-                        </div>
-                        <p className="text-xs text-gray-500 mt-2">Next: <span className="text-navy font-semibold">{c.nextSession}</span></p>
-                      </td>
-                      <td className="px-4 py-4 text-center text-gray-600">{c.students}</td>
-                      <td className="px-4 py-4 text-center">
-                        <div className="min-w-[120px]">
-                          <div className="font-semibold text-navy">{c.attendance}%</div>
-                          <div className="mt-2 w-full bg-gray-200 rounded-full h-1.5">
-                            <div className={`h-1.5 rounded-full ${attendanceBarClass(c.attendance)}`} style={{ width: `${c.attendance}%` }} />
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-4 py-4 text-center">
-                        <span className={`inline-block px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${c.atRisk >= 10 ? 'bg-red-100 text-red-700' : c.atRisk >= 5 ? 'bg-amber-100 text-amber-700' : 'bg-indigo-100 text-indigo-700'}`}>
-                          {c.atRisk}
-                        </span>
-                      </td>
-                      <td className="px-6 py-4 text-right">
-                        <div className="flex items-center justify-end gap-3">
-                          <button
-                            onClick={() => router.push(`/faculty/analytics?subject=${c.id}`)}
-                            className="text-xs font-bold text-indigo-600 hover:text-indigo-800 hover:underline flex items-center gap-1"
-                          >
-                            View Analytics <ExternalLink size={12} />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </main>
+      {/* Top Stats Section */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+        <StatCard
+          label="Active Classes"
+          value={classes.length.toString()}
+          hint="This semester"
+          icon={BookOpen}
+          tone="brand"
+        />
+        <StatCard
+          label="Total Students"
+          value={totalStudents.toString()}
+          hint="Across all sections"
+          icon={Users}
+          tone="blue"
+        />
+        <StatCard
+          label="Avg Attendance"
+          value={`${avgAttendance}%`}
+          hint="All students"
+          icon={Calendar}
+          tone="amber"
+        />
+        <StatCard
+          label="At-Risk"
+          value={totalAtRisk.toString()}
+          hint="Likely to be detained"
+          icon={AlertTriangle}
+          tone="danger"
+        />
       </div>
+
+      {/* Classes Table */}
+      <Card>
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6">
+          <div className="flex items-center gap-2 text-sm font-semibold text-content">
+            <BookOpen size={16} className="text-brand" />
+            <span>{filtered.length} classes</span>
+            <span className="text-muted">·</span>
+            <span className="text-danger">{totalAtRisk} at-risk</span>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-3">
+            <div className="relative w-full sm:w-48">
+              <select
+                value={semester}
+                onChange={(e) => setSemester(e.target.value)}
+                className="w-full appearance-none bg-surface border border-line text-content text-sm rounded-lg px-4 py-2 pr-9 focus:outline-none focus:ring-2 focus:ring-brand-soft focus:border-brand"
+              >
+                {semesters.map(s => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+              <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted pointer-events-none" />
+            </div>
+
+            <div className="relative w-full sm:w-64">
+              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
+              <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                type="text"
+                placeholder="Search subject, code, room..."
+                className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-line bg-surface focus:outline-none focus:ring-2 focus:ring-brand-soft focus:border-brand text-content placeholder:text-muted"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="w-full text-left border-collapse whitespace-nowrap">
+            <thead>
+              <tr className="bg-surface-2/50 text-xs font-bold text-muted uppercase tracking-wider border-b border-line">
+                <th className="px-6 py-4">Class</th>
+                <th className="px-4 py-4">Schedule</th>
+                <th className="px-4 py-4 text-center">Students</th>
+                <th className="px-4 py-4 text-center">Attendance</th>
+                <th className="px-4 py-4 text-center">At Risk</th>
+                <th className="px-6 py-4 text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-line text-sm font-medium">
+              {filtered.map((c) => (
+                <tr key={c.id} className="hover:bg-surface-2/30 transition-colors">
+                  <td className="px-6 py-4">
+                    <p className="font-semibold text-content">{c.subject}</p>
+                    <p className="text-xs text-muted mt-1">
+                      {c.code} · Sec {c.section} · Sem {c.semester} · Room {c.room}
+                    </p>
+                  </td>
+                  <td className="px-4 py-4 text-content-2">
+                    <div className="flex items-center gap-2 text-xs mb-1">
+                      <Calendar size={14} className="text-muted" /> {c.schedule}
+                    </div>
+                    <div className="flex items-center gap-2 text-xs">
+                      <Clock size={14} className="text-muted" /> {c.time}
+                    </div>
+                    <p className="text-xs text-muted mt-2">Next: <span className="text-content font-semibold">{c.nextSession}</span></p>
+                  </td>
+                  <td className="px-4 py-4 text-center text-content">{c.students}</td>
+                  <td className="px-4 py-4 text-center">
+                    <div className="min-w-[120px]">
+                      <div className="font-semibold text-content">{c.attendance}%</div>
+                      <div className="mt-2 w-full bg-surface-3 rounded-full h-1.5">
+                        <div className={`h-1.5 rounded-full ${attendanceBarClass(c.attendance)}`} style={{ width: `${c.attendance}%` }} />
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-4 py-4 text-center">
+                    <Badge tone={c.atRisk >= 10 ? 'red' : c.atRisk >= 5 ? 'amber' : 'brand'}>
+                      {c.atRisk}
+                    </Badge>
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <button
+                      onClick={() => router.push(`/faculty/analytics?subject=${c.id}`)}
+                      className="text-xs font-bold text-brand hover:text-brand-strong flex items-center justify-end gap-1 w-full"
+                    >
+                      View Analytics <ExternalLink size={12} />
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {filtered.length === 0 && (
+            <div className="text-center py-12 text-muted">
+              No classes found matching your criteria.
+            </div>
+          )}
+        </div>
+      </Card>
+      
+      {/* Attendance by Subject Section */}
+      {/* <Card>
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="font-semibold text-content text-lg">
+            Average Attendance by Subject
+          </h3>
+          <Activity size={18} className="text-brand" />
+        </div>
+        <div className="space-y-5">
+          {attendanceBySubject.map((sub, idx) => (
+            <div key={idx} className="group">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-bold text-content group-hover:text-brand transition-colors">
+                  {sub.subject}
+                </span>
+                <span className="text-sm font-bold text-muted">
+                  {sub.avgAttendance}%
+                </span>
+              </div>
+              <div className="w-full bg-surface-3 rounded-full h-2 overflow-hidden">
+                <div
+                  className={`h-full rounded-full ${attendanceBarClass(sub.avgAttendance)}`}
+                  style={{ width: `${sub.avgAttendance}%` }}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card> */}
     </div>
   )
 }
-
-

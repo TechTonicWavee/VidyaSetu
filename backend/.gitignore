@@ -46,3 +46,8 @@ stash.patch
 # emails) — never commit this. Ask whoever maintains the roster for a copy
 # to seed a local/dev database instead.
 studentsSeed.json
+
+# Real faculty credentials (seedFaculty.ts stores this password column
+# unhashed) — keep faculty_seed_template.xlsx (fake example.com rows) as the
+# format reference, but never commit a populated data file.
+faculty_seed_data.xlsx

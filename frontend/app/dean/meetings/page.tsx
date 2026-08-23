@@ -26,7 +26,7 @@ export default function MeetingsPage() {
   const nextWeekEnd = new Date(today); nextWeekEnd.setDate(today.getDate() + 14);
   const thisMonthEnd = new Date(today); thisMonthEnd.setMonth(today.getMonth() + 1);
 
-  let filtered = meetings.filter(m => {
+  const filtered = meetings.filter(m => {
     const mDate = new Date(m.date);
     let pass = true;
     if (filter === 'thisWeek')  pass = mDate >= today && mDate <= thisWeekEnd;

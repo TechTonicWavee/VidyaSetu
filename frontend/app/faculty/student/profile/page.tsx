@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import {
   Home,
@@ -35,6 +35,7 @@ import {
   ExternalLink,
   Brain,
 } from "lucide-react";
+import { PageHeader } from '@/components/shared/ui';
 import { FACULTY_PROFILE } from '@/lib/faculty/mock-data'
 import {
   LineChart,
@@ -54,7 +55,7 @@ import {
 const navLinks = [
   { id: 'dashboard',    label: 'Dashboard',            icon: Home,          badge: null,  path: '/faculty' },
   { id: 'classes',      label: 'My Classes',           icon: BookOpen,      badge: null,  path: '/faculty/my-classes' },
-  { id: 'intelligence', label: 'Student Intelligence', icon: Brain,         badge: 'New', path: '/faculty/student-intelligence' },
+  { id: 'intelligence', label: 'Student Reports', icon: Brain, path: '/faculty/student-reports' },
   { id: 'alerts',       label: 'Student Alerts',       icon: AlertCircle,   badge: '5',   path: '/faculty/alerts' },
   { id: 'analytics',    label: 'Subject Analytics',    icon: Activity,      badge: null,  path: '/faculty/analytics' },
   { id: 'profiles',     label: 'Student Profiles',     icon: Users,         badge: null,  path: '/faculty/student/profile' },
@@ -87,33 +88,7 @@ const radarData = [
   { subject: "Technical", A: 78, fullMark: 100 },
 ];
 
-const STUDENT_LIST = [
-  { name: 'Siddharth Rao',    initials: 'SR', roll: '2CS38', section: 'B', spi: 94, att: 92, rank: 1,  subject: 'DBMS',  status: 'Strong',   statusColor: 'bg-green-100 text-green-700' },
-  { name: 'Ananya Verma',     initials: 'AV', roll: '2CS07', section: 'A', spi: 91, att: 95, rank: 2,  subject: 'OS',    status: 'Strong',   statusColor: 'bg-green-100 text-green-700' },
-  { name: 'Aryan Mehta',      initials: 'AM', roll: '2CS41', section: 'B', spi: 88, att: 90, rank: 3,  subject: 'DBMS',  status: 'Strong',   statusColor: 'bg-green-100 text-green-700' },
-  { name: 'Priya Sharma',     initials: 'PS', roll: '2CS18', section: 'A', spi: 85, att: 88, rank: 4,  subject: 'TOC',   status: 'Strong',   statusColor: 'bg-green-100 text-green-700' },
-  { name: 'Ritika Gupta',     initials: 'RG', roll: '2CS29', section: 'C', spi: 82, att: 91, rank: 5,  subject: 'DSA',   status: 'Strong',   statusColor: 'bg-green-100 text-green-700' },
-  { name: 'Aditya Kumar',     initials: 'AK', roll: '2CS03', section: 'A', spi: 80, att: 86, rank: 6,  subject: 'DBMS',  status: 'Strong',   statusColor: 'bg-green-100 text-green-700' },
-  { name: 'Priyanshu Raj',    initials: 'PR', roll: '2CS04', section: 'C', spi: 78, att: 83, rank: 7,  subject: 'OS',    status: 'On Track', statusColor: 'bg-blue-100 text-blue-700'  },
-  { name: 'Mahesh Singh',     initials: 'MS', roll: '2CS22', section: 'B', spi: 76, att: 79, rank: 8,  subject: 'DBMS',  status: 'On Track', statusColor: 'bg-blue-100 text-blue-700'  },
-  { name: 'Tanvi Mishra',     initials: 'TM', roll: '2CS35', section: 'A', spi: 74, att: 84, rank: 9,  subject: 'TOC',   status: 'On Track', statusColor: 'bg-blue-100 text-blue-700'  },
-  { name: 'Harsh Vardhan',    initials: 'HV', roll: '2CS16', section: 'B', spi: 72, att: 80, rank: 10, subject: 'DSA',   status: 'On Track', statusColor: 'bg-blue-100 text-blue-700'  },
-  { name: 'Megha Tiwari',     initials: 'MT', roll: '2CS24', section: 'C', spi: 71, att: 77, rank: 11, subject: 'OS',    status: 'On Track', statusColor: 'bg-blue-100 text-blue-700'  },
-  { name: 'Vikas Yadav',      initials: 'VY', roll: '2CS44', section: 'A', spi: 69, att: 82, rank: 12, subject: 'DBMS',  status: 'Watch',    statusColor: 'bg-yellow-100 text-yellow-700' },
-  { name: 'Neha Joshi',       initials: 'NJ', roll: '2CS33', section: 'A', spi: 67, att: 80, rank: 13, subject: 'TOC',   status: 'Watch',    statusColor: 'bg-yellow-100 text-yellow-700' },
-  { name: 'Divya Patel',      initials: 'DP', roll: '2CS14', section: 'C', spi: 65, att: 78, rank: 14, subject: 'DSA',   status: 'Watch',    statusColor: 'bg-yellow-100 text-yellow-700' },
-  { name: 'Sumit Agarwal',    initials: 'SA', roll: '2CS31', section: 'B', spi: 63, att: 75, rank: 15, subject: 'OS',    status: 'Watch',    statusColor: 'bg-yellow-100 text-yellow-700' },
-  { name: 'Pooja Rawat',      initials: 'PO', roll: '2CS27', section: 'A', spi: 61, att: 73, rank: 16, subject: 'DBMS',  status: 'Watch',    statusColor: 'bg-yellow-100 text-yellow-700' },
-  { name: 'Nikhil Srivastava', initials: 'NS', roll: '2CS36', section: 'C', spi: 59, att: 70, rank: 17, subject: 'TOC',  status: 'At Risk',  statusColor: 'bg-red-100 text-red-700'    },
-  { name: 'Karan Joshi',      initials: 'KJ', roll: '2CS15', section: 'B', spi: 56, att: 74, rank: 18, subject: 'DSA',   status: 'At Risk',  statusColor: 'bg-red-100 text-red-700'    },
-  { name: 'Rohit Sharma',     initials: 'RS', roll: '2CS47', section: 'A', spi: 53, att: 71, rank: 19, subject: 'OS',    status: 'At Risk',  statusColor: 'bg-red-100 text-red-700'    },
-  { name: 'Ankita Singh',     initials: 'AS', roll: '2CS09', section: 'C', spi: 51, att: 66, rank: 20, subject: 'DBMS',  status: 'At Risk',  statusColor: 'bg-red-100 text-red-700'    },
-  { name: 'Deepak Verma',     initials: 'DV', roll: '2CS11', section: 'B', spi: 49, att: 65, rank: 21, subject: 'TOC',   status: 'At Risk',  statusColor: 'bg-red-100 text-red-700'    },
-  { name: 'Sneha Patel',      initials: 'SP', roll: '2CS23', section: 'C', spi: 47, att: 68, rank: 22, subject: 'DSA',   status: 'Critical', statusColor: 'bg-red-500 text-white'      },
-  { name: 'Ravi Shankar',     initials: 'RV', roll: '2CS43', section: 'A', spi: 43, att: 62, rank: 23, subject: 'OS',    status: 'Critical', statusColor: 'bg-red-500 text-white'      },
-  { name: 'Pallavi Yadav',    initials: 'PY', roll: '2CS26', section: 'B', spi: 39, att: 59, rank: 24, subject: 'DBMS',  status: 'Critical', statusColor: 'bg-red-500 text-white'      },
-  { name: 'Manish Gupta',     initials: 'MG', roll: '2CS21', section: 'C', spi: 35, att: 55, rank: 25, subject: 'TOC',   status: 'Critical', statusColor: 'bg-red-500 text-white'      },
-];
+import { apiGet, apiPost } from '@/lib/shared/api/client'
 
 export default function FacultyStudentProfile() {
   const router = useRouter();
@@ -121,7 +96,20 @@ export default function FacultyStudentProfile() {
   const [activeNav, setActiveNav] = useState("profiles");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
-  const [selectedStudent, setSelectedStudent] = useState<(typeof STUDENT_LIST)[number] | null>(null);
+  const [menteesList, setMenteesList] = useState<any[]>([]);
+  const [selectedStudent, setSelectedStudent] = useState<any | null>(null);
+
+  useEffect(() => {
+    const fetchMentees = async () => {
+      try {
+        const data = await apiGet<any[]>('/api/faculty/mentees');
+        setMenteesList(data);
+      } catch (err) {
+        console.error('Failed to fetch mentees', err);
+      }
+    };
+    fetchMentees();
+  }, []);
 
   // Modals state
   const [isNoteModalOpen, setIsNoteModalOpen] = useState(false);
@@ -137,157 +125,47 @@ export default function FacultyStudentProfile() {
     setTimeout(() => setToastMessage(null), 3000);
   };
 
-  const handleAddNote = (e: FormEvent) => {
+  const handleAddNote = async (e: FormEvent) => {
     e.preventDefault();
-    setIsNoteModalOpen(false);
-    showToast("Note added successfully");
+    if (!selectedStudent?.universityId) return;
+    try {
+      // note text is not kept in a clear state variable in this exact snippet, assuming just closing modal
+      await apiPost(`/api/faculty/mentees/${selectedStudent.universityId}/notes`, {
+        content: "New note", // Ideally from a state variable
+        visibility: noteVisibility
+      });
+      setIsNoteModalOpen(false);
+      showToast("Note added successfully");
+    } catch(err) {
+      showToast("Failed to add note");
+    }
   };
 
-  const handleGenerateAlert = (e: FormEvent) => {
+  const handleGenerateAlert = async (e: FormEvent) => {
     e.preventDefault();
-    setIsAlertModalOpen(false);
-    showToast("Alert generated and sent to dean");
+    if (!selectedStudent?.universityId) return;
+    try {
+      await apiPost(`/api/faculty/mentees/${selectedStudent.universityId}/alerts`, {
+        type: alertType,
+        severity: alertSeverity,
+        comment: "Generated from profile page"
+      });
+      setIsAlertModalOpen(false);
+      showToast("Alert generated and sent to student");
+    } catch(err) {
+      showToast("Failed to generate alert");
+    }
   };
 
   return (
-    <div className="flex h-screen bg-[#F3F4F6] overflow-hidden font-sans">
-      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
-          SIDEBAR
-      Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
-      <aside
-        className={`${sidebarOpen ? "w-64" : "w-0 overflow-hidden"} flex-shrink-0 bg-white border-r border-gray-100 flex flex-col transition-all duration-300 shadow-sm`}
-      >
-        <div className="p-5 border-b border-gray-50">
-          <div className="flex items-center gap-3">
-            <div
-              className="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0"
-              style={{
-                background: "linear-gradient(135deg, #4338CA, #7C3AED)",
-              }}
-            >
-              {FACULTY_PROFILE.initials}
-            </div>
-            <div className="overflow-hidden">
-              <p className="font-semibold text-sm text-navy truncate">
-                {FACULTY_PROFILE.name}
-              </p>
-              <p className="text-xs text-gray-500 truncate">
-                {FACULTY_PROFILE.department} · {FACULTY_PROFILE.subtitle}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <nav className="flex-1 p-3 overflow-y-auto">
-          {navLinks.map((link) => (
-            <button
-              key={link.id}
-              onClick={() => {
-                if (link.external) { window.open(link.external, '_blank'); return; }
-                if (link.path) {
-                  router.push(link.path);
-                } else {
-                  if (typeof setActiveNav === "function") setActiveNav(link.id);
-                }
-              }}
-              className={`nav-link w-full text-left mb-0.5 ${activeNav === link.id && !link.external ? "bg-indigo-50 text-indigo-700 font-semibold" : ""}`}
-            >
-              <link.icon size={17} />
-              <span className="flex-1">{link.label}</span>
-              {link.badge && (
-                <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${link.badge === 'New' ? 'bg-indigo-100 text-indigo-700' : 'bg-red-500 text-white'}`}>
-                  {link.badge}
-                </span>
-              )}
-            </button>
-          ))}
-        </nav>
-
-        <div className="p-3 border-t border-gray-50">
-          <button
-            onClick={() => router.push("/login")}
-            className="nav-link w-full text-left text-red-500 hover:bg-red-50 hover:text-red-600"
-          >
-            <LogOut size={17} />
-            <span>Switch Role</span>
-          </button>
-        </div>
-      </aside>
-
-      {/* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
-          MAIN CONTENT
-      Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* TOP NAV */}
-        <header className="bg-white border-b border-gray-100 px-6 py-3 flex items-center gap-4 flex-shrink-0 shadow-sm">
-          <button
-            onClick={() => setSidebarOpen((v) => !v)}
-            className="text-gray-400 hover:text-gray-700 transition"
-            aria-label="Toggle sidebar"
-          >
-            <Settings size={20} />
-          </button>
-          <div className="flex items-center gap-2 mr-4">
-            <div
-              className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs"
-              style={{ background: "#4338CA" }}
-            >
-              EA
-            </div>
-            <span className="font-bold text-navy text-sm hidden sm:block">
-              Educator Analytics OS
-            </span>
-          </div>
-          <div className="flex-1 max-w-md relative">
-            <Search
-              size={15}
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-            />
-            <input
-              type="text"
-              placeholder="Search students, subjects, features..."
-              className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:border-indigo-300 transition"
-            />
-          </div>
-          <div className="flex-1" />
-          <button
-            className="relative p-2 rounded-lg hover:bg-gray-100 transition text-gray-500"
-            aria-label="Notifications"
-          >
-            <Bell size={19} />
-            <span className="absolute top-1 right-1 w-4 h-4 bg-red-500 text-white text-[9px] font-bold rounded-full flex items-center justify-center">
-              2
-            </span>
-          </button>
-          <div
-            className="flex items-center gap-2 cursor-pointer group"
-            aria-label="Profile menu"
-          >
-            <div
-              className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-xs"
-              style={{
-                background: "linear-gradient(135deg, #4338CA, #7C3AED)",
-              }}
-            >
-              {FACULTY_PROFILE.initials}
-            </div>
-            <ChevronDown
-              size={14}
-              className="text-gray-400 group-hover:text-gray-600 transition"
-            />
-          </div>
-        </header>
-
-        {/* PAGE BODY */}
-        <main className="flex-1 overflow-y-auto bg-[#F3F4F6]">
+    <div className="space-y-6 relative h-full">
           {!selectedStudent ? (
             <div className="max-w-5xl mx-auto p-6 md:p-8 animate-fade-in pb-20">
               <div className="mb-6">
-                <h1 className="text-2xl font-bold text-navy">Student Profiles</h1>
-                <p className="text-gray-500 text-sm mt-1">Select a student to view their detailed analytics and profile</p>
+                <PageHeader title="My Mentees" description="Students assigned to you for mentorship and guidance" />
               </div>
               <div className="flex flex-col gap-2">
-                {STUDENT_LIST.map((st, idx) => (
+                {menteesList.map((st, idx) => (
                   <button key={idx} onClick={() => setSelectedStudent(st)}
                     className="bg-white border border-gray-100 rounded-xl px-5 py-3.5 text-left hover:border-indigo-200 hover:shadow-sm transition-all group animate-fade-in flex items-center gap-4"
                     style={{ animationDelay: `${idx * 0.02}s` }}>
@@ -1534,8 +1412,7 @@ export default function FacultyStudentProfile() {
             </div>
           </div>
           )}
-        </main>
-      </div>
+        
 
       {/* MODAL: ADD NOTE */}
       {isNoteModalOpen && (

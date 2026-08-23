@@ -1,117 +1,83 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { FACULTY_PROFILE } from "@/lib/faculty/mock-data";
+import { apiGet } from '@/lib/shared/api/client';
+import { PageHeader, StatCard, Card, Badge } from '@/components/shared/ui';
 import {
-  Home,
-  BookOpen,
-  Bell,
-  BarChart2,
-  Users,
-  CheckCircle,
-  MessageCircle,
-  FileText,
-  Settings,
-  LogOut,
-  Search,
-  ChevronDown,
-  AlertTriangle,
-  TrendingUp,
-  Target,
-  ExternalLink,
-  MoreHorizontal,
-  ChevronRight,
-  User,
-  Activity,
-  Award,
-  Grid,
-  Zap,
-  AlertCircle,
-  Plug,
-  Menu,
-  Brain,
+  Home, BookOpen, Bell, BarChart2, Users, CheckCircle, MessageCircle,
+  FileText, Settings, LogOut, Search, ChevronDown, AlertTriangle,
+  TrendingUp, Target, ExternalLink, MoreHorizontal, ChevronRight,
+  User, Activity, Award, Grid, Zap, AlertCircle, Plug, Menu, Brain,
 } from "lucide-react";
-
-const navLinks = [
-  { id: 'dashboard',    label: 'Dashboard',            icon: Home,          badge: null,  path: '/faculty' },
-  { id: 'classes',      label: 'My Classes',           icon: BookOpen,      badge: null,  path: '/faculty/my-classes' },
-  { id: 'intelligence', label: 'Student Intelligence', icon: Brain,         badge: 'New', path: '/faculty/student-intelligence' },
-  { id: 'alerts',       label: 'Student Alerts',       icon: AlertCircle,   badge: '5',   path: '/faculty/alerts' },
-  { id: 'analytics',    label: 'Subject Analytics',    icon: Activity,      badge: null,  path: '/faculty/analytics' },
-  { id: 'profiles',     label: 'Student Profiles',     icon: Users,         badge: null,  path: '/faculty/student/profile' },
-  { id: 'co',           label: 'CO Attainment',        icon: CheckCircle,   badge: null,  path: '/faculty/co-attainment' },
-  { id: 'parent',       label: 'Parent Communication', icon: MessageCircle, badge: null,  path: '/faculty/parent-communication' },
-  { id: 'reports',      label: 'Reports',              icon: FileText,      badge: null,  path: '/faculty/reports' },
-  { id: 'assignments',  label: 'Assignments (Moodle)', icon: ExternalLink,  badge: null,  path: null, external: 'http://lms.kiet.edu/moodle/' },
-  { id: 'attendance',   label: 'Attendance (Vidya)',   icon: ExternalLink,  badge: null,  path: null, external: 'https://kiet.cybervidya.net' },
-];
-
-const statCards = [
-  { label: "My Students", value: "243", sub: "Across 4 subjects", icon: Users, tone: 'brand' as const },
-  { label: "Active Alerts", value: "5", sub: "3 high priority", icon: AlertTriangle, tone: 'danger' as const },
-  { label: "Avg Class SPI", value: "67", sub: "+2 from last month", icon: TrendingUp, tone: 'blue' as const },
-  { label: "CO Attainment", value: "74%", sub: "Target is 75%", icon: Target, tone: 'amber' as const },
-];
-
-const studentsNeedingAttention = [
-  {
-    name: "Rohit Sharma",
-    roll: "2CS47",
-    subject: "DBMS",
-    issue: "Score dropped 28%",
-    severity: "HIGH",
-  },
-  {
-    name: "Sneha Patel",
-    roll: "2CS23",
-    subject: "OS",
-    issue: "Attendance 71%",
-    severity: "HIGH",
-  },
-  {
-    name: "Arjun Mehta",
-    roll: "2CS09",
-    subject: "TOC",
-    issue: "3 assignments missed",
-    severity: "HIGH",
-  },
-  {
-    name: "Divya Nair",
-    roll: "2CS31",
-    subject: "DBMS",
-    issue: "Consistent decline",
-    severity: "MEDIUM",
-  },
-  {
-    name: "Karan Joshi",
-    roll: "2CS15",
-    subject: "OS",
-    issue: "Score dropped 15%",
-    severity: "MEDIUM",
-  },
-];
-
-const subjectHealth = [
-  { name: "DBMS", avg: 64, co: 71, risk: 8 },
-  { name: "Operating Systems", avg: 58, co: 67, risk: 11 },
-  { name: "Theory of Computation", avg: 61, co: 69, risk: 7 },
-  { name: "Data Structures", avg: 72, co: 81, risk: 3 },
-];
-
-import { PageHeader, StatCard, Card, Badge } from "@/components/shared/ui";
 
 export default function FacultyDashboard() {
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const [profile, setProfile] = useState<any>(null);
+  const [analytics, setAnalytics] = useState<any>(null);
+  const [mentees, setMentees] = useState<any[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [profData, anData, menteesData] = await Promise.all([
+          apiGet<any>('/api/faculty/profile'),
+          apiGet<any>('/api/faculty/reports/analytics'),
+          apiGet<any[]>('/api/faculty/mentees')
+        ]);
+        setProfile(profData);
+        setAnalytics(anData);
+        setMentees(menteesData);
+      } catch (error) {
+        console.error('Failed to fetch dashboard data', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return <div className="p-8 text-center text-muted">Loading dashboard...</div>;
+  }
+
+  // Derive stats
+  const totalStudents = analytics?.totalStudents || 0;
+  const activeAlerts = mentees.reduce((acc, m) => acc + (m.alerts?.length || 0), 0);
+  const avgClassSpi = mentees.length ? Math.round(mentees.reduce((acc, m) => acc + (m.spi || 0), 0) / mentees.length) : 0;
+  
+  const statCards = [
+    { label: "My Students", value: totalStudents.toString(), sub: `Across ${analytics?.totalClasses || 0} subjects`, icon: Users, tone: 'brand' as const },
+    { label: "Active Alerts", value: activeAlerts.toString(), sub: "Needs attention", icon: AlertTriangle, tone: 'danger' as const },
+    { label: "Avg Mentee SPI", value: avgClassSpi.toString(), sub: "Across all mentees", icon: TrendingUp, tone: 'blue' as const },
+  ];
+
+  const studentsNeedingAttention = mentees
+    .filter(m => m.status === 'Weak' || (m.alerts && m.alerts.length > 0))
+    .map(m => ({
+      name: m.name,
+      roll: m.roll,
+      subject: m.subject,
+      issue: m.alerts?.length > 0 ? m.alerts[0].type : "Low SPI",
+      severity: "HIGH",
+    })).slice(0, 5);
+
+  const subjectHealth = analytics?.subjects ? Object.values(analytics.subjects).map((sub: any) => ({
+    name: sub.fullName,
+    avg: sub.avg,
+    co: sub.co,
+    risk: sub.atRisk
+  })) : [];
 
   return (
     <div className="space-y-6">
       <PageHeader
-        title={`Good morning, ${FACULTY_PROFILE.name}`}
-        description="Friday, 9 May 2026 — You have 2 classes today"
+        title={`Good morning, ${profile?.fullName || 'Professor'}`}
+        description="Here is an overview of your classes and mentees"
       />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6">
         {statCards.map((card, i) => (
           <StatCard
             key={i}
@@ -134,7 +100,7 @@ export default function FacultyDashboard() {
             <Badge tone="red">Priority List</Badge>
           </div>
           <div className="space-y-3">
-            {studentsNeedingAttention.map((s, idx) => (
+            {studentsNeedingAttention.length > 0 ? studentsNeedingAttention.map((s, idx) => (
               <div
                 key={idx}
                 className="flex items-center justify-between p-3 rounded-xl border border-line bg-surface-2 hover:border-brand-soft transition-colors group cursor-pointer"
@@ -160,14 +126,8 @@ export default function FacultyDashboard() {
                   View Profile
                 </span>
               </div>
-            ))}
+            )) : <div className="text-sm text-muted">No students currently need attention.</div>}
           </div>
-          <button
-            onClick={() => router.push("/faculty/alerts")}
-            className="w-full mt-4 py-2 text-xs font-bold text-muted hover:text-content transition border-t border-line pt-4 uppercase tracking-widest"
-          >
-            View All Alerts
-          </button>
         </Card>
 
         {/* Subject Performance */}
