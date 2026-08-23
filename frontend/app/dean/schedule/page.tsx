@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useState } from 'react';
 import { useDeanContext } from '../_context/DeanContext';
@@ -28,10 +28,12 @@ const TYPE_COLORS: Record<string, { bg: string }> = {
 const DAY_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const TIME_SLOTS = Array.from({ length: 11 }, (_, i) => i + 8);
 
+type ViewMode = 'grid' | 'list';
+
 export default function SchedulePage() {
   const { meetings } = useDeanContext();
   const [weekOffset, setWeekOffset] = useState(0);
-  const [viewMode, setViewMode] = useState('grid');
+  const [viewMode, setViewMode] = useState<string>('grid');
   const [selectedMeeting, setSelectedMeeting] = useState<Meeting | null>(null);
 
   const baseDate = new Date(2026, 4, 9);
@@ -134,8 +136,8 @@ export default function SchedulePage() {
             </button>
           </div>
           <div className="flex rounded-xl border border-line overflow-hidden bg-surface">
-            <button onClick={() => setViewMode('grid')} className={cn("h-9 px-4 text-sm font-bold transition flex items-center gap-1.5", viewMode === 'grid' ? 'bg-brand text-surface' : 'text-muted hover:bg-surface-2')}><LayoutGrid size={14} /> Grid</button>
-            <button onClick={() => setViewMode('list')} className={cn("h-9 px-4 text-sm font-bold transition flex items-center gap-1.5", viewMode === 'list' ? 'bg-brand text-surface' : 'text-muted hover:bg-surface-2')}><List size={14} /> List</button>
+            <button onClick={() => setViewMode('grid')} className={cn("h-9 px-4 text-sm font-bold transition flex items-center gap-1.5", "bg-brand text-surface")}> <LayoutGrid size={14} /> Grid</button>
+            <button onClick={() => setViewMode('list')} className={cn("h-9 px-4 text-sm font-bold transition flex items-center gap-1.5", "text-muted hover:bg-surface-2")}> <List size={14} /> List</button>
           </div>
         </div>
       </div>
