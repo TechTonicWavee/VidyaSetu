@@ -29,9 +29,10 @@
  *   - Proxy API route: bypasses CORS restrictions on latexonline.cc.
  */
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback, Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import debounce from 'lodash.debounce';
+import { useSearchParams } from 'next/navigation';
 import {
   FileText, Download, RefreshCw, Code2, Eye, AlertCircle,
   Loader2, CheckCircle2, Clock, ChevronDown
@@ -39,7 +40,7 @@ import {
 import { useAuth } from '@/lib/shared/auth/AuthProvider';
 import { authedFetch } from '@/lib/shared/api/sameOriginFetch';
 import { PageHeader, Button, Badge } from '@/components/shared/ui';
-import { buildJakeResume, StudentData } from '@/components/student/resume/templates/jake';
+import { buildJakeResume, buildJakeResumeFromAdvisor, StudentData } from '@/components/student/resume/templates/jake';
 import PdfPreview from '@/components/student/resume/PdfPreview';
 
 // Lazy-load Monaco so it doesn't block the initial page render.
@@ -99,8 +100,9 @@ type ViewMode = 'split' | 'editor' | 'preview';
 // ---------------------------------------------------------------------------
 // Component
 // ---------------------------------------------------------------------------
-export default function ResumePage() {
+function ResumeBuilderContent() {
   const { student } = useAuth();
+  const searchParams = useSearchParams();
 
   // Current LaTeX source being edited
   const [currentTex, setCurrentTex] = useState<string>('');
@@ -216,7 +218,26 @@ export default function ResumePage() {
         if (json?.success && json.student) {
           // Phase 2: Pass profile data through the Jake template builder.
           const studentData: StudentData = json.student;
-          const tex = buildJakeResume(studentData);
+          let tex;
+          
+          if (searchParams.get('source') === 'advisor') {
+            const draftRaw = sessionStorage.getItem('advisorResumeDraft');
+            if (draftRaw) {
+              try {
+                const draft = JSON.parse(draftRaw);
+                tex = buildJakeResumeFromAdvisor(draft.resumeJson, studentData);
+                sessionStorage.removeItem('advisorResumeDraft');
+              } catch (e) {
+                console.error('Failed to parse advisor resume draft', e);
+                tex = buildJakeResume(studentData);
+              }
+            } else {
+              tex = buildJakeResume(studentData);
+            }
+          } else {
+            tex = buildJakeResume(studentData);
+          }
+
           setCurrentTex(tex);
           setUsingSample(false);
           compilePdf(tex);
@@ -239,7 +260,7 @@ export default function ResumePage() {
 
     loadProfile();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [student?.universityId]);
+  }, [student?.universityId, searchParams]);
 
   // ---------------------------------------------------------------------------
   // Phase 3: Editor onChange handler — immediate state update + debounced compile
@@ -459,5 +480,17 @@ function ViewModeButton({
       {icon}
       {label}
     </button>
+  );
+}
+
+export default function ResumePage() {
+  return (
+    <Suspense fallback={
+      <div className="flex h-full items-center justify-center">
+        <Loader2 className="animate-spin text-[var(--brand)]" size={32} />
+      </div>
+    }>
+      <ResumeBuilderContent />
+    </Suspense>
   );
 }

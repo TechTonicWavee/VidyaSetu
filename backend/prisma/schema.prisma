@@ -59,6 +59,10 @@ model Student {
   teammateApplications TeammateApplication[]
   projectRoles         TeamProjectRole[]
   projectTasks         TeamProjectTask[]
+  ProfileSectionEmbedding       ProfileSectionEmbedding[]
+  StudentSummary                StudentSummary[]
+  ResumeRequest                 ResumeRequest[]
+  ResumeClarificationPreference ResumeClarificationPreference[]
 
   mentorId         String?
   mentor           Faculty?          @relation("FacultyMentees", fields: [mentorId], references: [facultyId])
@@ -469,4 +473,62 @@ model Alert {
   @@index([studentId])
   @@index([facultyId])
   @@map("alerts")
+}
+
+model ProfileSectionEmbedding {
+  id           String                      @id @default(uuid())
+  universityId String
+  student      Student                     @relation(fields: [universityId], references: [universityId])
+  sectionType  String
+  sourceId     String
+  content      String
+  embedding    Unsupported("vector(2048)")
+  updatedAt    DateTime                    @updatedAt
+
+  @@map("profile_section_embeddings")
+}
+
+model StudentSummary {
+  universityId String   @id
+  student      Student  @relation(fields: [universityId], references: [universityId])
+  summaryJson  Json
+  updatedAt    DateTime @updatedAt
+
+  @@map("student_summaries")
+}
+
+model ResumeRequest {
+  id                    String          @id @default(uuid())
+  universityId          String
+  student               Student         @relation(fields: [universityId], references: [universityId])
+  jdText                String
+  jdHash                String
+  extractedRequirements Json?
+  clarificationAnswers  Json?
+  status                String          @default("pending_extraction")
+  createdAt             DateTime        @default(now())
+  versions              ResumeVersion[]
+
+  @@map("resume_requests")
+}
+
+model ResumeVersion {
+  id              String        @id @default(uuid())
+  resumeRequestId String
+  resumeRequest   ResumeRequest @relation(fields: [resumeRequestId], references: [id])
+  resumeJson      Json
+  createdAt       DateTime      @default(now())
+
+  @@map("resume_versions")
+}
+
+model ResumeClarificationPreference {
+  id              String   @id @default(uuid())
+  universityId    String
+  student         Student  @relation(fields: [universityId], references: [universityId])
+  preferenceKey   String
+  preferenceValue String
+  createdAt       DateTime @default(now())
+
+  @@map("resume_clarification_preferences")
 }

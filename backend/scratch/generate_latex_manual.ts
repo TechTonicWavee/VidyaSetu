@@ -1,69 +1,10 @@
-/**
- * Jake's Resume — LaTeX Template Builder
- *
- * Generates a complete LaTeX string from student profile data.
- * Decision: We use string concatenation instead of a template engine
- * because LaTeX has complex escaping rules that generic template engines
- * don't handle well. See decision.md for more details.
- */
+import { PrismaClient } from '@prisma/client';
+import fs from 'fs';
 
-interface Project {
-  id: string;
-  title: string;
-  description?: string | null;
-  techStack?: string[];
-}
+const prisma = new PrismaClient();
 
-interface Certification {
-  name?: string;
-  platform?: string;
-  skills?: string[];
-}
-
-interface Extracurricular {
-  society?: string | null;
-  role?: string | null;
-  achievement?: string | null;
-}
-
-interface Internship {
-  company?: string | null;
-  role?: string | null;
-  duration?: string | null;
-  description?: string | null;
-}
-
-interface Hackathon {
-  name?: string | null;
-  result?: string | null;
-  year?: number | null;
-}
-
-export interface StudentData {
-  fullName: string;
-  branch?: string | null;
-  year?: number | null;
-  section?: string | null;
-  email?: string | null;
-  phone?: string | null;
-  codingProfile?: {
-    github?: string | null;
-    linkedinUrl?: string | null;
-    leetcode?: string | null;
-    codechef?: string | null;
-  } | null;
-  projects?: Project[];
-  certifications?: Certification[];
-  extracurriculars?: Extracurricular[];
-  internships?: Internship[];
-  hackathons?: Hackathon[];
-}
-
-/**
- * Escapes special LaTeX characters in a string so they render correctly.
- * Decision 4 in decision.md: user input MUST be escaped.
- */
-export function escapeLatex(text: string): string {
+// Copy of buildJakeResumeFromAdvisor and its dependencies
+function escapeLatex(text: string): string {
   return text
     .replace(/\\/g, '\\textbackslash{}')
     .replace(/&/g, '\\&')
@@ -89,24 +30,11 @@ function ordinalYear(year: number | null | undefined): string {
   return year + (suffix[(v - 20) % 10] || suffix[v] || suffix[0]) + ' Year';
 }
 
-/**
- * Builds a complete Jake-style LaTeX resume string.
- * This is a large string builder that conditionally includes sections
- * based on whether the student has data for them.
- */
-export function buildJakeResume(student: StudentData): string {
-  const skills = Array.from(
-    new Set([
-      ...(student.projects?.flatMap((p) => p.techStack ?? []) ?? []),
-      ...(student.certifications?.flatMap((c) => c.skills ?? []) ?? []),
-    ])
-  ).slice(0, 20);
-
+function buildJakeResumeFromAdvisor(resumeJson: any, student: any): string {
   const github = student.codingProfile?.github ?? '';
   const linkedin = student.codingProfile?.linkedinUrl ?? '';
   const leetcode = student.codingProfile?.leetcode ?? '';
 
-  // Build contact line
   const contactParts: string[] = [];
   if (student.phone) contactParts.push(safe(student.phone));
   if (student.email) contactParts.push(`\\href{mailto:${safe(student.email)}}{${safe(student.email)}}`);
@@ -194,6 +122,16 @@ export function buildJakeResume(student: StudentData): string {
 
 `;
 
+  // Summary section
+  if (resumeJson.summary) {
+    tex += `
+%-----------SUMMARY-----------
+\\section{Summary}
+${safe(resumeJson.summary)}
+\\vspace{5pt}
+`;
+  }
+
   // Education section
   tex += `
 %-----------EDUCATION-----------
@@ -206,61 +144,60 @@ export function buildJakeResume(student: StudentData): string {
 `;
 
   // Skills section
-  if (skills.length > 0) {
+  if (resumeJson.matchedSkills && resumeJson.matchedSkills.length > 0) {
     tex += `
 %-----------TECHNICAL SKILLS-----------
 \\section{Technical Skills}
  \\begin{itemize}[leftmargin=0.15in, label={}]
     \\small{\\item{
-     \\textbf{Languages/Technologies}{: ${safe(skills.join(', '))}}
+     \\textbf{Matched Skills}{: ${safe(resumeJson.matchedSkills.join(', '))}}
     }}
  \\end{itemize}
 `;
   }
 
-  // Internships
-  if (student.internships && student.internships.length > 0) {
+  // Experience section
+  if (resumeJson.experience && resumeJson.experience.length > 0) {
     tex += `
-%-----------INTERNSHIPS-----------
-\\section{Internships}
+%-----------EXPERIENCE-----------
+\\section{Experience}
   \\resumeSubHeadingListStart
 `;
-    for (const intern of student.internships) {
+    for (const exp of resumeJson.experience) {
       tex += `
     \\resumeSubheading
-      {${safe(intern.company ?? 'Company')}}{${safe(intern.duration ?? '')}}
-      {${safe(intern.role ?? 'Intern')}}{}
+      {${safe(exp.title)}}{}{}
+      {}{}
 `;
-      if (intern.description) {
-        tex += `      \\resumeItemListStart
-        \\resumeItem{${safe(intern.description)}}
-      \\resumeItemListEnd
-`;
+      if (exp.bullets && exp.bullets.length > 0) {
+        tex += `      \\resumeItemListStart\n`;
+        for (const bullet of exp.bullets) {
+          tex += `        \\resumeItem{${safe(bullet)}}\n`;
+        }
+        tex += `      \\resumeItemListEnd\n`;
       }
     }
     tex += `  \\resumeSubHeadingListEnd\n`;
   }
 
-  // Projects
-  if (student.projects && student.projects.length > 0) {
+  // Projects section
+  if (resumeJson.projects && resumeJson.projects.length > 0) {
     tex += `
 %-----------PROJECTS-----------
 \\section{Projects}
     \\resumeSubHeadingListStart
 `;
-    for (const proj of student.projects) {
-      const techLine = proj.techStack && proj.techStack.length > 0
-        ? `\\emph{${safe(proj.techStack.join(', '))}}`
-        : '';
+    for (const proj of resumeJson.projects) {
       tex += `
       \\resumeProjectHeading
-          {\\textbf{${safe(proj.title)}} $|$ ${techLine}}{}
+          {\\textbf{${safe(proj.title)}}}{}
 `;
-      if (proj.description) {
-        tex += `          \\resumeItemListStart
-            \\resumeItem{${safe(proj.description)}}
-          \\resumeItemListEnd
-`;
+      if (proj.bullets && proj.bullets.length > 0) {
+        tex += `          \\resumeItemListStart\n`;
+        for (const bullet of proj.bullets) {
+          tex += `            \\resumeItem{${safe(bullet)}}\n`;
+        }
+        tex += `          \\resumeItemListEnd\n`;
       }
     }
     tex += `    \\resumeSubHeadingListEnd\n`;
@@ -275,21 +212,6 @@ export function buildJakeResume(student: StudentData): string {
 `;
     for (const cert of student.certifications) {
       tex += `    \\resumeSubItem{\\textbf{${safe(cert.name ?? 'Certification')}}${cert.platform ? ` -- ${safe(cert.platform)}` : ''}${cert.skills && cert.skills.length > 0 ? ` (${safe(cert.skills.join(', '))})` : ''}}\n`;
-    }
-    tex += `  \\resumeSubHeadingListEnd\n`;
-  }
-
-  // Hackathons
-  if (student.hackathons && student.hackathons.length > 0) {
-    tex += `
-%-----------HACKATHONS-----------
-\\section{Hackathons}
-  \\resumeSubHeadingListStart
-`;
-    for (const hack of student.hackathons) {
-      tex += `    \\resumeSubheading
-      {${safe(hack.name ?? 'Hackathon')}}{${hack.year ? String(hack.year) : ''}}
-      {${safe(hack.result ?? '')}}{}\n`;
     }
     tex += `  \\resumeSubHeadingListEnd\n`;
   }
@@ -314,20 +236,30 @@ export function buildJakeResume(student: StudentData): string {
   return tex;
 }
 
-/**
- * Builds a resume using tailored data from the AI Advisor, merging it with base profile data.
- */
-export function buildJakeResumeFromAdvisor(advisorData: any, originalData: StudentData): string {
-  // Merge the tailored projects/skills from the advisor with the base student data
-  const mergedData: StudentData = {
-    ...originalData,
-    projects: advisorData.projects || originalData.projects,
-    internships: advisorData.internships || originalData.internships,
-  };
+async function main() {
+  const universityId = "202401100200243";
   
-  // If the advisor provided specific matched skills, we can create a fake project or inject them
-  // For now, Jake template derives skills from projects/certifications automatically.
-  // We'll let the standard buildJakeResume handle the formatting.
-  
-  return buildJakeResume(mergedData);
+  const student = await prisma.student.findUnique({
+    where: { universityId },
+    include: {
+      codingProfile: true,
+      certifications: true,
+      extracurriculars: true,
+      hackathons: true,
+      internships: true,
+    }
+  });
+
+  const resumeJson = JSON.parse(fs.readFileSync('./scratch/manual_resume.json', 'utf8'));
+
+  const tex = buildJakeResumeFromAdvisor(resumeJson, student);
+  console.log(tex);
 }
+
+main()
+  .then(async () => await prisma.$disconnect())
+  .catch(async (e) => {
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
+  });

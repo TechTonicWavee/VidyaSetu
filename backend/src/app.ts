@@ -1,4 +1,5 @@
 import express from 'express';
+// Trigger reload
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { env } from './shared/config/env';
@@ -10,6 +11,7 @@ import { inviteRouter } from './modules/student/routes/invite.routes';
 import { directoryRouter } from './modules/student/routes/directory.routes';
 import { notificationRouter } from './modules/student/routes/notification.routes';
 import { attendanceRouter } from './modules/shared/attendance/routes/attendance.routes';
+import { advisorRouter } from './modules/student/routes/advisor.routes';
 
 import facultyRouter from './modules/faculty/routes/faculty.routes';
 
@@ -29,6 +31,7 @@ export function createApp() {
   app.use('/api/directory', directoryRouter);
   app.use('/api/notifications', notificationRouter);
   app.use('/api/attendance', attendanceRouter);
+  app.use('/api/advisor', advisorRouter);
   app.use('/api/faculty', facultyRouter);
 
   app.use(notFoundHandler);

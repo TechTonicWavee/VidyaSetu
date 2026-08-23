@@ -1,0 +1,33 @@
+{
+  "summary": "Full Stack Engineer specializing in React, Node.js, and PostgreSQL, with proven experience building scalable, data-driven platforms. Architected production-grade RESTful APIs and responsive component-based UIs for applications serving hundreds of active users. Strong problem solver with hands-on experience in modern cloud deployments, CI/CD pipelines, and integrating third-party APIs.",
+  "matchedSkills": [
+    "React.js",
+    "Node.js",
+    "PostgreSQL",
+    "RESTful API Design",
+    "Cloud Platforms (Vercel, Supabase)",
+    "Agile Methodology",
+    "CI/CD Pipelines"
+  ],
+  "experience": [],
+  "projects": [
+    {
+      "title": "VidyaSetu - AI Powered Student Intelligence Platform | Next.js, Node.js, Prisma, PostgreSQL",
+      "bullets": [
+        "Led full-stack development of the official Computer Science Department platform, serving 500+ students with centralized profile and placement data using React and Node.js.",
+        "Engineered robust RESTful APIs and implemented complex relational data modeling in PostgreSQL via Prisma ORM.",
+        "Deployed the application to cloud platforms using CI/CD pipelines, ensuring high availability and seamless iterative updates.",
+        "Designed and analyzed an automated assessment system, combining GitHub, LeetCode, and academic data into one objective performance metric."
+      ]
+    },
+    {
+      "title": "ReplyPilot AI | React, FastAPI, Supabase PostgreSQL, LangGraph",
+      "bullets": [
+        "Architected a production SaaS application featuring a highly responsive, component-based UI in React for dashboard analytics.",
+        "Engineered the backend using FastAPI and Supabase PostgreSQL, processing 100+ daily comment replies with sub-5 second end-to-end latency.",
+        "Integrated Meta Webhook and Graph API with Cloudflare Tunnel, demonstrating strong capability in third-party API and potential payment gateway integrations.",
+        "Utilized agile development practices to rapidly iterate on a RAG pipeline, cutting irrelevant LLM calls by 40% through intent-based routing."
+      ]
+    }
+  ]
+}
