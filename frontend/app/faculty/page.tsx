@@ -36,7 +36,7 @@ import {
 const navLinks = [
   { id: 'dashboard',    label: 'Dashboard',            icon: Home,          badge: null,  path: '/faculty' },
   { id: 'classes',      label: 'My Classes',           icon: BookOpen,      badge: null,  path: '/faculty/my-classes' },
-  { id: 'intelligence', label: 'Student Intelligence', icon: Brain,         badge: 'New', path: '/faculty/student-intelligence' },
+  { id: 'intelligence', label: 'Student Reports', icon: Brain, path: '/faculty/student-reports' },
   { id: 'alerts',       label: 'Student Alerts',       icon: AlertCircle,   badge: '5',   path: '/faculty/alerts' },
   { id: 'analytics',    label: 'Subject Analytics',    icon: Activity,      badge: null,  path: '/faculty/analytics' },
   { id: 'profiles',     label: 'Student Profiles',     icon: Users,         badge: null,  path: '/faculty/student/profile' },
@@ -162,12 +162,7 @@ export default function FacultyDashboard() {
               </div>
             ))}
           </div>
-          <button
-            onClick={() => router.push("/faculty/alerts")}
-            className="w-full mt-4 py-2 text-xs font-bold text-muted hover:text-content transition border-t border-line pt-4 uppercase tracking-widest"
-          >
-            View All Alerts
-          </button>
+
         </Card>
 
         {/* Subject Performance */}
