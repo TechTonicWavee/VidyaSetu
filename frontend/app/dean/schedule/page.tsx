@@ -84,8 +84,8 @@ export default function SchedulePage() {
               </button>
             </div>
             <div className="flex rounded-xl border border-line overflow-hidden bg-surface">
-              <button onClick={() => setViewMode('grid')} className={cn("h-9 px-4 text-sm font-bold transition flex items-center gap-1.5", viewMode === 'grid' ? 'bg-brand text-surface' : 'text-muted hover:bg-surface-2')}><LayoutGrid size={14} /> Grid</button>
-              <button onClick={() => setViewMode('list')} className={cn("h-9 px-4 text-sm font-bold transition flex items-center gap-1.5", viewMode === 'list' ? 'bg-brand text-surface' : 'text-muted hover:bg-surface-2')}><List size={14} /> List</button>
+              <button onClick={() => setViewMode('grid')} className="h-9 px-4 text-sm font-bold transition flex items-center gap-1.5 text-muted hover:bg-surface-2"><LayoutGrid size={14} /> Grid</button>
+              <button onClick={() => setViewMode('list')} className="h-9 px-4 text-sm font-bold transition flex items-center gap-1.5 bg-brand text-surface"><List size={14} /> List</button>
             </div>
           </div>
         </div>
