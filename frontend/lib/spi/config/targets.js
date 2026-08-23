@@ -1,17 +1,17 @@
 
 const targets = {
     leetcode: {
-        1: { medium: 100, hard: 15, contest: 1000 },
-        2: { medium: 100, hard: 15, contest: 1000 }, // Sem 1 = Sem 2
+        1: { medium: 75,  hard: 11, contest: 1000 },
+        2: { medium: 75,  hard: 11, contest: 1000 }, // Sem 1 = Sem 2
 
-        3: { medium: 200, hard: 30, contest: 1100 },
-        4: { medium: 300, hard: 45, contest: 1200 },
+        3: { medium: 150, hard: 23, contest: 1100 },
+        4: { medium: 225, hard: 34, contest: 1200 },
 
-        5: { medium: 400, hard: 60, contest: 1400 },
-        6: { medium: 450, hard: 68, contest: 1500 },
+        5: { medium: 300, hard: 45, contest: 1400 },
+        6: { medium: 338, hard: 51, contest: 1500 },
 
-        7: { medium: 500, hard: 75, contest: 1600 },
-        8: { medium: 500, hard: 75, contest: 1600 }, // Sem 7 = Sem 8
+        7: { medium: 375, hard: 56, contest: 1600 },
+        8: { medium: 375, hard: 56, contest: 1600 }, // Sem 7 = Sem 8
     },
 
     github: {
@@ -19,7 +19,72 @@ const targets = {
         repositoryRate: 2,     // 2 quality repos per eligible semester
     },
 
-    academics: {},
+    academics: {
+        1: {
+            bands: [
+                { threshold: 8.5, operator: '>', score: 100 },
+                { threshold: 8.0, operator: '>=', score: 80 },
+                { threshold: 7.5, operator: '>=', score: 70 },
+                { threshold: 0, operator: '>=', score: 50 },
+            ]
+        },
+        2: {
+            bands: [
+                { threshold: 8.5, operator: '>', score: 100 },
+                { threshold: 8.0, operator: '>=', score: 80 },
+                { threshold: 7.5, operator: '>=', score: 70 },
+                { threshold: 0, operator: '>=', score: 50 },
+            ]
+        },
+        3: {
+            bands: [
+                { threshold: 8.5, operator: '>', score: 100 },
+                { threshold: 8.0, operator: '>=', score: 80 },
+                { threshold: 7.5, operator: '>=', score: 70 },
+                { threshold: 0, operator: '>=', score: 50 },
+            ]
+        },
+        4: {
+            bands: [
+                { threshold: 8.5, operator: '>', score: 100 },
+                { threshold: 8.0, operator: '>=', score: 80 },
+                { threshold: 7.5, operator: '>=', score: 70 },
+                { threshold: 0, operator: '>=', score: 50 },
+            ]
+        },
+        5: {
+            bands: [
+                { threshold: 8.5, operator: '>', score: 100 },
+                { threshold: 8.0, operator: '>=', score: 80 },
+                { threshold: 7.5, operator: '>=', score: 70 },
+                { threshold: 0, operator: '>=', score: 50 },
+            ]
+        },
+        6: {
+            bands: [
+                { threshold: 8.5, operator: '>', score: 100 },
+                { threshold: 8.0, operator: '>=', score: 80 },
+                { threshold: 7.5, operator: '>=', score: 70 },
+                { threshold: 0, operator: '>=', score: 50 },
+            ]
+        },
+        7: {
+            bands: [
+                { threshold: 8.5, operator: '>', score: 100 },
+                { threshold: 8.0, operator: '>=', score: 80 },
+                { threshold: 7.5, operator: '>=', score: 70 },
+                { threshold: 0, operator: '>=', score: 50 },
+            ]
+        },
+        8: {
+            bands: [
+                { threshold: 8.5, operator: '>', score: 100 },
+                { threshold: 8.0, operator: '>=', score: 80 },
+                { threshold: 7.5, operator: '>=', score: 70 },
+                { threshold: 0, operator: '>=', score: 50 },
+            ]
+        },
+    },
 
     internships: {
         // Semester 1–3: First & Second year (early) — 0 internships expected

@@ -4,13 +4,14 @@ import { useState, useEffect, type ChangeEvent } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   Clock, BookOpen, CheckCircle, Folder,
-  Cpu, Edit2, Activity, Award, TrendingUp, Target, 
-  MapPin, Mail, Phone, Calendar, Briefcase, Code2, FileText, ChevronRight
+  Cpu, Edit2, Activity, Award, TrendingUp,
+  Briefcase, Code2, FileText, ChevronRight,
+  ExternalLink, Users, Zap, GraduationCap
 } from 'lucide-react'
 import getInitials from '@/lib/getInitials'
 import { useAuth } from '../../../lib/auth/AuthProvider'
 import { authedFetch } from '../../../lib/api/sameOriginFetch'
-import { Card, Button, Tabs, Badge } from '@/components/ui'
+import { Card, Tabs, Badge } from '@/components/ui'
 import { cn } from '@/lib/utils/cn'
 
 interface StudentProfileData {
@@ -53,22 +54,20 @@ interface StudentProfileData {
 }
 
 const TABS = ['Overview', 'Academics', 'Skills & Projects', 'Extracurriculars', 'Alerts & Notes']
-
 const TEAM_STATUSES = ['Open to Team Up', 'In a Team', 'Creating a Team']
 
-function EmptyCard({ icon: Icon, title, subtitle }: { icon: typeof BookOpen; title: string; subtitle?: string }) {
+function EmptyState({ icon: Icon, title, subtitle }: { icon: typeof BookOpen; title: string; subtitle?: string }) {
   return (
-    <div className="flex flex-col items-center justify-center py-16 text-center bg-surface-2/50 rounded-2xl border border-dashed border-line/60">
-      <div className="w-12 h-12 bg-surface border border-line shadow-sm rounded-2xl flex items-center justify-center mb-4 text-muted">
-        <Icon size={24} />
+    <div className="flex flex-col items-center justify-center py-12 text-center">
+      <div className="w-10 h-10 bg-surface-2 border border-line rounded-xl flex items-center justify-center mb-3 text-muted">
+        <Icon size={18} />
       </div>
-      <p className="text-sm font-bold text-content">{title}</p>
-      {subtitle && <p className="text-xs text-muted mt-1.5 max-w-[250px] mx-auto leading-relaxed">{subtitle}</p>}
+      <p className="text-sm font-semibold text-content-2">{title}</p>
+      {subtitle && <p className="text-xs text-muted mt-1 max-w-xs mx-auto leading-relaxed">{subtitle}</p>}
     </div>
   )
 }
 
-// Safely pull a string[] section out of the (untyped) parsed-resume JSON.
 function resumeList(resumeParsed: unknown, key: string): string[] {
   const rp = resumeParsed as Record<string, unknown> | null | undefined
   const val = rp?.[key]
@@ -98,7 +97,6 @@ export default function StudentProfile() {
     } else {
       setLoading(false)
     }
-
     const savedStatus = localStorage.getItem('student_team_status')
     if (savedStatus) setTeamStatus(savedStatus)
   }, [authStudent])
@@ -109,8 +107,7 @@ export default function StudentProfile() {
     localStorage.setItem('student_team_status', val)
   }
 
-  const initials = student?.fullName ? getInitials(student.fullName) : 'S'
-  // Resume-parsed fallbacks (shown when the structured DB tables are empty).
+  const initials = student?.fullName ? getInitials(student.fullName) : (loading ? '…' : 'S')
   const resumeProjects = resumeList(student?.resumeParsed, 'projects')
   const resumeActivities = [
     ...resumeList(student?.resumeParsed, 'leadership'),
@@ -118,153 +115,186 @@ export default function StudentProfile() {
   ]
   const projectsCount = (student?.projects?.length ?? 0) || resumeProjects.length
   const spiValue = student?.spiScore != null ? Number(student.spiScore).toFixed(1) : '—'
-  const branchAndYear = student?.branch && student?.year
-    ? `${student.branch} · ${student.year} Year${student.section ? ` · Section ${student.section}` : ''}`
-    : '—'
+  const attendanceValue = student?.attendance != null ? `${Math.round(student.attendance * 100)}%` : '—'
+  const cgpaValue = student?.cgpa != null ? Number(student.cgpa).toFixed(2) : '—'
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6 animate-fade-in pb-12">
+    <div className="max-w-4xl mx-auto pb-16 space-y-5">
 
-      {/* ── MINIMALIST HERO ─────────────────────────────────────────── */}
-      <div className="relative mb-10">
-        {/* Cover Area */}
-        <div className="h-44 sm:h-52 rounded-t-[2rem] bg-gradient-to-tr from-surface-3 to-surface border-x border-t border-line/60 relative overflow-hidden">
-          <div className="absolute inset-0 bg-surface-3/30 backdrop-blur-3xl mix-blend-overlay"></div>
-        </div>
-        
-        {/* Profile Card Info */}
-        <div className="bg-surface rounded-b-[2rem] border border-line/60 shadow-sm p-8 pt-0 relative z-10">
-          <div className="flex flex-col md:flex-row gap-6 md:items-end -mt-16 sm:-mt-20 mb-8">
-             {/* Floating Avatar */}
-             <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-[2rem] flex items-center justify-center text-brand-fg font-extrabold text-5xl sm:text-6xl shadow-xl border-[6px] border-surface bg-brand flex-shrink-0 relative">
-               {initials}
-               <div className="absolute bottom-2 right-2 w-5 h-5 rounded-full bg-success border-4 border-surface shadow-sm"></div>
-             </div>
-             
-             {/* Name & Basic Info */}
-             <div className="flex-1 pb-1 text-center md:text-left">
-                <h1 className="text-3xl sm:text-4xl font-extrabold text-content tracking-tight">{loading ? '…' : (student?.fullName ?? 'Student')}</h1>
-                <p className="text-content-2 font-medium mt-2 flex items-center justify-center md:justify-start gap-2 text-sm sm:text-base">
-                  <BookOpen size={16} className="text-muted"/> {branchAndYear}
-                </p>
-             </div>
-             
-             {/* Actions */}
-             <div className="flex items-center justify-center md:justify-end gap-3 pb-2 w-full md:w-auto">
-                <div className="relative">
-                  <select
-                    value={teamStatus}
-                    onChange={handleStatusChange}
-                    className="appearance-none bg-surface-2 text-content-2 border border-line hover:border-line-strong rounded-xl text-sm font-semibold pl-4 pr-10 py-2.5 outline-none cursor-pointer transition-all shadow-sm w-full sm:w-auto"
-                  >
-                    {TEAM_STATUSES.map(s => (
-                      <option key={s} value={s}>{s}</option>
-                    ))}
-                  </select>
-                  <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-muted">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                  </div>
-                </div>
-                <Button
-                  variant="secondary"
-                  icon={Edit2}
-                  onClick={() => router.push('/student/profile/edit')}
-                  className="rounded-xl shadow-sm bg-surface"
+      {/* ── PROFILE HERO ─────────────────────────────── */}
+      <div className="rounded-2xl border border-line bg-surface shadow-sm overflow-hidden">
+
+        {/* Thin color band at top — brand identity, not full cover */}
+        <div className="h-2 w-full bg-gradient-to-r from-brand to-brand-accent" />
+
+        <div className="p-6">
+          {/* Top row: avatar + name + actions */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-5 mb-6">
+            {/* Avatar */}
+            <div className="w-16 h-16 rounded-2xl flex-shrink-0 flex items-center justify-center
+                            text-brand-fg font-bold text-xl tracking-wide
+                            bg-gradient-to-br from-brand to-brand-600 shadow-md select-none">
+              {initials}
+            </div>
+
+            {/* Name & meta */}
+            <div className="flex-1 min-w-0">
+              <h1 className="text-xl font-bold text-content leading-snug">
+                {loading ? 'Loading…' : (student?.fullName ?? 'Student')}
+              </h1>
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1">
+                {student?.branch && (
+                  <span className="inline-flex items-center gap-1.5 text-xs text-muted">
+                    <GraduationCap size={13} className="text-brand" />
+                    {student.branch}
+                  </span>
+                )}
+                {student?.year && (
+                  <span className="text-xs text-muted">Year {student.year}</span>
+                )}
+                {student?.section && (
+                  <span className="text-xs text-muted">Section {student.section}</span>
+                )}
+                {!student?.branch && !loading && (
+                  <span className="text-xs text-muted italic">Branch not set — edit your profile</span>
+                )}
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <div className="relative">
+                <select
+                  value={teamStatus}
+                  onChange={handleStatusChange}
+                  className="appearance-none bg-surface-2 text-content-2 border border-line
+                             rounded-xl text-xs font-medium pl-3 pr-7 py-2.5 outline-none
+                             cursor-pointer hover:border-brand/40 transition-colors
+                             focus:ring-2 focus:ring-brand/20"
                 >
-                  Edit
-                </Button>
-             </div>
+                  {TEAM_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
+                </select>
+                <ChevronRight size={11} className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-muted rotate-90" />
+              </div>
+              <button
+                onClick={() => router.push('/student/profile/edit')}
+                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold
+                           bg-brand text-brand-fg hover:bg-brand-600 transition-colors shadow-sm"
+              >
+                <Edit2 size={12} />
+                Edit Profile
+              </button>
+            </div>
           </div>
-          
-          {/* Stats Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-8 border-t border-line/40">
-              {[
-                { label: 'SPI Score', value: spiValue, icon: Activity },
-                { label: 'Attendance', value: student?.attendance != null ? `${Math.round(student.attendance * 100)}%` : '—', icon: CheckCircle },
-                { label: 'CGPA', value: student?.cgpa != null ? Number(student.cgpa).toFixed(2) : '—', icon: TrendingUp },
-               { label: 'Projects', value: String(projectsCount), icon: Folder },
-             ].map(({ label, value, icon: Icon }) => (
-               <div key={label} className="group relative rounded-2xl p-[1px] transition-all duration-300 hover:shadow-2xl hover:shadow-brand/20 hover:-translate-y-1 overflow-hidden bg-gradient-to-b from-line-strong/80 via-line/20 to-transparent">
-                 <div className="absolute inset-0 bg-gradient-to-b from-brand/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                 <div className="relative h-full bg-surface-2/90 backdrop-blur-md group-hover:bg-surface rounded-[15px] p-5 flex flex-col justify-center transition-colors">
-                   <div className="flex items-center justify-between mb-2">
-                     <p className="text-xs font-bold text-muted uppercase tracking-widest">{label}</p>
-                     <Icon size={16} className="text-muted group-hover:text-brand transition-colors relative z-10" />
-                   </div>
-                   <p className="text-3xl font-extrabold text-content">{value}</p>
-                 </div>
-               </div>
-             ))}
+
+          {/* Stats grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {[
+              { label: 'SPI Score', value: spiValue, icon: Zap, accent: 'text-brand bg-brand-soft border-brand/20' },
+              { label: 'Attendance', value: attendanceValue, icon: CheckCircle, accent: 'text-success bg-success-soft border-success/20' },
+              { label: 'CGPA', value: cgpaValue, icon: TrendingUp, accent: 'text-info bg-info-soft border-info/20' },
+              { label: 'Projects', value: String(projectsCount), icon: Folder, accent: 'text-warning bg-warning-soft border-warning/20' },
+            ].map(({ label, value, icon: Icon, accent }) => (
+              <div key={label}
+                className="flex items-center gap-3 p-4 rounded-xl border border-line/60 bg-surface-2/40 hover:bg-surface-2/80 transition-colors">
+                <div className={cn('w-9 h-9 rounded-xl border flex items-center justify-center flex-shrink-0', accent)}>
+                  <Icon size={16} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[10px] font-semibold text-muted uppercase tracking-wider leading-none mb-1">{label}</p>
+                  <p className="text-lg font-bold text-content leading-none">{value}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* ── TABS ─────────────────────────────────────────── */}
-      <div className="px-2">
+      {/* ── TABS ─────────────────────────────────────── */}
+      <div className="border-b border-line">
         <Tabs
           tabs={TABS.map(t => ({ id: t, label: t }))}
           active={activeTab}
           onChange={setActiveTab}
-          className="mb-8"
         />
       </div>
 
-      {/* ── TAB: OVERVIEW ────────────────────────────────── */}
+      {/* ── TAB: OVERVIEW ────────────────────────────── */}
       {activeTab === 'Overview' && (
-        <div className="animate-fade-in space-y-8">
-          <Card className="shadow-sm border-line/60 p-8 rounded-3xl">
-            <h2 className="text-lg font-extrabold text-content mb-6">Academic Snapshot</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-5 mb-8">
+        <div className="space-y-4 animate-fade-in">
+          <Card className="p-5 rounded-2xl border-line/60 shadow-sm">
+            <p className="text-xs font-semibold text-muted uppercase tracking-widest mb-4">Academic Snapshot</p>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
               {[
-                { label: 'Semester', value: student?.semester ? `${student.semester}th` : (student?.year ? `${student.year * 2}th` : '—') },
-                { label: 'Cumulative CGPA', value: student?.cgpa != null ? Number(student.cgpa).toFixed(2) : '—' },
-                { label: 'Credits Completed', value: '—' },
+                { label: 'Semester', value: student?.semester ? `Sem ${student.semester}` : (student?.year ? `Sem ${student.year * 2}` : '—') },
+                { label: 'CGPA', value: cgpaValue },
+                { label: 'Credits', value: '—' },
                 { label: 'Theory / Practical', value: '— / —' },
               ].map(({ label, value }) => (
-                <div key={label} className="group relative rounded-2xl p-[1px] transition-all duration-300 overflow-hidden bg-gradient-to-b from-line-strong/80 via-line/20 to-transparent">
-                  <div className="relative h-full bg-surface-2/50 backdrop-blur-md group-hover:bg-surface rounded-[15px] p-5 pl-6 transition-colors">
-                    <div className="absolute left-0 top-0 bottom-0 w-1 bg-line/50 group-hover:bg-brand transition-colors rounded-l-[15px]"></div>
-                    <p className="text-[11px] text-muted font-bold tracking-widest uppercase mb-1.5">{label}</p>
-                    <p className="text-2xl font-extrabold text-content">{value}</p>
-                  </div>
+                <div key={label} className="p-3.5 rounded-xl bg-surface-2/50 border border-line/50">
+                  <p className="text-[10px] text-muted font-semibold uppercase tracking-wider mb-1.5">{label}</p>
+                  <p className="text-base font-bold text-content">{value}</p>
                 </div>
               ))}
             </div>
-            {/* Pending alert styled nicely */}
-            <div className="bg-info-soft border border-info/20 rounded-2xl p-5 flex gap-4 items-start shadow-sm">
-              <div className="p-2 bg-white/50 dark:bg-black/20 rounded-xl">
-                <Clock size={20} className="text-info" />
-              </div>
+            <div className="flex items-start gap-3 p-3.5 bg-brand-soft border border-brand/15 rounded-xl">
+              <Clock size={15} className="text-brand mt-0.5 flex-shrink-0" />
               <div>
-                <h4 className="text-sm font-bold text-content mb-1">Evaluation Pending</h4>
-                <p className="text-sm text-content-2 leading-relaxed max-w-2xl">
-                  Your performance summaries will automatically populate here once your semester assessments and final grades are uploaded by the administration.
+                <p className="text-xs font-semibold text-content">Evaluation Pending</p>
+                <p className="text-xs text-muted mt-0.5 leading-relaxed">
+                  Performance summaries will populate once semester grades are uploaded by administration.
                 </p>
               </div>
             </div>
           </Card>
+
+          {student?.codingProfile && (student.codingProfile.github || student.codingProfile.leetcode || student.codingProfile.codechef) && (
+            <Card className="p-5 rounded-2xl border-line/60 shadow-sm">
+              <p className="text-xs font-semibold text-muted uppercase tracking-widest mb-3">Connected Platforms</p>
+              <div className="flex flex-wrap gap-2">
+                {student.codingProfile.github && (
+                  <a href={`https://github.com/${student.codingProfile.github}`} target="_blank" rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-3.5 py-2 bg-[#24292e] text-white rounded-xl text-xs font-semibold hover:opacity-85 transition-opacity">
+                    <Code2 size={13} /> GitHub <ExternalLink size={10} className="opacity-50" />
+                  </a>
+                )}
+                {student.codingProfile.leetcode && (
+                  <a href={`https://leetcode.com/${student.codingProfile.leetcode}`} target="_blank" rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-3.5 py-2 bg-[#FFA116]/10 border border-[#FFA116]/30 text-[#b36b00] dark:text-[#FFA116] rounded-xl text-xs font-semibold hover:bg-[#FFA116]/15 transition-colors">
+                    <Cpu size={13} /> LeetCode <ExternalLink size={10} className="opacity-50" />
+                  </a>
+                )}
+                {student.codingProfile.codechef && (
+                  <a href={`https://codechef.com/users/${student.codingProfile.codechef}`} target="_blank" rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-3.5 py-2 bg-brand-soft border border-brand/20 text-brand rounded-xl text-xs font-semibold hover:bg-brand/10 transition-colors">
+                    <Award size={13} /> CodeChef <ExternalLink size={10} className="opacity-50" />
+                  </a>
+                )}
+              </div>
+            </Card>
+          )}
         </div>
       )}
 
-      {/* ── TAB: ACADEMICS ───────────────────────────────── */}
+      {/* ── TAB: ACADEMICS ───────────────────────────── */}
       {activeTab === 'Academics' && (
-        <div className="space-y-6 animate-fade-in">
-          <Card className="shadow-sm border-line/60 rounded-3xl p-8">
-            <h2 className="text-lg font-extrabold text-content mb-6">Semester Trend</h2>
-            <EmptyCard icon={TrendingUp} title="No trend data available" subtitle="Check back after mid-semester evaluations." />
+        <div className="space-y-4 animate-fade-in">
+          <Card className="p-5 rounded-2xl border-line/60 shadow-sm">
+            <p className="text-xs font-semibold text-muted uppercase tracking-widest mb-4">Semester Trend</p>
+            <EmptyState icon={TrendingUp} title="No trend data available" subtitle="Check back after mid-semester evaluations." />
           </Card>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card className="shadow-sm border-line/60 rounded-3xl p-8">
-              <h2 className="text-lg font-extrabold text-content mb-6">Subject Breakdown</h2>
-              <EmptyCard icon={BookOpen} title="No subjects recorded" />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <Card className="p-5 rounded-2xl border-line/60 shadow-sm">
+              <p className="text-xs font-semibold text-muted uppercase tracking-widest mb-4">Subject Breakdown</p>
+              <EmptyState icon={BookOpen} title="No subjects recorded" />
             </Card>
-            <Card className="shadow-sm border-line/60 rounded-3xl p-8">
-              <h2 className="text-lg font-extrabold text-content mb-6">Assessment Performance</h2>
-              <div className="grid grid-cols-2 gap-4">
+            <Card className="p-5 rounded-2xl border-line/60 shadow-sm">
+              <p className="text-xs font-semibold text-muted uppercase tracking-widest mb-4">Assessment Performance</p>
+              <div className="grid grid-cols-2 gap-3">
                 {['Theory Exams', 'Assignments', 'Practicals', 'Projects'].map(label => (
-                  <div key={label} className="p-5 rounded-2xl bg-surface-2/50 border border-line/40 hover:bg-surface-2 transition-colors cursor-default">
-                    <p className="text-xs text-muted font-bold tracking-widest uppercase mb-2">{label}</p>
-                    <p className="text-3xl font-extrabold text-content">—</p>
+                  <div key={label} className="p-3.5 rounded-xl bg-surface-2/50 border border-line/50">
+                    <p className="text-[10px] text-muted font-semibold uppercase tracking-wider mb-1.5">{label}</p>
+                    <p className="text-lg font-bold text-content">—</p>
                   </div>
                 ))}
               </div>
@@ -273,135 +303,157 @@ export default function StudentProfile() {
         </div>
       )}
 
-      {/* ── TAB: SKILLS & PROJECTS ───────────────────────── */}
+      {/* ── TAB: SKILLS & PROJECTS ───────────────────── */}
       {activeTab === 'Skills & Projects' && (
-        <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 animate-fade-in">
-          
-          <div className="xl:col-span-2 space-y-6">
-            <Card className="shadow-sm border-line/60 rounded-3xl p-8">
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="text-lg font-extrabold text-content">Project Portfolio</h2>
-                <Badge tone="brand" className="px-3 py-1">{projectsCount} Total</Badge>
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 animate-fade-in">
+          <div className="xl:col-span-2">
+            <Card className="p-5 rounded-2xl border-line/60 shadow-sm h-full">
+              <div className="flex items-center justify-between mb-4">
+                <p className="text-xs font-semibold text-muted uppercase tracking-widest">Project Portfolio</p>
+                <span className="text-xs font-semibold text-brand bg-brand-soft px-2.5 py-1 rounded-full border border-brand/20">
+                  {projectsCount} total
+                </span>
               </div>
-              
+
               {student?.projects && student.projects.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {student.projects.map((proj, i) => (
-                    <div key={i} className="border border-line/60 rounded-2xl p-6 hover:shadow-md hover:border-brand/30 transition-all bg-surface-2/30 flex flex-col h-full group">
-                      <div className="flex justify-between items-start mb-3">
-                        <div className="w-10 h-10 rounded-xl bg-surface border border-line flex items-center justify-center text-brand mb-4 group-hover:scale-105 transition-transform">
-                          <Folder size={20} />
+                    <div key={i} className="flex flex-col p-4 border border-line/60 rounded-xl hover:border-brand/25 hover:shadow-sm transition-all duration-200 bg-surface-2/20">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="w-8 h-8 rounded-lg bg-brand-soft border border-brand/20 flex items-center justify-center text-brand">
+                          <Folder size={14} />
                         </div>
                         {proj.status && <Badge tone="green" className="text-[10px]">{proj.status}</Badge>}
                       </div>
-                      <h3 className="font-bold text-content text-lg mb-2 leading-tight">{proj.title}</h3>
-                      <p className="text-sm text-content-2 mb-6 flex-grow">{proj.description ?? 'No description provided.'}</p>
-                      
-                      <div className="flex flex-wrap gap-2 mt-auto">
+                      <p className="text-sm font-semibold text-content mb-1">{proj.title}</p>
+                      <p className="text-xs text-muted leading-relaxed mb-3 flex-grow">{proj.description ?? 'No description provided.'}</p>
+                      <div className="flex flex-wrap gap-1.5 mt-auto">
                         {proj.techStack?.map(t => (
-                          <span key={t} className="px-2.5 py-1 bg-surface text-content-2 rounded-lg text-xs font-medium border border-line/60 shadow-sm">{t}</span>
+                          <span key={t} className="px-2 py-0.5 bg-surface border border-line text-muted rounded-md text-[10px] font-medium">{t}</span>
                         ))}
                       </div>
                     </div>
                   ))}
                 </div>
               ) : resumeProjects.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div className="space-y-3">
                   {resumeProjects.map((proj, i) => (
-                    <div key={i} className="border border-line/60 rounded-2xl p-6 bg-surface-2/30 flex flex-col h-full">
-                      <div className="flex items-start justify-between gap-2 mb-3">
-                        <div className="w-10 h-10 rounded-xl bg-surface border border-line flex items-center justify-center text-brand">
-                          <FileText size={20} />
-                        </div>
-                        <Badge tone="purple" className="text-[10px]">From Resume</Badge>
+                    <div key={i} className="flex gap-3 p-4 border border-line/60 rounded-xl bg-surface-2/20">
+                      <div className="w-8 h-8 rounded-lg bg-brand-soft border border-brand/20 flex items-center justify-center text-brand flex-shrink-0 mt-0.5">
+                        <FileText size={13} />
                       </div>
-                      <p className="text-sm text-content-2 leading-relaxed">{proj}</p>
+                      <div>
+                        <Badge tone="purple" className="text-[10px] mb-1.5">From Resume</Badge>
+                        <p className="text-xs text-muted leading-relaxed">{proj}</p>
+                      </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <EmptyCard icon={Folder} title="No Projects Uploaded" subtitle="Add projects in Edit Profile, or upload a resume to auto-detect them." />
+                <EmptyState icon={Folder} title="No Projects Yet" subtitle="Add projects via Edit Profile, or upload a resume to auto-detect them." />
               )}
             </Card>
           </div>
 
-          <div className="space-y-6">
-            <Card className="shadow-sm border-line/60 rounded-3xl p-8">
-              <h2 className="text-lg font-extrabold text-content mb-6">Connected Platforms</h2>
-              {student?.codingProfile ? (
-                <div className="space-y-3">
+          <div className="space-y-4">
+            <Card className="p-5 rounded-2xl border-line/60 shadow-sm">
+              <p className="text-xs font-semibold text-muted uppercase tracking-widest mb-3">Platforms</p>
+              {student?.codingProfile && (student.codingProfile.github || student.codingProfile.leetcode || student.codingProfile.codechef) ? (
+                <div className="space-y-2">
                   {student.codingProfile.github && (
-                    <div className="flex items-center justify-between p-4 rounded-2xl border border-line/60 bg-surface-2/30 hover:bg-surface-2 transition-colors cursor-pointer">
-                      <div className="flex items-center gap-3">
-                        <div className="text-content"><Code2 size={20}/></div>
-                        <div>
-                          <p className="text-sm font-bold text-content">GitHub</p>
-                          <p className="text-xs text-muted">{student.codingProfile.github}</p>
-                        </div>
+                    <a href={`https://github.com/${student.codingProfile.github}`} target="_blank" rel="noopener noreferrer"
+                      className="flex items-center gap-3 p-2.5 rounded-xl border border-line/60 hover:border-brand/30 hover:bg-surface-2/40 transition-all group">
+                      <div className="w-7 h-7 rounded-lg bg-[#24292e] text-white flex items-center justify-center text-[10px] font-bold flex-shrink-0">GH</div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-semibold text-content">GitHub</p>
+                        <p className="text-[10px] text-muted truncate">{student.codingProfile.github}</p>
                       </div>
-                      <ChevronRight size={16} className="text-muted"/>
-                    </div>
+                      <ExternalLink size={11} className="text-muted opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+                    </a>
                   )}
                   {student.codingProfile.leetcode && (
-                    <div className="flex items-center justify-between p-4 rounded-2xl border border-line/60 bg-surface-2/30 hover:bg-surface-2 transition-colors cursor-pointer">
-                      <div className="flex items-center gap-3">
-                        <div className="text-warning"><Cpu size={20}/></div>
-                        <div>
-                          <p className="text-sm font-bold text-content">LeetCode</p>
-                          <p className="text-xs text-muted">{student.codingProfile.leetcode}</p>
-                        </div>
+                    <a href={`https://leetcode.com/${student.codingProfile.leetcode}`} target="_blank" rel="noopener noreferrer"
+                      className="flex items-center gap-3 p-2.5 rounded-xl border border-line/60 hover:border-brand/30 hover:bg-surface-2/40 transition-all group">
+                      <div className="w-7 h-7 rounded-lg bg-[#FFA116]/15 border border-[#FFA116]/25 text-[#b36b00] dark:text-[#FFA116] flex items-center justify-center text-[10px] font-bold flex-shrink-0">LC</div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-semibold text-content">LeetCode</p>
+                        <p className="text-[10px] text-muted truncate">{student.codingProfile.leetcode}</p>
                       </div>
-                      <ChevronRight size={16} className="text-muted"/>
-                    </div>
+                      <ExternalLink size={11} className="text-muted opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+                    </a>
                   )}
                   {student.codingProfile.codechef && (
-                    <div className="flex items-center justify-between p-4 rounded-2xl border border-line/60 bg-surface-2/30 hover:bg-surface-2 transition-colors cursor-pointer">
-                      <div className="flex items-center gap-3">
-                        <div className="text-info"><Award size={20}/></div>
-                        <div>
-                          <p className="text-sm font-bold text-content">CodeChef</p>
-                          <p className="text-xs text-muted">{student.codingProfile.codechef}</p>
-                        </div>
+                    <a href={`https://codechef.com/users/${student.codingProfile.codechef}`} target="_blank" rel="noopener noreferrer"
+                      className="flex items-center gap-3 p-2.5 rounded-xl border border-line/60 hover:border-brand/30 hover:bg-surface-2/40 transition-all group">
+                      <div className="w-7 h-7 rounded-lg bg-brand-soft border border-brand/20 text-brand flex items-center justify-center text-[10px] font-bold flex-shrink-0">CC</div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-semibold text-content">CodeChef</p>
+                        <p className="text-[10px] text-muted truncate">{student.codingProfile.codechef}</p>
                       </div>
-                      <ChevronRight size={16} className="text-muted"/>
-                    </div>
+                      <ExternalLink size={11} className="text-muted opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+                    </a>
                   )}
                 </div>
               ) : (
-                <div className="text-center py-6 bg-surface-2/50 rounded-2xl border border-dashed border-line/60">
-                  <p className="text-sm font-bold text-content mb-1">No Links</p>
-                  <p className="text-xs text-muted">Connect platforms in Edit Profile</p>
+                <div className="text-center py-5 border border-dashed border-line rounded-xl">
+                  <p className="text-xs text-muted mb-1.5">No platforms linked</p>
+                  <button onClick={() => router.push('/student/profile/edit')} className="text-xs text-brand hover:underline font-medium">Add platforms →</button>
                 </div>
               )}
             </Card>
+
+            {student?.codingProfile && (student.codingProfile.leetcodeSolved != null || student.codingProfile.githubRepos != null || student.codingProfile.codechefRating != null) && (
+              <Card className="p-5 rounded-2xl border-line/60 shadow-sm">
+                <p className="text-xs font-semibold text-muted uppercase tracking-widest mb-3">Coding Stats</p>
+                <div className="divide-y divide-line/50">
+                  {student.codingProfile.leetcodeSolved != null && (
+                    <div className="flex items-center justify-between py-2.5">
+                      <p className="text-xs text-muted">Problems Solved</p>
+                      <p className="text-sm font-bold text-content">{student.codingProfile.leetcodeSolved}</p>
+                    </div>
+                  )}
+                  {student.codingProfile.githubRepos != null && (
+                    <div className="flex items-center justify-between py-2.5">
+                      <p className="text-xs text-muted">GitHub Repos</p>
+                      <p className="text-sm font-bold text-content">{student.codingProfile.githubRepos}</p>
+                    </div>
+                  )}
+                  {student.codingProfile.codechefRating != null && (
+                    <div className="flex items-center justify-between py-2.5">
+                      <p className="text-xs text-muted">CodeChef Rating</p>
+                      <p className="text-sm font-bold text-content">{student.codingProfile.codechefRating}</p>
+                    </div>
+                  )}
+                </div>
+              </Card>
+            )}
           </div>
         </div>
       )}
 
-      {/* ── TAB: EXTRACURRICULARS ────────────────────────── */}
+      {/* ── TAB: EXTRACURRICULARS ─────────────────────── */}
       {activeTab === 'Extracurriculars' && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 animate-fade-in">
           <div className="lg:col-span-2">
-            <Card className="shadow-sm border-line/60 rounded-3xl p-8">
-              <h2 className="text-lg font-extrabold text-content mb-8">Activity Timeline</h2>
-              
+            <Card className="p-5 rounded-2xl border-line/60 shadow-sm">
+              <p className="text-xs font-semibold text-muted uppercase tracking-widest mb-4">Activity Timeline</p>
               {student?.extracurriculars && student.extracurriculars.length > 0 ? (
-                <div className="relative pl-6 border-l-2 border-line/60 space-y-8 py-2">
+                <div className="space-y-2">
                   {student.extracurriculars.map((item, i) => (
-                    <div key={i} className="relative">
-                      {/* Timeline dot */}
-                      <div className="absolute -left-[35px] top-1 w-4 h-4 rounded-full bg-surface border-4 border-brand"></div>
-                      
-                      <div className="bg-surface-2/40 p-5 rounded-2xl border border-line/40 hover:border-line-strong transition-colors">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h3 className="font-bold text-content text-base">{item.society ?? 'Society Activity'}</h3>
+                    <div key={i} className="flex gap-3 p-4 border border-line/50 rounded-xl hover:border-brand/20 hover:bg-surface-2/30 transition-all">
+                      <div className="flex flex-col items-center flex-shrink-0 pt-1.5">
+                        <div className="w-2 h-2 rounded-full bg-brand flex-shrink-0" />
+                        {i < (student.extracurriculars.length - 1) && <div className="w-px flex-1 bg-line mt-1.5 min-h-[12px]" />}
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center justify-between gap-2 flex-wrap mb-0.5">
+                          <p className="text-sm font-semibold text-content">{item.society ?? 'Society Activity'}</p>
+                          {item.year && <span className="text-[10px] text-muted bg-surface-2 border border-line px-2 py-0.5 rounded-full flex-shrink-0">{item.year}</span>}
                         </div>
-                        <p className="text-sm text-content-2 font-medium mb-3">{item.role ?? 'Member'} <span className="text-muted px-1">•</span> {item.year ?? 'No Year'}</p>
-                        
+                        <p className="text-xs text-muted">{item.role ?? 'Member'}</p>
                         {item.achievement && (
-                          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-success-soft text-success rounded-lg text-xs font-bold uppercase tracking-wider">
-                            <Award size={12}/>
-                            {item.achievement}
+                          <div className="inline-flex items-center gap-1.5 mt-2 px-2.5 py-1 bg-success-soft border border-success/20 text-success rounded-lg text-[11px] font-semibold">
+                            <Award size={10} /> {item.achievement}
                           </div>
                         )}
                       </div>
@@ -409,34 +461,35 @@ export default function StudentProfile() {
                   ))}
                 </div>
               ) : resumeActivities.length > 0 ? (
-                <div className="relative pl-6 border-l-2 border-line/60 space-y-8 py-2">
+                <div className="space-y-2">
                   {resumeActivities.map((item, i) => (
-                    <div key={i} className="relative">
-                      <div className="absolute -left-[35px] top-1 w-4 h-4 rounded-full bg-surface border-4 border-purple-500"></div>
-                      <div className="bg-surface-2/40 p-5 rounded-2xl border border-line/40">
-                        <Badge tone="purple" className="mb-3 text-[10px]">From Resume</Badge>
-                        <p className="text-sm text-content-2 leading-relaxed">{item}</p>
+                    <div key={i} className="flex gap-3 p-4 border border-line/50 rounded-xl bg-surface-2/20">
+                      <div className="w-2 h-2 rounded-full bg-muted mt-1.5 flex-shrink-0" />
+                      <div>
+                        <Badge tone="purple" className="text-[10px] mb-1">From Resume</Badge>
+                        <p className="text-xs text-muted leading-relaxed">{item}</p>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <EmptyCard icon={Briefcase} title="No extracurricular activities" subtitle="Update your profile to showcase leadership roles and achievements." />
+                <EmptyState icon={Briefcase} title="No activities recorded" subtitle="Update your profile to showcase clubs, roles, and achievements." />
               )}
             </Card>
           </div>
-          
+
           <div>
-            <Card className="shadow-sm border-line/60 rounded-3xl p-8 sticky top-6">
-              <h2 className="text-lg font-extrabold text-content mb-6">Summary</h2>
-              <div className="space-y-4">
+            <Card className="p-5 rounded-2xl border-line/60 shadow-sm">
+              <p className="text-xs font-semibold text-muted uppercase tracking-widest mb-3">Summary</p>
+              <div className="divide-y divide-line/50">
                 {[
                   { label: 'Hackathons', value: String(student?.hackathons?.length ?? 0) },
                   { label: 'Activities', value: String((student?.extracurriculars?.length ?? 0) || resumeActivities.length) },
+                  { label: 'Internships', value: String(student?.internships?.length ?? 0) },
                 ].map(({ label, value }) => (
-                  <div key={label} className="p-5 rounded-2xl bg-surface-2/40 border border-line/40 flex items-center justify-between">
-                    <p className="text-sm text-muted font-bold tracking-widest uppercase">{label}</p>
-                    <p className="text-2xl font-extrabold text-content">{value}</p>
+                  <div key={label} className="flex items-center justify-between py-2.5">
+                    <p className="text-xs text-muted">{label}</p>
+                    <p className="text-sm font-bold text-content">{value}</p>
                   </div>
                 ))}
               </div>
@@ -445,16 +498,11 @@ export default function StudentProfile() {
         </div>
       )}
 
-
-      {/* ── TAB: ALERTS & NOTES ──────────────────────────── */}
+      {/* ── TAB: ALERTS & NOTES ──────────────────────── */}
       {activeTab === 'Alerts & Notes' && (
         <div className="animate-fade-in">
-          <Card className="shadow-sm border-line/60 rounded-3xl p-8">
-            <EmptyCard
-              icon={Clock}
-              title="Alerts & Notes"
-              subtitle="This space will contain personal notes and alerts from faculty members soon."
-            />
+          <Card className="p-5 rounded-2xl border-line/60 shadow-sm">
+            <EmptyState icon={Clock} title="No Alerts or Notes" subtitle="Faculty notes and academic alerts will appear here." />
           </Card>
         </div>
       )}

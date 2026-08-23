@@ -5,6 +5,7 @@ import calcLeetCodeScore from '../lib/spi/sources/leetcodeScore.js'
 import calcResumeScore from '../lib/spi/sources/resume.js'
 import calcCertificationsScore from '../lib/spi/sources/certifications.js'
 import calcInternshipsScore from '../lib/spi/sources/internships.js'
+import calcAcademicsScore from '../lib/spi/sources/academics.js'
 import calculateSPI from '../lib/spi/orchestrator/calculateSPI.js'
 
 const prisma = new PrismaClient()
@@ -20,6 +21,15 @@ async function main() {
       internships: true,
     },
   })
+  
+  if (students.length > 0) {
+    // Fetch raw to bypass Prisma client schema cache if it wasn't regenerated
+    const rawStudent = await prisma.$queryRaw`SELECT cgpa, semester FROM students WHERE "universityId" = ${students[0].universityId}` as any[]
+    if (rawStudent && rawStudent.length > 0) {
+      (students[0] as any).cgpa = rawStudent[0].cgpa;
+      (students[0] as any).semester = rawStudent[0].semester;
+    }
+  }
 
   if (students.length === 0) {
     console.log(`❌ No student records found in database${targetId ? ` for universityId: ${targetId}` : ''}.`)
@@ -93,6 +103,14 @@ async function main() {
       studentName: student.fullName,
     })
 
+    // 5.5 Run Academics Evidence Engine
+    const academicSemester = student.semester ?? (effectiveSemester > 1 ? effectiveSemester - 1 : 1)
+    const academicsResult = calcAcademicsScore({
+      year: effectiveYear,
+      admissionYear,
+      academicsData: student.cgpa ? [{ semester: academicSemester, cgpa: student.cgpa }] : [],
+    })
+
     // 6. Orchestrate Combined SPI Score
     const spiResult = calculateSPI({
       github: githubResult,
@@ -100,6 +118,7 @@ async function main() {
       resume: resumeResult,
       certifications: certsResult,
       internships: internshipsResult,
+      academics: academicsResult,
     })
 
     console.log(`🎯 OVERALL SPI SCORE   : ${spiResult.spi} / 100`)
@@ -109,12 +128,23 @@ async function main() {
     console.log('            ENGINE PARTICIPATION (0-10)             ')
     console.log('----------------------------------------------------')
     console.log(`🐙 GitHub Engine Score         : ${githubResult.score} / 10  (Semester ${githubResult.semester})`)
-    console.log(`🧩 LeetCode Engine Score       : ${leetcodeResult.score} / 10  (Semester ${leetcodeResult.semester})`)
-    console.log(`📄 Resume Engine Score         : ${resumeResult.score} / 10  (Maturity: ${resumeResult.metadata?.maturityLevel || 'N/A'})`)
-    console.log(`📜 Certifications Engine Score : ${certsResult.score} / 10  (Valid Certs: ${certsResult.metadata?.validCertificates || 0}/${certsResult.metadata?.totalCertificates || 0})`)
-    console.log(`💼 Internships Engine Score    : ${internshipsResult.score} / 10  (Valid Internships: ${internshipsResult.metadata?.validInternships || 0}/${internshipsResult.metadata?.totalInternships || 0})\n`)
-
-    console.log('----------------------------------------------------')
+    if (githubResult.breakdown) console.log(`   [GitHub Breakdown]          :`, JSON.stringify(githubResult.breakdown, null, 2))
+    
+    console.log(`\n🧩 LeetCode Engine Score       : ${leetcodeResult.score} / 10  (Semester ${leetcodeResult.semester})`)
+    if (leetcodeResult.breakdown) console.log(`   [LeetCode Breakdown]        :`, JSON.stringify(leetcodeResult.breakdown, null, 2))
+    
+    console.log(`\n📄 Resume Engine Score         : ${resumeResult.score} / 10`)
+    if (resumeResult.breakdown) console.log(`   [Resume Breakdown]          :`, JSON.stringify(resumeResult.breakdown, null, 2))
+    
+    console.log(`\n📜 Certifications Engine Score : ${certsResult.score} / 10`)
+    if (certsResult.breakdown) console.log(`   [Certifications Breakdown]  :`, JSON.stringify(certsResult.breakdown, null, 2))
+    
+    console.log(`\n💼 Internships Engine Score    : ${internshipsResult.score} / 10`)
+    if (internshipsResult.breakdown) console.log(`   [Internships Breakdown]     :`, JSON.stringify(internshipsResult.breakdown, null, 2))
+    
+    console.log(`\n📚 Academics Engine Score      : ${academicsResult.score} / 10`)
+    if (academicsResult.breakdown) console.log(`   [Academics Breakdown]       :`, JSON.stringify(academicsResult.breakdown, null, 2))
+    console.log('\n----------------------------------------------------')
     console.log('               DIMENSION BREAKDOWN                  ')
     console.log('----------------------------------------------------')
     Object.entries(spiResult.dimensions).forEach(([dim, data]: [string, any]) => {
@@ -130,16 +160,22 @@ async function main() {
     const lcN = Math.min((leetcodeResult.score || 0) / 10, 1)
     const rsN = Math.min((resumeResult.score || 0) / 10, 1)
     const crtN = Math.min((certsResult.score || 0) / 10, 1)
+    const intN = Math.min((internshipsResult.score || 0) / 10, 1)
+    const acaN = Math.min((academicsResult.score || 0) / 10, 1)
 
-    const ghContrib = +(ghN * 12 + ghN * 5 + ghN * 4).toFixed(2)
+    const ghContrib = +(ghN * 12 + ghN * 4).toFixed(2) // Wait, logicalReasoning uses lcN + acaN now. So ghContrib is ghN*12 (techDepth) + ghN*4 (initiative) = 16.
     const lcContrib = +(lcN * 8 + lcN * 10).toFixed(2)
     const rsContrib = +(rsN * 3 + rsN * 10).toFixed(2)
     const crtContrib = +(crtN * 5 + crtN * 3).toFixed(2)
+    const intContrib = +(intN * 10 + intN * 10).toFixed(2)
+    const acaContrib = +(acaN * 10 + acaN * 5).toFixed(2)
 
-    console.log(`🐙 GitHub Total SPI Contribution        : ${ghContrib} / 21.0 pts`)
+    console.log(`🐙 GitHub Total SPI Contribution        : ${ghContrib} / 16.0 pts`)
     console.log(`🧩 LeetCode Total SPI Contribution      : ${lcContrib} / 18.0 pts`)
     console.log(`📄 Resume Total SPI Contribution        : ${rsContrib} / 13.0 pts`)
     console.log(`📜 Certifications Total SPI Contribution: ${crtContrib} / 8.0 pts`)
+    console.log(`💼 Internships Total SPI Contribution   : ${intContrib} / 20.0 pts`)
+    console.log(`📚 Academics Total SPI Contribution     : ${acaContrib} / 15.0 pts`)
     console.log('====================================================\n')
   }
 }

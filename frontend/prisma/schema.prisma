@@ -26,6 +26,7 @@ model Student {
   formSubmittedAt  DateTime?
   resumeUrl        String?
   spiScore         Float?            @default(0)
+  spiHistory       Json?             @default("[]")
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
   admissionYear    Int?

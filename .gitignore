@@ -121,3 +121,11 @@ public
 
 # Windows files
 Thumbs.db
+
+# Antigravity IDE Files
+.claude/
+agent/skills/
+.agents/
+skills-lock.json
+implementation_plan.md
+stash.patch
