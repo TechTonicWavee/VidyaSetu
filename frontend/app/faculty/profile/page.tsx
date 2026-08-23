@@ -11,6 +11,8 @@ import getInitials from '@/lib/getInitials'
 import { Card, Button, Tabs, Badge, Input, Field } from '@/components/ui'
 import { cn } from '@/lib/utils/cn'
 
+import { apiFetch, apiGet } from '@/lib/api/client'
+
 const TABS = ['Overview', 'Settings']
 
 interface Subject {
@@ -27,9 +29,6 @@ interface FacultyProfileData {
   department: string
   profilePicture: string
   avatarUrl?: string
-  officeLocation?: string
-  officeHours?: string
-  scholarId?: string
   subjects: Subject[]
 }
 
@@ -49,30 +48,46 @@ export default function FacultyProfile() {
   const router = useRouter()
   const [activeTab, setActiveTab] = useState('Overview')
   
-  // Random mock data
   const [profile, setProfile] = useState<FacultyProfileData>({
-    fullName: 'Dr. Anita Sharma',
-    email: 'anita.sharma@kiet.edu',
-    phone: '+91 9876543210',
-    department: 'Computer Science and Engineering',
+    fullName: '',
+    email: '',
+    phone: '',
+    department: '',
     profilePicture: '',
-    subjects: [
-      { id: '1', name: 'Database Management Systems', section: 'A', year: '2nd Year' },
-      { id: '2', name: 'Operating Systems', section: 'B', year: '2nd Year' }
-    ]
+    subjects: []
   })
 
   // State for forms
   const [formData, setFormData] = useState<FacultyProfileData>(profile)
   const [passwords, setPasswords] = useState({ current: '', new: '', confirm: '' })
 
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const data = await apiGet<FacultyProfileData>('/api/faculty/profile');
+        setProfile(data);
+        setFormData(data);
+      } catch (err) {
+        console.error('Failed to fetch profile', err);
+      }
+    };
+    fetchProfile();
+  }, []);
+
   const initials = profile.fullName ? getInitials(profile.fullName) : 'F'
   const departmentText = profile.department || 'Department not specified'
 
-  const handleSaveProfile = () => {
-    setProfile(formData)
-    // Here we would normally make an API call
-    alert('Profile updated successfully!')
+  const handleSaveProfile = async () => {
+    try {
+      await apiFetch('/api/faculty/profile', {
+        method: 'PUT',
+        body: JSON.stringify(formData)
+      });
+      setProfile(formData);
+      alert('Profile updated successfully!');
+    } catch(err) {
+      alert('Failed to update profile');
+    }
   }
 
   const handlePasswordChange = () => {
@@ -283,27 +298,7 @@ export default function FacultyProfile() {
                   onChange={(e) => setFormData({ ...formData, department: e.target.value })}
                 />
               </Field>
-              <Field label="Office Location">
-                <Input
-                  value={formData.officeLocation}
-                  onChange={(e) => setFormData({ ...formData, officeLocation: e.target.value })}
-                  placeholder="e.g., Room 402, Block B"
-                />
-              </Field>
-              <Field label="Office Hours">
-                <Input
-                  value={formData.officeHours}
-                  onChange={(e) => setFormData({ ...formData, officeHours: e.target.value })}
-                  placeholder="e.g., Mon-Wed 14:00-16:00"
-                />
-              </Field>
-              <Field label="Google Scholar ID">
-                <Input
-                  value={formData.scholarId}
-                  onChange={(e) => setFormData({ ...formData, scholarId: e.target.value })}
-                  placeholder="Optional"
-                />
-              </Field>
+
               <div className="md:col-span-2">
                  <Field label="Profile Picture URL">
                    <Input

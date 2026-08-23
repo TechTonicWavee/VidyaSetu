@@ -7,65 +7,7 @@ import {
   Search, ChevronDown, Activity
 } from 'lucide-react'
 import { PageHeader, StatCard, Card, Badge } from '@/components/ui'
-
-const mockClasses = [
-  {
-    id: 'cls_dbms_a',
-    subject: 'Database Management Systems',
-    code: 'CSE-DBMS-401',
-    section: 'A',
-    semester: 'IV',
-    schedule: 'Mon/Wed/Fri',
-    time: '10:00–10:50',
-    room: 'B-204',
-    students: 62,
-    attendance: 78,
-    atRisk: 8,
-    nextSession: 'Tue, 05 May 2026 · 10:00',
-  },
-  {
-    id: 'cls_os_b',
-    subject: 'Operating Systems',
-    code: 'CSE-OS-402',
-    section: 'B',
-    semester: 'IV',
-    schedule: 'Tue/Thu',
-    time: '11:00–12:15',
-    room: 'C-112',
-    students: 58,
-    attendance: 71,
-    atRisk: 11,
-    nextSession: 'Tue, 05 May 2026 · 11:00',
-  },
-  {
-    id: 'cls_toc_a',
-    subject: 'Theory of Computation',
-    code: 'CSE-TOC-403',
-    section: 'A',
-    semester: 'IV',
-    schedule: 'Mon/Thu',
-    time: '02:00–03:15',
-    room: 'A-305',
-    students: 60,
-    attendance: 74,
-    atRisk: 7,
-    nextSession: 'Thu, 07 May 2026 · 02:00',
-  },
-  {
-    id: 'cls_dsa_c',
-    subject: 'Data Structures',
-    code: 'CSE-DSA-301',
-    section: 'C',
-    semester: 'III',
-    schedule: 'Tue/Fri',
-    time: '09:00–10:15',
-    room: 'Lab-2',
-    students: 63,
-    attendance: 84,
-    atRisk: 3,
-    nextSession: 'Fri, 08 May 2026 · 09:00',
-  },
-]
+import { apiGet } from '@/lib/api/client'
 
 function attendanceBarClass(pct: number) {
   if (pct >= 75) return 'bg-success'
@@ -76,42 +18,24 @@ function attendanceBarClass(pct: number) {
 
 export default function MyClassesPage() {
   const router = useRouter()
-  const [classes, setClasses] = useState(mockClasses)
+  const [classes, setClasses] = useState<any[]>([])
   const [semester, setSemester] = useState('All Semesters')
   const [query, setQuery] = useState('')
+  const [loading, setLoading] = useState(true)
 
-  /*
-   * API CALL EXPLANATION:
-   * To fetch the list of classes for the currently logged-in faculty from the backend API,
-   * you can use a useEffect hook like below. 
-   * 
-   * Example Flow:
-   * 1. The component mounts.
-   * 2. We make a GET request to '/api/faculty/classes'.
-   * 3. The backend identifies the faculty using their JWT token and returns an array of their allotted classes.
-   * 4. We store this array in the `classes` state.
-   */
   useEffect(() => {
     const fetchClasses = async () => {
       try {
-        // const token = localStorage.getItem('token'); // or from your AuthContext
-        // const response = await fetch('/api/faculty/classes', {
-        //   method: 'GET',
-        //   headers: {
-        //     'Content-Type': 'application/json',
-        //     'Authorization': `Bearer ${token}` 
-        //   }
-        // });
-        // const data = await response.json();
-        // if (data.success) {
-        //   setClasses(data.classes);
-        // }
+        const data = await apiGet<any[]>('/api/faculty/classes');
+        setClasses(data);
       } catch (error) {
         console.error('Failed to fetch classes', error);
+      } finally {
+        setLoading(false);
       }
     };
     
-    // fetchClasses();
+    fetchClasses();
   }, []);
 
   const semesters = useMemo(() => {

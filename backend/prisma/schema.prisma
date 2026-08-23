@@ -54,6 +54,13 @@ model Student {
   teamMemberships  TeamMember[]
   teamsLed         Team[]            @relation("TeamLeader")
 
+  mentorId         String?
+  mentor           Faculty?          @relation("FacultyMentees", fields: [mentorId], references: [facultyId])
+  sectionId        String?
+  sectionRelation  Section?          @relation("SectionStudents", fields: [sectionId], references: [id])
+  behavioralNotes  BehavioralNote[]
+  alerts           Alert[]
+
   @@map("students")
 }
 
@@ -245,4 +252,88 @@ model RefreshToken {
 
   @@index([universityId])
   @@map("refresh_tokens")
+}
+
+model Faculty {
+  id             String    @id @default(uuid())
+  facultyId      String    @unique
+  fullName       String
+  email          String    @unique
+  department     String
+  avatarUrl      String?
+  password       String?
+  
+  mentees        Student[] @relation("FacultyMentees")
+  sections       Section[] @relation("FacultySections")
+  notesGiven     BehavioralNote[]
+  alertsGiven    Alert[]
+
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@map("faculty")
+}
+
+model Subject {
+  id          String    @id @default(uuid())
+  name        String
+  code        String?
+  sections    Section[]
+  
+  createdAt   DateTime  @default(now())
+
+  @@map("subjects")
+}
+
+model Section {
+  id          String    @id @default(uuid())
+  name        String
+  year        String?
+  department  String?
+  
+  subjectId   String
+  subject     Subject   @relation(fields: [subjectId], references: [id])
+  
+  facultyId   String
+  faculty     Faculty   @relation("FacultySections", fields: [facultyId], references: [facultyId])
+  
+  students    Student[] @relation("SectionStudents")
+  
+  createdAt   DateTime  @default(now())
+
+  @@map("sections")
+}
+
+model BehavioralNote {
+  id          String   @id @default(uuid())
+  studentId   String
+  facultyId   String
+  content     String
+  visibility  String   @default("Private")
+  createdAt   DateTime @default(now())
+  
+  student     Student  @relation(fields: [studentId], references: [universityId], onDelete: Cascade)
+  faculty     Faculty  @relation(fields: [facultyId], references: [facultyId], onDelete: Cascade)
+
+  @@index([studentId])
+  @@index([facultyId])
+  @@map("behavioral_notes")
+}
+
+model Alert {
+  id          String   @id @default(uuid())
+  studentId   String
+  facultyId   String
+  type        String
+  severity    String   @default("Low")
+  comment     String?
+  resolved    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  
+  student     Student  @relation(fields: [studentId], references: [universityId], onDelete: Cascade)
+  faculty     Faculty  @relation(fields: [facultyId], references: [facultyId], onDelete: Cascade)
+
+  @@index([studentId])
+  @@index([facultyId])
+  @@map("alerts")
 }
