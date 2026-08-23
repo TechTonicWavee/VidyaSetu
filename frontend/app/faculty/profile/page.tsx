@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation'
 import {
   BookOpen, Edit2, Activity,
   Briefcase, Mail, Phone,
-  Lock, Plus, Trash2, Save, User, Building, Image as ImageIcon
+  Lock, Plus, Trash2, Save, User, Users, Building, Image as ImageIcon,
+  CheckCircle, Zap, AlertTriangle
 } from 'lucide-react'
 import getInitials from '@/lib/shared/getInitials'
 import { Card, Button, Tabs, Badge, Input, Field } from '@/components/shared/ui'
@@ -32,14 +33,14 @@ interface FacultyProfileData {
   subjects: Subject[]
 }
 
-function EmptyCard({ icon: Icon, title, subtitle }: { icon: typeof BookOpen; title: string; subtitle?: string }) {
+function EmptyState({ icon: Icon, title, subtitle }: { icon: typeof BookOpen; title: string; subtitle?: string }) {
   return (
-    <div className="flex flex-col items-center justify-center py-16 text-center bg-surface-2/50 rounded-2xl border border-dashed border-line/60">
-      <div className="w-12 h-12 bg-surface border border-line shadow-sm rounded-2xl flex items-center justify-center mb-4 text-muted">
-        <Icon size={24} />
+    <div className="flex flex-col items-center justify-center py-12 text-center">
+      <div className="w-10 h-10 bg-surface-2 border border-line rounded-xl flex items-center justify-center mb-3 text-muted">
+        <Icon size={18} />
       </div>
-      <p className="text-sm font-bold text-content">{title}</p>
-      {subtitle && <p className="text-xs text-muted mt-1.5 max-w-[250px] mx-auto leading-relaxed">{subtitle}</p>}
+      <p className="text-sm font-semibold text-content-2">{title}</p>
+      {subtitle && <p className="text-xs text-muted mt-1 max-w-xs mx-auto leading-relaxed">{subtitle}</p>}
     </div>
   )
 }
@@ -57,6 +58,8 @@ export default function FacultyProfile() {
     subjects: []
   })
 
+  const [loading, setLoading] = useState(true)
+
   // State for forms
   const [formData, setFormData] = useState<FacultyProfileData>(profile)
   const [passwords, setPasswords] = useState({ current: '', new: '', confirm: '' })
@@ -69,12 +72,14 @@ export default function FacultyProfile() {
         setFormData(data);
       } catch (err) {
         console.error('Failed to fetch profile', err);
+      } finally {
+        setLoading(false);
       }
     };
     fetchProfile();
   }, []);
 
-  const initials = profile.fullName ? getInitials(profile.fullName) : 'F'
+  const initials = profile.fullName ? getInitials(profile.fullName) : (loading ? '…' : 'F')
   const departmentText = profile.department || 'Department not specified'
 
   const handleSaveProfile = async () => {
@@ -122,144 +127,157 @@ export default function FacultyProfile() {
   }
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6 animate-fade-in pb-12">
-      {/* ── MINIMALIST HERO ─────────────────────────────────────────── */}
-      <div className="relative mb-10">
-        {/* Cover Area */}
-        <div className="h-44 sm:h-52 rounded-t-[2rem] bg-gradient-to-tr from-surface-3 to-surface border-x border-t border-line/60 relative overflow-hidden">
-          <div className="absolute inset-0 bg-surface-3/30 backdrop-blur-3xl mix-blend-overlay"></div>
-        </div>
+    <div className="max-w-4xl mx-auto pb-16 space-y-5 animate-fade-in">
+      
+      {/* ── PROFILE HERO ─────────────────────────────── */}
+      <div className="rounded-2xl border border-line bg-surface shadow-sm overflow-hidden">
         
-        {/* Profile Card Info */}
-        <div className="bg-surface rounded-b-[2rem] border border-line/60 shadow-sm p-8 pt-0 relative z-10">
-          <div className="flex flex-col md:flex-row gap-6 md:items-end -mt-16 sm:-mt-20 mb-8">
-             {/* Floating Avatar */}
-             <div className="w-32 h-32 sm:w-40 sm:h-40 rounded-[2rem] flex items-center justify-center text-brand-fg font-extrabold text-5xl sm:text-6xl shadow-xl border-[6px] border-surface bg-brand flex-shrink-0 relative overflow-hidden">
+        {/* Thin color band at top */}
+        <div className="h-2 w-full bg-gradient-to-r from-brand to-brand-accent" />
+
+        <div className="p-6">
+          {/* Top row: avatar + name + actions */}
+          <div className="flex flex-col sm:flex-row sm:items-center gap-5 mb-6">
+            
+            {/* Avatar */}
+            <div className="w-16 h-16 rounded-2xl flex-shrink-0 flex items-center justify-center text-brand-fg font-bold text-xl tracking-wide bg-gradient-to-br from-brand to-brand-600 shadow-md select-none overflow-hidden relative">
                {profile.profilePicture ? (
                  <img src={profile.profilePicture} alt="Profile" className="w-full h-full object-cover" />
                ) : (
                  initials
                )}
-               <div className="absolute bottom-2 right-2 w-5 h-5 rounded-full bg-success border-4 border-surface shadow-sm"></div>
-             </div>
-             
-             {/* Name & Basic Info */}
-             <div className="flex-1 pb-1 text-center md:text-left">
-                <h1 className="text-3xl sm:text-4xl font-extrabold text-content tracking-tight">{profile.fullName}</h1>
-                <p className="text-content-2 font-medium mt-2 flex items-center justify-center md:justify-start gap-2 text-sm sm:text-base">
-                  <Briefcase size={16} className="text-muted"/> {departmentText}
-                </p>
-             </div>
-             
-             {/* Actions */}
-             <div className="flex items-center justify-center md:justify-end gap-3 pb-2 w-full md:w-auto">
-                <Button
-                  variant="secondary"
-                  icon={Edit2}
-                  onClick={() => setActiveTab('Settings')}
-                  className="rounded-xl shadow-sm bg-surface"
-                >
-                  Edit Profile
-                </Button>
-             </div>
+            </div>
+
+            {/* Name & meta */}
+            <div className="flex-1 min-w-0">
+              <h1 className="text-xl font-bold text-content leading-snug">
+                {loading ? 'Loading…' : (profile.fullName || 'Professor')}
+              </h1>
+              <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1">
+                <span className="inline-flex items-center gap-1.5 text-xs text-muted">
+                  <Building size={13} className="text-brand" />
+                  {departmentText}
+                </span>
+                {profile.email && (
+                  <span className="inline-flex items-center gap-1.5 text-xs text-muted">
+                    <Mail size={13} className="text-muted" />
+                    {profile.email}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* Actions */}
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <button
+                onClick={() => setActiveTab('Settings')}
+                className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs font-semibold bg-brand text-brand-fg hover:bg-brand-600 transition-colors shadow-sm"
+              >
+                <Edit2 size={12} />
+                Edit Profile
+              </button>
+            </div>
           </div>
-          
-          {/* Stats Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-8 border-t border-line/40">
-              {[
-                { label: 'Subjects Allotted', value: profile.subjects.length.toString(), icon: BookOpen },
-                { label: 'Total Students', value: '243', icon: User },
-                { label: 'Avg Attendance', value: '78%', icon: Activity },
-                { label: 'Active Alerts', value: '5', icon: Activity },
-             ].map(({ label, value, icon: Icon }) => (
-               <div key={label} className="group relative rounded-2xl p-[1px] transition-all duration-300 hover:shadow-2xl hover:shadow-brand/20 hover:-translate-y-1 overflow-hidden bg-gradient-to-b from-line-strong/80 via-line/20 to-transparent">
-                 <div className="absolute inset-0 bg-gradient-to-b from-brand/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                 <div className="relative h-full bg-surface-2/90 backdrop-blur-md group-hover:bg-surface rounded-[15px] p-5 flex flex-col justify-center transition-colors">
-                   <div className="flex items-center justify-between mb-2">
-                     <p className="text-xs font-bold text-muted uppercase tracking-widest">{label}</p>
-                     <Icon size={16} className="text-muted group-hover:text-brand transition-colors relative z-10" />
-                   </div>
-                   <p className="text-3xl font-extrabold text-content">{value}</p>
-                 </div>
-               </div>
-             ))}
+
+          {/* Stats grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+             {[
+              { label: 'Subjects Allotted', value: profile.subjects.length.toString(), icon: BookOpen, accent: 'text-brand bg-brand-soft border-brand/20' },
+              { label: 'Total Students', value: '243', icon: Users, accent: 'text-info bg-info-soft border-info/20' },
+              { label: 'Avg Attendance', value: '78%', icon: CheckCircle, accent: 'text-success bg-success-soft border-success/20' },
+              { label: 'Active Alerts', value: '5', icon: AlertTriangle, accent: 'text-warning bg-warning-soft border-warning/20' },
+            ].map(({ label, value, icon: Icon, accent }) => (
+              <div key={label}
+                className="flex items-center gap-3 p-4 rounded-xl border border-line/60 bg-surface-2/40 hover:bg-surface-2/80 transition-colors">
+                <div className={cn('w-9 h-9 rounded-xl border flex items-center justify-center flex-shrink-0', accent)}>
+                  <Icon size={16} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-[10px] font-semibold text-muted uppercase tracking-wider leading-none mb-1">{label}</p>
+                  <p className="text-lg font-bold text-content leading-none">{value}</p>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* ── TABS ─────────────────────────────────────────── */}
-      <div className="px-2">
+      {/* ── TABS ─────────────────────────────────────── */}
+      <div className="border-b border-line">
         <Tabs
           tabs={TABS.map(t => ({ id: t, label: t }))}
           active={activeTab}
           onChange={setActiveTab}
-          className="mb-8"
         />
       </div>
 
-      {/* ── TAB: OVERVIEW ────────────────────────────────── */}
+      {/* ── TAB: OVERVIEW ────────────────────────────── */}
       {activeTab === 'Overview' && (
-        <div className="animate-fade-in space-y-8">
-          <Card className="shadow-sm border-line/60 rounded-3xl p-8">
-             <div className="flex items-center justify-between mb-8">
-               <h2 className="text-lg font-extrabold text-content">Allotted Subjects</h2>
-               <Badge tone="brand" className="px-3 py-1">{profile.subjects.length} Total</Badge>
+        <div className="space-y-4 animate-fade-in">
+          
+          {/* Allotted Subjects */}
+          <Card className="p-5 rounded-2xl border-line/60 shadow-sm">
+             <div className="flex items-center justify-between mb-4">
+               <p className="text-xs font-semibold text-muted uppercase tracking-widest">Allotted Subjects</p>
+               <Badge tone="brand" className="px-2.5 py-1 text-[10px]">{profile.subjects.length} Total</Badge>
              </div>
              
              {profile.subjects.length > 0 ? (
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                  {profile.subjects.map((sub) => (
-                   <div key={sub.id} className="border border-line/60 rounded-2xl p-6 hover:shadow-md hover:border-brand/30 transition-all bg-surface-2/30 flex flex-col h-full group">
+                   <div key={sub.id} className="flex flex-col p-4 border border-line/60 rounded-xl hover:border-brand/25 hover:shadow-sm transition-all duration-200 bg-surface-2/20 group">
                      <div className="flex justify-between items-start mb-3">
-                       <div className="w-10 h-10 rounded-xl bg-surface border border-line flex items-center justify-center text-brand mb-4 group-hover:scale-105 transition-transform">
-                         <BookOpen size={20} />
+                       <div className="w-8 h-8 rounded-lg bg-brand-soft border border-brand/20 flex items-center justify-center text-brand mb-1 group-hover:scale-105 transition-transform">
+                         <BookOpen size={14} />
                        </div>
                        <Badge tone="blue" className="text-[10px]">{sub.year}</Badge>
                      </div>
-                     <h3 className="font-bold text-content text-lg mb-2 leading-tight">{sub.name}</h3>
-                     <p className="text-sm text-content-2 mt-auto">Section: <span className="font-semibold text-content">{sub.section}</span></p>
+                     <h3 className="text-sm font-semibold text-content mb-2 leading-snug">{sub.name}</h3>
+                     <p className="text-xs text-muted mt-auto">Section: <span className="font-semibold text-content">{sub.section}</span></p>
                    </div>
                  ))}
                </div>
              ) : (
-               <EmptyCard icon={BookOpen} title="No Subjects Allotted" subtitle="Go to settings to add subjects you are teaching." />
+               <EmptyState icon={BookOpen} title="No Subjects Allotted" subtitle="Go to settings to add subjects you are teaching." />
              )}
           </Card>
           
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <Card className="shadow-sm border-line/60 rounded-3xl p-8">
-              <h2 className="text-lg font-extrabold text-content mb-6">Contact Information</h2>
-              <div className="space-y-4">
-                <div className="flex items-center gap-4 p-4 rounded-2xl border border-line/60 bg-surface-2/30">
-                  <div className="w-10 h-10 rounded-xl bg-surface border border-line flex items-center justify-center text-muted">
-                    <Mail size={18} />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {/* Contact Info */}
+            <Card className="p-5 rounded-2xl border-line/60 shadow-sm">
+              <p className="text-xs font-semibold text-muted uppercase tracking-widest mb-4">Contact Information</p>
+              <div className="space-y-3">
+                <div className="flex items-center gap-3 p-3 rounded-xl border border-line/60 hover:bg-surface-2/40 transition-colors group">
+                  <div className="w-8 h-8 rounded-lg bg-surface border border-line flex items-center justify-center text-muted group-hover:text-brand transition-colors">
+                    <Mail size={14} />
                   </div>
                   <div>
-                    <p className="text-xs text-muted font-bold tracking-widest uppercase mb-1">Email</p>
+                    <p className="text-[10px] text-muted font-bold tracking-widest uppercase mb-0.5">Email</p>
                     <p className="text-sm font-medium text-content">{profile.email || 'Not provided'}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-4 p-4 rounded-2xl border border-line/60 bg-surface-2/30">
-                  <div className="w-10 h-10 rounded-xl bg-surface border border-line flex items-center justify-center text-muted">
-                    <Phone size={18} />
+                <div className="flex items-center gap-3 p-3 rounded-xl border border-line/60 hover:bg-surface-2/40 transition-colors group">
+                  <div className="w-8 h-8 rounded-lg bg-surface border border-line flex items-center justify-center text-muted group-hover:text-brand transition-colors">
+                    <Phone size={14} />
                   </div>
                   <div>
-                    <p className="text-xs text-muted font-bold tracking-widest uppercase mb-1">Phone</p>
+                    <p className="text-[10px] text-muted font-bold tracking-widest uppercase mb-0.5">Phone</p>
                     <p className="text-sm font-medium text-content">{profile.phone || 'Not provided'}</p>
                   </div>
                 </div>
               </div>
             </Card>
             
-            <Card className="shadow-sm border-line/60 rounded-3xl p-8">
-              <h2 className="text-lg font-extrabold text-content mb-6">Department</h2>
-               <div className="flex items-center gap-4 p-4 rounded-2xl border border-line/60 bg-surface-2/30 h-full">
-                  <div className="w-10 h-10 rounded-xl bg-surface border border-line flex items-center justify-center text-brand">
+            {/* Department */}
+            <Card className="p-5 rounded-2xl border-line/60 shadow-sm">
+              <p className="text-xs font-semibold text-muted uppercase tracking-widest mb-4">Department</p>
+               <div className="flex items-center gap-3 p-4 rounded-xl border border-line/60 bg-surface-2/20 h-[calc(100%-2.5rem)]">
+                  <div className="w-10 h-10 rounded-xl bg-brand-soft border border-brand/20 flex items-center justify-center text-brand">
                     <Building size={18} />
                   </div>
                   <div>
-                    <p className="text-xs text-muted font-bold tracking-widest uppercase mb-1">Current Department</p>
-                    <p className="text-base font-bold text-content">{departmentText}</p>
+                    <p className="text-[10px] text-muted font-bold tracking-widest uppercase mb-1">Current Department</p>
+                    <p className="text-sm font-bold text-content">{departmentText}</p>
                   </div>
                 </div>
             </Card>
@@ -269,14 +287,16 @@ export default function FacultyProfile() {
 
       {/* ── TAB: SETTINGS ───────────────────────────────── */}
       {activeTab === 'Settings' && (
-        <div className="animate-fade-in space-y-6">
-          <Card className="shadow-sm border-line/60 rounded-3xl p-8">
-            <h2 className="text-lg font-extrabold text-content mb-6">Personal Information</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div className="space-y-4 animate-fade-in">
+          
+          <Card className="p-5 rounded-2xl border-line/60 shadow-sm">
+            <p className="text-xs font-semibold text-muted uppercase tracking-widest mb-4">Personal Information</p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
               <Field label="Full Name">
                 <Input
                   value={formData.fullName}
                   onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                  className="bg-surface-2/50"
                 />
               </Field>
               <Field label="Email Address">
@@ -284,55 +304,59 @@ export default function FacultyProfile() {
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="bg-surface-2/50"
                 />
               </Field>
               <Field label="Phone Number">
                 <Input
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  className="bg-surface-2/50"
                 />
               </Field>
               <Field label="Department">
                 <Input
                   value={formData.department}
                   onChange={(e) => setFormData({ ...formData, department: e.target.value })}
+                  className="bg-surface-2/50"
                 />
               </Field>
-
               <div className="md:col-span-2">
                  <Field label="Profile Picture URL">
                    <Input
-                    value={formData.avatarUrl}
-                    onChange={(e) => setFormData({ ...formData, avatarUrl: e.target.value })}
+                    value={formData.avatarUrl || formData.profilePicture}
+                    onChange={(e) => setFormData({ ...formData, avatarUrl: e.target.value, profilePicture: e.target.value })}
                     placeholder="https://example.com/avatar.jpg"
+                    className="bg-surface-2/50"
                    />
                  </Field>
               </div>
             </div>
-            <div className="flex justify-end border-t border-line/40 pt-6 mt-4">
-              <Button onClick={handleSaveProfile} icon={Save}>
+            <div className="flex justify-end border-t border-line/40 pt-4">
+              <Button onClick={handleSaveProfile} icon={Save} size="sm" className="bg-brand text-brand-fg hover:bg-brand-600">
                 Save Profile
               </Button>
             </div>
           </Card>
 
-          <Card className="shadow-sm border-line/60 rounded-3xl p-8">
-             <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-extrabold text-content">Manage Subjects</h2>
-                <Button variant="secondary" size="sm" icon={Plus} onClick={handleAddSubject}>
+          <Card className="p-5 rounded-2xl border-line/60 shadow-sm">
+             <div className="flex items-center justify-between mb-4">
+                <p className="text-xs font-semibold text-muted uppercase tracking-widest">Manage Subjects</p>
+                <Button variant="secondary" size="sm" icon={Plus} onClick={handleAddSubject} className="h-8 text-xs">
                   Add Subject
                 </Button>
              </div>
              
-             <div className="space-y-4 mb-6">
+             <div className="space-y-3 mb-5">
                 {formData.subjects.map((sub, index) => (
-                  <div key={sub.id} className="p-5 rounded-2xl bg-surface-2 border border-line/60 flex flex-col md:flex-row gap-4 items-end">
+                  <div key={sub.id} className="p-4 rounded-xl bg-surface-2/30 border border-line/60 flex flex-col md:flex-row gap-3 items-end">
                     <div className="flex-1 w-full">
                        <Field label={`Subject ${index + 1} Name`}>
                          <Input
                            value={sub.name}
                            onChange={(e) => handleSubjectChange(sub.id, 'name', e.target.value)}
                            placeholder="e.g. Database Management Systems"
+                           className="bg-surface"
                          />
                        </Field>
                     </div>
@@ -342,6 +366,7 @@ export default function FacultyProfile() {
                            value={sub.section}
                            onChange={(e) => handleSubjectChange(sub.id, 'section', e.target.value)}
                            placeholder="e.g. A"
+                           className="bg-surface"
                          />
                        </Field>
                     </div>
@@ -351,41 +376,43 @@ export default function FacultyProfile() {
                            value={sub.year}
                            onChange={(e) => handleSubjectChange(sub.id, 'year', e.target.value)}
                            placeholder="e.g. 2nd Year"
+                           className="bg-surface"
                          />
                        </Field>
                     </div>
                     <Button 
                       variant="ghost" 
                       onClick={() => handleRemoveSubject(sub.id)}
-                      className="text-danger hover:text-danger hover:bg-danger-soft px-3 h-[42px]"
+                      className="text-danger hover:text-danger hover:bg-danger-soft px-3 h-[42px] mb-[2px]"
                     >
-                      <Trash2 size={18} />
+                      <Trash2 size={16} />
                     </Button>
                   </div>
                 ))}
                 
                 {formData.subjects.length === 0 && (
-                  <div className="text-center py-8 bg-surface-2/50 rounded-2xl border border-dashed border-line/60 text-muted text-sm font-medium">
+                  <div className="text-center py-6 bg-surface-2/30 rounded-xl border border-dashed border-line/60 text-muted text-xs font-medium">
                      No subjects added. Click "Add Subject" to begin.
                   </div>
                 )}
              </div>
              
-             <div className="flex justify-end border-t border-line/40 pt-6 mt-4">
-              <Button onClick={handleSaveProfile} icon={Save}>
+             <div className="flex justify-end border-t border-line/40 pt-4">
+              <Button onClick={handleSaveProfile} icon={Save} size="sm" className="bg-brand text-brand-fg hover:bg-brand-600">
                 Save Subjects
               </Button>
             </div>
           </Card>
 
-          <Card className="shadow-sm border-line/60 rounded-3xl p-8">
-            <h2 className="text-lg font-extrabold text-content mb-6">Change Password</h2>
-            <div className="max-w-md space-y-4 mb-6">
+          <Card className="p-5 rounded-2xl border-line/60 shadow-sm">
+            <p className="text-xs font-semibold text-muted uppercase tracking-widest mb-4">Change Password</p>
+            <div className="max-w-md space-y-3 mb-5">
               <Field label="Current Password">
                 <Input
                   type="password"
                   value={passwords.current}
                   onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
+                  className="bg-surface-2/50"
                 />
               </Field>
               <Field label="New Password">
@@ -393,6 +420,7 @@ export default function FacultyProfile() {
                   type="password"
                   value={passwords.new}
                   onChange={(e) => setPasswords({ ...passwords, new: e.target.value })}
+                  className="bg-surface-2/50"
                 />
               </Field>
               <Field label="Confirm New Password">
@@ -400,11 +428,12 @@ export default function FacultyProfile() {
                   type="password"
                   value={passwords.confirm}
                   onChange={(e) => setPasswords({ ...passwords, confirm: e.target.value })}
+                  className="bg-surface-2/50"
                 />
               </Field>
             </div>
-            <div className="flex justify-start border-t border-line/40 pt-6 mt-4">
-              <Button variant="secondary" onClick={handlePasswordChange}>
+            <div className="flex justify-start border-t border-line/40 pt-4">
+              <Button variant="secondary" onClick={handlePasswordChange} size="sm">
                 Update Password
               </Button>
             </div>
@@ -414,3 +443,4 @@ export default function FacultyProfile() {
     </div>
   )
 }
+
