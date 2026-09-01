@@ -28,6 +28,10 @@ const nextConfig = {
         source: '/api/faculty/reports/:path*',
         destination: 'http://localhost:4000/api/faculty/reports/:path*',
       },
+      {
+        source: '/api/faculty/upload/:path*',
+        destination: 'http://localhost:4000/api/faculty/upload/:path*',
+      },
     ];
   },
 };

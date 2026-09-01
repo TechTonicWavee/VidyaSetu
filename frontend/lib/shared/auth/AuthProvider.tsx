@@ -2,6 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
+import { useToast } from '@/components/shared/ToastContext';
 import { apiPost, ApiError } from '../api/client';
 import { clearAccessToken, consumePendingLoginSession, getAccessToken, peekPendingLoginSession, registerUnauthorizedHandler, setAccessToken } from './tokenStore';
 
@@ -40,6 +41,7 @@ export function AuthProvider({ children, demoMode = false }: { children: ReactNo
   );
   const [loading, setLoading] = useState(!demoMode && pendingAtMount == null);
   const hydrated = useRef(false);
+  const { addToast } = useToast();
 
   // [Krrish/auth] localStorage.vs_student is no longer trusted for authentication — every
   // API call now requires a real JWT. This mirror exists only so other pages that
@@ -86,6 +88,7 @@ export function AuthProvider({ children, demoMode = false }: { children: ReactNo
       setToken(null);
       setStudent(null);
       syncLegacySessionMirror(null);
+      addToast('Your session has expired. Please log in again.', 'error');
       router.push('/login');
     });
 
@@ -113,9 +116,16 @@ export function AuthProvider({ children, demoMode = false }: { children: ReactNo
           syncLegacySessionMirror(json.data.student);
         } else {
           syncLegacySessionMirror(null);
+          // Only show toast if they actually had a session that expired, not if they just visited the page unauthenticated.
+          if (document.cookie.includes('vs_rf')) {
+            addToast('Session expired. Please log in again.', 'error');
+          } else {
+            addToast('Please log in to continue.', 'info');
+          }
           router.push('/login');
         }
       } catch {
+        addToast('Authentication failed. Please log in again.', 'error');
         router.push('/login');
       } finally {
         setLoading(false);

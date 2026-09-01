@@ -4,7 +4,7 @@ import type { AuthedRequest } from '../../../shared/middleware/auth';
 import * as teamService from '../services/team.service';
 
 function uid(req: AuthedRequest) {
-  return req.user!.universityId;
+  return req.user!.universityId as string;
 }
 
 export const accept = asyncHandler(async (req, res) => {

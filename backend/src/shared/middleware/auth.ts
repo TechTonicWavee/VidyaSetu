@@ -3,7 +3,7 @@ import { AppError } from '../utils/appError';
 import { verifyAccessToken } from '../utils/jwt';
 
 export interface AuthedRequest extends Request {
-  user?: { universityId: string; role: 'student' };
+  user?: { universityId?: string; facultyId?: string; role: 'student' | 'faculty' };
 }
 
 export function authMiddleware(req: AuthedRequest, _res: Response, next: NextFunction) {
@@ -16,7 +16,7 @@ export function authMiddleware(req: AuthedRequest, _res: Response, next: NextFun
 
   try {
     const payload = verifyAccessToken(token);
-    req.user = { universityId: payload.universityId, role: payload.role };
+    req.user = { universityId: payload.universityId, facultyId: payload.facultyId, role: payload.role };
     next();
   } catch {
     next(AppError.unauthorized('Access token is invalid or expired', 'TOKEN_EXPIRED'));

@@ -27,6 +27,7 @@
     "puppeteer": "^25.6.0",
     "react": "^18",
     "react-dom": "^18",
+    "react-hot-toast": "^2.6.0",
     "recharts": "^3.8.1",
     "unpdf": "^1.8.0",
     "xlsx": "^0.18.5"

@@ -6,9 +6,14 @@ import {
   addMenteeNote,
   addMenteeAlert,
   getClasses,
-  getAnalytics
+  getAnalytics,
+  addClass,
+  uploadAttendance,
+  uploadMarks
 } from '../controllers/faculty.controller';
+import multer from 'multer';
 
+const upload = multer();
 const router = Router();
 
 // Profile Routes
@@ -24,6 +29,11 @@ router.post('/mentees/:id/alerts', addMenteeAlert);
 
 // Classes & Analytics
 router.get('/classes', getClasses);
+router.post('/classes', addClass);
 router.get('/reports/analytics', getAnalytics);
+
+// Uploads
+router.post('/upload/attendance', upload.single('file'), uploadAttendance);
+router.post('/upload/marks', upload.single('file'), uploadMarks);
 
 export default router;

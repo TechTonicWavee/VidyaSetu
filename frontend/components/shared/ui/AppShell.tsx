@@ -10,6 +10,7 @@ export interface NavGroup {
     label: string;
     icon?: React.ElementType;
     badge?: number | string;
+    external?: string;
   }[];
 }
 

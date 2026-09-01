@@ -1,15 +1,16 @@
 import { Request, Response } from 'express';
 import { prisma } from '../../../shared/lib/prisma';
+import * as xlsx from 'xlsx';
 
 export const getProfile = async (req: Request, res: Response) => {
   try {
-    const facultyId = req.headers['x-faculty-id'] as string || 'FAC001';
+    const facultyId = (req as any).user?.facultyId || 'FAC001';
     
     const faculty = await prisma.faculty.findUnique({
       where: { facultyId },
       include: {
         sections: {
-          include: { subject: true }
+          include: { subject: true, students: true }
         }
       }
     });
@@ -26,8 +27,11 @@ export const getProfile = async (req: Request, res: Response) => {
         subjects: faculty.sections.map(sec => ({
           id: sec.subject.id,
           name: sec.subject.name,
+          code: sec.subject.code,
           section: sec.name,
           year: sec.year,
+          semester: sec.semester,
+          strength: sec.students.length
         }))
       }
     });
@@ -38,7 +42,7 @@ export const getProfile = async (req: Request, res: Response) => {
 
 export const updateProfile = async (req: Request, res: Response) => {
   try {
-    const facultyId = req.headers['x-faculty-id'] as string || 'FAC001';
+    const facultyId = (req as any).user?.facultyId || 'FAC001';
     const { fullName, department } = req.body;
     
     const updated = await prisma.faculty.update({
@@ -54,7 +58,7 @@ export const updateProfile = async (req: Request, res: Response) => {
 
 export const getMentees = async (req: Request, res: Response) => {
   try {
-    const facultyId = req.headers['x-faculty-id'] as string || 'FAC001';
+    const facultyId = (req as any).user?.facultyId || 'FAC001';
     
     const mentees = await prisma.student.findMany({
       where: { mentorId: facultyId },
@@ -105,7 +109,7 @@ export const getMentees = async (req: Request, res: Response) => {
 
 export const addMenteeNote = async (req: Request, res: Response) => {
   try {
-    const facultyId = req.headers['x-faculty-id'] as string || 'FAC001';
+    const facultyId = (req as any).user?.facultyId || 'FAC001';
     const { id } = req.params; // student universityId
     if (!id) return res.status(400).json({ success: false, error: 'Student id is required.' });
     const { content, visibility } = req.body;
@@ -140,7 +144,7 @@ export const addMenteeNote = async (req: Request, res: Response) => {
 
 export const addMenteeAlert = async (req: Request, res: Response) => {
   try {
-    const facultyId = req.headers['x-faculty-id'] as string || 'FAC001';
+    const facultyId = (req as any).user?.facultyId || 'FAC001';
     const { id } = req.params;
     if (!id) return res.status(400).json({ success: false, error: 'Student id is required.' });
     const { type, severity, comment } = req.body;
@@ -174,7 +178,7 @@ export const addMenteeAlert = async (req: Request, res: Response) => {
 
 export const getClasses = async (req: Request, res: Response) => {
   try {
-    const facultyId = req.headers['x-faculty-id'] as string || 'FAC001';
+    const facultyId = (req as any).user?.facultyId || 'FAC001';
     
     const sections = await prisma.section.findMany({
       where: { facultyId },
@@ -222,7 +226,7 @@ export const getClasses = async (req: Request, res: Response) => {
 
 export const getAnalytics = async (req: Request, res: Response) => {
   try {
-    const facultyId = req.headers['x-faculty-id'] as string || 'FAC001';
+    const facultyId = (req as any).user?.facultyId || 'FAC001';
     
     // Get basic analytics based on mentees or classes
     const sections = await prisma.section.findMany({
@@ -281,6 +285,122 @@ export const getAnalytics = async (req: Request, res: Response) => {
         subjects: subjectsMap
       }
     });
+  } catch (error) {
+    res.status(500).json({ success: false, error: (error as any).message });
+  }
+};
+
+export const addClass = async (req: Request, res: Response) => {
+  try {
+    const facultyId = (req as any).user?.facultyId || 'FAC001';
+    const { year, semester, section, subjectCode, courseName } = req.body;
+
+    let subject = await prisma.subject.findFirst({ where: { code: subjectCode } });
+    if (!subject) {
+      subject = await prisma.subject.create({
+        data: { name: courseName, code: subjectCode }
+      });
+    }
+
+    const students = await prisma.student.findMany({
+      where: {
+        year: parseInt(year),
+        semester: parseInt(semester),
+        section: section
+      }
+    });
+
+    const sec = await prisma.section.create({
+      data: {
+        name: section,
+        year: year.toString(),
+        semester: semester.toString(),
+        subjectId: subject.id,
+        facultyId,
+        students: {
+          connect: students.map(s => ({ id: s.id }))
+        }
+      },
+      include: {
+        subject: true,
+        students: true
+      }
+    });
+
+    res.json({ success: true, data: sec });
+  } catch (error) {
+    res.status(500).json({ success: false, error: (error as any).message });
+  }
+};
+
+export const uploadAttendance = async (req: Request, res: Response) => {
+  try {
+    const file = req.file;
+    if (!file) return res.status(400).json({ success: false, error: 'No file uploaded' });
+    const { date } = req.body;
+    
+    const workbook = xlsx.read(file.buffer, { type: 'buffer' });
+    const sheetName = workbook.SheetNames[0];
+    if (!sheetName) return res.status(400).json({ success: false, error: 'Invalid excel file' });
+    const sheet = workbook.Sheets[sheetName];
+    if (!sheet) return res.status(400).json({ success: false, error: 'Empty sheet in excel file' });
+    const data: any[] = xlsx.utils.sheet_to_json(sheet);
+    
+    for (const row of data) {
+      const rollNo = row['Roll Number'] || row['RollNo'] || row['universityId'];
+      const attendanceVal = row['Attendance'] ?? row['Overall Attendance'] ?? row['Attendance (%)'];
+      
+      if (!rollNo || attendanceVal === undefined) continue;
+      
+      const studentId = rollNo.toString();
+      const attendancePerc = parseFloat(attendanceVal.toString().replace('%', ''));
+
+      if (!isNaN(attendancePerc)) {
+        await prisma.student.updateMany({
+          where: { universityId: studentId },
+          data: {
+            attendance: attendancePerc
+          }
+        });
+      }
+    }
+    
+    res.json({ success: true, message: 'Attendance uploaded successfully' });
+  } catch (error) {
+    res.status(500).json({ success: false, error: (error as any).message });
+  }
+};
+
+export const uploadMarks = async (req: Request, res: Response) => {
+  try {
+    const file = req.file;
+    if (!file) return res.status(400).json({ success: false, error: 'No file uploaded' });
+    const { subjectCode, examType, maxMarks } = req.body;
+    
+    const workbook = xlsx.read(file.buffer, { type: 'buffer' });
+    const sheetName = workbook.SheetNames[0];
+    if (!sheetName) return res.status(400).json({ success: false, error: 'Invalid excel file' });
+    const sheet = workbook.Sheets[sheetName];
+    if (!sheet) return res.status(400).json({ success: false, error: 'Empty sheet in excel file' });
+    const data: any[] = xlsx.utils.sheet_to_json(sheet);
+    
+    for (const row of data) {
+      const rollNo = row['Roll Number'] || row['RollNo'] || row['universityId'];
+      const marks = row['Marks'] || row['Score'];
+      if (rollNo && marks !== undefined) {
+        await prisma.marks.create({
+          data: {
+            universityId: rollNo.toString(),
+            subjectCode: subjectCode || 'UNKNOWN',
+            examType: examType || 'Midterm',
+            marks: parseFloat(marks),
+            maxMarks: parseFloat(maxMarks || 100)
+          }
+        });
+      }
+    }
+    
+    res.json({ success: true, message: 'Marks uploaded successfully' });
   } catch (error) {
     res.status(500).json({ success: false, error: (error as any).message });
   }

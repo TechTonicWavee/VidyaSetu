@@ -3,8 +3,9 @@ import crypto from 'crypto';
 import { env } from '../config/env';
 
 export interface AccessTokenPayload {
-  universityId: string;
-  role: 'student';
+  universityId?: string;
+  facultyId?: string;
+  role: 'student' | 'faculty';
 }
 
 export function signAccessToken(payload: AccessTokenPayload): string {
@@ -16,7 +17,8 @@ export function verifyAccessToken(token: string): AccessTokenPayload {
 }
 
 export interface RefreshTokenPayload {
-  universityId: string;
+  universityId?: string;
+  facultyId?: string;
   jti: string;
 }
 

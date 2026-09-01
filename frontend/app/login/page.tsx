@@ -137,6 +137,7 @@ function StudentLoginForm({ portal, onSwitchPortal, portals: allPortals }: { por
     setLoginError(null);
     if (!universityId.trim() || !password.trim()) {
       setLoginError({ type: "red", message: "Please fill in all fields." });
+      addToast("Please fill in all fields.", "warning");
       return;
     }
     setLoginLoading(true);
@@ -160,12 +161,15 @@ function StudentLoginForm({ portal, onSwitchPortal, portals: allPortals }: { por
           link: "/form/login",
           linkText: "Go to profile form →",
         });
-      } else {
-        setLoginError({ type: "red", message: data.error?.message || "Login failed." });
+        addToast("Please complete your profile form first.", "info");
+        const errorMsg = data.error?.message || "Login failed.";
+        setLoginError({ type: "red", message: errorMsg });
+        addToast(errorMsg, "error");
+        setLoginLoading(false);
       }
     } catch {
       setLoginError({ type: "red", message: "Network error. Please try again." });
-    } finally {
+      addToast("Network error. Please try again.", "error");
       setLoginLoading(false);
     }
   };
@@ -594,8 +598,55 @@ function GenericLoginForm({ portal, onSwitchPortal, onBack }: { portal: (typeof 
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
 
-  const handleLogin = () => {
-    if (portal) router.push(portal.path);
+  const { addToast } = useToast();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<{ type: string; message: string } | null>(null);
+
+  const handleLogin = async () => {
+    if (!portal) return;
+
+    if (portal.id === "faculty") {
+      setError(null);
+      if (!email.trim() || !password.trim()) {
+        setError({ type: "red", message: "Please fill in all fields." });
+        addToast("Please fill in all fields.", "warning");
+        return;
+      }
+      setLoading(true);
+      try {
+        const res = await fetch("/api/auth/faculty-login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
+          body: JSON.stringify({ email: email.trim(), password }),
+        });
+        const data = await res.json();
+        if (data.success) {
+          setAccessToken(data.data.accessToken);
+          setPendingLoginSession({ accessToken: data.data.accessToken, student: data.data.student });
+          addToast(`Welcome back, ${data.data.student?.name?.split(' ')[0] ?? 'there'}!`, 'success', 'Signed in successfully.');
+          router.push(portal.path);
+        } else {
+          const errorMsg = data.error?.message || "Login failed.";
+          setError({ type: "red", message: errorMsg });
+          addToast(errorMsg, "error");
+          setLoading(false);
+        }
+      } catch {
+        setError({ type: "red", message: "Network error. Please try again." });
+        addToast("Network error. Please try again.", "error");
+        setLoading(false);
+      }
+    } else {
+      // Mock login for Dean/Admin portals
+      if (!email.trim() || !password.trim()) {
+        setError({ type: "red", message: "Please fill in all fields." });
+        addToast("Please fill in all fields.", "warning");
+        return;
+      }
+      addToast('Welcome to the portal', 'success');
+      router.push(portal.path);
+    }
   };
 
   const accentColor = portal.accentColor;
@@ -673,11 +724,31 @@ function GenericLoginForm({ portal, onSwitchPortal, onBack }: { portal: (typeof 
           </div>
         </div>
 
+        {error && (
+          <div
+            className={`mb-4 rounded-xl px-4 py-3 text-sm flex flex-col gap-1 ${
+              error.type === "blue"
+                ? "bg-info-soft text-info border border-info"
+                : "bg-danger-soft text-danger border border-danger"
+            }`}
+          >
+            <span className="flex items-center gap-1.5 font-medium">
+              <AlertCircle size={14} />
+              {error.message}
+            </span>
+          </div>
+        )}
+
         <button
           onClick={handleLogin}
+          disabled={loading}
           className="lp-btn-primary w-full justify-center mb-5 disabled:opacity-60 disabled:cursor-not-allowed"
         >
-          {portal.loginTitle.replace("Login", "Sign In")}
+          {loading ? (
+            <><Loader2 size={16} className="animate-spin" /> Signing in...</>
+          ) : (
+            portal.loginTitle.replace("Login", "Sign In")
+          )}
         </button>
 
         {portal.others.length > 0 && (

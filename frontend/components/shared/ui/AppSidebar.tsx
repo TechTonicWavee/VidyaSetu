@@ -26,6 +26,7 @@ export function AppSidebar({
   const isDark = theme === 'dark';
 
   const isActive = (path: string) => {
+    if (!path) return false;
     if (path === '/student' || path === '/faculty' || path === '/admin' || path === '/dean' || path === '/parent') {
       return pathname === path;
     }
@@ -118,8 +119,9 @@ export function AppSidebar({
                     return (
                       <Link
                         key={item.id}
-                        href={item.href}
-                        onClick={onCloseMobile}
+                        href={item.external || item.href}
+                        target={item.external ? "_blank" : undefined}
+                        onClick={item.external ? undefined : onCloseMobile}
                         className={cn(
                           'group relative w-full flex items-center gap-3 rounded-2xl px-4 py-3 text-[14px] font-medium transition-all duration-200',
                           active 
