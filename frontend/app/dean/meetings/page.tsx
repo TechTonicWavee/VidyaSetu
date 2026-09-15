@@ -95,7 +95,7 @@ export default function MeetingsPage() {
           </div>
           <textarea placeholder="Notes (optional)" value={formData.notes} onChange={e => setFormData({...formData, notes: e.target.value})} rows={2} className={`${inputCls} resize-none mt-3`} />
           <div className="flex gap-3 mt-4">
-            <Button onClick={handleAdd} className="shadow-sm">Save Meeting</Button>
+            <Button onClick={handleAdd} className="shadow-card">Save Meeting</Button>
             <Button onClick={() => setShowForm(false)} variant="secondary">Cancel</Button>
           </div>
         </Card>
@@ -145,7 +145,7 @@ export default function MeetingsPage() {
             <Search size={15} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
             <input type="text" placeholder="Search meetings..."
               value={search} onChange={e => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2.5 text-sm border border-line rounded-xl bg-surface focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand placeholder-muted shadow-sm transition"
+              className="w-full pl-10 pr-4 py-2.5 text-sm border border-line rounded-xl bg-surface focus:outline-none focus:ring-2 focus:ring-brand/30 focus:border-brand placeholder-muted shadow-card transition"
             />
           </div>
 

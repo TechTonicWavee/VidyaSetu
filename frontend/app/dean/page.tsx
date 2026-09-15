@@ -66,14 +66,19 @@ export default function DeanDashboard() {
   const upcomingMeetings = meetings.filter(m => m.status !== 'completed').slice(0, 3)
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 pb-8">
 
       {/* Notification Banner */}
       <NotificationBanner />
 
       <PageHeader 
-        title="Dashboard" 
-        description="CSE Department overview · May 2026"
+        title="Good morning, Dean Verma" 
+        description="Here is your CSE Department overview for today."
+        actions={
+          <Badge tone="gray" className="px-3 py-1.5 font-mono uppercase tracking-widest text-[10px] bg-surface-2 border border-line text-muted shadow-card hidden sm:inline-flex">
+            {new Date().toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+          </Badge>
+        }
       />
 
       {/* Stat Cards */}
@@ -94,10 +99,10 @@ export default function DeanDashboard() {
       <div className="grid grid-cols-1 xl:grid-cols-5 gap-6">
 
         {/* Year-wise table - 3/5 */}
-        <Card className="xl:col-span-3">
+        <Card className="xl:col-span-3 p-6 shadow-card border-line/60 hover:shadow-card transition-shadow">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="font-semibold text-content">Year-wise Health — CSE</h3>
+              <h3 className="font-bold text-content text-lg">Year-wise Health — CSE</h3>
               <p className="text-xs text-muted mt-0.5">Academic year 2025–26</p>
             </div>
             <button onClick={() => router.push('/dean/cross-branch')}
@@ -146,10 +151,10 @@ export default function DeanDashboard() {
         </Card>
 
         {/* Insights - 2/5 */}
-        <Card className="xl:col-span-2 flex flex-col">
+        <Card className="xl:col-span-2 flex flex-col p-6 shadow-card border-line/60 hover:shadow-card transition-shadow">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h3 className="font-semibold text-content">Weekly Insights</h3>
+              <h3 className="font-bold text-content text-lg">Weekly Insights</h3>
               <p className="text-xs text-muted mt-0.5">Week of Apr 14, 2026</p>
             </div>
             <Star size={15} className="text-warning" />
@@ -180,13 +185,13 @@ export default function DeanDashboard() {
         </Card>
 
         {/* Upcoming Meetings - New Widget */}
-        <Card className="xl:col-span-5">
+        <Card className="xl:col-span-5 p-6 shadow-card border-line/60 hover:shadow-card transition-shadow">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2">
               <div className="w-8 h-8 rounded-lg bg-info-soft flex items-center justify-center text-info">
                 <Calendar size={18} />
               </div>
-              <h3 className="font-semibold text-content">Upcoming Meetings</h3>
+              <h3 className="font-bold text-content text-lg">Upcoming Meetings</h3>
             </div>
             <button onClick={() => router.push('/dean/meetings')} className="text-xs font-bold text-info hover:underline">View All</button>
           </div>

@@ -154,6 +154,7 @@ function StudentLoginForm({ portal, onSwitchPortal, portals: allPortals }: { por
         setPendingLoginSession({ accessToken: data.data.accessToken, student: data.data.student });
         addToast(`Welcome back, ${data.data.student?.name?.split(' ')[0] ?? 'there'}!`, 'success', 'Signed in successfully.');
         router.push("/student");
+        setTimeout(() => setLoginLoading(false), 1500); // Safe fallback to prevent infinite loading state
       } else if (data.error?.code === "FORM_INCOMPLETE") {
         setLoginError({
           type: "blue",
@@ -162,6 +163,8 @@ function StudentLoginForm({ portal, onSwitchPortal, portals: allPortals }: { por
           linkText: "Go to profile form →",
         });
         addToast("Please complete your profile form first.", "info");
+        setLoginLoading(false);
+      } else {
         const errorMsg = data.error?.message || "Login failed.";
         setLoginError({ type: "red", message: errorMsg });
         addToast(errorMsg, "error");
@@ -626,6 +629,7 @@ function GenericLoginForm({ portal, onSwitchPortal, onBack }: { portal: (typeof 
           setPendingLoginSession({ accessToken: data.data.accessToken, student: data.data.student });
           addToast(`Welcome back, ${data.data.student?.name?.split(' ')[0] ?? 'there'}!`, 'success', 'Signed in successfully.');
           router.push(portal.path);
+          setTimeout(() => setLoading(false), 1500); // Safe fallback
         } else {
           const errorMsg = data.error?.message || "Login failed.";
           setError({ type: "red", message: errorMsg });
@@ -644,8 +648,10 @@ function GenericLoginForm({ portal, onSwitchPortal, onBack }: { portal: (typeof 
         addToast("Please fill in all fields.", "warning");
         return;
       }
+      setLoading(true);
       addToast('Welcome to the portal', 'success');
       router.push(portal.path);
+      setTimeout(() => setLoading(false), 1500); // Safe fallback
     }
   };
 

@@ -14,6 +14,7 @@ import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, RadarChart, Radar,
   PolarGrid, PolarAngleAxis, PolarRadiusAxis
 } from 'recharts'
+import { PageHeader } from '@/components/shared/ui';
 import { ALL_STUDENTS } from '@/lib/dean/mock-data'
 import {
   enrichStudents, getCategoryDistribution, generateInsights,
@@ -175,31 +176,27 @@ export default function StudentIntelligence() {
   return (
     <div className="space-y-8 animate-fade-in pb-20">
           {/* ── Page Title ─────────────────────────────────────────────────── */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-2.5 mb-1">
-                <div className="w-9 h-9 rounded-xl flex items-center justify-center bg-brand">
-                  <Brain size={18} className="text-surface" />
-                </div>
-                <h1 className="text-2xl font-black text-content">Student Intelligence Engine</h1>
-              </div>
-              <p className="text-muted text-sm ml-11">AI-driven segmentation — showing what each student is actually doing and suited for</p>
-            </div>
-            <div className="flex items-center gap-2 ml-11 sm:ml-0 flex-wrap">
-              <span className="text-xs px-3 py-1.5 rounded-full border font-semibold" style={{ background: '#EEF2FF', borderColor: '#C7D2FE', color: '#4338CA' }}>
-                {filtered.length} / {allEnriched.length} students
-              </span>
-              {hasFilters && (
-                <button onClick={clearFilters} className="text-xs flex items-center gap-1 px-3 py-1.5 rounded-full border font-semibold transition"
-                  style={{ borderColor: '#C7D2FE', background: '#EEF2FF', color: '#4338CA' }}>
-                  <X size={11} />Clear filters
-                </button>
-              )}
-            </div>
-          </div>
+          <PageHeader 
+            title="Student Intelligence Engine"
+            description="AI-driven segmentation — showing what each student is actually doing and suited for"
+            icon={<Brain size={18} />}
+            actions={
+              <>
+                <span className="text-xs px-3 py-1.5 rounded-full border font-semibold" style={{ background: '#EEF2FF', borderColor: '#C7D2FE', color: '#4338CA' }}>
+                  {filtered.length} / {allEnriched.length} students
+                </span>
+                {hasFilters && (
+                  <button onClick={clearFilters} className="text-xs flex items-center gap-1 px-3 py-1.5 rounded-full border font-semibold transition"
+                    style={{ borderColor: '#C7D2FE', background: '#EEF2FF', color: '#4338CA' }}>
+                    <X size={11} />Clear filters
+                  </button>
+                )}
+              </>
+            }
+          />
 
           {/* ── Filters ────────────────────────────────────────────────────── */}
-          <div className="bg-surface rounded-2xl border border-line shadow-sm p-5">
+          <div className="bg-surface rounded-2xl border border-line shadow-card p-5">
             <div className="flex items-center gap-2 mb-3">
               <SlidersHorizontal size={14} className="text-muted" />
               <span className="text-xs font-bold text-muted uppercase tracking-wide">Filters</span>
@@ -280,7 +277,7 @@ export default function StudentIntelligence() {
               { label: 'Avg Composite',   value: filtered.length ? Math.round(filtered.reduce((s,x)=>s+x.composite,0)/filtered.length) : 0, icon: Target, color: '#4338CA', sub: '/ 100' },
               { label: 'All-Rounders',    value: filtered.filter(s => s.category === 'all_rounder').length, icon: Star, color: '#4338CA', sub: 'leadership pipeline' },
             ].map((k, i) => (
-              <div key={i} className="bg-surface rounded-2xl border border-line shadow-sm p-5 relative overflow-hidden min-h-[126px] flex flex-col">
+              <div key={i} className="bg-surface rounded-2xl border border-line shadow-card p-5 relative overflow-hidden min-h-[126px] flex flex-col">
                 <div className="absolute top-0 right-0 w-16 h-16 rounded-full -translate-y-4 translate-x-4 opacity-[0.07]" style={{ background: k.color }} />
                 <div className="flex items-center gap-2 mb-3">
                   <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: k.color + '18' }}>
@@ -300,7 +297,7 @@ export default function StudentIntelligence() {
           <div className="grid grid-cols-1 xl:grid-cols-5 gap-6">
 
             {/* Pie chart */}
-            <div className="xl:col-span-2 bg-surface rounded-2xl border border-line shadow-sm p-5">
+            <div className="xl:col-span-2 bg-surface rounded-2xl border border-line shadow-card p-5">
               <h2 className="font-bold text-sm text-content mb-1">Student Distribution</h2>
               <p className="text-xs text-muted mb-4">Category breakdown of {filtered.length} students</p>
               <ResponsiveContainer width="100%" height={220}>
@@ -331,7 +328,7 @@ export default function StudentIntelligence() {
             </div>
 
             {/* Insight panel */}
-            <div className="xl:col-span-3 bg-surface rounded-2xl border border-line shadow-sm p-5 flex flex-col">
+            <div className="xl:col-span-3 bg-surface rounded-2xl border border-line shadow-card p-5 flex flex-col">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <div className="w-8 h-8 rounded-xl flex items-center justify-center" style={{ background: '#EEF2FF' }}>
@@ -380,7 +377,7 @@ export default function StudentIntelligence() {
                 const isSelected = selectedCategory === cat.id
                 return (
                   <button key={i} onClick={() => setSelectedCategory(isSelected ? null : cat.id)}
-                    className="bg-surface rounded-2xl border shadow-sm p-5 text-left transition-all hover:shadow-md active:scale-[0.99] relative overflow-hidden"
+                    className="bg-surface rounded-2xl border shadow-card p-5 text-left transition-all hover:shadow-card active:scale-[0.99] relative overflow-hidden"
                     style={{ borderColor: isSelected ? cat.color : '#E5E7EB', outline: isSelected ? `2px solid ${cat.color}` : 'none' }}>
                     <div className="absolute top-0 right-0 w-20 h-20 rounded-full -translate-y-6 translate-x-6 opacity-[0.06]" style={{ background: cat.color }} />
                     <div className="flex items-start justify-between mb-3">
@@ -412,7 +409,7 @@ export default function StudentIntelligence() {
 
           {/* ── Selected Category Detail ────────────────────────────────────── */}
           {selectedCategory && (
-            <div className="bg-surface rounded-2xl border border-line shadow-sm overflow-hidden">
+            <div className="bg-surface rounded-2xl border border-line shadow-card overflow-hidden">
               {(() => {
                 const cat = CATEGORIES[selectedCategory.toUpperCase()] || Object.values(CATEGORIES).find(c => c.id === selectedCategory)
                 const meta = CATEGORY_META[selectedCategory] || {}
@@ -481,7 +478,7 @@ export default function StudentIntelligence() {
           )}
 
           {/* ── Worst Performing Cluster ────────────────────────────────────── */}
-          <div className="bg-surface rounded-2xl border border-line shadow-sm overflow-hidden">
+          <div className="bg-surface rounded-2xl border border-line shadow-card overflow-hidden">
             <div className="px-6 py-4 border-b border-line" style={{ background: '#FEF2F2' }}>
               <div className="flex items-center gap-2">
                 <AlertTriangle size={16} color="#DC2626" />
@@ -535,7 +532,7 @@ export default function StudentIntelligence() {
           </div>
 
           {/* ── Main Student Table ──────────────────────────────────────────── */}
-          <div className="bg-surface rounded-2xl border border-line shadow-sm overflow-hidden">
+          <div className="bg-surface rounded-2xl border border-line shadow-card overflow-hidden">
             <div className="px-6 py-4 border-b border-line flex items-center justify-between">
               <div>
                 <h2 className="font-bold text-sm text-content">All Students</h2>
@@ -678,7 +675,7 @@ export default function StudentIntelligence() {
                   {/* Header */}
                   <div className="px-6 py-6 flex items-start justify-between shrink-0 border-b border-line" style={{ background: cat?.bg || '#EEF2FF' }}>
                     <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-lg font-black flex-shrink-0 shadow-sm"
+                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center text-white text-lg font-black flex-shrink-0 shadow-card"
                         style={{ background: cat?.color || '#4338CA' }}>
                         {s.name.split(' ').map(n => n[0]).join('').slice(0, 2)}
                       </div>
@@ -710,7 +707,7 @@ export default function StudentIntelligence() {
                     </div>
 
                     {/* Skill Radar */}
-                    <div className="bg-surface rounded-xl border border-line p-4 shadow-sm flex flex-col items-center justify-center">
+                    <div className="bg-surface rounded-xl border border-line p-4 shadow-card flex flex-col items-center justify-center">
                       <p className="text-xs font-bold text-muted uppercase tracking-wider mb-2">Skill Radar</p>
                       <ResponsiveContainer width="100%" height={220}>
                         <RadarChart data={radarData} outerRadius="70%">
@@ -724,7 +721,7 @@ export default function StudentIntelligence() {
                     </div>
 
                     {/* Score Bars */}
-                    <div className="bg-surface rounded-xl border border-line p-5 shadow-sm space-y-4">
+                    <div className="bg-surface rounded-xl border border-line p-5 shadow-card space-y-4">
                       <h3 className="font-bold text-sm text-content mb-3">Detailed Scores</h3>
                       {scores.map(sc => (
                         <div key={sc.label}>
@@ -741,14 +738,14 @@ export default function StudentIntelligence() {
 
                     {/* Strengths & Weaknesses */}
                     <div className="grid grid-cols-2 gap-3">
-                      <div className="bg-green-50 border border-green-100 rounded-xl p-4 shadow-sm">
+                      <div className="bg-green-50 border border-green-100 rounded-xl p-4 shadow-card">
                         <div className="flex items-center gap-1.5 mb-2">
                           <TrendingUp size={14} className="text-green-600" />
                           <p className="text-[10px] font-bold text-green-600 uppercase tracking-wider">Top Strength</p>
                         </div>
                         <p className="text-sm font-bold text-green-700">{s.strength}</p>
                       </div>
-                      <div className="bg-red-50 border border-red-100 rounded-xl p-4 shadow-sm">
+                      <div className="bg-red-50 border border-red-100 rounded-xl p-4 shadow-card">
                         <div className="flex items-center gap-1.5 mb-2">
                           <TrendingDown size={14} className="text-red-500" />
                           <p className="text-[10px] font-bold text-red-500 uppercase tracking-wider">Lagging Area</p>
@@ -758,7 +755,7 @@ export default function StudentIntelligence() {
                     </div>
 
                     {/* Extracurriculars & Beyond Studies */}
-                    <div className="bg-surface rounded-xl border border-line p-5 shadow-sm">
+                    <div className="bg-surface rounded-xl border border-line p-5 shadow-card">
                       <h3 className="font-bold text-sm text-content mb-4 flex items-center gap-2">
                         <Award size={16} className="text-amber-500" /> Beyond Studies
                       </h3>
@@ -784,7 +781,7 @@ export default function StudentIntelligence() {
                     </div>
 
                     {/* AI Recommendation */}
-                    <div className="bg-indigo-50 rounded-xl p-5 border border-indigo-100 shadow-sm">
+                    <div className="bg-indigo-50 rounded-xl p-5 border border-indigo-100 shadow-card">
                       <div className="flex items-center gap-2 mb-2">
                         <Sparkles size={14} className="text-indigo-600" />
                         <p className="text-[10px] font-bold text-indigo-600 uppercase tracking-wider">AI Recommendation</p>
@@ -799,7 +796,7 @@ export default function StudentIntelligence() {
           })()}
 
           {/* ── Bar Chart: Score distribution per category ──────────────────── */}
-          <div className="bg-surface rounded-2xl border border-line shadow-sm p-6">
+          <div className="bg-surface rounded-2xl border border-line shadow-card p-6">
             <h2 className="font-bold text-sm text-content mb-1">Avg. Scores by Category</h2>
             <p className="text-xs text-muted mb-5">Composite, Academic & Attendance averages per segment</p>
             <ResponsiveContainer width="100%" height={240}>

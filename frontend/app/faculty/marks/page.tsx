@@ -1,26 +1,67 @@
 'use client'
 
-import { useState, useRef } from 'react'
-import { Upload, RefreshCw, FileUp, CheckCircle2, AlertTriangle } from 'lucide-react'
-import { apiFetch } from '@/lib/shared/api/client'
+import { useState, useRef, useEffect } from 'react'
+import { Upload, RefreshCw, FileUp, CheckCircle2, AlertTriangle, Download } from 'lucide-react'
+import { apiFetch, apiGet } from '@/lib/shared/api/client'
 import { Input, Field, Button } from '@/components/shared/ui'
 
 export default function FacultyMarksPage() {
+  const [subjects, setSubjects] = useState<any[]>([])
   const [subjectCode, setSubjectCode] = useState('')
-  const [examType, setExamType] = useState('Midterm')
+  const [examType, setExamType] = useState('CA1')
   const [maxMarks, setMaxMarks] = useState('100')
   const [file, setFile] = useState<File | null>(null)
   const [uploading, setUploading] = useState(false)
+  const [downloading, setDownloading] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
 
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    // Fetch taught subjects for dynamic dropdown
+    apiGet<any>('/api/faculty/profile')
+      .then(data => {
+        if (data.subjects && data.subjects.length > 0) {
+          setSubjects(data.subjects)
+          setSubjectCode(data.subjects[0].code)
+        }
+      })
+      .catch(err => console.error('Failed to load subjects', err))
+  }, [])
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       setFile(e.target.files[0])
       setError('')
       setSuccess('')
+    }
+  }
+
+  const handleDownloadTemplate = async () => {
+    if (!subjectCode) {
+      setError('Please select a subject code first.')
+      return
+    }
+    setDownloading(true)
+    setError('')
+    try {
+      const res = await fetch(`/api/faculty/marks/template?subjectCode=${subjectCode}&examType=${examType}&maxMarks=${maxMarks}`)
+      if (!res.ok) throw new Error('Failed to generate template')
+      
+      const blob = await res.blob()
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `${subjectCode}_${examType}_Marks_Template.xlsx`
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      window.URL.revokeObjectURL(url)
+    } catch (err: any) {
+      setError(err.message || 'Failed to download template.')
+    } finally {
+      setDownloading(false)
     }
   }
 
@@ -41,7 +82,7 @@ export default function FacultyMarksPage() {
       formData.append('examType', examType)
       formData.append('maxMarks', maxMarks)
       
-      const res = await apiFetch<any>('/api/faculty/upload/marks', {
+      await apiFetch<any>('/api/faculty/marks/upload', {
         method: 'POST',
         body: formData,
         headers: {
@@ -82,8 +123,20 @@ export default function FacultyMarksPage() {
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 space-y-6">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <Field label="Subject Code (e.g. CS501)">
-             <Input value={subjectCode} onChange={(e) => setSubjectCode(e.target.value)} placeholder="CS501" />
+          <Field label="Subject Code">
+             {subjects.length > 0 ? (
+               <select 
+                 value={subjectCode}
+                 onChange={(e) => setSubjectCode(e.target.value)}
+                 className="w-full bg-gray-50 border border-gray-200 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand"
+               >
+                 {subjects.map(sub => (
+                   <option key={sub.id} value={sub.code}>{sub.code} ({sub.name})</option>
+                 ))}
+               </select>
+             ) : (
+               <Input value={subjectCode} onChange={(e) => setSubjectCode(e.target.value)} placeholder="CS501" />
+             )}
           </Field>
           <Field label="Exam Type">
              <select 
@@ -91,10 +144,11 @@ export default function FacultyMarksPage() {
                onChange={(e) => setExamType(e.target.value)}
                className="w-full bg-gray-50 border border-gray-200 rounded-lg p-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-brand"
              >
-               <option value="Midterm">Midterm</option>
-               <option value="Assignment">Assignment</option>
-               <option value="Final">Final</option>
-               <option value="Practical">Practical</option>
+               <option value="CA1">CA1</option>
+               <option value="CA2">CA2</option>
+               <option value="MSE 1">MSE 1</option>
+               <option value="MSE 2">MSE 2</option>
+               <option value="ESE">ESE</option>
              </select>
           </Field>
           <Field label="Max Marks">
@@ -111,13 +165,18 @@ export default function FacultyMarksPage() {
           <p className="mt-4 text-sm font-semibold text-gray-700">
             {file ? file.name : 'Click or drag and drop to upload'}
           </p>
-          <p className="text-xs text-gray-500 mt-1">.xlsx format only (Columns: Roll Number, Marks)</p>
+          <p className="text-xs text-gray-500 mt-1">.xlsx format only (Columns: Roll Number, Name, Subject Code, Exam Type, Max Marks, Obtained Marks)</p>
         </div>
 
         <div className="flex justify-between items-center">
-          <a href="/templates/Marks_Template.xlsx" download className="text-brand text-sm font-medium hover:underline flex items-center gap-2">
+          <button 
+            onClick={handleDownloadTemplate}
+            disabled={downloading}
+            className="text-brand text-sm font-medium hover:underline flex items-center gap-2"
+          >
+            {downloading ? <RefreshCw size={14} className="animate-spin" /> : <Download size={14} />}
             Download Excel Template
-          </a>
+          </button>
           <button 
             disabled={!file || !subjectCode || !examType || uploading}
             onClick={handleUpload}

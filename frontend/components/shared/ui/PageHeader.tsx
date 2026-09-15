@@ -9,7 +9,7 @@ export function PageHeader({
   icon,
 }: {
   title: string;
-  description?: string;
+  description?: ReactNode;
   actions?: ReactNode;
   icon?: ReactNode;
 }) {

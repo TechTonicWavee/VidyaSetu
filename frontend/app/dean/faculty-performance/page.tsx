@@ -51,6 +51,7 @@ import {
   LineChart as RechartsLineChart,
   Line,
 } from "recharts";
+import { PageHeader } from '@/components/shared/ui';
 
 const navLinks = [
   {
@@ -385,31 +386,24 @@ export default function FacultyPerformanceDeepDive() {
   return (
     <>
     <div className="space-y-8 animate-fade-in pb-20">
-            {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
-              <div>
-                <h1 className="text-3xl font-bold text-content mb-1">
-                  Faculty Performance Analytics
-                </h1>
-                <p className="text-muted text-sm max-w-2xl leading-relaxed">
-                  Ranked by student outcome improvement — not ratings. Every
-                  score is based on how much students actually improved under
-                  each faculty member.
-                </p>
-              </div>
-              <div className="flex items-center gap-3 shrink-0">
-                <span className="px-3 py-1.5 bg-brand/10 text-brand font-bold text-sm border border-brand/20 rounded-lg shadow-sm">
-                  Semester: Even 2026
-                </span>
-                <button className="px-5 py-2.5 bg-surface border border-line text-content-2 font-bold text-sm rounded-xl hover:bg-surface-2 transition shadow-sm flex items-center gap-2">
-                  <Download size={16} /> Export Report
-                </button>
-              </div>
-            </div>
+            <PageHeader 
+              title="Faculty Performance Analytics"
+              description="Ranked by student outcome improvement — not ratings. Every score is based on how much students actually improved under each faculty member."
+              actions={
+                <>
+                  <span className="px-3 py-1.5 bg-brand/10 text-brand font-bold text-sm border border-brand/20 rounded-lg shadow-card">
+                    Semester: Even 2026
+                  </span>
+                  <button className="px-5 py-2.5 bg-surface border border-line text-content-2 font-bold text-sm rounded-xl hover:bg-surface-2 transition shadow-card flex items-center gap-2">
+                    <Download size={16} /> Export Report
+                  </button>
+                </>
+              }
+            />
 
             {/* TOP - Department Faculty Summary */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <div className="bg-surface rounded-2xl shadow-sm border border-line p-6 flex items-center justify-between">
+              <div className="bg-surface rounded-2xl shadow-card border border-line p-6 flex items-center justify-between">
                 <div>
                   <p className="text-xs font-bold text-muted uppercase tracking-widest mb-1">
                     Total Faculty
@@ -422,7 +416,7 @@ export default function FacultyPerformanceDeepDive() {
                 </div>
               </div>
 
-              <div className="bg-surface rounded-2xl shadow-sm border border-line p-6 flex items-center justify-between">
+              <div className="bg-surface rounded-2xl shadow-card border border-line p-6 flex items-center justify-between">
                 <div>
                   <p className="text-xs font-bold text-muted uppercase tracking-widest mb-1">
                     Above Target
@@ -437,7 +431,7 @@ export default function FacultyPerformanceDeepDive() {
                 </div>
               </div>
 
-              <div className="bg-surface rounded-2xl shadow-sm border border-line p-6 flex items-center justify-between">
+              <div className="bg-surface rounded-2xl shadow-card border border-line p-6 flex items-center justify-between">
                 <div>
                   <p className="text-xs font-bold text-muted uppercase tracking-widest mb-1">
                     Need Support
@@ -452,7 +446,7 @@ export default function FacultyPerformanceDeepDive() {
                 </div>
               </div>
 
-              <div className="bg-surface rounded-2xl shadow-sm border border-line p-6 flex items-center justify-between">
+              <div className="bg-surface rounded-2xl shadow-card border border-line p-6 flex items-center justify-between">
                 <div>
                   <p className="text-xs font-bold text-muted uppercase tracking-widest mb-1">
                     Critical Attention
@@ -471,7 +465,7 @@ export default function FacultyPerformanceDeepDive() {
             {/* SECTION B - Two Columns */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Effectiveness Distribution */}
-              <div className="bg-surface rounded-2xl shadow-sm border border-line p-6 flex flex-col">
+              <div className="bg-surface rounded-2xl shadow-card border border-line p-6 flex flex-col">
                 <h2 className="text-xl font-bold text-content mb-6">
                   Effectiveness Distribution
                 </h2>
@@ -534,7 +528,7 @@ export default function FacultyPerformanceDeepDive() {
               </div>
 
               {/* Improvement Rate Trend */}
-              <div className="bg-surface rounded-2xl shadow-sm border border-line p-6 flex flex-col">
+              <div className="bg-surface rounded-2xl shadow-card border border-line p-6 flex flex-col">
                 <h2 className="text-xl font-bold text-content mb-6">
                   Department Average Faculty Effectiveness — 4 Semesters
                 </h2>
@@ -621,7 +615,7 @@ export default function FacultyPerformanceDeepDive() {
             </div>
 
             {/* MAIN - Faculty Leaderboard */}
-            <div className="bg-surface rounded-2xl shadow-sm border border-line overflow-hidden">
+            <div className="bg-surface rounded-2xl shadow-card border border-line overflow-hidden">
               <div className="p-6 border-b border-line flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 bg-surface-2/50">
                 <div>
                   <h2 className="text-xl font-bold text-content mb-1">
@@ -801,7 +795,7 @@ export default function FacultyPerformanceDeepDive() {
                 <div className="animate-fade-in space-y-6">
                   {/* 6 Mini Stat Cards */}
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    <div className="bg-surface p-4 rounded-xl border border-line shadow-sm text-center">
+                    <div className="bg-surface p-4 rounded-xl border border-line shadow-card text-center">
                       <p className="text-xs font-bold text-muted uppercase mb-1">
                         Students
                       </p>
@@ -809,7 +803,7 @@ export default function FacultyPerformanceDeepDive() {
                         {selectedFaculty.students}
                       </p>
                     </div>
-                    <div className="bg-surface p-4 rounded-xl border border-line shadow-sm text-center">
+                    <div className="bg-surface p-4 rounded-xl border border-line shadow-card text-center">
                       <p className="text-xs font-bold text-muted uppercase mb-1">
                         Improvement
                       </p>
@@ -817,7 +811,7 @@ export default function FacultyPerformanceDeepDive() {
                         +{selectedFaculty.improvement}%
                       </p>
                     </div>
-                    <div className="bg-surface p-4 rounded-xl border border-line shadow-sm text-center">
+                    <div className="bg-surface p-4 rounded-xl border border-line shadow-card text-center">
                       <p className="text-xs font-bold text-muted uppercase mb-1">
                         Avg Attendance
                       </p>
@@ -825,7 +819,7 @@ export default function FacultyPerformanceDeepDive() {
                         {selectedFaculty.avgAttendance}%
                       </p>
                     </div>
-                    <div className="bg-surface p-4 rounded-xl border border-line shadow-sm text-center">
+                    <div className="bg-surface p-4 rounded-xl border border-line shadow-card text-center">
                       <p className="text-xs font-bold text-muted uppercase mb-1">
                         Avg Subject Score
                       </p>
@@ -833,7 +827,7 @@ export default function FacultyPerformanceDeepDive() {
                         {selectedFaculty.avgSubjectScore}/100
                       </p>
                     </div>
-                    <div className="bg-surface p-4 rounded-xl border border-line shadow-sm text-center">
+                    <div className="bg-surface p-4 rounded-xl border border-line shadow-card text-center">
                       <p className="text-xs font-bold text-muted uppercase mb-1">
                         CO Avg
                       </p>
@@ -841,7 +835,7 @@ export default function FacultyPerformanceDeepDive() {
                         {selectedFaculty.co}%
                       </p>
                     </div>
-                    <div className="bg-surface p-4 rounded-xl border border-line shadow-sm text-center relative">
+                    <div className="bg-surface p-4 rounded-xl border border-line shadow-card text-center relative">
                       <p className="text-xs font-bold text-muted uppercase mb-1">
                         Alerts
                       </p>
@@ -852,7 +846,7 @@ export default function FacultyPerformanceDeepDive() {
                   </div>
 
                   {/* AI Insights & Dean Notices */}
-                  <div className="bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 p-6 rounded-xl shadow-sm">
+                  <div className="bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 p-6 rounded-xl shadow-card">
                     <div className="flex items-center gap-2 mb-4">
                       <Brain size={18} className="text-indigo-600 dark:text-indigo-400" />
                       <h3 className="font-bold text-indigo-900 dark:text-indigo-200 text-base">
@@ -874,7 +868,7 @@ export default function FacultyPerformanceDeepDive() {
                   </div>
 
                   {/* Student Reviews & Voice */}
-                  <div className="bg-surface p-6 rounded-xl border border-line shadow-sm">
+                  <div className="bg-surface p-6 rounded-xl border border-line shadow-card">
                     <div className="flex justify-between items-center mb-4">
                       <h3 className="font-bold text-content text-base flex items-center gap-2">
                         <UserCheck size={18} className="text-blue-500" /> Student Voice
@@ -905,7 +899,7 @@ export default function FacultyPerformanceDeepDive() {
                   </div>
 
                   {/* Why This Score */}
-                  <div className="bg-surface p-6 rounded-xl border border-line shadow-sm">
+                  <div className="bg-surface p-6 rounded-xl border border-line shadow-card">
                     <h3 className="font-bold text-content text-base mb-4">
                       Why This Score
                     </h3>
@@ -947,7 +941,7 @@ export default function FacultyPerformanceDeepDive() {
                   </div>
 
                   {/* Teaching Approach Analysis */}
-                  <div className="bg-teal-50 dark:bg-teal-500/10 p-6 rounded-xl border border-teal-100 dark:border-teal-500/20 shadow-sm">
+                  <div className="bg-teal-50 dark:bg-teal-500/10 p-6 rounded-xl border border-teal-100 dark:border-teal-500/20 shadow-card">
                     <h3 className="font-bold text-teal-900 dark:text-teal-200 text-base mb-3">
                       Teaching Approach Analysis
                     </h3>
@@ -1010,7 +1004,7 @@ export default function FacultyPerformanceDeepDive() {
                   </div>
 
                   {/* Department Recommendation */}
-                  <div className="bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 p-6 rounded-xl shadow-sm relative overflow-hidden">
+                  <div className="bg-blue-50 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20 p-6 rounded-xl shadow-card relative overflow-hidden">
                     <div className="absolute top-0 left-0 w-1 h-full bg-blue-500"></div>
                     <h3 className="font-bold text-blue-900 dark:text-blue-200 text-base mb-2">
                       Department Recommendation
@@ -1025,7 +1019,7 @@ export default function FacultyPerformanceDeepDive() {
                     <div className="flex gap-3">
                       <button
                         onClick={() => setIsModalOpen(true)}
-                        className="px-4 py-2 bg-teal-600 text-white font-bold text-sm rounded-lg hover:bg-teal-700 transition shadow-sm"
+                        className="px-4 py-2 bg-teal-600 text-white font-bold text-sm rounded-lg hover:bg-teal-700 transition shadow-card"
                       >
                         Schedule Knowledge Share
                       </button>
@@ -1135,7 +1129,7 @@ export default function FacultyPerformanceDeepDive() {
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 bg-teal-600 text-white font-bold text-sm rounded-xl hover:bg-teal-700 transition shadow-sm"
+                  className="px-6 py-2.5 bg-teal-600 text-white font-bold text-sm rounded-xl hover:bg-teal-700 transition shadow-card"
                 >
                   Schedule Event
                 </button>

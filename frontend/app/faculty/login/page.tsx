@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Button, Input, Field } from '@/components/shared/ui';
 import { apiPost } from '@/lib/shared/api/client';
 import { setPendingLoginSession } from '@/lib/shared/auth/tokenStore';
-import { GraduationCap } from 'lucide-react';
+import { GraduationCap, Eye, EyeOff } from 'lucide-react';
 import { useToast } from '@/components/shared/ToastContext';
 
 export default function FacultyLogin() {
@@ -14,6 +14,8 @@ export default function FacultyLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,13 +65,22 @@ export default function FacultyLogin() {
             </Field>
 
             <Field label="Password">
-              <Input
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
+              <div className="relative">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(p => !p)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-content transition-colors"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
             </Field>
 
             <Button

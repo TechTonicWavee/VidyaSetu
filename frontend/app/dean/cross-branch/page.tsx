@@ -61,8 +61,8 @@ export default function YearwiseInsights() {
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
               <PageHeader title="Year-wise Insights — CSE" description="Compare all four CSE cohorts across every performance dimension — identify which year needs support and track progression trends" />
               <div className="flex gap-3 shrink-0">
-                <button className="px-5 py-2.5 bg-surface border border-line text-content-2 font-bold text-sm rounded-xl hover:bg-surface-2 transition shadow-sm flex items-center gap-2"><Share2 size={16} /> Share with Faculty</button>
-                <button className="px-5 py-2.5 bg-brand text-surface font-bold text-sm rounded-xl hover:opacity-90 transition shadow-sm flex items-center gap-2"><Download size={16} /> Export Report</button>
+                <button className="px-5 py-2.5 bg-surface border border-line text-content-2 font-bold text-sm rounded-xl hover:bg-surface-2 transition shadow-card flex items-center gap-2"><Share2 size={16} /> Share with Faculty</button>
+                <button className="px-5 py-2.5 bg-brand text-surface font-bold text-sm rounded-xl hover:opacity-90 transition shadow-card flex items-center gap-2"><Download size={16} /> Export Report</button>
               </div>
             </div>
 
@@ -211,16 +211,16 @@ export default function YearwiseInsights() {
                   { from: '4th Year', color: '#1A56DB', bg: 'bg-blue-50', border: 'border-blue-100', title: 'Mandatory mock interviews every month in final year', impact: '4th year placement readiness is 78% vs 64% in 3rd year — the biggest gap is interview confidence.', rep: 'Start mock interviews from 3rd year Semester 2.', to: '3rd Year Class Teachers', btnBorder: '#0F766E', btnHover: 'hover:bg-teal-50' },
                   { from: '2nd Year', color: '#0F766E', bg: 'bg-teal-50', border: 'border-teal-100', title: 'Peer study groups — 2nd year runs 6 active groups this semester', impact: '2nd year SPI average improved 3.2 points this semester — attributable to peer learning.', rep: '1st year has only 1 informal group. Formalising this can cut at-risk numbers significantly.', to: '1st Year Mentors', btnBorder: '#5B21B6', btnHover: 'hover:bg-purple-50' },
                 ].map((p, i) => (
-                  <div key={i} className="border-2 border-green-200 rounded-xl p-5 flex flex-col bg-white">
+                  <div key={i} className="border-2 border-green-200 rounded-xl p-5 flex flex-col bg-surface">
                     <span className="px-2.5 py-1 text-[10px] font-bold uppercase rounded border inline-block mb-3" style={{ background: p.color + '20', color: p.color, borderColor: p.color + '40' }}>From: {p.from}</span>
-                    <h4 className="font-bold text-navy text-base mb-4">{p.title}</h4>
-                    <div className="bg-gray-50 p-4 rounded-lg mb-4 flex-1">
-                      <p className="text-sm font-bold text-gray-700 mb-1">Impact:</p>
-                      <p className="text-sm text-gray-600 mb-3">{p.impact}</p>
-                      <p className="text-sm font-bold text-gray-700 mb-1">Replication:</p>
-                      <p className="text-sm text-gray-600">{p.rep}</p>
+                    <h4 className="font-bold text-content text-base mb-4">{p.title}</h4>
+                    <div className="bg-surface-2 p-4 rounded-lg mb-4 flex-1">
+                      <p className="text-sm font-bold text-content mb-1">Impact:</p>
+                      <p className="text-sm text-muted mb-3">{p.impact}</p>
+                      <p className="text-sm font-bold text-content mb-1">Replication:</p>
+                      <p className="text-sm text-muted">{p.rep}</p>
                     </div>
-                    <button onClick={() => openModal(p.to)} className={`w-full py-2 bg-white border font-bold text-sm rounded-lg transition ${p.btnHover}`} style={{ borderColor: p.btnBorder, color: p.btnBorder }}>
+                    <button onClick={() => openModal(p.to)} className={`w-full py-2 bg-surface border font-bold text-sm rounded-lg transition ${p.btnHover}`} style={{ borderColor: p.btnBorder, color: p.btnBorder }}>
                       Recommend to {p.to}
                     </button>
                   </div>
@@ -248,7 +248,7 @@ export default function YearwiseInsights() {
               </div>
               <div className="flex gap-3 justify-end pt-4 border-t border-line">
                 <button type="button" onClick={() => setIsModalOpen(false)} className="px-5 py-2.5 text-content-2 font-bold text-sm rounded-xl hover:bg-surface-2 transition">Cancel</button>
-                <button type="submit" className="px-6 py-2.5 bg-brand text-surface font-bold text-sm rounded-xl transition shadow-sm flex items-center gap-2"><Share2 size={16} /> Send Now</button>
+                <button type="submit" className="px-6 py-2.5 bg-brand text-surface font-bold text-sm rounded-xl transition shadow-card flex items-center gap-2"><Share2 size={16} /> Send Now</button>
               </div>
             </form>
           </div>

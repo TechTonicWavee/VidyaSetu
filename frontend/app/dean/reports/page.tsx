@@ -53,6 +53,7 @@ import {
   Pie,
   Cell,
 } from "recharts";
+import { PageHeader } from '@/components/shared/ui';
 
 // ─── NAV ──────────────────────────────────────────────────────────────────────
 const navLinks = [
@@ -388,69 +389,64 @@ export default function DeanReports() {
   return (
     <div className="space-y-8 animate-fade-in pb-10">
           {/* Title + Filters + Download */}
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 animate-fade-in">
-            <div>
-              <h1 className="text-2xl font-bold text-content">
-                Department Reports
-              </h1>
-              <p className="text-muted text-sm mt-0.5">
-                Comprehensive analytics summary — generated{" "}
-                {new Date().toLocaleDateString("en-IN", {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-                })}
-              </p>
-            </div>
-            <div className="flex items-center gap-3 flex-wrap">
-              {/* Branch filter */}
-              <div className="relative">
-                <select
-                  value={branch}
-                  onChange={(e) => setBranch(e.target.value)}
-                  className="appearance-none bg-surface border border-line rounded-lg px-4 py-2 text-sm text-content pr-8 focus:outline-none focus:ring-2 focus:ring-purple-200 cursor-pointer"
+          <PageHeader 
+            title="Department Reports"
+            description={`Comprehensive analytics summary — generated ${new Date().toLocaleDateString("en-IN", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}`}
+            actions={
+              <>
+                {/* Branch filter */}
+                <div className="relative">
+                  <select
+                    value={branch}
+                    onChange={(e) => setBranch(e.target.value)}
+                    className="appearance-none bg-surface border border-line rounded-lg px-4 py-2 text-sm text-content pr-8 focus:outline-none focus:ring-2 focus:ring-purple-200 cursor-pointer"
+                  >
+                    <option>CSE</option>
+                  </select>
+                  <ChevronDown
+                    size={13}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted pointer-events-none"
+                  />
+                </div>
+                {/* Semester filter */}
+                <div className="relative">
+                  <select
+                    value={semester}
+                    onChange={(e) => setSemester(e.target.value)}
+                    className="appearance-none bg-surface border border-line rounded-lg px-4 py-2 text-sm text-content pr-8 focus:outline-none focus:ring-2 focus:ring-purple-200 cursor-pointer"
+                  >
+                    <option>S1 2026</option>
+                    <option>S2 2025</option>
+                    <option>S1 2025</option>
+                    <option>S2 2024</option>
+                  </select>
+                  <ChevronDown
+                    size={13}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted pointer-events-none"
+                  />
+                </div>
+                <button
+                  onClick={() =>
+                    downloadJSON(
+                      buildReportJSON(semester, branch),
+                      `dean-report-${semester.replace(" ", "-")}-${branch}.json`,
+                    )
+                  }
+                  className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-semibold transition-all shadow-card hover:shadow-card"
+                  style={{
+                    background: "linear-gradient(90deg, #5B21B6, #4C1D95)",
+                  }}
                 >
-                  <option>CSE</option>
-                </select>
-                <ChevronDown
-                  size={13}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted pointer-events-none"
-                />
-              </div>
-              {/* Semester filter */}
-              <div className="relative">
-                <select
-                  value={semester}
-                  onChange={(e) => setSemester(e.target.value)}
-                  className="appearance-none bg-surface border border-line rounded-lg px-4 py-2 text-sm text-content pr-8 focus:outline-none focus:ring-2 focus:ring-purple-200 cursor-pointer"
-                >
-                  <option>S1 2026</option>
-                  <option>S2 2025</option>
-                  <option>S1 2025</option>
-                  <option>S2 2024</option>
-                </select>
-                <ChevronDown
-                  size={13}
-                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-muted pointer-events-none"
-                />
-              </div>
-              <button
-                onClick={() =>
-                  downloadJSON(
-                    buildReportJSON(semester, branch),
-                    `dean-report-${semester.replace(" ", "-")}-${branch}.json`,
-                  )
-                }
-                className="flex items-center gap-2 px-4 py-2 rounded-lg text-white text-sm font-semibold transition-all shadow-sm hover:shadow-md"
-                style={{
-                  background: "linear-gradient(90deg, #5B21B6, #4C1D95)",
-                }}
-              >
-                <Download size={15} />
-                Export JSON
-              </button>
-            </div>
-          </div>
+                  <Download size={15} />
+                  Export JSON
+                </button>
+              </>
+            }
+          />
 
           {/* KPI Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-4 mb-6">
