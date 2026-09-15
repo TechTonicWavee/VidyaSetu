@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import { prisma } from '../../../shared/lib/prisma';
 import * as xlsx from 'xlsx';
+import bcrypt from 'bcryptjs';
 
 export const getProfile = async (req: Request, res: Response) => {
   try {
@@ -43,12 +44,75 @@ export const getProfile = async (req: Request, res: Response) => {
 export const updateProfile = async (req: Request, res: Response) => {
   try {
     const facultyId = (req as any).user?.facultyId || 'FAC001';
-    const { fullName, department } = req.body;
+    const { fullName, department, avatarUrl, subjects, password, currentPassword } = req.body;
+    
+    let updateData: any = { 
+      fullName, 
+      department,
+      avatarUrl
+    };
+
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      updateData.password = await bcrypt.hash(password, salt);
+    }
     
     const updated = await prisma.faculty.update({
       where: { facultyId },
-      data: { fullName, department }
+      data: updateData
     });
+
+    if (Array.isArray(subjects)) {
+      // Find existing sections for this faculty
+      const existingSections = await prisma.section.findMany({ where: { facultyId } });
+      const existingIds = existingSections.map(s => s.id);
+      
+      // Keep track of sections that are still in the list
+      const updatedSectionIds: string[] = [];
+
+      for (const sub of subjects) {
+        if (!sub.name || sub.name.trim() === '') continue;
+
+        let subjectRecord = null;
+        if (sub.code && sub.code.trim() !== '') {
+          subjectRecord = await prisma.subject.findFirst({ where: { code: sub.code } });
+        }
+        
+        if (!subjectRecord) {
+          subjectRecord = await prisma.subject.create({
+            data: { name: sub.name, code: sub.code || null }
+          });
+        }
+        
+        // Find if we already have this section
+        const existingSection = await prisma.section.findFirst({
+          where: { facultyId, subjectId: subjectRecord.id, name: sub.section || '', year: sub.year || '' }
+        });
+        
+        if (existingSection) {
+          updatedSectionIds.push(existingSection.id);
+        } else {
+          // If it's a new section but might have an ID from UI (which is random), just create a new one
+          const newSection = await prisma.section.create({
+            data: {
+              name: sub.section || '',
+              year: sub.year || '',
+              subjectId: subjectRecord.id,
+              facultyId
+            }
+          });
+          updatedSectionIds.push(newSection.id);
+        }
+      }
+      
+      // Delete sections that were removed in the UI
+      const sectionsToRemove = existingIds.filter(id => !updatedSectionIds.includes(id));
+      if (sectionsToRemove.length > 0) {
+        await prisma.section.deleteMany({
+          where: { id: { in: sectionsToRemove } }
+        });
+      }
+    }
     
     res.json({ success: true, data: updated });
   } catch (error) {
@@ -180,11 +244,12 @@ export const getClasses = async (req: Request, res: Response) => {
   try {
     const facultyId = (req as any).user?.facultyId || 'FAC001';
     
+    // Optimized: Only select what's needed
     const sections = await prisma.section.findMany({
       where: { facultyId },
       include: {
-        subject: true,
-        students: true
+        subject: { select: { name: true, code: true } },
+        students: { select: { id: true, attendance: true } }
       }
     });
     const mapped = sections.map((sec, idx) => {
@@ -231,7 +296,10 @@ export const getAnalytics = async (req: Request, res: Response) => {
     // Get basic analytics based on mentees or classes
     const sections = await prisma.section.findMany({
       where: { facultyId },
-      include: { students: true, subject: true }
+      include: { 
+        students: { select: { id: true, attendance: true, fullName: true } }, 
+        subject: { select: { name: true, code: true } } 
+      }
     });
 
     const subjectsMap: Record<string, any> = {};
@@ -285,6 +353,56 @@ export const getAnalytics = async (req: Request, res: Response) => {
         subjects: subjectsMap
       }
     });
+  } catch (error) {
+    res.status(500).json({ success: false, error: (error as any).message });
+  }
+};
+
+export const getStudentsNeedingAttention = async (req: Request, res: Response) => {
+  try {
+    const facultyId = (req as any).user?.facultyId || 'FAC001';
+    
+    // The student whose obtained marks are less then 40% and whose attendance in that subject is less than 75%
+    // To do this efficiently, we find sections of the faculty, the students in those sections, their marks and attendance.
+    
+    const sections = await prisma.section.findMany({
+      where: { facultyId },
+      include: { subject: true }
+    });
+    
+    const subjectCodes = sections.map(s => s.subject.code).filter(Boolean) as string[];
+
+    if (subjectCodes.length === 0) {
+      return res.json({ success: true, data: [] });
+    }
+
+    const marksRecords = await prisma.marks.findMany({
+      where: {
+        subjectCode: { in: subjectCodes },
+      },
+      include: { student: true }
+    });
+
+    const attentionMap = new Map();
+
+    for (const mark of marksRecords) {
+      const percentage = (mark.marks / mark.maxMarks) * 100;
+      const att = mark.student.attendance || 0;
+
+      if (percentage < 40 && att < 75) {
+        if (!attentionMap.has(mark.student.universityId)) {
+          attentionMap.set(mark.student.universityId, {
+            name: mark.student.fullName,
+            roll: mark.student.universityId,
+            subject: mark.subjectCode,
+            issue: `Marks: ${percentage.toFixed(1)}%, Attendance: ${att}%`,
+            severity: "HIGH"
+          });
+        }
+      }
+    }
+
+    res.json({ success: true, data: Array.from(attentionMap.values()) });
   } catch (error) {
     res.status(500).json({ success: false, error: (error as any).message });
   }
@@ -371,6 +489,59 @@ export const uploadAttendance = async (req: Request, res: Response) => {
   }
 };
 
+export const downloadMarksTemplate = async (req: Request, res: Response) => {
+  try {
+    const facultyId = (req as any).user?.facultyId || 'FAC001';
+    const { subjectCode, examType, maxMarks } = req.query;
+
+    const sections = await prisma.section.findMany({
+      where: { facultyId, subject: { code: subjectCode as string } },
+      include: { students: true }
+    });
+
+    const studentMap = new Map();
+    sections.forEach(sec => {
+      sec.students.forEach(st => {
+        studentMap.set(st.universityId, st);
+      });
+    });
+
+    const aoa: any[][] = [
+      ['Subject Code:', subjectCode || '', 'Exam Type:', examType || '', 'Max Marks:', maxMarks || 100],
+      [], // Empty row for visual spacing
+      ['Univ Roll No', 'Name of the Student', 'Obtained Marks']
+    ];
+
+    if (studentMap.size === 0) {
+      aoa.push(['', '', '']);
+    } else {
+      Array.from(studentMap.values()).forEach(st => {
+        aoa.push([st.universityId, st.fullName, '']);
+      });
+    }
+
+    const wb = xlsx.utils.book_new();
+    const ws = xlsx.utils.aoa_to_sheet(aoa);
+    
+    // Set column widths
+    ws['!cols'] = [
+      { wch: 20 }, // Univ Roll No
+      { wch: 30 }, // Name of the Student
+      { wch: 15 }  // Obtained Marks
+    ];
+
+    xlsx.utils.book_append_sheet(wb, ws, "Marks Template");
+    
+    const buffer = xlsx.write(wb, { type: 'buffer', bookType: 'xlsx' });
+    
+    res.setHeader('Content-Disposition', `attachment; filename="${subjectCode || 'Template'}_Marks_Template.xlsx"`);
+    res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    res.send(buffer);
+  } catch (error) {
+    res.status(500).json({ success: false, error: (error as any).message });
+  }
+};
+
 export const uploadMarks = async (req: Request, res: Response) => {
   try {
     const file = req.file;
@@ -382,19 +553,45 @@ export const uploadMarks = async (req: Request, res: Response) => {
     if (!sheetName) return res.status(400).json({ success: false, error: 'Invalid excel file' });
     const sheet = workbook.Sheets[sheetName];
     if (!sheet) return res.status(400).json({ success: false, error: 'Empty sheet in excel file' });
-    const data: any[] = xlsx.utils.sheet_to_json(sheet);
     
-    for (const row of data) {
-      const rollNo = row['Roll Number'] || row['RollNo'] || row['universityId'];
-      const marks = row['Marks'] || row['Score'];
-      if (rollNo && marks !== undefined) {
+    const aoaData: any[][] = xlsx.utils.sheet_to_json(sheet, { header: 1 });
+    
+    // Find the row that contains the actual table headers (Roll No, Name, Marks)
+    let headerRowIdx = -1;
+    for (let i = 0; i < aoaData.length; i++) {
+      const row = aoaData[i];
+      if (row && row.some(cell => typeof cell === 'string' && cell.toLowerCase().includes('roll'))) {
+        headerRowIdx = i;
+        break;
+      }
+    }
+
+    if (headerRowIdx === -1 || !aoaData[headerRowIdx]) {
+      return res.status(400).json({ success: false, error: 'Could not find Roll Number column in excel' });
+    }
+
+    const headers = aoaData[headerRowIdx]!.map(h => h?.toString().trim().toLowerCase());
+    const rollNoIdx = headers.findIndex(h => h && h.includes('roll'));
+    const marksIdx = headers.findIndex(h => h && (h.includes('obtained') || h.includes('mark') || h.includes('score')));
+    
+    // We will use the parameters passed from the UI form as primary
+    // But if we wanted to read from the sheet's top header we could do it here
+    
+    for (let i = headerRowIdx + 1; i < aoaData.length; i++) {
+      const row = aoaData[i];
+      if (!row || row.length === 0) continue;
+      
+      const rollNo = row[rollNoIdx];
+      const marks = row[marksIdx];
+
+      if (rollNo && marks !== undefined && marks !== '') {
         await prisma.marks.create({
           data: {
             universityId: rollNo.toString(),
             subjectCode: subjectCode || 'UNKNOWN',
-            examType: examType || 'Midterm',
-            marks: parseFloat(marks),
-            maxMarks: parseFloat(maxMarks || 100)
+            examType: examType || 'CA1',
+            marks: parseFloat(marks.toString()),
+            maxMarks: parseFloat((maxMarks || 100).toString())
           }
         });
       }

@@ -17,8 +17,13 @@ export const generateResume = async (req: Request, res: Response): Promise<void>
     const jdText = req.body.jdText;
     const bodyUniversityId = req.body.universityId;
     const authedReq = req as AuthedRequest;
-    const universityId = authedReq.user!.universityId;
+    const universityId = authedReq.user!.universityId as string;
     
+    if (!universityId) {
+      res.status(403).json({ success: false, data: null, error: { code: 'forbidden', message: 'Only students can generate resumes.' } });
+      return;
+    }
+
     if (bodyUniversityId && bodyUniversityId !== universityId) {
       res.status(403).json({ success: false, data: null, error: { code: 'forbidden', message: 'You can only generate resumes for your own profile.' } });
       return;
@@ -138,7 +143,12 @@ export const clarifyResumeRequest = async (req: Request, res: Response): Promise
     const { answers } = req.body; // array of { requirement, preferenceKey, answer }
     
     const authedReq = req as AuthedRequest;
-    const universityId = authedReq.user!.universityId; 
+    const universityId = authedReq.user!.universityId as string; 
+
+    if (!universityId) {
+      res.status(403).json({ success: false, data: null, error: { code: 'forbidden', message: 'Only students can clarify resumes.' } });
+      return;
+    }
 
     const request = await prisma.resumeRequest.findUnique({
       where: { id: requestId }

@@ -6,7 +6,12 @@ import { AuthedRequest } from '../../../shared/middleware/auth';
 
 export const syncProfile = async (req: AuthedRequest, res: Response): Promise<void> => {
   try {
-    const universityId = req.user!.universityId;
+    const universityId = req.user!.universityId as string;
+
+    if (!universityId) {
+      res.status(403).json({ success: false, data: null, error: { code: 'forbidden', message: 'Only students can sync profile.' } });
+      return;
+    }
 
     // Acknowledge the request immediately since this is a fire-and-forget background task
     res.json({ success: true, message: 'Sync started' });

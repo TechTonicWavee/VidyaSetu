@@ -7,14 +7,19 @@ import {
   addMenteeAlert,
   getClasses,
   getAnalytics,
+  getStudentsNeedingAttention,
   addClass,
   uploadAttendance,
-  uploadMarks
+  uploadMarks,
+  downloadMarksTemplate
 } from '../controllers/faculty.controller';
 import multer from 'multer';
+import { authMiddleware } from '../../../shared/middleware/auth';
 
 const upload = multer();
 const router = Router();
+
+router.use(authMiddleware);
 
 // Profile Routes
 router.get('/profile', getProfile);
@@ -31,9 +36,11 @@ router.post('/mentees/:id/alerts', addMenteeAlert);
 router.get('/classes', getClasses);
 router.post('/classes', addClass);
 router.get('/reports/analytics', getAnalytics);
+router.get('/attention', getStudentsNeedingAttention);
 
 // Uploads
 router.post('/upload/attendance', upload.single('file'), uploadAttendance);
-router.post('/upload/marks', upload.single('file'), uploadMarks);
+router.post('/marks/upload', upload.single('file'), uploadMarks);
+router.get('/marks/template', downloadMarksTemplate);
 
 export default router;
