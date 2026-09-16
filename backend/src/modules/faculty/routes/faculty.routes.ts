@@ -7,11 +7,10 @@ import {
   addMenteeAlert,
   getClasses,
   getAnalytics,
-  getStudentsNeedingAttention,
-  addClass,
-  uploadAttendance,
-  uploadMarks,
-  downloadMarksTemplate
+  getReportData,
+  downloadReport,
+  generateReport,
+  exportReportPack
 } from '../controllers/faculty.controller';
 import multer from 'multer';
 import { authMiddleware } from '../../../shared/middleware/auth';
@@ -43,4 +42,11 @@ router.post('/upload/attendance', upload.single('file'), uploadAttendance);
 router.post('/marks/upload', upload.single('file'), uploadMarks);
 router.get('/marks/template', downloadMarksTemplate);
 
+// Report Generation & Download (Real Database Records)
+router.get('/reports/data/:id', getReportData);
+router.get('/reports/download/:id', downloadReport);
+router.post('/reports/generate/:id', generateReport);
+router.get('/reports/export/:packType', exportReportPack);
+
 export default router;
+

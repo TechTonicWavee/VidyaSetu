@@ -32,15 +32,32 @@ if (!existsSync(backendClientPkg)) {
   execSync('npm install', { stdio: 'inherit', cwd: backendRoot });
 }
 
-execSync(`npx prisma generate --schema=${path.join(backendRoot, 'prisma', 'schema.prisma')}`, {
-  stdio: 'inherit',
-  cwd: backendRoot,
-});
+try {
+  execSync(`npx prisma generate --schema=${path.join(backendRoot, 'prisma', 'schema.prisma')}`, {
+    stdio: 'inherit',
+    cwd: backendRoot,
+  });
+} catch (err) {
+  if (existsSync(backendGenerated)) {
+    console.warn(`[sync-prisma] Warning: 'prisma generate' encountered an issue (e.g. engine DLL locked by running backend). Reusing existing Prisma client at ${backendGenerated}.`);
+  } else {
+    throw err;
+  }
+}
 
 if (!existsSync(backendGenerated)) {
   throw new Error(`Expected generated Prisma client at ${backendGenerated}, but it doesn't exist.`);
 }
 
-rmSync(frontendGenerated, { recursive: true, force: true });
-cpSync(backendGenerated, frontendGenerated, { recursive: true });
-console.log(`Synced Prisma client -> ${frontendGenerated}`);
+try {
+  rmSync(frontendGenerated, { recursive: true, force: true });
+  cpSync(backendGenerated, frontendGenerated, { recursive: true });
+  console.log(`Synced Prisma client -> ${frontendGenerated}`);
+} catch (err) {
+  if (existsSync(frontendGenerated)) {
+    console.warn(`[sync-prisma] Warning: Could not fully overwrite ${frontendGenerated} (engine DLL may be locked). Existing client will be used.`);
+  } else {
+    throw err;
+  }
+}
+
