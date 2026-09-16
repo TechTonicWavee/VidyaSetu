@@ -6,7 +6,11 @@ import {
   addMenteeNote,
   addMenteeAlert,
   getClasses,
-  getAnalytics
+  getAnalytics,
+  getReportData,
+  downloadReport,
+  generateReport,
+  exportReportPack
 } from '../controllers/faculty.controller';
 
 const router = Router();
@@ -26,4 +30,11 @@ router.post('/mentees/:id/alerts', addMenteeAlert);
 router.get('/classes', getClasses);
 router.get('/reports/analytics', getAnalytics);
 
+// Report Generation & Download (Real Database Records)
+router.get('/reports/data/:id', getReportData);
+router.get('/reports/download/:id', downloadReport);
+router.post('/reports/generate/:id', generateReport);
+router.get('/reports/export/:packType', exportReportPack);
+
 export default router;
+
