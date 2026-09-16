@@ -36,6 +36,21 @@ function studentSummary(student: {
   };
 }
 
+function facultySummary(faculty: {
+  facultyId: string;
+  fullName: string;
+}) {
+  return {
+    universityId: faculty.facultyId, // Map to universityId to reuse existing AuthProvider logic
+    name: faculty.fullName,
+    branch: null,
+    year: null,
+    section: null,
+    avatarUrl: null,
+    role: 'faculty'
+  };
+}
+
 async function issueTokenPair(universityId: string) {
   const accessToken = signAccessToken({ universityId, role: 'student' });
 
@@ -46,6 +61,25 @@ async function issueTokenPair(universityId: string) {
   await prisma.refreshToken.create({
     data: {
       universityId,
+      tokenHash,
+      expiresAt: new Date(Date.now() + REFRESH_TOKEN_TTL_MS),
+    },
+  });
+
+  return { accessToken, refreshToken };
+}
+
+async function issueTokenPairFaculty(facultyId: string) {
+  const accessToken = signAccessToken({ facultyId, role: 'faculty' });
+
+  const jti = newJti();
+  const refreshToken = signRefreshToken({ facultyId, jti });
+  const tokenHash = hashToken(refreshToken);
+
+  // Put facultyId in facultyId field
+  await prisma.refreshToken.create({
+    data: {
+      facultyId,
       tokenHash,
       expiresAt: new Date(Date.now() + REFRESH_TOKEN_TTL_MS),
     },
@@ -77,6 +111,25 @@ export async function loginStudent(universityId: string, password: string) {
 
   const tokens = await issueTokenPair(student.universityId);
   return { ...tokens, student: studentSummary(student) };
+}
+
+export async function loginFaculty(email: string, password: string) {
+  const faculty = await prisma.faculty.findFirst({ where: { email } });
+
+  if (!faculty) {
+    throw AppError.notFound('Faculty email not found.', 'FACULTY_NOT_FOUND');
+  }
+  if (!faculty.password) {
+    throw AppError.badRequest('No password set.', 'NO_PASSWORD');
+  }
+
+  const match = await bcrypt.compare(password, faculty.password);
+  if (!match) {
+    throw AppError.unauthorized('Incorrect password.', 'INVALID_CREDENTIALS');
+  }
+
+  const tokens = await issueTokenPairFaculty(faculty.facultyId);
+  return { ...tokens, student: facultySummary(faculty) }; // Return as 'student' to avoid breaking AuthProvider
 }
 
 /** Onboarding-form login gate (pre-registration). Blocks once the form is submitted. */
@@ -130,32 +183,53 @@ export async function refreshTokens(rawRefreshToken: string) {
   // this halves the round-trip cost of the common case.
   const [stored, student] = await Promise.all([
     prisma.refreshToken.findUnique({ where: { tokenHash } }),
-    prisma.student.findUnique({ where: { universityId: payload.universityId } }),
+    payload.universityId ? prisma.student.findUnique({ where: { universityId: payload.universityId } }) : Promise.resolve(null),
   ]);
 
   if (!stored || stored.revoked || stored.expiresAt < new Date()) {
-    await prisma.refreshToken.updateMany({
-      where: { universityId: payload.universityId, revoked: false },
-      data: { revoked: true },
-    });
+    if (payload.facultyId) {
+      await prisma.refreshToken.updateMany({
+        where: { facultyId: payload.facultyId, revoked: false },
+        data: { revoked: true },
+      });
+    } else if (payload.universityId) {
+      await prisma.refreshToken.updateMany({
+        where: { universityId: payload.universityId, revoked: false },
+        data: { revoked: true },
+      });
+    }
     throw AppError.unauthorized(
       'Refresh token reuse detected — all sessions revoked. Please log in again.',
       'REFRESH_REUSE_DETECTED',
     );
   }
 
-  if (!student) {
-    throw AppError.unauthorized('Account no longer exists.', 'STUDENT_NOT_FOUND');
+  let accessToken, newRefreshToken, sessionUser;
+
+  if (payload.facultyId) {
+    const faculty = await prisma.faculty.findUnique({ where: { facultyId: payload.facultyId } });
+    if (!faculty) throw AppError.unauthorized('Account no longer exists.', 'FACULTY_NOT_FOUND');
+    
+    accessToken = signAccessToken({ facultyId: faculty.facultyId, role: 'faculty' });
+    const jti = newJti();
+    newRefreshToken = signRefreshToken({ facultyId: faculty.facultyId, jti });
+    sessionUser = facultySummary(faculty);
+  } else if (payload.universityId) {
+    if (!student) throw AppError.unauthorized('Account no longer exists.', 'STUDENT_NOT_FOUND');
+    
+    accessToken = signAccessToken({ universityId: student.universityId, role: 'student' });
+    const jti = newJti();
+    newRefreshToken = signRefreshToken({ universityId: student.universityId, jti });
+    sessionUser = studentSummary(student);
+  } else {
+    throw AppError.unauthorized('Invalid refresh payload.', 'REFRESH_INVALID');
   }
 
-  const accessToken = signAccessToken({ universityId: student.universityId, role: 'student' });
-  const jti = newJti();
-  const newRefreshToken = signRefreshToken({ universityId: student.universityId, jti });
   const newHash = hashToken(newRefreshToken);
 
   const created = await prisma.refreshToken.create({
     data: {
-      universityId: student.universityId,
+      ...(payload.facultyId ? { facultyId: payload.facultyId } : { universityId: payload.universityId! }),
       tokenHash: newHash,
       expiresAt: new Date(Date.now() + REFRESH_TOKEN_TTL_MS),
     },
@@ -172,7 +246,7 @@ export async function refreshTokens(rawRefreshToken: string) {
     console.error('[authService.refreshTokens] failed to revoke superseded refresh token:', err);
   });
 
-  return { accessToken, refreshToken: newRefreshToken, student: studentSummary(student) };
+  return { accessToken, refreshToken: newRefreshToken, student: sessionUser };
 }
 
 export async function logoutStudent(rawRefreshToken: string | undefined) {

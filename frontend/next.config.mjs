@@ -28,6 +28,18 @@ const nextConfig = {
         source: '/api/faculty/reports/:path*',
         destination: 'http://localhost:4000/api/faculty/reports/:path*',
       },
+      {
+        source: '/api/faculty/upload/:path*',
+        destination: 'http://localhost:4000/api/faculty/upload/:path*',
+      },
+      {
+        source: '/api/faculty/marks/:path*',
+        destination: 'http://localhost:4000/api/faculty/marks/:path*',
+      },
+      {
+        source: '/api/faculty/attention',
+        destination: 'http://localhost:4000/api/faculty/attention',
+      },
     ];
   },
 };

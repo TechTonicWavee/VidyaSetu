@@ -6,7 +6,7 @@ import {
   BookOpen, Edit2, Activity,
   Briefcase, Mail, Phone,
   Lock, Plus, Trash2, Save, User, Users, Building, Image as ImageIcon,
-  CheckCircle, Zap, AlertTriangle
+  CheckCircle, Zap, AlertTriangle, Eye, EyeOff
 } from 'lucide-react'
 import getInitials from '@/lib/shared/getInitials'
 import { Card, Button, Tabs, Badge, Input, Field } from '@/components/shared/ui'
@@ -19,6 +19,7 @@ const TABS = ['Overview', 'Settings']
 interface Subject {
   id: string
   name: string
+  code: string
   section: string
   year: string
 }
@@ -63,13 +64,21 @@ export default function FacultyProfile() {
   // State for forms
   const [formData, setFormData] = useState<FacultyProfileData>(profile)
   const [passwords, setPasswords] = useState({ current: '', new: '', confirm: '' })
+  
+  const [showCurrent, setShowCurrent] = useState(false);
+  const [showNew, setShowNew] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const data = await apiGet<FacultyProfileData>('/api/faculty/profile');
-        setProfile(data);
-        setFormData(data);
+        const data = await apiGet<any>('/api/faculty/profile');
+        const mappedData = {
+          ...data,
+          profilePicture: data.avatarUrl || data.profilePicture || ''
+        };
+        setProfile(mappedData);
+        setFormData(mappedData);
       } catch (err) {
         console.error('Failed to fetch profile', err);
       } finally {
@@ -95,20 +104,36 @@ export default function FacultyProfile() {
     }
   }
 
-  const handlePasswordChange = () => {
+  const handlePasswordChange = async () => {
+    if (!passwords.current || !passwords.new || !passwords.confirm) {
+      alert('Please fill in all password fields.');
+      return;
+    }
     if (passwords.new !== passwords.confirm) {
       alert('New passwords do not match!')
       return
     }
-    // API Call to change password
-    alert('Password changed successfully!')
-    setPasswords({ current: '', new: '', confirm: '' })
+    try {
+      await apiFetch('/api/faculty/profile', {
+        method: 'PUT',
+        body: JSON.stringify({
+          ...formData,
+          password: passwords.new,
+          currentPassword: passwords.current
+        })
+      });
+      alert('Password changed successfully!')
+      setPasswords({ current: '', new: '', confirm: '' })
+    } catch(err) {
+      alert('Failed to change password');
+    }
   }
 
   const handleAddSubject = () => {
     const newSub = {
       id: Math.random().toString(36).substr(2, 9),
       name: '',
+      code: '',
       section: '',
       year: ''
     }
@@ -141,8 +166,8 @@ export default function FacultyProfile() {
             
             {/* Avatar */}
             <div className="w-16 h-16 rounded-2xl flex-shrink-0 flex items-center justify-center text-brand-fg font-bold text-xl tracking-wide bg-gradient-to-br from-brand to-brand-600 shadow-md select-none overflow-hidden relative">
-               {profile.profilePicture ? (
-                 <img src={profile.profilePicture} alt="Profile" className="w-full h-full object-cover" />
+               {profile.avatarUrl || profile.profilePicture ? (
+                 <img src={profile.avatarUrl || profile.profilePicture} alt="Profile" className="w-full h-full object-cover" />
                ) : (
                  initials
                )}
@@ -232,7 +257,8 @@ export default function FacultyProfile() {
                        </div>
                        <Badge tone="blue" className="text-[10px]">{sub.year}</Badge>
                      </div>
-                     <h3 className="text-sm font-semibold text-content mb-2 leading-snug">{sub.name}</h3>
+                     <h3 className="text-sm font-semibold text-content mb-1 leading-snug">{sub.name}</h3>
+                     <p className="text-[10px] text-muted mb-2 font-medium tracking-wide uppercase">{sub.code || 'NO CODE'}</p>
                      <p className="text-xs text-muted mt-auto">Section: <span className="font-semibold text-content">{sub.section}</span></p>
                    </div>
                  ))}
@@ -322,13 +348,32 @@ export default function FacultyProfile() {
                 />
               </Field>
               <div className="md:col-span-2">
-                 <Field label="Profile Picture URL">
-                   <Input
-                    value={formData.avatarUrl || formData.profilePicture}
-                    onChange={(e) => setFormData({ ...formData, avatarUrl: e.target.value, profilePicture: e.target.value })}
-                    placeholder="https://example.com/avatar.jpg"
-                    className="bg-surface-2/50"
-                   />
+                 <Field label="Profile Picture">
+                   <div className="flex items-center gap-4">
+                     <div className="w-12 h-12 rounded-xl flex items-center justify-center bg-surface-2/50 border border-line overflow-hidden relative group cursor-pointer">
+                        {formData.avatarUrl || formData.profilePicture ? (
+                           <img src={formData.avatarUrl || formData.profilePicture} alt="Profile" className="w-full h-full object-cover" />
+                        ) : (
+                           <ImageIcon size={20} className="text-muted" />
+                        )}
+                        <input
+                           type="file"
+                           accept=".jpg, .jpeg, .png"
+                           onChange={(e) => {
+                             const file = e.target.files?.[0];
+                             if (file) {
+                               const reader = new FileReader();
+                               reader.onloadend = () => {
+                                 setFormData({ ...formData, avatarUrl: reader.result as string, profilePicture: reader.result as string });
+                               };
+                               reader.readAsDataURL(file);
+                             }
+                           }}
+                           className="absolute inset-0 opacity-0 cursor-pointer"
+                        />
+                     </div>
+                     <p className="text-xs text-muted">Click to upload an image (.jpg, .png)</p>
+                   </div>
                  </Field>
               </div>
             </div>
@@ -350,12 +395,20 @@ export default function FacultyProfile() {
              <div className="space-y-3 mb-5">
                 {formData.subjects.map((sub, index) => (
                   <div key={sub.id} className="p-4 rounded-xl bg-surface-2/30 border border-line/60 flex flex-col md:flex-row gap-3 items-end">
-                    <div className="flex-1 w-full">
+                    <div className="flex-1 w-full grid grid-cols-2 gap-2">
                        <Field label={`Subject ${index + 1} Name`}>
                          <Input
                            value={sub.name}
                            onChange={(e) => handleSubjectChange(sub.id, 'name', e.target.value)}
-                           placeholder="e.g. Database Management Systems"
+                           placeholder="e.g. Database Systems"
+                           className="bg-surface"
+                         />
+                       </Field>
+                       <Field label="Course Code">
+                         <Input
+                           value={sub.code}
+                           onChange={(e) => handleSubjectChange(sub.id, 'code', e.target.value)}
+                           placeholder="e.g. CS-301"
                            className="bg-surface"
                          />
                        </Field>
@@ -408,28 +461,43 @@ export default function FacultyProfile() {
             <p className="text-xs font-semibold text-muted uppercase tracking-widest mb-4">Change Password</p>
             <div className="max-w-md space-y-3 mb-5">
               <Field label="Current Password">
-                <Input
-                  type="password"
-                  value={passwords.current}
-                  onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
-                  className="bg-surface-2/50"
-                />
+                <div className="relative">
+                  <Input
+                    type={showCurrent ? "text" : "password"}
+                    value={passwords.current}
+                    onChange={(e) => setPasswords({ ...passwords, current: e.target.value })}
+                    className="bg-surface-2/50 pr-10"
+                  />
+                  <button type="button" onClick={() => setShowCurrent(!showCurrent)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-content">
+                    {showCurrent ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
               </Field>
               <Field label="New Password">
-                <Input
-                  type="password"
-                  value={passwords.new}
-                  onChange={(e) => setPasswords({ ...passwords, new: e.target.value })}
-                  className="bg-surface-2/50"
-                />
+                <div className="relative">
+                  <Input
+                    type={showNew ? "text" : "password"}
+                    value={passwords.new}
+                    onChange={(e) => setPasswords({ ...passwords, new: e.target.value })}
+                    className="bg-surface-2/50 pr-10"
+                  />
+                  <button type="button" onClick={() => setShowNew(!showNew)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-content">
+                    {showNew ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
               </Field>
               <Field label="Confirm New Password">
-                <Input
-                  type="password"
-                  value={passwords.confirm}
-                  onChange={(e) => setPasswords({ ...passwords, confirm: e.target.value })}
-                  className="bg-surface-2/50"
-                />
+                <div className="relative">
+                  <Input
+                    type={showConfirm ? "text" : "password"}
+                    value={passwords.confirm}
+                    onChange={(e) => setPasswords({ ...passwords, confirm: e.target.value })}
+                    className="bg-surface-2/50 pr-10"
+                  />
+                  <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-content">
+                    {showConfirm ? <EyeOff size={16} /> : <Eye size={16} />}
+                  </button>
+                </div>
               </Field>
             </div>
             <div className="flex justify-start border-t border-line/40 pt-4">

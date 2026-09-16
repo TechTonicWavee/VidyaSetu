@@ -14,6 +14,38 @@ import { authedFetch } from '@/lib/shared/api/sameOriginFetch'
 import { Card, Tabs, Badge } from '@/components/shared/ui'
 import { cn } from '@/lib/shared/utils/cn'
 
+function GithubIcon({ className, size = 13 }: { className?: string, size?: number }) {
+  return (
+    <svg role="img" viewBox="0 0 24 24" width={size} height={size} fill="currentColor" className={className} xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 0c-6.626 0-12 5.372-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+    </svg>
+  );
+}
+
+function LeetCodeIcon({ className, size = 13 }: { className?: string, size?: number }) {
+  return (
+    <svg role="img" viewBox="0 0 24 24" width={size} height={size} fill="currentColor" className={className} xmlns="http://www.w3.org/2000/svg">
+      <path d="M13.483 0a1.374 1.374 0 0 0-.961.438L7.116 6.226l-3.854 4.126a5.266 5.266 0 0 0-1.209 2.104 5.35 5.35 0 0 0-.125 2.222 5.275 5.275 0 0 0 1.561 3.238l5.804 5.86a2.039 2.039 0 0 0 2.879.034l7.98-7.98a2.03 2.03 0 0 0 .041-2.878l-4.004-4.032a2.012 2.012 0 0 0-2.846-.025l-2.094 2.096a1.009 1.009 0 0 0 .034 1.43 1.026 1.026 0 0 0 1.43-.035l2.05-2.053c.12-.12.33-.12.449 0l3.966 3.993c.12.12.12.33 0 .45L10.377 22.8c-.12.12-.33.12-.449 0L4.124 16.94a3.3 3.3 0 0 1-.979-2.03 3.3 3.3 0 0 1 .078-1.393 3.298 3.298 0 0 1 .757-1.319l3.811-4.08L13.204 2.5a.35.35 0 0 1 .253-.11h.001c.1 0 .195.04.266.111l4.032 4.035c.12.12.33.12.45 0l2.092-2.095a1.01 1.01 0 0 0-.034-1.428 1.025 1.025 0 0 0-1.43.033l-2.054 2.055-3.995-3.998A1.378 1.378 0 0 0 13.483 0zm4.27 15.34c.152 0 .285.068.375.176l.001.002.001.001c.091.108.143.25.143.407 0 .16-.052.3-.143.41-.09.108-.224.175-.376.175H13.62c-.152 0-.285-.067-.376-.175-.09-.11-.143-.25-.143-.41 0-.157.053-.3.143-.408.09-.109.223-.177.375-.177z"/>
+    </svg>
+  );
+}
+
+function LinkedinIcon({ className, size = 13 }: { className?: string, size?: number }) {
+  return (
+    <svg role="img" viewBox="0 0 24 24" width={size} height={size} fill="currentColor" className={className} xmlns="http://www.w3.org/2000/svg">
+      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+    </svg>
+  );
+}
+
+function CodeChefIcon({ className, size = 13 }: { className?: string, size?: number }) {
+  return (
+    <svg role="img" viewBox="0 0 24 24" width={size} height={size} fill="currentColor" className={className} xmlns="http://www.w3.org/2000/svg">
+      <path d="M12.012 0l-5.733 9.493L5.452 7.7 5.163 1.725 10.985.496l1.027-.496zm-.024.167l-5.69 9.395 1.579-2.906-3.79-1.921 5.342-4.004zm.049.006l2.559.73 5.305 4.02-3.8 1.91 1.6 2.89zm2.613.784l-4.14 2.7-1.22-.525L6.96 5.864h7.555zm1.536 2.658h-7.61l-2.316 2.76 1.25.535-4.115 2.671zm1.381 2.973L16.29 8.24h-1.972l2.253 1.543-3.665 1.77-1.077 1.05 1.56.964-1.393 2.2zm-12.06-.01l4.02-4.321H5.43zm1.196 2.502L3.92 7.502h-.924l5.312 8.784-1.611-1.002-1.085-1.047-3.666-1.782zm8.795-.27l2.127 1.905-.098.666L15.343 14zm-4.706.757l3.633.315-1.229 1.139-2.224-2.583zm-1.874.195l-.176 1.127-2.188 2.592-1.218-1.16zm3.328 1.123L13.9 14.1l-1.899 3.016v-1.649l-1.066.862zm-2.083.398l1.79.46-.713 1.51zm2.395.776l1.554.437.33.916-1.884-1.353zm-2.791.07l-.025 1.409.345-.918zm.39 1.05l-2.035.795.34 2.457L11.51 14zm2.146.064l1.328 3.528.272-2.802zm-3.834.787l-1.319-3.524 1.659 2.716zm5.112.138L12.56 16.5l2.008.723zm-6.262.1l-.317 2.645 1.254-3.414zm7.391.246l-.37 2.155 1.62-2.529zm-8.497.108l2.032.74L8.766 17zm9.529.28l-2.09.682L17.7 18zm-10.457.14l1.547-2.454.004-.006-.399-2.167-1.152 4.627zm11.233.4l-1.57.51-1.067 4.298 2.637-4.808zm-11.9.43l1.109-4.225-.97-2.919.255-1.954-2.973 1.455.518 1.9 2.061 5.743zm3.704.53l-3.327 4.417h3.76l-.433-4.417zm4.279.034l-.454 4.383H15.1l-3.23-4.383zm.996 3.993l3.355-4.51-1.76-5.83.568-1.91-2.974-1.442.235 1.944-.946 2.873 1.522 8.875zm-3.084 1.134h-1.63L11.5 24h1.002v-3.792z"/>
+    </svg>
+  );
+}
+
 interface StudentProfileData {
   fullName: string
   branch: string | null
@@ -248,26 +280,32 @@ export default function StudentProfile() {
             </div>
           </Card>
 
-          {student?.codingProfile && (student.codingProfile.github || student.codingProfile.leetcode || student.codingProfile.codechef) && (
+          {student?.codingProfile && (student.codingProfile.github || student.codingProfile.leetcode || student.codingProfile.codechef || student.codingProfile.linkedinUrl) && (
             <Card className="p-5 rounded-2xl border-line/60 shadow-sm">
               <p className="text-xs font-semibold text-muted uppercase tracking-widest mb-3">Connected Platforms</p>
-              <div className="flex flex-wrap gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 {student.codingProfile.github && (
                   <a href={`https://github.com/${student.codingProfile.github}`} target="_blank" rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-3.5 py-2 bg-[#24292e] text-white rounded-xl text-xs font-semibold hover:opacity-85 transition-opacity">
-                    <Code2 size={13} /> GitHub <ExternalLink size={10} className="opacity-50" />
+                    <GithubIcon size={13} /> GitHub <ExternalLink size={10} className="opacity-50" />
                   </a>
                 )}
                 {student.codingProfile.leetcode && (
                   <a href={`https://leetcode.com/${student.codingProfile.leetcode}`} target="_blank" rel="noopener noreferrer"
                     className="inline-flex items-center gap-2 px-3.5 py-2 bg-[#FFA116]/10 border border-[#FFA116]/30 text-[#b36b00] dark:text-[#FFA116] rounded-xl text-xs font-semibold hover:bg-[#FFA116]/15 transition-colors">
-                    <Cpu size={13} /> LeetCode <ExternalLink size={10} className="opacity-50" />
+                    <LeetCodeIcon size={13} /> LeetCode <ExternalLink size={10} className="opacity-50" />
                   </a>
                 )}
                 {student.codingProfile.codechef && (
                   <a href={`https://codechef.com/users/${student.codingProfile.codechef}`} target="_blank" rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 px-3.5 py-2 bg-brand-soft border border-brand/20 text-brand rounded-xl text-xs font-semibold hover:bg-brand/10 transition-colors">
-                    <Award size={13} /> CodeChef <ExternalLink size={10} className="opacity-50" />
+                    className="inline-flex items-center gap-2 px-3.5 py-2 bg-[#5B4638]/10 border border-[#5B4638]/30 text-[#5B4638] dark:text-[#5B4638] rounded-xl text-xs font-semibold hover:bg-[#5B4638]/15 transition-colors">
+                    <CodeChefIcon size={13} /> CodeChef <ExternalLink size={10} className="opacity-50" />
+                  </a>
+                )}
+                {student.codingProfile.linkedinUrl && (
+                  <a href={student.codingProfile.linkedinUrl} target="_blank" rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 px-3.5 py-2 bg-[#0A66C2]/10 border border-[#0A66C2]/30 text-[#0A66C2] rounded-xl text-xs font-semibold hover:bg-[#0A66C2]/15 transition-colors">
+                    <LinkedinIcon size={13} /> LinkedIn <ExternalLink size={10} className="opacity-50" />
                   </a>
                 )}
               </div>
@@ -358,12 +396,14 @@ export default function StudentProfile() {
           <div className="space-y-4">
             <Card className="p-5 rounded-2xl border-line/60 shadow-sm">
               <p className="text-xs font-semibold text-muted uppercase tracking-widest mb-3">Platforms</p>
-              {student?.codingProfile && (student.codingProfile.github || student.codingProfile.leetcode || student.codingProfile.codechef) ? (
+              {student?.codingProfile && (student.codingProfile.github || student.codingProfile.leetcode || student.codingProfile.codechef || student.codingProfile.linkedinUrl) ? (
                 <div className="space-y-2">
                   {student.codingProfile.github && (
                     <a href={`https://github.com/${student.codingProfile.github}`} target="_blank" rel="noopener noreferrer"
                       className="flex items-center gap-3 p-2.5 rounded-xl border border-line/60 hover:border-brand/30 hover:bg-surface-2/40 transition-all group">
-                      <div className="w-7 h-7 rounded-lg bg-[#24292e] text-white flex items-center justify-center text-[10px] font-bold flex-shrink-0">GH</div>
+                      <div className="w-7 h-7 rounded-lg bg-[#24292e] text-white flex items-center justify-center flex-shrink-0">
+                        <GithubIcon size={14} />
+                      </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-semibold text-content">GitHub</p>
                         <p className="text-[10px] text-muted truncate">{student.codingProfile.github}</p>
@@ -374,7 +414,9 @@ export default function StudentProfile() {
                   {student.codingProfile.leetcode && (
                     <a href={`https://leetcode.com/${student.codingProfile.leetcode}`} target="_blank" rel="noopener noreferrer"
                       className="flex items-center gap-3 p-2.5 rounded-xl border border-line/60 hover:border-brand/30 hover:bg-surface-2/40 transition-all group">
-                      <div className="w-7 h-7 rounded-lg bg-[#FFA116]/15 border border-[#FFA116]/25 text-[#b36b00] dark:text-[#FFA116] flex items-center justify-center text-[10px] font-bold flex-shrink-0">LC</div>
+                      <div className="w-7 h-7 rounded-lg bg-[#FFA116]/15 border border-[#FFA116]/25 text-[#b36b00] dark:text-[#FFA116] flex items-center justify-center flex-shrink-0">
+                        <LeetCodeIcon size={14} />
+                      </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-semibold text-content">LeetCode</p>
                         <p className="text-[10px] text-muted truncate">{student.codingProfile.leetcode}</p>
@@ -385,10 +427,25 @@ export default function StudentProfile() {
                   {student.codingProfile.codechef && (
                     <a href={`https://codechef.com/users/${student.codingProfile.codechef}`} target="_blank" rel="noopener noreferrer"
                       className="flex items-center gap-3 p-2.5 rounded-xl border border-line/60 hover:border-brand/30 hover:bg-surface-2/40 transition-all group">
-                      <div className="w-7 h-7 rounded-lg bg-brand-soft border border-brand/20 text-brand flex items-center justify-center text-[10px] font-bold flex-shrink-0">CC</div>
+                      <div className="w-7 h-7 rounded-lg bg-[#5B4638]/15 border border-[#5B4638]/25 text-[#5B4638] dark:text-[#5B4638] flex items-center justify-center flex-shrink-0">
+                        <CodeChefIcon size={14} />
+                      </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-semibold text-content">CodeChef</p>
                         <p className="text-[10px] text-muted truncate">{student.codingProfile.codechef}</p>
+                      </div>
+                      <ExternalLink size={11} className="text-muted opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+                    </a>
+                  )}
+                  {student.codingProfile.linkedinUrl && (
+                    <a href={student.codingProfile.linkedinUrl} target="_blank" rel="noopener noreferrer"
+                      className="flex items-center gap-3 p-2.5 rounded-xl border border-line/60 hover:border-brand/30 hover:bg-surface-2/40 transition-all group">
+                      <div className="w-7 h-7 rounded-lg bg-[#0A66C2]/15 border border-[#0A66C2]/25 text-[#0A66C2] flex items-center justify-center flex-shrink-0">
+                        <LinkedinIcon size={14} />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-semibold text-content">LinkedIn</p>
+                        <p className="text-[10px] text-muted truncate">Profile</p>
                       </div>
                       <ExternalLink size={11} className="text-muted opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
                     </a>

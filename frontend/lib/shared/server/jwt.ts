@@ -15,8 +15,9 @@ const REFRESH_TOKEN_TTL = (process.env.REFRESH_TOKEN_TTL || '7d') as jwt.SignOpt
 export const REFRESH_TOKEN_TTL_MS = Number(process.env.REFRESH_TOKEN_TTL_MS || 7 * 24 * 60 * 60 * 1000);
 
 export interface AccessTokenPayload {
-  universityId: string;
-  role: 'student';
+  universityId?: string;
+  facultyId?: string;
+  role: 'student' | 'faculty';
 }
 
 export function signAccessToken(payload: AccessTokenPayload): string {
@@ -28,7 +29,8 @@ export function verifyAccessToken(token: string): AccessTokenPayload {
 }
 
 export interface RefreshTokenPayload {
-  universityId: string;
+  universityId?: string;
+  facultyId?: string;
   jti: string;
 }
 

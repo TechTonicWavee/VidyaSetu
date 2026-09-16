@@ -3,6 +3,7 @@
 import { useState, useMemo } from 'react'
 import { useRouter } from 'next/navigation'
 import { LayoutDashboard, Settings, Activity, BookOpen, Info, Book, Code, TrendingUp, Award, CheckCircle2, Search, ChevronDown, Home, User, Users, Bell, Grid, FileText, LogOut, Target, CheckCircle, Zap, AlertCircle, Plug } from 'lucide-react'
+import { PageHeader, Badge } from '@/components/shared/ui'
 
 const navLinks = [
   { id: 'dashboard',  label: 'Dashboard',        icon: Home,       badge: null,  active: true, path: '/admin' },
@@ -81,83 +82,28 @@ export default function SPIConfigPanel() {
   const projectSpi = getPresetSpi(presets.project)
 
   return (
-    <div className="flex h-screen bg-bg-base overflow-hidden font-sans relative">
-      {/* ══════════════════════════════════
-          SIDEBAR
-      ══════════════════════════════════ */}
-      <aside className={`${sidebarOpen ? 'w-64' : 'w-0 overflow-hidden'} flex-shrink-0 bg-navy flex flex-col transition-all duration-300 shadow-xl z-20`}>
-        <div className="p-5 border-b border-white/10">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full flex items-center justify-center text-navy font-bold text-sm flex-shrink-0 bg-white">AD</div>
-            <div className="overflow-hidden">
-              <p className="font-semibold text-sm text-white truncate">Admin</p>
-              <p className="text-xs text-blue-200 truncate">System Manager</p>
-            </div>
-          </div>
-        </div>
-
-        <nav className="flex-1 p-3 overflow-y-auto">
-          {navLinks.map(link => (
-            <button key={link.id} onClick={() => router.push(link.path)} className={`nav-link w-full text-left mb-0.5 ${link.id === 'spi' ? 'bg-white/10 text-white font-semibold' : 'text-gray-300 hover:bg-white/5 hover:text-white'}`}>
-              <link.icon size={17} />
-              <span className="flex-1">{link.label}</span>
+    <div className="space-y-8 pb-8 animate-fade-in">
+      <PageHeader 
+        title="SPI Weight Configuration" 
+        description="Configure how the Student Potential Index is calculated — adjust weights to match your institution's academic priorities."
+        actions={
+          <div className="flex gap-3">
+            <button onClick={() => setResetModal(true)} className="px-5 py-2.5 bg-surface border border-line text-content-2 font-bold text-sm rounded-xl hover:bg-surface-2 transition shadow-card">
+              Reset to Default
             </button>
-          ))}
-        </nav>
-      </aside>
-
-      {/* ══════════════════════════════════
-          MAIN CONTENT
-      ══════════════════════════════════ */}
-      <div className="flex-1 flex flex-col overflow-hidden relative">
-        {/* TOP NAV */}
-        <header className="bg-white border-b border-gray-100 px-6 py-3 flex items-center gap-4 flex-shrink-0 shadow-sm z-10">
-          <button onClick={() => setSidebarOpen(v => !v)} className="text-gray-400 hover:text-gray-700 transition">
-            <Settings size={20} />
-          </button>
-          <div className="flex items-center gap-2 mr-4">
-            <div className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs" style={{ background: '#4F46E5' }}>EA</div>
-            <span className="font-bold text-navy text-sm hidden sm:block">Educator Analytics OS</span>
+            <button onClick={() => is100 && setSaveModal(true)} disabled={!is100} className={`px-5 py-2.5 text-white font-bold text-sm rounded-xl transition shadow-card ${is100 ? 'bg-brand hover:bg-brand-strong' : 'bg-gray-300 cursor-not-allowed'}`}>
+              Save Configuration
+            </button>
           </div>
-          <div className="flex-1 max-w-md relative">
-            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input type="text" placeholder="Search..." className="w-full pl-9 pr-4 py-2 text-sm rounded-lg border border-gray-200 bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-300 transition" />
-          </div>
-          <div className="flex-1" />
-          <div className="flex items-center gap-2 cursor-pointer group">
-            <div className="w-8 h-8 rounded-full flex items-center justify-center text-navy font-bold text-xs bg-gray-200">AD</div>
-            <ChevronDown size={14} className="text-gray-400 group-hover:text-gray-600 transition" />
-          </div>
-        </header>
-
-        {/* PAGE BODY */}
-        <main className="flex-1 overflow-y-auto bg-gray-50/50">
-          <div className="max-w-[1400px] mx-auto p-6 md:p-8 animate-fade-in space-y-6 pb-20">
-            
-            {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
-              <div>
-                <h1 className="text-3xl font-bold text-navy mb-1">SPI Weight Configuration</h1>
-                <p className="text-gray-500 text-sm max-w-2xl leading-relaxed">
-                  Configure how the Student Potential Index is calculated — adjust weights to match your institution's academic priorities.
-                </p>
-              </div>
-              <div className="flex gap-3">
-                <button onClick={() => setResetModal(true)} className="px-5 py-2.5 bg-white border border-gray-300 text-gray-700 font-bold text-sm rounded-xl hover:bg-gray-50 transition shadow-sm">
-                  Reset to Default
-                </button>
-                <button onClick={() => is100 && setSaveModal(true)} disabled={!is100} className={`px-5 py-2.5 text-white font-bold text-sm rounded-xl transition shadow-sm ${is100 ? 'bg-blue-600 hover:bg-blue-700' : 'bg-blue-300 cursor-not-allowed'}`}>
-                  Save Configuration
-                </button>
-              </div>
-            </div>
+        }
+      />
 
             {/* Banner */}
-            <div className="bg-blue-50 border-l-4 border-l-blue-600 p-4 rounded-r-xl flex items-start gap-3">
-              <Info className="text-blue-600 shrink-0 mt-0.5" size={20} />
+            <div className="bg-brand-soft border-l-4 border-l-blue-600 p-4 rounded-r-xl flex items-start gap-3">
+              <Info className="text-brand shrink-0 mt-0.5" size={20} />
               <div>
-                <h3 className="font-bold text-blue-900 text-sm mb-1">How SPI Works</h3>
-                <p className="text-blue-800/80 text-sm">The Student Potential Index is a 0-100 score calculated from 5 weighted components. You can adjust the weight of each component to reflect what your institution values most. The total must always equal 100%.</p>
+                <h3 className="font-bold text-content text-sm mb-1">How SPI Works</h3>
+                <p className="text-content-2/80 text-sm">The Student Potential Index is a 0-100 score calculated from 5 weighted components. You can adjust the weight of each component to reflect what your institution values most. The total must always equal 100%.</p>
               </div>
             </div>
 
@@ -168,17 +114,17 @@ export default function SPIConfigPanel() {
               <div className="lg:w-[55%] space-y-6">
                 
                 {/* Sliders Card */}
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 relative overflow-hidden">
+                <div className="bg-surface rounded-2xl shadow-card border border-line p-6 relative overflow-hidden">
                   <div className="mb-6 border-b border-gray-100 pb-4">
                     <h2 className="text-xl font-bold text-navy mb-1">Adjust Component Weights</h2>
-                    <p className="text-sm text-gray-500">Drag sliders to change weights — total must equal 100%</p>
+                    <p className="text-sm text-muted">Drag sliders to change weights — total must equal 100%</p>
                   </div>
 
                   <div className="flex flex-col items-center justify-center mb-8">
                     <div className={`text-4xl font-bold mb-1 ${is100 ? 'text-green-600' : 'text-red-600'}`}>
                       Total: {totalWeight}%
                     </div>
-                    <p className={`text-sm font-medium ${is100 ? 'text-gray-500' : 'text-red-500'}`}>
+                    <p className={`text-sm font-medium ${is100 ? 'text-muted' : 'text-red-500'}`}>
                       {is100 ? 'Perfectly balanced' : 'Adjust sliders so total equals 100%'}
                     </p>
                   </div>
@@ -187,15 +133,15 @@ export default function SPIConfigPanel() {
                     {/* Component 1 */}
                     <div className="flex flex-col md:flex-row md:items-center gap-4">
                       <div className="flex items-start gap-3 w-48 shrink-0">
-                        <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 shrink-0"><Book size={18} /></div>
+                        <div className="w-10 h-10 rounded-full bg-brand-soft flex items-center justify-center text-brand shrink-0"><Book size={18} /></div>
                         <div>
                           <p className="font-bold text-sm text-navy">Academic Performance</p>
-                          <p className="text-[10px] text-gray-500 leading-tight">Exam scores, assignments, quizzes and practical marks</p>
+                          <p className="text-[10px] text-muted leading-tight">Exam scores, assignments, quizzes and practical marks</p>
                         </div>
                       </div>
                       <div className="flex-1 flex items-center gap-4">
                         <input type="range" min="10" max="60" value={weights.academic} onChange={(e) => handleSliderChange('academic', e.target.value)} className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600" />
-                        <span className="w-12 text-right font-bold text-xl text-blue-600">{weights.academic}%</span>
+                        <span className="w-12 text-right font-bold text-xl text-brand">{weights.academic}%</span>
                       </div>
                     </div>
 
@@ -205,7 +151,7 @@ export default function SPIConfigPanel() {
                         <div className="w-10 h-10 rounded-full bg-teal-50 flex items-center justify-center text-teal-600 shrink-0"><Activity size={18} /></div>
                         <div>
                           <p className="font-bold text-sm text-navy">Skill Breadth</p>
-                          <p className="text-[10px] text-gray-500 leading-tight">Technical skills, programming languages, tools and certifications</p>
+                          <p className="text-[10px] text-muted leading-tight">Technical skills, programming languages, tools and certifications</p>
                         </div>
                       </div>
                       <div className="flex-1 flex items-center gap-4">
@@ -217,15 +163,15 @@ export default function SPIConfigPanel() {
                     {/* Component 3 */}
                     <div className="flex flex-col md:flex-row md:items-center gap-4">
                       <div className="flex items-start gap-3 w-48 shrink-0">
-                        <div className="w-10 h-10 rounded-full bg-purple-50 flex items-center justify-center text-purple-600 shrink-0"><Code size={18} /></div>
+                        <div className="w-10 h-10 rounded-full bg-brand-soft flex items-center justify-center text-brand shrink-0"><Code size={18} /></div>
                         <div>
                           <p className="font-bold text-sm text-navy">Project Quality</p>
-                          <p className="text-[10px] text-gray-500 leading-tight">Project submissions, AI quality scores and faculty ratings</p>
+                          <p className="text-[10px] text-muted leading-tight">Project submissions, AI quality scores and faculty ratings</p>
                         </div>
                       </div>
                       <div className="flex-1 flex items-center gap-4">
                         <input type="range" min="5" max="40" value={weights.project} onChange={(e) => handleSliderChange('project', e.target.value)} className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-purple-600" />
-                        <span className="w-12 text-right font-bold text-xl text-purple-600">{weights.project}%</span>
+                        <span className="w-12 text-right font-bold text-xl text-brand">{weights.project}%</span>
                       </div>
                     </div>
 
@@ -235,7 +181,7 @@ export default function SPIConfigPanel() {
                         <div className="w-10 h-10 rounded-full bg-green-50 flex items-center justify-center text-green-600 shrink-0"><TrendingUp size={18} /></div>
                         <div>
                           <p className="font-bold text-sm text-navy">Consistency & Growth</p>
-                          <p className="text-[10px] text-gray-500 leading-tight">Improvement rate, submission consistency, attendance trend</p>
+                          <p className="text-[10px] text-muted leading-tight">Improvement rate, submission consistency, attendance trend</p>
                         </div>
                       </div>
                       <div className="flex-1 flex items-center gap-4">
@@ -250,7 +196,7 @@ export default function SPIConfigPanel() {
                         <div className="w-10 h-10 rounded-full bg-amber-50 flex items-center justify-center text-amber-600 shrink-0"><Award size={18} /></div>
                         <div>
                           <p className="font-bold text-sm text-navy">Extracurricular Activities</p>
-                          <p className="text-[10px] text-gray-500 leading-tight">Sports, hackathons, clubs, seminars and certifications</p>
+                          <p className="text-[10px] text-muted leading-tight">Sports, hackathons, clubs, seminars and certifications</p>
                         </div>
                       </div>
                       <div className="flex-1 flex items-center gap-4">
@@ -267,11 +213,11 @@ export default function SPIConfigPanel() {
                   )}
 
                   <div className="mt-8 pt-6 border-t border-gray-100">
-                    <p className="text-xs font-bold text-gray-500 mb-3 uppercase tracking-wider">Quick Presets</p>
+                    <p className="text-xs font-bold text-muted mb-3 uppercase tracking-wider">Quick Presets</p>
                     <div className="flex flex-wrap gap-2">
-                      <button onClick={() => setWeights({...presets.academic})} className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-bold text-gray-700 hover:bg-gray-50 transition">Academic Focus</button>
-                      <button onClick={() => setWeights({...presets.project})} className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-bold text-gray-700 hover:bg-gray-50 transition">Project Focus</button>
-                      <button onClick={() => setWeights({...presets.balanced})} className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-bold text-gray-700 hover:bg-gray-50 transition">Balanced</button>
+                      <button onClick={() => setWeights({...presets.academic})} className="px-4 py-2 border border-line rounded-lg text-sm font-bold text-content hover:bg-surface-2 transition">Academic Focus</button>
+                      <button onClick={() => setWeights({...presets.project})} className="px-4 py-2 border border-line rounded-lg text-sm font-bold text-content hover:bg-surface-2 transition">Project Focus</button>
+                      <button onClick={() => setWeights({...presets.balanced})} className="px-4 py-2 border border-line rounded-lg text-sm font-bold text-content hover:bg-surface-2 transition">Balanced</button>
                     </div>
                   </div>
                 </div>
@@ -280,13 +226,13 @@ export default function SPIConfigPanel() {
 
               {/* RIGHT COLUMN: Live Preview */}
               <div className="lg:w-[45%]">
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sticky top-6">
+                <div className="bg-surface rounded-2xl shadow-card border border-line p-6 sticky top-6">
                   <div className="mb-6 flex items-start justify-between">
                     <div>
                       <h2 className="text-xl font-bold text-navy mb-1">Live SPI Preview</h2>
-                      <p className="text-sm text-gray-500">See how current weights affect Priyanshu Raj's SPI score</p>
+                      <p className="text-sm text-muted">See how current weights affect Priyanshu Raj's SPI score</p>
                     </div>
-                    <div className="px-3 py-1.5 bg-gray-50 border border-gray-200 rounded-lg text-xs font-bold text-gray-600 flex items-center gap-1 cursor-pointer hover:bg-gray-100">
+                    <div className="px-3 py-1.5 bg-surface-2 border border-line rounded-lg text-xs font-bold text-gray-600 flex items-center gap-1 cursor-pointer hover:bg-gray-100">
                       Previewing: Priyanshu Raj
                     </div>
                   </div>
@@ -301,7 +247,7 @@ export default function SPIConfigPanel() {
                         <span className="text-4xl font-bold text-navy">{currentSpi.toFixed(1)}</span>
                       </div>
                     </div>
-                    <p className="text-sm font-bold text-gray-500 uppercase tracking-widest">Current Configuration</p>
+                    <p className="text-sm font-bold text-muted uppercase tracking-widest">Current Configuration</p>
                   </div>
 
                   <div className="space-y-4 mb-8">
@@ -312,7 +258,7 @@ export default function SPIConfigPanel() {
                         <span>{(weights.academic * rawScores.academic / 100).toFixed(1)} pts</span>
                       </div>
                       <div className="overflow-hidden h-1.5 mb-2 text-xs flex rounded bg-gray-100">
-                        <div style={{ width: `${(weights.academic * rawScores.academic / 100)}%` }} className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-600 transition-all duration-300"></div>
+                        <div style={{ width: `${(weights.academic * rawScores.academic / 100)}%` }} className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-brand transition-all duration-300"></div>
                       </div>
                     </div>
                     <div className="relative pt-1">
@@ -330,7 +276,7 @@ export default function SPIConfigPanel() {
                         <span>{(weights.project * rawScores.project / 100).toFixed(1)} pts</span>
                       </div>
                       <div className="overflow-hidden h-1.5 mb-2 text-xs flex rounded bg-gray-100">
-                        <div style={{ width: `${(weights.project * rawScores.project / 100)}%` }} className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-purple-600 transition-all duration-300"></div>
+                        <div style={{ width: `${(weights.project * rawScores.project / 100)}%` }} className="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-brand transition-all duration-300"></div>
                       </div>
                     </div>
                     <div className="relative pt-1">
@@ -352,19 +298,19 @@ export default function SPIConfigPanel() {
                       </div>
                     </div>
                     
-                    <div className="pt-2 border-t border-gray-200 text-right">
+                    <div className="pt-2 border-t border-line text-right">
                       <p className="font-bold text-navy text-sm">
-                        {(weights.academic * rawScores.academic / 100).toFixed(1)} + {(weights.skill * rawScores.skill / 100).toFixed(1)} + {(weights.project * rawScores.project / 100).toFixed(1)} + {(weights.consistency * rawScores.consistency / 100).toFixed(1)} + {(weights.extra * rawScores.extra / 100).toFixed(1)} = <span className="text-blue-600 text-lg">{currentSpi.toFixed(1)}</span>
+                        {(weights.academic * rawScores.academic / 100).toFixed(1)} + {(weights.skill * rawScores.skill / 100).toFixed(1)} + {(weights.project * rawScores.project / 100).toFixed(1)} + {(weights.consistency * rawScores.consistency / 100).toFixed(1)} + {(weights.extra * rawScores.extra / 100).toFixed(1)} = <span className="text-brand text-lg">{currentSpi.toFixed(1)}</span>
                       </p>
                     </div>
                   </div>
 
                   <div className="space-y-3 pt-4 border-t border-gray-100">
-                    <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                    <div className="bg-surface-2 p-3 rounded-lg border border-line">
                       <p className="text-xs font-bold text-navy mb-1">What if you used Academic Focus preset?</p>
                       <p className="text-sm text-gray-600">Priyanshu's SPI would be <span className="font-bold">{academicSpi.toFixed(1)}</span> <span className={`text-xs font-bold ${academicSpi > currentSpi ? 'text-green-600' : 'text-red-600'}`}>({academicSpi > currentSpi ? '+' : ''}{(academicSpi - currentSpi).toFixed(1)} from current)</span></p>
                     </div>
-                    <div className="bg-gray-50 p-3 rounded-lg border border-gray-200">
+                    <div className="bg-surface-2 p-3 rounded-lg border border-line">
                       <p className="text-xs font-bold text-navy mb-1">What if you used Project Focus preset?</p>
                       <p className="text-sm text-gray-600">Priyanshu's SPI would be <span className="font-bold">{projectSpi.toFixed(1)}</span> <span className={`text-xs font-bold ${projectSpi > currentSpi ? 'text-green-600' : 'text-red-600'}`}>({projectSpi > currentSpi ? '+' : ''}{(projectSpi - currentSpi).toFixed(1)} from current)</span></p>
                     </div>
@@ -375,14 +321,14 @@ export default function SPIConfigPanel() {
             </div>
 
             {/* Bottom Change History */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-              <div className="p-6 border-b border-gray-100 bg-gray-50/50">
+            <div className="bg-surface rounded-2xl shadow-card border border-line overflow-hidden">
+              <div className="p-6 border-b border-gray-100 bg-surface-2/50">
                 <h2 className="text-xl font-bold text-navy">Configuration Change History</h2>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-sm">
                   <thead>
-                    <tr className="bg-gray-50 border-b border-gray-200 text-xs font-bold text-gray-500 uppercase">
+                    <tr className="bg-surface-2 border-b border-line text-xs font-bold text-muted uppercase">
                       <th className="p-4 pl-6">Date</th>
                       <th className="p-4">Changed By</th>
                       <th className="p-4">Previous Config</th>
@@ -392,8 +338,8 @@ export default function SPIConfigPanel() {
                   </thead>
                   <tbody className="divide-y divide-gray-100">
                     {historyData.map((row, i) => (
-                      <tr key={i} className="hover:bg-gray-50/50 transition">
-                        <td className="p-4 pl-6 text-gray-500 font-medium whitespace-nowrap">{row.date}</td>
+                      <tr key={i} className="hover:bg-surface-2/50 transition">
+                        <td className="p-4 pl-6 text-muted font-medium whitespace-nowrap">{row.date}</td>
                         <td className="p-4 font-bold text-navy whitespace-nowrap">{row.user}</td>
                         <td className="p-4 text-gray-600">{row.prev}</td>
                         <td className="p-4 text-gray-800 font-bold">{row.next}</td>
@@ -405,25 +351,21 @@ export default function SPIConfigPanel() {
               </div>
             </div>
 
-          </div>
-        </main>
-      </div>
-
       {/* Modals */}
       {saveModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setSaveModal(false)} />
-          <div className="bg-white rounded-2xl shadow-2xl w-[400px] overflow-hidden relative z-10 animate-fade-in p-6 text-center">
-            <div className="w-12 h-12 rounded-full mx-auto flex items-center justify-center mb-4 bg-blue-100 text-blue-600">
+          <div className="bg-surface rounded-2xl shadow-2xl w-[400px] overflow-hidden relative z-10 animate-fade-in p-6 text-center">
+            <div className="w-12 h-12 rounded-full mx-auto flex items-center justify-center mb-4 bg-brand/10 text-brand">
               <Activity size={24} />
             </div>
             <h3 className="text-xl font-bold text-navy mb-2">Save new SPI weights?</h3>
-            <p className="text-gray-500 text-sm mb-6">
+            <p className="text-muted text-sm mb-6">
               This will recalculate the Student Potential Index (SPI) for all 1,240 students using the new weights.
             </p>
             <div className="flex gap-3">
-              <button onClick={() => setSaveModal(false)} className="flex-1 py-2.5 bg-gray-100 text-gray-700 font-bold rounded-lg hover:bg-gray-200 transition">Cancel</button>
-              <button onClick={() => { setSaveModal(false); showToast("SPI configuration saved. Recalculation scheduled for tonight."); }} className="flex-1 py-2.5 text-white font-bold rounded-lg transition bg-blue-600 hover:bg-blue-700">Confirm Save</button>
+              <button onClick={() => setSaveModal(false)} className="flex-1 py-2.5 bg-gray-100 text-content font-bold rounded-lg hover:bg-gray-200 transition">Cancel</button>
+              <button onClick={() => { setSaveModal(false); showToast("SPI configuration saved. Recalculation scheduled for tonight."); }} className="flex-1 py-2.5 text-white font-bold rounded-lg transition bg-brand hover:bg-brand/90">Confirm Save</button>
             </div>
           </div>
         </div>
@@ -432,16 +374,16 @@ export default function SPIConfigPanel() {
       {resetModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setResetModal(false)} />
-          <div className="bg-white rounded-2xl shadow-2xl w-[400px] overflow-hidden relative z-10 animate-fade-in p-6 text-center">
+          <div className="bg-surface rounded-2xl shadow-2xl w-[400px] overflow-hidden relative z-10 animate-fade-in p-6 text-center">
             <div className="w-12 h-12 rounded-full mx-auto flex items-center justify-center mb-4 bg-gray-100 text-gray-600">
               <Settings size={24} />
             </div>
             <h3 className="text-xl font-bold text-navy mb-2">Reset to Defaults?</h3>
-            <p className="text-gray-500 text-sm mb-6">
+            <p className="text-muted text-sm mb-6">
               Reset to 30/20/20/20/10 defaults? Any unsaved changes will be lost.
             </p>
             <div className="flex gap-3">
-              <button onClick={() => setResetModal(false)} className="flex-1 py-2.5 bg-gray-100 text-gray-700 font-bold rounded-lg hover:bg-gray-200 transition">Cancel</button>
+              <button onClick={() => setResetModal(false)} className="flex-1 py-2.5 bg-gray-100 text-content font-bold rounded-lg hover:bg-gray-200 transition">Cancel</button>
               <button onClick={() => { setWeights({...presets.default}); setResetModal(false); }} className="flex-1 py-2.5 text-white font-bold rounded-lg transition bg-gray-600 hover:bg-gray-700">Confirm Reset</button>
             </div>
           </div>

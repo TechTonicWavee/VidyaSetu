@@ -51,3 +51,6 @@ studentsSeed.json
 # unhashed) — keep faculty_seed_template.xlsx (fake example.com rows) as the
 # format reference, but never commit a populated data file.
 faculty_seed_data.xlsx
+
+# Confidential data and seeding scripts
+src/seed/

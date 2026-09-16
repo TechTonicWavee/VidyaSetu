@@ -50,6 +50,7 @@ import {
   Legend,
   CartesianGrid,
 } from "recharts";
+import { PageHeader } from '@/components/shared/ui';
 
 const navLinks = [
   {
@@ -318,29 +319,24 @@ export default function DeanForecastingPage() {
   return (
     <div className="space-y-8 animate-fade-in pb-20">
             {/* HEADER */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4">
-              <div>
-                <h1 className="text-3xl font-bold text-content mb-1">
-                  Cohort Forecasting
-                </h1>
-                <p className="text-muted text-sm">
-                  AI-predicted outcomes for current batches — act now, change
-                  outcomes before semester end
-                </p>
-              </div>
-              <div className="flex flex-col items-end gap-1">
-                <span className="px-3 py-1 bg-purple-500/10 text-purple-600 dark:text-purple-400 font-bold text-[10px] uppercase tracking-wider rounded-full border border-purple-500/20 flex items-center gap-1">
-                  <Cpu size={12} /> Powered by AI
-                </span>
-                <p className="text-[10px] text-muted font-medium">
-                  Predictions updated: 1 April 2026
-                </p>
-              </div>
-            </div>
+            <PageHeader 
+              title="Cohort Forecasting"
+              description="AI-predicted outcomes for current batches — act now, change outcomes before semester end"
+              actions={
+                <div className="flex flex-col items-end gap-1">
+                  <span className="px-3 py-1 bg-purple-500/10 text-purple-600 dark:text-purple-400 font-bold text-[10px] uppercase tracking-wider rounded-full border border-purple-500/20 flex items-center gap-1">
+                    <Cpu size={12} /> Powered by AI
+                  </span>
+                  <p className="text-[10px] text-muted font-medium">
+                    Predictions updated: 1 April 2026
+                  </p>
+                </div>
+              }
+            />
 
             {/* TOP SUMMARY STRIP */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="bg-surface rounded-xl p-5 shadow-sm border border-line">
+              <div className="bg-surface rounded-xl p-5 shadow-card border border-line">
                 <p className="text-4xl font-black text-teal-600 mb-2">61%</p>
                 <p className="text-xs font-bold text-content mb-1 leading-tight">
                   Predicted placement rate —<br />
@@ -350,7 +346,7 @@ export default function DeanForecastingPage() {
                   <ArrowUpRight size={12} /> Was 54% same time last year
                 </p>
               </div>
-              <div className="bg-surface rounded-xl p-5 shadow-sm border border-line">
+              <div className="bg-surface rounded-xl p-5 shadow-card border border-line">
                 <p className="text-4xl font-black text-red-600 mb-2">209</p>
                 <p className="text-xs font-bold text-content mb-1 leading-tight">
                   Predicted to need intervention
@@ -361,7 +357,7 @@ export default function DeanForecastingPage() {
                   Across CSE cohorts and years
                 </p>
               </div>
-              <div className="bg-surface rounded-xl p-5 shadow-sm border border-line">
+              <div className="bg-surface rounded-xl p-5 shadow-card border border-line">
                 <p className="text-4xl font-black text-green-600 mb-2">43</p>
                 <p className="text-xs font-bold text-content mb-1 leading-tight">
                   Students predicted to achieve
@@ -372,7 +368,7 @@ export default function DeanForecastingPage() {
                   Based on current trajectory
                 </p>
               </div>
-              <div className="bg-surface rounded-xl p-5 shadow-sm border border-line">
+              <div className="bg-surface rounded-xl p-5 shadow-card border border-line">
                 <p className="text-4xl font-black text-orange-500 mb-2">28</p>
                 <p className="text-xs font-bold text-content mb-1 leading-tight">
                   Students showing early
@@ -386,7 +382,7 @@ export default function DeanForecastingPage() {
             </div>
 
             {/* SECTION A - PLACEMENT FORECAST */}
-            <div className="bg-surface rounded-2xl shadow-sm border border-line overflow-hidden">
+            <div className="bg-surface rounded-2xl shadow-card border border-line overflow-hidden">
               <div className="p-6 border-b border-line">
                 <h3 className="text-lg font-bold text-content">
                   Final Year Placement Forecast — CSE Batch 2022
@@ -436,7 +432,7 @@ export default function DeanForecastingPage() {
 
                   <div className="space-y-4">
                     {/* Optimistic */}
-                    <div className="p-4 rounded-xl border border-green-200 dark:border-green-500/20 bg-green-50 dark:bg-green-500/10 flex items-start gap-4 shadow-sm relative overflow-hidden">
+                    <div className="p-4 rounded-xl border border-green-200 dark:border-green-500/20 bg-green-50 dark:bg-green-500/10 flex items-start gap-4 shadow-card relative overflow-hidden">
                       <div className="w-10 h-10 rounded-full bg-green-100 dark:bg-green-500/20 flex items-center justify-center flex-shrink-0 text-green-600 dark:text-green-400">
                         <TrendingUp size={20} />
                       </div>
@@ -456,7 +452,7 @@ export default function DeanForecastingPage() {
                     </div>
 
                     {/* Base */}
-                    <div className="p-4 rounded-xl border border-blue-200 dark:border-blue-500/20 bg-blue-50 dark:bg-blue-500/10 flex items-start gap-4 shadow-sm relative overflow-hidden">
+                    <div className="p-4 rounded-xl border border-blue-200 dark:border-blue-500/20 bg-blue-50 dark:bg-blue-500/10 flex items-start gap-4 shadow-card relative overflow-hidden">
                       <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-500/20 flex items-center justify-center flex-shrink-0 text-blue-600 dark:text-blue-400">
                         <MinusCircle size={20} />
                       </div>
@@ -476,7 +472,7 @@ export default function DeanForecastingPage() {
                     </div>
 
                     {/* Conservative */}
-                    <div className="p-4 rounded-xl border border-amber-200 dark:border-amber-500/20 bg-amber-50 dark:bg-amber-500/10 flex items-start gap-4 shadow-sm relative overflow-hidden">
+                    <div className="p-4 rounded-xl border border-amber-200 dark:border-amber-500/20 bg-amber-50 dark:bg-amber-500/10 flex items-start gap-4 shadow-card relative overflow-hidden">
                       <div className="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-500/20 flex items-center justify-center flex-shrink-0 text-amber-600 dark:text-amber-400">
                         <TrendingDown size={20} />
                       </div>
@@ -505,7 +501,7 @@ export default function DeanForecastingPage() {
             </div>
 
             {/* SECTION C - OUTCOME FORECAST CHART */}
-            <div className="bg-surface rounded-2xl shadow-sm border border-line overflow-hidden">
+            <div className="bg-surface rounded-2xl shadow-card border border-line overflow-hidden">
               <div className="p-6 border-b border-line">
                 <h3 className="text-lg font-bold text-content mb-1">
                   Predicted SPI Distribution at Semester End
@@ -578,7 +574,7 @@ export default function DeanForecastingPage() {
               </div>
 
               <div className="p-6 bg-surface-2 border-t border-line">
-                <div className="bg-success-soft border border-success/20 rounded-xl p-5 shadow-sm">
+                <div className="bg-success-soft border border-success/20 rounded-xl p-5 shadow-card">
                   <p className="text-content font-medium leading-relaxed text-sm">
                     With targeted intervention on the top 209 at-risk students,
                     the department can move{" "}
@@ -594,7 +590,7 @@ export default function DeanForecastingPage() {
             </div>
 
             {/* SECTION B - AT-RISK STUDENTS */}
-            <div className="bg-surface rounded-2xl shadow-sm border border-line overflow-hidden">
+            <div className="bg-surface rounded-2xl shadow-card border border-line overflow-hidden">
               <div className="p-6 border-b border-line">
                 <h3 className="text-lg font-bold text-content mb-1">
                   Students Predicted to Fail Without Intervention
@@ -699,7 +695,7 @@ export default function DeanForecastingPage() {
                           <td className="px-6 py-4 text-right">
                             <button
                               onClick={() => handleIntervene(row)}
-                              className={`px-4 py-1.5 rounded-lg font-bold text-xs transition ${row.severity === "CRITICAL" ? "bg-red-600 text-white hover:bg-red-700 shadow-sm" : row.severity === "HIGH" ? "bg-orange-500 text-white hover:bg-orange-600 shadow-sm" : "bg-amber-100 dark:bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-500/30 hover:bg-amber-200 dark:hover:bg-amber-500/30"}`}
+                              className={`px-4 py-1.5 rounded-lg font-bold text-xs transition ${row.severity === "CRITICAL" ? "bg-red-600 text-white hover:bg-red-700 shadow-card" : row.severity === "HIGH" ? "bg-orange-500 text-white hover:bg-orange-600 shadow-card" : "bg-amber-100 dark:bg-amber-500/20 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-500/30 hover:bg-amber-200 dark:hover:bg-amber-500/30"}`}
                             >
                               {row.severity === "CRITICAL"
                                 ? "Intervene Now"
@@ -715,7 +711,7 @@ export default function DeanForecastingPage() {
                 </table>
               </div>
               <div className="p-6 bg-surface-2 border-t border-line flex flex-col sm:flex-row gap-3 justify-end">
-                <button className="px-5 py-2.5 bg-blue-600 text-white font-bold text-sm rounded-xl hover:bg-blue-700 transition shadow-sm whitespace-nowrap">
+                <button className="px-5 py-2.5 bg-blue-600 text-white font-bold text-sm rounded-xl hover:bg-blue-700 transition shadow-card whitespace-nowrap">
                   Assign All Critical Students to Counselor
                 </button>
                 <button className="px-5 py-2.5 border border-line bg-surface text-content font-bold text-sm rounded-xl hover:bg-surface-2 transition whitespace-nowrap">
@@ -725,7 +721,7 @@ export default function DeanForecastingPage() {
             </div>
 
             {/* SECTION D - POLICY SIMULATION */}
-            <div className="bg-purple-50 dark:bg-purple-500/10 rounded-2xl shadow-sm border border-purple-200 dark:border-purple-500/20 overflow-hidden">
+            <div className="bg-purple-50 dark:bg-purple-500/10 rounded-2xl shadow-card border border-purple-200 dark:border-purple-500/20 overflow-hidden">
               <div className="p-6 border-b border-purple-100 dark:border-purple-500/10">
                 <h3 className="text-lg font-bold text-purple-900 dark:text-purple-200 mb-1 flex items-center gap-2">
                   <Lightbulb size={20} /> Quick Policy Simulation
@@ -746,7 +742,7 @@ export default function DeanForecastingPage() {
                       type="text"
                       readOnly
                       value="What would happen if we added a mandatory communication skills lab in 2nd semester for CSE?"
-                      className="w-full pl-10 pr-4 py-3 text-sm rounded-xl border border-purple-300 dark:border-purple-500/30 bg-surface text-purple-900 dark:text-purple-200 font-medium shadow-sm focus:outline-none"
+                      className="w-full pl-10 pr-4 py-3 text-sm rounded-xl border border-purple-300 dark:border-purple-500/30 bg-surface text-purple-900 dark:text-purple-200 font-medium shadow-card focus:outline-none"
                     />
                     <Zap
                       size={18}
@@ -755,7 +751,7 @@ export default function DeanForecastingPage() {
                   </div>
                 </div>
 
-                <div className="bg-surface rounded-xl border border-line shadow-sm p-6 relative overflow-hidden">
+                <div className="bg-surface rounded-xl border border-line shadow-card p-6 relative overflow-hidden">
                   <div className="absolute top-0 left-0 w-1 bg-purple-500 h-full" />
                   <div className="flex items-center gap-2 mb-3">
                     <Cpu size={16} className="text-purple-600 dark:text-purple-400" />
@@ -796,7 +792,7 @@ export default function DeanForecastingPage() {
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3">
-                  <button className="px-5 py-2.5 bg-purple-600 text-white font-bold text-sm rounded-xl hover:bg-purple-700 transition shadow-sm whitespace-nowrap">
+                  <button className="px-5 py-2.5 bg-purple-600 text-white font-bold text-sm rounded-xl hover:bg-purple-700 transition shadow-card whitespace-nowrap">
                     Run Full Policy Simulation
                   </button>
                   <button className="px-5 py-2.5 border border-purple-300 dark:border-purple-500/30 text-purple-800 dark:text-purple-300 font-bold text-sm rounded-xl hover:bg-purple-500/10 transition whitespace-nowrap bg-surface">
@@ -884,14 +880,14 @@ export default function DeanForecastingPage() {
               <div className="flex gap-3 pt-4 border-t border-line">
                 <button
                   onClick={() => setInterveneModalOpen(false)}
-                  className="flex-1 py-2.5 border border-red-200 dark:border-red-500/20 text-red-700 dark:text-red-400 font-bold text-sm rounded-xl hover:bg-red-50 dark:hover:bg-red-500/10 transition shadow-sm"
+                  className="flex-1 py-2.5 border border-red-200 dark:border-red-500/20 text-red-700 dark:text-red-400 font-bold text-sm rounded-xl hover:bg-red-50 dark:hover:bg-red-500/10 transition shadow-card"
                 >
                   Notify Parent
                 </button>
                 <button
                   onClick={() => setInterveneModalOpen(false)}
                   disabled={selectedAction === null}
-                  className="flex-1 py-2.5 bg-blue-600 disabled:bg-blue-800 disabled:opacity-50 text-white font-bold text-sm rounded-xl hover:bg-blue-700 transition shadow-sm"
+                  className="flex-1 py-2.5 bg-blue-600 disabled:bg-blue-800 disabled:opacity-50 text-white font-bold text-sm rounded-xl hover:bg-blue-700 transition shadow-card"
                 >
                   Assign to Faculty
                 </button>

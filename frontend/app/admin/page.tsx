@@ -41,16 +41,21 @@ export default function AdminDashboard() {
   const router = useRouter()
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <PageHeader 
-          title="System Overview — April 2026" 
-          description="All systems operational"
-        />
-        <button className="btn-secondary flex items-center gap-2">
-          <Play size={14} /> Run Diagnostics
-        </button>
-      </div>
+    <div className="space-y-8 pb-8">
+      <PageHeader 
+        title="Good morning, Administrator" 
+        description="All systems operational. Here is your platform overview for today."
+        actions={
+          <div className="flex items-center gap-3">
+            <Badge tone="gray" className="px-3 py-1.5 font-mono uppercase tracking-widest text-[10px] bg-surface-2 border border-line text-muted shadow-card hidden sm:inline-flex">
+              {new Date().toLocaleDateString(undefined, { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
+            </Badge>
+            <button className="btn-secondary flex items-center gap-2">
+              <Play size={14} /> Run Diagnostics
+            </button>
+          </div>
+        }
+      />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
         {statCards.map((card, i) => (
@@ -67,10 +72,10 @@ export default function AdminDashboard() {
 
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
         {/* Left Column - Logs */}
-        <Card className="flex flex-col">
+        <Card className="flex flex-col p-6 shadow-card border-line/60 hover:shadow-card transition-shadow">
           <div className="flex items-center justify-between mb-4 pb-4 border-b border-line">
-            <h3 className="font-semibold text-content flex items-center gap-2">
-              <Terminal size={16} className="text-muted" /> Recent System Activity
+            <h3 className="font-bold text-content text-lg flex items-center gap-2">
+              <Terminal size={16} className="text-brand" /> Recent System Activity
             </h3>
             <button className="text-xs text-info hover:underline">View All</button>
           </div>
@@ -92,14 +97,14 @@ export default function AdminDashboard() {
         </Card>
 
         {/* Right Column - Actions */}
-        <Card className="flex flex-col">
+        <Card className="flex flex-col p-6 shadow-card border-line/60 hover:shadow-card transition-shadow">
           <div className="flex items-center justify-between mb-4 pb-4 border-b border-line">
-            <h3 className="font-semibold text-content">Quick Configuration Actions</h3>
+            <h3 className="font-bold text-content text-lg">Quick Configuration Actions</h3>
             <Settings size={15} className="text-muted" />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
             {quickActions.map((action, i) => (
-              <button key={i} className="p-4 rounded-xl border border-line bg-surface hover:border-brand hover:shadow-sm transition-all text-left flex flex-col items-start gap-3 group">
+              <button key={i} className="p-4 rounded-xl border border-line bg-surface hover:border-brand hover:shadow-card transition-all text-left flex flex-col items-start gap-3 group">
                 <div className="w-10 h-10 rounded-lg bg-surface-2 flex items-center justify-center text-muted group-hover:bg-brand group-hover:text-white transition-colors border border-line">
                   <action.icon size={20} />
                 </div>

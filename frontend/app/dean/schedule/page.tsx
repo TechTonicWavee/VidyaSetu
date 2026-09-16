@@ -78,7 +78,7 @@ export default function SchedulePage() {
               <button onClick={() => setWeekOffset(v => v - 1)} className="h-9 w-9 rounded-xl border border-line bg-surface hover:bg-surface-2 transition text-content-2 flex items-center justify-center">
                 <ChevronLeft size={16} />
               </button>
-              <button onClick={() => setWeekOffset(0)} className="h-9 px-4 rounded-xl text-sm font-bold bg-brand text-surface shadow-sm transition">Today</button>
+              <button onClick={() => setWeekOffset(0)} className="h-9 px-4 rounded-xl text-sm font-bold bg-brand text-surface shadow-card transition">Today</button>
               <button onClick={() => setWeekOffset(v => v + 1)} className="h-9 w-9 rounded-xl border border-line bg-surface hover:bg-surface-2 transition text-content-2 flex items-center justify-center">
                 <ChevronRight size={16} />
               </button>
@@ -130,7 +130,7 @@ export default function SchedulePage() {
             <button onClick={() => setWeekOffset(v => v - 1)} className="h-9 w-9 rounded-xl border border-line bg-surface hover:bg-surface-2 transition text-content-2 flex items-center justify-center">
               <ChevronLeft size={16} />
             </button>
-            <button onClick={() => setWeekOffset(0)} className="h-9 px-4 rounded-xl text-sm font-bold bg-brand text-surface shadow-sm transition">Today</button>
+            <button onClick={() => setWeekOffset(0)} className="h-9 px-4 rounded-xl text-sm font-bold bg-brand text-surface shadow-card transition">Today</button>
             <button onClick={() => setWeekOffset(v => v + 1)} className="h-9 w-9 rounded-xl border border-line bg-surface hover:bg-surface-2 transition text-content-2 flex items-center justify-center">
               <ChevronRight size={16} />
             </button>
@@ -171,7 +171,7 @@ export default function SchedulePage() {
                 <div key={dayIdx} className={cn("border-r border-line last:border-r-0 p-1.5 space-y-1 transition", isToday ? 'bg-brand/[0.03]' : 'hover:bg-surface-2/30')}>
                   {hourMeetings.map(m => (
                     <button key={m.id} onClick={() => setSelectedMeeting(selectedMeeting?.id === m.id ? null : m)}
-                      className={cn("w-full text-left text-[11px] font-bold px-2 py-1 rounded-lg truncate text-surface shadow-sm hover:opacity-90 transition", typeColor(m.type).bg)}
+                      className={cn("w-full text-left text-[11px] font-bold px-2 py-1 rounded-lg truncate text-surface shadow-card hover:opacity-90 transition", typeColor(m.type).bg)}
                       title={m.title}>
                       {m.time} {m.title}
                     </button>

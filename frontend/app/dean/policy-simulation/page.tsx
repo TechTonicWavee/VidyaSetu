@@ -562,7 +562,7 @@ export default function PolicySimulation() {
               icon={<Cpu size={22} />}
               actions={
                 <div className="flex items-center gap-2 text-xs ml-10 sm:ml-0">
-                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-purple-50 border border-purple-200 text-purple-700 font-semibold">
+                  <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-brand-soft border border-brand/20 text-brand font-semibold">
                     <Sparkles size={12} />
                     {savedScenarios.length} saved scenario
                     {savedScenarios.length !== 1 ? "s" : ""}
@@ -570,7 +570,7 @@ export default function PolicySimulation() {
                   {result && (
                     <button
                       onClick={() => setCompareMode((v) => !v)}
-                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border font-semibold transition ${compareMode ? "bg-indigo-100 border-indigo-300 text-indigo-700" : "bg-surface border-line text-content-2 hover:border-indigo-300 hover:text-indigo-700"}`}
+                      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full border font-semibold transition ${compareMode ? "bg-brand-soft border-brand/40 text-brand" : "bg-surface border-line text-content-2 hover:border-brand/40 hover:text-brand"}`}
                     >
                       <BarChart2 size={12} />
                       Compare Mode
@@ -614,19 +614,19 @@ export default function PolicySimulation() {
                             style={
                               policyType === pt
                                 ? {
-                                    background: "#EEF2FF",
-                                    borderColor: "#6366F1",
-                                    color: "#3730A3",
+                                    background: "var(--brand-soft)",
+                                    borderColor: "var(--brand)",
+                                    color: "var(--brand)",
                                   }
                                 : {}
                             }
-                            className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl border text-sm font-medium transition text-left ${policyType === pt ? "" : "border-line text-content-2 hover:border-indigo-200"}`}
+                            className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl border text-sm font-medium transition text-left ${policyType === pt ? "" : "border-line text-content-2 hover:border-brand/20"}`}
                           >
                             <div
                               className="w-1.5 h-1.5 rounded-full flex-shrink-0"
                               style={{
                                 background:
-                                  policyType === pt ? "#4338CA" : "#D1D5DB",
+                                  policyType === pt ? "var(--brand)" : "#D1D5DB",
                               }}
                             />
                             {pt}
@@ -645,7 +645,7 @@ export default function PolicySimulation() {
                           <input
                             value={courseName}
                             onChange={(e) => setCourseName(e.target.value)}
-                            className="w-full px-3 py-2.5 rounded-xl border border-line text-sm text-content focus:outline-none focus:ring-2 focus:ring-purple-200 focus:border-purple-300 transition bg-surface-2"
+                            className="w-full px-3 py-2.5 rounded-xl border border-line text-sm text-content focus:outline-none focus:ring-2 focus:ring-brand/20 focus:border-brand/40 transition bg-surface-2"
                             placeholder="e.g. Communication Skills"
                           />
                         </div>
@@ -661,13 +661,13 @@ export default function PolicySimulation() {
                                 style={
                                   targetYear === yr
                                     ? {
-                                        background: "#4338CA",
-                                        borderColor: "#4338CA",
+                                        background: "var(--brand)",
+                                        borderColor: "var(--brand)",
                                         color: "#fff",
                                       }
                                     : {}
                                 }
-                                className={`py-2 rounded-lg border text-sm font-semibold transition ${targetYear === yr ? "" : "border-line text-content-2 hover:border-indigo-300"}`}
+                                className={`py-2 rounded-lg border text-sm font-semibold transition ${targetYear === yr ? "" : "border-line text-content-2 hover:border-brand/40"}`}
                               >
                                 {yr}
                               </button>
@@ -681,7 +681,7 @@ export default function PolicySimulation() {
                       <div>
                         <label className="block text-xs font-bold text-content-2 uppercase tracking-wide mb-1.5">
                           Min Attendance Threshold:{" "}
-                          <span className="text-purple-700">
+                          <span className="text-brand">
                             {attendanceThreshold}%
                           </span>
                         </label>
@@ -694,7 +694,7 @@ export default function PolicySimulation() {
                           onChange={(e) =>
                             setAttendanceThreshold(Number(e.target.value))
                           }
-                          className="w-full accent-purple-600"
+                          className="w-full accent-brand"
                         />
                         <div className="flex justify-between text-xs text-muted mt-1">
                           <span>70%</span>
@@ -716,13 +716,13 @@ export default function PolicySimulation() {
                             style={
                               targetBranch === b
                                 ? {
-                                    background: "#4338CA",
-                                    borderColor: "#4338CA",
+                                    background: "var(--brand)",
+                                    borderColor: "var(--brand)",
                                     color: "#fff",
                                   }
                                 : {}
                             }
-                            className={`py-2 rounded-lg border text-sm font-semibold transition ${targetBranch === b ? "" : "border-line text-content-2 hover:border-indigo-300"}`}
+                            className={`py-2 rounded-lg border text-sm font-semibold transition ${targetBranch === b ? "" : "border-line text-content-2 hover:border-brand/40"}`}
                           >
                             {b}
                           </button>
@@ -766,8 +766,8 @@ export default function PolicySimulation() {
                       <button
                         onClick={handleRun}
                         disabled={loading}
-                        className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-white text-sm font-bold transition-all shadow-md active:scale-95 disabled:opacity-60"
-                        style={{ background: loading ? "#9CA3AF" : "#4338CA" }}
+                        className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-white text-sm font-bold transition-all shadow-card active:scale-95 disabled:opacity-60"
+                        style={{ background: loading ? "#9CA3AF" : "var(--brand)" }}
                       >
                         {loading ? (
                           <>
@@ -813,7 +813,7 @@ export default function PolicySimulation() {
                       {savedScenarios.map((s) => (
                         <div
                           key={s.id}
-                          className="flex items-center justify-between p-3 rounded-xl bg-surface-2 border border-line hover:border-purple-200 transition"
+                          className="flex items-center justify-between p-3 rounded-xl bg-surface-2 border border-line hover:border-brand/20 transition"
                         >
                           <div>
                             <p className="text-sm font-semibold text-content">
@@ -884,7 +884,7 @@ export default function PolicySimulation() {
                   <Card padded={false} className="border-dashed flex flex-col items-center justify-center py-20 animate-fade-in">
                     <div
                       className="w-16 h-16 rounded-2xl flex items-center justify-center mb-4"
-                      style={{ background: "#EEF2FF" }}
+                      style={{ background: "var(--brand-soft)" }}
                     >
                       <Cpu size={28} color="#7c3aed" />
                     </div>
@@ -901,7 +901,7 @@ export default function PolicySimulation() {
                 {/* Loading */}
                 {loading && (
                   <Card padded={false} className="flex flex-col items-center justify-center py-20 animate-fade-in">
-                    <div className="w-12 h-12 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin mb-5" />
+                    <div className="w-12 h-12 border-4 border-brand/20 border-t-purple-600 rounded-full animate-spin mb-5" />
                     <p className="font-bold text-content mb-1">
                       Running simulation engine…
                     </p>
@@ -922,7 +922,7 @@ export default function PolicySimulation() {
                         return (
                           <div
                             key={i}
-                            className="bg-surface rounded-2xl border shadow-sm p-4 overflow-hidden relative"
+                            className="bg-surface rounded-2xl border shadow-card p-4 overflow-hidden relative"
                             style={{
                               borderColor: improved
                                 ? "#bbf7d0"
@@ -1022,7 +1022,7 @@ export default function PolicySimulation() {
                             setCompareMode(false);
                             setCompareB(null);
                           }}
-                          className="text-indigo-400 hover:text-indigo-700"
+                          className="text-indigo-400 hover:text-brand"
                         >
                           <Trash2 size={14} />
                         </button>
@@ -1120,7 +1120,7 @@ export default function PolicySimulation() {
                             <div className="flex items-center gap-1.5">
                               <div
                                 className="w-2.5 h-2.5 rounded-sm"
-                                style={{ background: "#4338CA" }}
+                                style={{ background: "var(--brand)" }}
                               />
                               <span className="text-xs text-muted font-medium">
                                 After
@@ -1160,8 +1160,8 @@ export default function PolicySimulation() {
                             <Radar
                               name="After"
                               dataKey="after"
-                              stroke="#4338CA"
-                              fill="#4338CA"
+                              stroke="var(--brand)"
+                              fill="var(--brand)"
                               fillOpacity={0.25}
                             />
                           </RadarChart>
@@ -1181,7 +1181,7 @@ export default function PolicySimulation() {
                             policy
                           </p>
                         </div>
-                        <span className="text-xs px-2.5 py-1 rounded-full bg-purple-50 text-purple-700 border border-purple-200 font-semibold">
+                        <span className="text-xs px-2.5 py-1 rounded-full bg-brand-soft text-brand border border-brand/20 font-semibold">
                           Forecast
                         </span>
                       </div>
@@ -1249,9 +1249,9 @@ export default function PolicySimulation() {
                         <div className="flex items-center gap-2 mb-4">
                           <div
                             className="w-7 h-7 rounded-lg flex items-center justify-center"
-                            style={{ background: "#EEF2FF" }}
+                            style={{ background: "var(--brand-soft)" }}
                           >
-                            <Zap size={14} color="#4338CA" />
+                            <Zap size={14} color="var(--brand)" />
                           </div>
                           <h3 className="font-bold text-sm text-content">
                             AI-Generated Insights
@@ -1300,119 +1300,48 @@ export default function PolicySimulation() {
                       </Card>
 
                       {/* Recommendation Card */}
-                      <div
-                        className="rounded-2xl p-5 flex flex-col justify-between"
-                        style={{
-                          background: "#0f172a",
-                          border: "1px solid rgba(255,255,255,0.08)",
-                        }}
-                      >
+                      <div className="rounded-2xl p-5 flex flex-col justify-between bg-surface border border-line shadow-card">
                         <div>
                           <div className="flex items-center gap-2 mb-3">
-                            <CheckCircle2 size={18} color="#a5b4fc" />
-                            <p
-                              className="font-bold text-sm"
-                              style={{ color: "#a5b4fc" }}
-                            >
-                              Scenario Summary
-                            </p>
+                            <CheckCircle2 size={18} className="text-brand" />
+                            <p className="font-bold text-sm text-brand">Scenario Summary</p>
                           </div>
                           <div className="space-y-2 mb-4">
                             <div className="flex items-center justify-between">
-                              <span
-                                className="text-xs"
-                                style={{ color: "rgba(255,255,255,0.5)" }}
-                              >
-                                Policy
-                              </span>
-                              <span className="text-xs font-bold text-white">
-                                {policyType === "Add Course"
-                                  ? courseName
-                                  : policyType}
+                              <span className="text-xs text-content-2">Policy</span>
+                              <span className="text-xs font-bold text-content">
+                                {policyType === "Add Course" ? courseName : policyType}
                               </span>
                             </div>
                             <div className="flex items-center justify-between">
-                              <span
-                                className="text-xs"
-                                style={{ color: "rgba(255,255,255,0.5)" }}
-                              >
-                                Target
-                              </span>
-                              <span className="text-xs font-bold text-white">
-                                {targetBranch}{" "}
-                                {policyType === "Add Course"
-                                  ? `· ${targetYear} Year`
-                                  : ""}
+                              <span className="text-xs text-content-2">Target</span>
+                              <span className="text-xs font-bold text-content">
+                                {targetBranch} {policyType === "Add Course" ? `· ${targetYear} Year` : ""}
                               </span>
                             </div>
                             <div className="flex items-center justify-between">
-                              <span
-                                className="text-xs"
-                                style={{ color: "rgba(255,255,255,0.5)" }}
-                              >
-                                Intensity
-                              </span>
-                              <span
-                                style={
-                                  impactLevel === "High"
-                                    ? {
-                                        background: "rgba(220,38,38,0.15)",
-                                        color: "#FCA5A5",
-                                      }
-                                    : impactLevel === "Medium"
-                                      ? {
-                                          background: "rgba(217,119,6,0.15)",
-                                          color: "#FCD34D",
-                                        }
-                                      : {
-                                          background: "rgba(22,163,74,0.15)",
-                                          color: "#86EFAC",
-                                        }
-                                }
-                                className="text-xs font-bold px-2 py-0.5 rounded-full"
-                              >
+                              <span className="text-xs text-content-2">Intensity</span>
+                              <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${impactLevel === "High" ? "bg-red-50 text-red-600 dark:bg-red-500/10 dark:text-red-400" : impactLevel === "Medium" ? "bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400" : "bg-green-50 text-green-600 dark:bg-green-500/10 dark:text-green-400"}`}>
                                 {impactLevel}
                               </span>
                             </div>
                             <div className="flex items-center justify-between">
-                              <span
-                                className="text-xs"
-                                style={{ color: "rgba(255,255,255,0.5)" }}
-                              >
-                                Placement Impact
-                              </span>
-                              <span className="text-xs font-black text-green-400">
+                              <span className="text-xs text-content-2">Placement Impact</span>
+                              <span className="text-xs font-black text-success">
                                 +{result.delta.placementDelta}%
                               </span>
                             </div>
                             <div className="flex items-center justify-between">
-                              <span
-                                className="text-xs"
-                                style={{ color: "rgba(255,255,255,0.5)" }}
-                              >
-                                At-Risk Reduction
-                              </span>
-                              <span className="text-xs font-black text-emerald-400">
+                              <span className="text-xs text-content-2">At-Risk Reduction</span>
+                              <span className="text-xs font-black text-success">
                                 {result.delta.atRiskDelta.toFixed(1)}%
                               </span>
                             </div>
                           </div>
-                          <div
-                            className="h-px w-full mb-4"
-                            style={{ background: "rgba(255,255,255,0.1)" }}
-                          />
+                          <div className="h-px w-full mb-4 bg-line" />
                         </div>
-                        <div
-                          className="p-3 rounded-xl"
-                          style={{
-                            background: "rgba(255,255,255,0.07)",
-                            border: "1px solid rgba(255,255,255,0.1)",
-                          }}
-                        >
-                          <p
-                            className="text-xs leading-relaxed"
-                            style={{ color: "rgba(255,255,255,0.8)" }}
-                          >
+                        <div className="p-3 rounded-xl bg-surface-2 border border-line">
+                          <p className="text-xs leading-relaxed text-content">
                             - {result.recommendation}
                           </p>
                         </div>

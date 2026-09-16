@@ -19,7 +19,7 @@
     "cors": "^2.8.5",
     "dotenv": "^17.4.2",
     "express": "^4.21.2",
-    "express-rate-limit": "^8.6.2",
+    "express-rate-limit": "^8.7.0",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.2.0",
     "node-latex": "^3.1.0",

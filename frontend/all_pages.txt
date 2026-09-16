@@ -1,0 +1,13 @@
+/home/krrish/Desktop/TechTonicWavee/Vidyasetu/frontend/app/dean/student-intelligence/page.tsx
+/home/krrish/Desktop/TechTonicWavee/Vidyasetu/frontend/app/dean/agent/page.tsx
+/home/krrish/Desktop/TechTonicWavee/Vidyasetu/frontend/app/dean/faculty-performance/page.tsx
+/home/krrish/Desktop/TechTonicWavee/Vidyasetu/frontend/app/dean/curriculum/page.tsx
+/home/krrish/Desktop/TechTonicWavee/Vidyasetu/frontend/app/dean/schedule/page.tsx
+/home/krrish/Desktop/TechTonicWavee/Vidyasetu/frontend/app/dean/notifications/page.tsx
+/home/krrish/Desktop/TechTonicWavee/Vidyasetu/frontend/app/dean/policy-simulation/page.tsx
+/home/krrish/Desktop/TechTonicWavee/Vidyasetu/frontend/app/dean/forecasting/page.tsx
+/home/krrish/Desktop/TechTonicWavee/Vidyasetu/frontend/app/dean/page.tsx
+/home/krrish/Desktop/TechTonicWavee/Vidyasetu/frontend/app/dean/meetings/page.tsx
+/home/krrish/Desktop/TechTonicWavee/Vidyasetu/frontend/app/dean/reports/page.tsx
+/home/krrish/Desktop/TechTonicWavee/Vidyasetu/frontend/app/dean/cross-branch/page.tsx
+/home/krrish/Desktop/TechTonicWavee/Vidyasetu/frontend/app/dean/department/page.tsx

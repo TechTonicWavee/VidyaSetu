@@ -96,113 +96,115 @@ export default function DeanDepartmentPage() {
     <div className="space-y-8 animate-fade-in pb-20">
 
             {/* HEADER */}
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 mb-2">
-              <div>
-                <PageHeader title="Department Overview" description="Complete CSE health snapshot across batches and faculty — updated in real time" />
-                <div className="mt-4 flex flex-wrap items-center gap-3">
-                  <p className="text-[10px] font-black text-muted uppercase tracking-widest mr-1">External Systems Status</p>
-                  <button onClick={() => setSyncModalData({ name: 'Moodle LMS', since: 'Aug 2024', records: '14,230', last: '2 mins ago' })} className="flex items-center gap-2 px-3 py-1 bg-surface border border-orange-100 dark:border-orange-500/20 rounded-full hover:bg-orange-50 dark:hover:bg-orange-500/10 transition shadow-sm group">
-                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                    <span className="text-[10px] font-bold text-orange-600 dark:text-orange-400 uppercase tracking-tight transition">Moodle LMS — Syncing</span>
-                  </button>
-                  <button onClick={() => setSyncModalData({ name: 'Cyber Vidya', since: 'July 2024', records: '198,421', last: '5 mins ago' })} className="flex items-center gap-2 px-3 py-1 bg-surface border border-teal-100 dark:border-teal-500/20 rounded-full hover:bg-teal-50 dark:hover:bg-teal-500/10 transition shadow-sm group">
-                    <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
-                    <span className="text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-tight transition">Cyber Vidya — Syncing</span>
-                  </button>
-                  <span className="text-[10px] text-muted font-medium ml-1">1,240 students · Data flowing in real-time</span>
+            <PageHeader 
+              title="Department Overview" 
+              description={
+                <div className="flex flex-col gap-3 mt-1">
+                  <span>Complete CSE health snapshot across batches and faculty — updated in real time</span>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <p className="text-[10px] font-black text-muted uppercase tracking-widest mr-1">External Systems Status</p>
+                    <button onClick={() => setSyncModalData({ name: 'Moodle LMS', since: 'Aug 2024', records: '14,230', last: '2 mins ago' })} className="flex items-center gap-2 px-3 py-1 bg-surface border border-orange-100 dark:border-orange-500/20 rounded-full hover:bg-orange-50 dark:hover:bg-orange-500/10 transition shadow-card group">
+                      <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                      <span className="text-[10px] font-bold text-orange-600 dark:text-orange-400 uppercase tracking-tight transition">Moodle LMS — Syncing</span>
+                    </button>
+                    <button onClick={() => setSyncModalData({ name: 'Cyber Vidya', since: 'July 2024', records: '198,421', last: '5 mins ago' })} className="flex items-center gap-2 px-3 py-1 bg-surface border border-teal-100 dark:border-teal-500/20 rounded-full hover:bg-teal-50 dark:hover:bg-teal-500/10 transition shadow-card group">
+                      <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+                      <span className="text-[10px] font-bold text-teal-600 dark:text-teal-400 uppercase tracking-tight transition">Cyber Vidya — Syncing</span>
+                    </button>
+                    <span className="text-[10px] text-muted font-medium ml-1">1,240 students · Data flowing in real-time</span>
+                  </div>
                 </div>
-              </div>
-              <div className="flex gap-3 w-full sm:w-auto">
-                <button className="flex-1 sm:flex-none px-4 py-2.5 border border-line text-content font-bold text-sm rounded-xl hover:bg-surface-2 transition whitespace-nowrap flex items-center justify-center gap-2">
-                  <Download size={16} /> Export Data
-                </button>
-                <button onClick={handleGenerateReport} className="flex-1 sm:flex-none px-4 py-2.5 bg-blue-600 text-white font-bold text-sm rounded-xl hover:bg-blue-700 transition shadow-sm whitespace-nowrap">
-                  Generate Department Report
-                </button>
-              </div>
-            </div>
+              }
+              actions={
+                <div className="flex gap-3 w-full sm:w-auto">
+                  <button className="flex-1 sm:flex-none px-4 py-2.5 border border-line text-content font-bold text-sm rounded-xl hover:bg-surface-2 transition whitespace-nowrap flex items-center justify-center gap-2">
+                    <Download size={16} /> Export Data
+                  </button>
+                  <button onClick={handleGenerateReport} className="flex-1 sm:flex-none px-4 py-2.5 bg-brand text-white font-bold text-sm rounded-xl hover:bg-brand/90 transition shadow-card whitespace-nowrap">
+                    Generate Department Report
+                  </button>
+                </div>
+              }
+            />
 
             {/* HERO CARD */}
-            <div className="rounded-2xl overflow-hidden flex flex-col lg:flex-row" style={{ background: '#0f1f33', border: '1px solid rgba(255,255,255,0.07)' }}>
+            <div className="bg-surface rounded-2xl shadow-card border border-line overflow-hidden flex flex-col lg:flex-row">
 
               {/* ── LEFT: Score panel ── */}
-              <div className="lg:w-56 shrink-0 flex flex-col items-center justify-center gap-3 py-8 px-6" style={{ borderRight: '1px solid rgba(255,255,255,0.07)' }}>
-                <p className="text-xs font-semibold uppercase tracking-widest" style={{ color: 'rgba(255,255,255,0.45)' }}>Health Score</p>
+              <div className="lg:w-56 shrink-0 flex flex-col items-center justify-center gap-3 py-8 px-6 border-b lg:border-b-0 lg:border-r border-line bg-surface-2/30">
+                <p className="text-xs font-semibold uppercase tracking-widest text-muted">Health Score</p>
 
                 {/* Ring */}
                 <div className="relative flex items-center justify-center">
-                  <svg width="120" height="120" style={{ transform: 'rotate(-90deg)' }}>
-                    <circle cx="60" cy="60" r="50" stroke="rgba(255,255,255,0.09)" strokeWidth="9" fill="none" />
-                    <circle cx="60" cy="60" r="50" stroke="#3b82f6" strokeWidth="9" fill="none"
-                      strokeDasharray="314" strokeDashoffset="85" strokeLinecap="round" />
+                  <svg width="120" height="120" className="-rotate-90">
+                    <circle cx="60" cy="60" r="50" fill="none" className="stroke-line" strokeWidth="8" />
+                    <circle cx="60" cy="60" r="50" fill="none" className="stroke-brand transition-all duration-1000" strokeWidth="8" strokeDasharray="314.15" strokeDashoffset={314.15 * (1 - 73 / 100)} strokeLinecap="round" />
                   </svg>
-                  <div className="absolute flex items-baseline" style={{ gap: '2px' }}>
-                    <span className="font-black text-white" style={{ fontSize: '2rem', lineHeight: 1 }}>73</span>
-                    <span className="font-bold" style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.38)' }}>/100</span>
+                  <div className="absolute flex items-baseline gap-0.5">
+                    <span className="font-black text-content text-3xl leading-none">73</span>
+                    <span className="font-bold text-xs text-muted">/100</span>
                   </div>
                 </div>
 
-                {/* Badge */}
-                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full" style={{ background: 'rgba(34,197,94,0.14)', border: '1px solid rgba(34,197,94,0.28)' }}>
-                  <TrendingUp size={11} color="#4ade80" />
-                  <span className="text-xs font-semibold" style={{ color: '#4ade80' }}>+4 this sem</span>
+                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-success-soft border border-success/20">
+                  <TrendingUp size={12} className="text-success" />
+                  <span className="text-xs font-semibold text-success">+4 this sem</span>
                 </div>
 
-                <p style={{ color: 'rgba(255,255,255,0.28)', fontSize: '10px', letterSpacing: '0.1em', textTransform: 'uppercase' }}>AY 2025–26</p>
+                <p className="text-[10px] text-muted tracking-widest uppercase mt-2">AY 2025–26</p>
               </div>
 
-              {/* ── RIGHT: KPIs + bars ── */}
-              <div className="flex-1 flex flex-col justify-center gap-5 p-6" style={{ background: '#13243b' }}>
-
-                {/* 4 KPI tiles */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {/* ── RIGHT: Breakdown ── */}
+              <div className="flex-1 flex flex-col justify-center gap-5 p-6 bg-surface">
+                
+                {/* Top metrics row */}
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                   {[
-                    { label: 'Total Students', value: '1,240', vc: '#fff',      bg: 'rgba(255,255,255,0.05)', bd: 'rgba(255,255,255,0.08)' },
-                    { label: 'Total Faculty',  value: '48',    vc: '#fff',      bg: 'rgba(255,255,255,0.05)', bd: 'rgba(255,255,255,0.08)' },
-                    { label: 'Active Alerts',  value: '47',    vc: '#f87171',   bg: 'rgba(239,68,68,0.1)',    bd: 'rgba(239,68,68,0.22)', accent: '#ef4444' },
-                    { label: 'Avg SPI',        value: '67.3',  vc: '#5eead4',   bg: 'rgba(20,184,166,0.1)',   bd: 'rgba(20,184,166,0.22)' },
+                    { label: 'Avg Attendance', value: '78%', bg: 'bg-brand-soft', bd: 'border-brand/20', accent: 'bg-brand', vc: 'text-brand' },
+                    { label: 'Avg SGPA', value: '7.8', bg: 'bg-teal-50 dark:bg-teal-500/10', bd: 'border-teal-500/20', accent: 'bg-teal-500', vc: 'text-teal-600 dark:text-teal-400' },
+                    { label: 'Placement Ready', value: '61%', bg: 'bg-orange-50 dark:bg-orange-500/10', bd: 'border-orange-500/20', accent: 'bg-orange-500', vc: 'text-orange-600 dark:text-orange-400' },
+                    { label: 'At-Risk Students', value: '47', bg: 'bg-red-50 dark:bg-red-500/10', bd: 'border-red-500/20', accent: 'bg-red-500', vc: 'text-red-600 dark:text-red-400' },
                   ].map(t => (
-                    <div key={t.label} className="rounded-xl px-4 py-3 relative overflow-hidden" style={{ background: t.bg, border: `1px solid ${t.bd}` }}>
-                      {t.accent && <div className="absolute left-0 top-0 bottom-0 w-0.5 rounded-l-xl" style={{ background: t.accent }} />}
-                      <p className="font-semibold uppercase mb-1" style={{ color: 'rgba(255,255,255,0.4)', fontSize: '10px', letterSpacing: '0.08em' }}>{t.label}</p>
-                      <p className="font-black text-xl leading-none" style={{ color: t.vc }}>{t.value}</p>
+                    <div key={t.label} className={`rounded-xl px-4 py-3 relative overflow-hidden ${t.bg} border ${t.bd}`}>
+                      {t.accent && <div className={`absolute left-0 top-0 bottom-0 w-0.5 rounded-l-xl ${t.accent}`} />}
+                      <p className="font-semibold uppercase mb-1 text-[10px] tracking-wider text-content-2">{t.label}</p>
+                      <p className={`font-black text-xl leading-none ${t.vc}`}>{t.value}</p>
                     </div>
                   ))}
                 </div>
 
-                {/* Score breakdown */}
+                {/* Bars */}
                 <div>
-                  <p className="text-xs font-semibold uppercase mb-3" style={{ color: 'rgba(255,255,255,0.45)', letterSpacing: '0.08em' }}>Score Breakdown</p>
-                  <div className="space-y-2.5">
+                  <p className="text-xs font-semibold uppercase mb-3 text-muted tracking-wider">Score Breakdown</p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3">
                     {[
-                      { l: 'Academic Performance', s: 71, c: '#3b82f6' },
-                      { l: 'Faculty Effectiveness', s: 76, c: '#14b8a6' },
-                      { l: 'Placement Readiness',  s: 61, c: '#f59e0b' },
-                      { l: 'Infrastructure Usage', s: 82, c: '#22c55e' },
-                      { l: 'CO Attainment',        s: 69, c: '#f59e0b' },
+                      { l: 'Academic Performance', s: 82, c: 'bg-brand' },
+                      { l: 'Placement Readiness', s: 61, c: 'bg-teal-500' },
+                      { l: 'Attendance Compliance', s: 78, c: 'bg-amber-500' },
+                      { l: 'Skill Attainment', s: 71, c: 'bg-green-500' },
                     ].map(bar => (
                       <div key={bar.l} className="flex items-center gap-3">
-                        <span className="text-xs shrink-0" style={{ color: 'rgba(255,255,255,0.5)', width: '148px' }}>{bar.l}</span>
-                        <div className="flex-1 rounded-full overflow-hidden" style={{ height: '6px', background: 'rgba(255,255,255,0.08)' }}>
-                          <div className="h-full rounded-full transition-all" style={{ width: `${bar.s}%`, background: bar.c }} />
+                        <span className="text-xs shrink-0 text-content-2 w-36">{bar.l}</span>
+                        <div className="flex-1 rounded-full overflow-hidden h-1.5 bg-line">
+                          <div className={`h-full rounded-full transition-all ${bar.c}`} style={{ width: `${bar.s}%` }} />
                         </div>
-                        <span className="text-xs font-semibold shrink-0 text-right" style={{ color: 'rgba(255,255,255,0.7)', width: '38px' }}>{bar.s}/100</span>
+                        <span className="text-xs font-semibold shrink-0 text-right text-content w-10">{bar.s}/100</span>
                       </div>
                     ))}
                   </div>
                 </div>
-
               </div>
+
             </div>
 
             {/* SECTION A - BRANCH HEALTH OVERVIEW */}
-            <div className="bg-surface rounded-2xl shadow-sm border border-line overflow-hidden">
+            <div className="bg-surface rounded-2xl shadow-card border border-line overflow-hidden">
               <div className="p-6 border-b border-line flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
                   <h2 className="text-lg font-bold text-content mb-1">CSE Health Overview</h2>
                   <p className="text-muted text-sm">Real-time health scores for CSE cohorts</p>
                 </div>
-                <div className="px-3 py-1.5 rounded-lg text-xs font-bold border border-purple-200 bg-purple-50 text-purple-700 dark:border-purple-500/20 dark:bg-purple-500/10 dark:text-purple-400">CSE ONLY</div>
+                <div className="px-3 py-1.5 rounded-lg text-xs font-bold border border-brand/20 bg-brand-soft text-brand dark:border-brand/20 dark:bg-brand-soft0/10 dark:text-brand">CSE ONLY</div>
               </div>
 
               <div className="p-6 animate-fade-in" key={activeTab}>
@@ -210,7 +212,7 @@ export default function DeanDepartmentPage() {
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                   <div className="p-4 rounded-xl border border-line bg-surface-2/50">
                     <p className="text-xs font-bold text-muted uppercase mb-1">Students</p>
-                    <p className="text-2xl font-black text-blue-600 dark:text-blue-400">{branchDataMap[activeTab].students}</p>
+                    <p className="text-2xl font-black text-brand dark:text-brand">{branchDataMap[activeTab].students}</p>
                   </div>
                   <div className="p-4 rounded-xl border border-success/20 bg-success-soft">
                     <p className="text-xs font-bold text-success uppercase mb-1">Health Score</p>
@@ -266,7 +268,7 @@ export default function DeanDepartmentPage() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               
               {/* SPI Dist */}
-              <div className="bg-surface rounded-2xl shadow-sm border border-line p-6 flex flex-col">
+              <div className="bg-surface rounded-2xl shadow-card border border-line p-6 flex flex-col">
                 <h3 className="text-lg font-bold text-content mb-6">SPI Distribution — CSE Students</h3>
                 <div className="h-64 w-full">
                   <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 500, height: 300 }}>
@@ -293,7 +295,7 @@ export default function DeanDepartmentPage() {
               </div>
 
               {/* Trend */}
-              <div className="bg-surface rounded-2xl shadow-sm border border-line p-6 flex flex-col">
+              <div className="bg-surface rounded-2xl shadow-card border border-line p-6 flex flex-col">
                 <h3 className="text-lg font-bold text-content mb-6">Department Health Score — 3 Year Trend</h3>
                 <div className="h-64 w-full">
                   <ResponsiveContainer width="100%" height="100%" initialDimension={{ width: 500, height: 300 }}>
@@ -312,7 +314,7 @@ export default function DeanDepartmentPage() {
             </div>
 
             {/* SECTION C - FACULTY RANKINGS */}
-            <div className="bg-surface rounded-2xl shadow-sm border border-line overflow-hidden">
+            <div className="bg-surface rounded-2xl shadow-card border border-line overflow-hidden">
               <div className="p-6 border-b border-line">
                 <h3 className="text-lg font-bold text-content mb-1">Faculty Effectiveness Rankings</h3>
                 <p className="text-sm text-muted">Ranked by student improvement rate under their teaching — not by student ratings</p>
@@ -350,8 +352,8 @@ export default function DeanDepartmentPage() {
                 </table>
               </div>
               <div className="p-6 bg-surface-2 border-t border-line">
-                <div className="bg-blue-50 border border-blue-100 dark:bg-blue-500/10 dark:border-blue-500/20 rounded-xl p-4 flex gap-4 shadow-sm items-start">
-                  <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400 flex items-center justify-center mt-0.5 flex-shrink-0">
+                <div className="bg-brand-soft border border-brand/20 dark:bg-brand-soft0/10 dark:border-brand/20 rounded-xl p-4 flex gap-4 shadow-card items-start">
+                  <div className="w-8 h-8 rounded-full bg-blue-100 text-brand dark:bg-brand-soft0/20 dark:text-brand flex items-center justify-center mt-0.5 flex-shrink-0">
                     <Lightbulb size={16} />
                   </div>
                   <div>
@@ -364,7 +366,7 @@ export default function DeanDepartmentPage() {
             </div>
 
             {/* SECTION D - CURRICULUM GAP */}
-            <div className="bg-surface rounded-2xl shadow-sm border border-line overflow-hidden">
+            <div className="bg-surface rounded-2xl shadow-card border border-line overflow-hidden">
               <div className="p-6 border-b border-line">
                 <h3 className="text-lg font-bold text-content mb-1">Curriculum Gap Analysis</h3>
                 <p className="text-sm text-muted">Topics that are consistently failing across multiple batches and multiple faculty — signals for curriculum revision</p>
@@ -400,7 +402,7 @@ export default function DeanDepartmentPage() {
                 </table>
               </div>
               <div className="p-6 bg-surface-2 border-t border-line flex flex-col sm:flex-row gap-3">
-                <button className="px-5 py-2.5 bg-blue-600 text-white font-bold text-sm rounded-xl hover:bg-blue-700 transition shadow-sm whitespace-nowrap">
+                <button className="px-5 py-2.5 bg-brand text-white font-bold text-sm rounded-xl hover:bg-brand/90 transition shadow-card whitespace-nowrap">
                   Generate Curriculum Revision Recommendations
                 </button>
                 <button className="px-5 py-2.5 border border-line text-content font-bold text-sm rounded-xl hover:bg-surface-2 transition whitespace-nowrap">
@@ -422,14 +424,14 @@ export default function DeanDepartmentPage() {
                 </div>
                 <h2 className="font-bold text-xl text-content mb-2">Report Ready</h2>
                 <p className="text-sm text-muted mb-6">The comprehensive department report has been generated successfully.</p>
-                <button onClick={() => setReportModalOpen(false)} className="w-full py-2.5 bg-blue-600 text-white font-bold text-sm rounded-xl hover:bg-blue-700 transition shadow-sm">
+                <button onClick={() => setReportModalOpen(false)} className="w-full py-2.5 bg-brand text-white font-bold text-sm rounded-xl hover:bg-brand/90 transition shadow-card">
                   Download PDF
                 </button>
               </>
             ) : (
               <>
-                <div className="w-16 h-16 rounded-full bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400 flex items-center justify-center mb-4 animate-spin">
-                  <svg className="w-8 h-8 text-blue-600 dark:text-blue-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <div className="w-16 h-16 rounded-full bg-brand-soft text-brand dark:bg-brand-soft0/10 dark:text-brand flex items-center justify-center mb-4 animate-spin">
+                  <svg className="w-8 h-8 text-brand dark:text-brand" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                     <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                   </svg>

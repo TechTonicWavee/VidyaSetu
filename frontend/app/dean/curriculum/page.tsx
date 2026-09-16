@@ -6,6 +6,7 @@ import { Brain, LayoutDashboard, LineChart, BarChart2, Users, BookOpen, Settings
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell
 } from 'recharts'
+import { PageHeader } from '@/components/shared/ui';
 
 const navLinks = [
   { id: 'dashboard',  label: 'Dashboard',        icon: Home,       badge: null,  active: true, path: '/dean' },
@@ -170,42 +171,40 @@ export default function CurriculumGapAnalysis() {
     <div className="space-y-8 animate-fade-in pb-20">
             
             {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
-              <div>
-                <h1 className="text-3xl font-bold text-content mb-1">Curriculum Gap Analysis</h1>
-                <p className="text-muted text-sm max-w-2xl leading-relaxed">
-                  Topics failing consistently across multiple batches and faculty — evidence-based signals for curriculum revision and faculty development.
-                </p>
-              </div>
-              <div className="flex items-center gap-3 shrink-0">
-                <span className="px-3 py-1.5 bg-surface-2 text-content-2 font-bold text-sm border border-line rounded-lg">Based on 3 years of data</span>
-                <button className="px-5 py-2.5 bg-surface border border-line text-content font-bold text-sm rounded-xl hover:bg-surface-2 transition shadow-sm flex items-center gap-2">
-                  <Download size={16} /> Export Report
-                </button>
-              </div>
-            </div>
+            <PageHeader 
+              title="Curriculum Gap Analysis"
+              description="Topics failing consistently across multiple batches and faculty — evidence-based signals for curriculum revision and faculty development."
+              actions={
+                <>
+                  <span className="px-3 py-1.5 bg-surface-2 text-content-2 font-bold text-sm border border-line rounded-lg">Based on 3 years of data</span>
+                  <button className="px-5 py-2.5 bg-surface border border-line text-content font-bold text-sm rounded-xl hover:bg-surface-2 transition shadow-card flex items-center gap-2">
+                    <Download size={16} /> Export Report
+                  </button>
+                </>
+              }
+            />
 
             {/* TOP - Gap Summary Strip */}
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-              <div className="bg-surface rounded-2xl shadow-sm border border-line p-6 flex flex-col items-center justify-center text-center">
+              <div className="bg-surface rounded-2xl shadow-card border border-line p-6 flex flex-col items-center justify-center text-center">
                 <p className="font-bold text-red-600 text-4xl mb-2">6</p>
                 <p className="text-xs font-bold text-muted uppercase tracking-widest mb-1">Critical Gaps</p>
                 <p className="text-xs text-muted">Topics failing 40%+ students · 3+ consecutive years</p>
               </div>
 
-              <div className="bg-surface rounded-2xl shadow-sm border border-line p-6 flex flex-col items-center justify-center text-center">
+              <div className="bg-surface rounded-2xl shadow-card border border-line p-6 flex flex-col items-center justify-center text-center">
                 <p className="font-bold text-amber-500 text-4xl mb-2">14</p>
                 <p className="text-xs font-bold text-muted uppercase tracking-widest mb-1">Significant Gaps</p>
                 <p className="text-xs text-muted">Topics failing 30-40% students</p>
               </div>
 
-              <div className="bg-surface rounded-2xl shadow-sm border border-line p-6 flex flex-col items-center justify-center text-center">
+              <div className="bg-surface rounded-2xl shadow-card border border-line p-6 flex flex-col items-center justify-center text-center">
                 <p className="font-bold text-blue-600 dark:text-blue-400 text-4xl mb-2">8</p>
                 <p className="text-xs font-bold text-muted uppercase tracking-widest mb-1">Subjects Affected</p>
                 <p className="text-xs text-muted">Subjects with at least 1 gap</p>
               </div>
 
-              <div className="bg-surface rounded-2xl shadow-sm border border-line p-6 flex flex-col items-center justify-center text-center">
+              <div className="bg-surface rounded-2xl shadow-card border border-line p-6 flex flex-col items-center justify-center text-center">
                 <p className="font-bold text-teal-600 dark:text-teal-400 text-4xl mb-2">11</p>
                 <p className="text-xs font-bold text-muted uppercase tracking-widest mb-1">Recommended Actions</p>
                 <p className="text-xs text-muted">Specific curriculum changes identified</p>
@@ -213,7 +212,7 @@ export default function CurriculumGapAnalysis() {
             </div>
 
             {/* SECTION A - Critical Gap Heatmap */}
-            <div className="bg-surface rounded-2xl shadow-sm border border-line overflow-hidden">
+            <div className="bg-surface rounded-2xl shadow-card border border-line overflow-hidden">
               <div className="p-6 border-b border-line bg-surface-2/50">
                 <h2 className="text-xl font-bold text-content mb-1">Curriculum Gap Heatmap — By Subject and Batch Year</h2>
                 <p className="text-sm text-muted">Red = consistently failing, Green = consistently passing, Yellow = borderline</p>
@@ -281,7 +280,7 @@ export default function CurriculumGapAnalysis() {
               <h2 className="text-xl font-bold text-content">Critical Gap Analysis — Top 3 Topics</h2>
 
               {/* GAP CARD 1 */}
-              <div className="bg-surface rounded-2xl shadow-sm border border-line overflow-hidden">
+              <div className="bg-surface rounded-2xl shadow-card border border-line overflow-hidden">
                 <div className="bg-red-600 px-6 py-4 flex items-center justify-between">
                   <div>
                     <h3 className="font-bold text-white text-lg">Database Normalization (1NF-3NF)</h3>
@@ -375,7 +374,7 @@ export default function CurriculumGapAnalysis() {
               </div>
 
               {/* GAP CARD 2 */}
-              <div className="bg-surface rounded-2xl shadow-sm border border-line overflow-hidden">
+              <div className="bg-surface rounded-2xl shadow-card border border-line overflow-hidden">
                 <div className="bg-amber-500 px-6 py-3 flex items-center justify-between">
                   <div>
                     <h3 className="font-bold text-white text-base">Regular Expressions and Automata</h3>
@@ -442,7 +441,7 @@ export default function CurriculumGapAnalysis() {
               </div>
 
               {/* GAP CARD 3 */}
-              <div className="bg-surface rounded-2xl shadow-sm border border-line overflow-hidden">
+              <div className="bg-surface rounded-2xl shadow-card border border-line overflow-hidden">
                 <div className="bg-green-600 px-6 py-3 flex items-center justify-between">
                   <div>
                     <h3 className="font-bold text-white text-base">Process Scheduling Algorithms</h3>
@@ -500,7 +499,7 @@ export default function CurriculumGapAnalysis() {
             </div>
 
             {/* SECTION C - Curriculum Revision Plan */}
-            <div className="bg-surface rounded-2xl shadow-sm border border-line overflow-hidden">
+            <div className="bg-surface rounded-2xl shadow-card border border-line overflow-hidden">
               <div className="p-6 border-b border-line bg-surface-2/50">
                 <h2 className="text-xl font-bold text-content mb-1">AI-Generated Curriculum Revision Recommendations</h2>
                 <p className="text-sm text-muted">Based on 3 years of student performance data — prioritized by impact and effort</p>
@@ -541,14 +540,14 @@ export default function CurriculumGapAnalysis() {
 
               <div className="p-6 bg-surface-2 border-t border-line flex flex-wrap gap-4 items-center justify-between">
                 <div className="flex gap-3">
-                  <button onClick={approveAllPending} className="px-6 py-2.5 bg-blue-600 text-white font-bold text-sm rounded-xl hover:bg-blue-700 transition shadow-sm">
+                  <button onClick={approveAllPending} className="px-6 py-2.5 bg-blue-600 text-white font-bold text-sm rounded-xl hover:bg-blue-700 transition shadow-card">
                     Approve All Pending
                   </button>
-                  <button className="px-5 py-2.5 bg-surface border border-teal-200 dark:border-teal-500/30 text-teal-700 dark:text-teal-400 font-bold text-sm rounded-xl hover:bg-teal-50 dark:hover:bg-teal-500/10 transition shadow-sm">
+                  <button className="px-5 py-2.5 bg-surface border border-teal-200 dark:border-teal-500/30 text-teal-700 dark:text-teal-400 font-bold text-sm rounded-xl hover:bg-teal-50 dark:hover:bg-teal-500/10 transition shadow-card">
                     Send to Faculty Heads for Review
                   </button>
                 </div>
-                <button className="px-5 py-2.5 bg-surface border border-line text-content font-bold text-sm rounded-xl hover:bg-surface-2 transition shadow-sm flex items-center gap-2">
+                <button className="px-5 py-2.5 bg-surface border border-line text-content font-bold text-sm rounded-xl hover:bg-surface-2 transition shadow-card flex items-center gap-2">
                   <FileText size={16} /> Download Full Curriculum Review Report
                 </button>
               </div>

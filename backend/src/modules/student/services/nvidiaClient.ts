@@ -3,7 +3,7 @@ import { aiConfig } from '../../../shared/config/ai.config';
 import { env } from '../../../shared/config/env';
 
 export const nvidiaClient = new OpenAI({
-  apiKey: env.NVIDIA_API,
+  apiKey: env.NVIDIA_API || process.env.OPENAI_API_KEY || 'dummy-key-to-prevent-startup-crash',
   baseURL: aiConfig.nvidiaBaseUrl,
 });
 

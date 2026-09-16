@@ -12,8 +12,13 @@ import {
   generateReport,
   exportReportPack
 } from '../controllers/faculty.controller';
+import multer from 'multer';
+import { authMiddleware } from '../../../shared/middleware/auth';
 
+const upload = multer();
 const router = Router();
+
+router.use(authMiddleware);
 
 // Profile Routes
 router.get('/profile', getProfile);
@@ -28,7 +33,14 @@ router.post('/mentees/:id/alerts', addMenteeAlert);
 
 // Classes & Analytics
 router.get('/classes', getClasses);
+router.post('/classes', addClass);
 router.get('/reports/analytics', getAnalytics);
+router.get('/attention', getStudentsNeedingAttention);
+
+// Uploads
+router.post('/upload/attendance', upload.single('file'), uploadAttendance);
+router.post('/marks/upload', upload.single('file'), uploadMarks);
+router.get('/marks/template', downloadMarksTemplate);
 
 // Report Generation & Download (Real Database Records)
 router.get('/reports/data/:id', getReportData);

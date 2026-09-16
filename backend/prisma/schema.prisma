@@ -70,6 +70,8 @@ model Student {
   sectionRelation  Section?          @relation("SectionStudents", fields: [sectionId], references: [id])
   behavioralNotes  BehavioralNote[]
   alerts           Alert[]
+  attendanceRecords AttendanceRecord[]
+  marks            Marks[]
 
   @@map("students")
 }
@@ -253,15 +255,19 @@ model Notification {
 
 model RefreshToken {
   id           String   @id @default(uuid())
-  universityId String
+  universityId String?
+  facultyId    String?
   tokenHash    String   @unique
   revoked      Boolean  @default(false)
   replacedBy   String?
   expiresAt    DateTime
   createdAt    DateTime @default(now())
-  student      Student  @relation(fields: [universityId], references: [universityId])
+  
+  student      Student? @relation(fields: [universityId], references: [universityId])
+  faculty      Faculty? @relation(fields: [facultyId], references: [facultyId])
 
   @@index([universityId])
+  @@index([facultyId])
   @@map("refresh_tokens")
 }
 
@@ -404,6 +410,7 @@ model Faculty {
   sections       Section[] @relation("FacultySections")
   notesGiven     BehavioralNote[]
   alertsGiven    Alert[]
+  refreshTokens  RefreshToken[]
 
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
@@ -426,6 +433,7 @@ model Section {
   id          String    @id @default(uuid())
   name        String
   year        String?
+  semester    String?
   department  String?
   
   subjectId   String
@@ -439,6 +447,37 @@ model Section {
   createdAt   DateTime  @default(now())
 
   @@map("sections")
+}
+
+model AttendanceRecord {
+  id           String   @id @default(uuid())
+  universityId String
+  subjectCode  String
+  date         DateTime
+  status       String   // "Present", "Absent"
+  createdAt    DateTime @default(now())
+  
+  student      Student  @relation(fields: [universityId], references: [universityId], onDelete: Cascade)
+
+  @@index([universityId])
+  @@index([subjectCode])
+  @@map("attendance_records")
+}
+
+model Marks {
+  id           String   @id @default(uuid())
+  universityId String
+  subjectCode  String
+  examType     String
+  marks        Float
+  maxMarks     Float
+  createdAt    DateTime @default(now())
+  
+  student      Student  @relation(fields: [universityId], references: [universityId], onDelete: Cascade)
+
+  @@index([universityId])
+  @@index([subjectCode])
+  @@map("marks")
 }
 
 model BehavioralNote {

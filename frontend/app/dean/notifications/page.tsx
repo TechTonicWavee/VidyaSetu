@@ -52,7 +52,7 @@ export default function NotificationsPage() {
             className={cn(
               "px-4 py-1.5 text-xs font-bold rounded-full whitespace-nowrap transition-colors",
               filter === f.key
-                ? "bg-brand text-surface shadow-sm"
+                ? "bg-brand text-surface shadow-card"
                 : "bg-surface-2 text-content-2 hover:bg-surface-3"
             )}
           >
@@ -82,7 +82,7 @@ export default function NotificationsPage() {
                   "group relative flex items-start gap-4 p-5 rounded-2xl border transition-all cursor-pointer",
                   notif.read
                     ? "bg-surface border-line/50 hover:bg-surface-2/50"
-                    : "bg-surface border-brand/20 shadow-sm ring-1 ring-brand/5 hover:border-brand/30"
+                    : "bg-surface border-brand/20 shadow-card ring-1 ring-brand/5 hover:border-brand/30"
                 )}
               >
                 {!notif.read && (

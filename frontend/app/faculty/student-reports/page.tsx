@@ -108,7 +108,7 @@ export default function StudentReportsPage() {
   const flaggedCount = Object.values(flaggedIds).filter(Boolean).length
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 font-sans">
       <PageHeader 
         title="Student Reports"
         description="View insights, track attendance and marks, and identify at-risk students across your sections."

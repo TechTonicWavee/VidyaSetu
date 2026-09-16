@@ -1,15 +1,17 @@
 import { Request, Response } from 'express';
 import { prisma } from '../../../shared/lib/prisma';
+import * as xlsx from 'xlsx';
+import bcrypt from 'bcryptjs';
 
 export const getProfile = async (req: Request, res: Response) => {
   try {
-    const facultyId = req.headers['x-faculty-id'] as string || 'FAC001';
+    const facultyId = (req as any).user?.facultyId || 'FAC001';
     
     const faculty = await prisma.faculty.findUnique({
       where: { facultyId },
       include: {
         sections: {
-          include: { subject: true }
+          include: { subject: true, students: true }
         }
       }
     });
@@ -26,8 +28,11 @@ export const getProfile = async (req: Request, res: Response) => {
         subjects: faculty.sections.map(sec => ({
           id: sec.subject.id,
           name: sec.subject.name,
+          code: sec.subject.code,
           section: sec.name,
           year: sec.year,
+          semester: sec.semester,
+          strength: sec.students.length
         }))
       }
     });
@@ -38,13 +43,76 @@ export const getProfile = async (req: Request, res: Response) => {
 
 export const updateProfile = async (req: Request, res: Response) => {
   try {
-    const facultyId = req.headers['x-faculty-id'] as string || 'FAC001';
-    const { fullName, department } = req.body;
+    const facultyId = (req as any).user?.facultyId || 'FAC001';
+    const { fullName, department, avatarUrl, subjects, password, currentPassword } = req.body;
+    
+    let updateData: any = { 
+      fullName, 
+      department,
+      avatarUrl
+    };
+
+    if (password) {
+      const salt = await bcrypt.genSalt(10);
+      updateData.password = await bcrypt.hash(password, salt);
+    }
     
     const updated = await prisma.faculty.update({
       where: { facultyId },
-      data: { fullName, department }
+      data: updateData
     });
+
+    if (Array.isArray(subjects)) {
+      // Find existing sections for this faculty
+      const existingSections = await prisma.section.findMany({ where: { facultyId } });
+      const existingIds = existingSections.map(s => s.id);
+      
+      // Keep track of sections that are still in the list
+      const updatedSectionIds: string[] = [];
+
+      for (const sub of subjects) {
+        if (!sub.name || sub.name.trim() === '') continue;
+
+        let subjectRecord = null;
+        if (sub.code && sub.code.trim() !== '') {
+          subjectRecord = await prisma.subject.findFirst({ where: { code: sub.code } });
+        }
+        
+        if (!subjectRecord) {
+          subjectRecord = await prisma.subject.create({
+            data: { name: sub.name, code: sub.code || null }
+          });
+        }
+        
+        // Find if we already have this section
+        const existingSection = await prisma.section.findFirst({
+          where: { facultyId, subjectId: subjectRecord.id, name: sub.section || '', year: sub.year || '' }
+        });
+        
+        if (existingSection) {
+          updatedSectionIds.push(existingSection.id);
+        } else {
+          // If it's a new section but might have an ID from UI (which is random), just create a new one
+          const newSection = await prisma.section.create({
+            data: {
+              name: sub.section || '',
+              year: sub.year || '',
+              subjectId: subjectRecord.id,
+              facultyId
+            }
+          });
+          updatedSectionIds.push(newSection.id);
+        }
+      }
+      
+      // Delete sections that were removed in the UI
+      const sectionsToRemove = existingIds.filter(id => !updatedSectionIds.includes(id));
+      if (sectionsToRemove.length > 0) {
+        await prisma.section.deleteMany({
+          where: { id: { in: sectionsToRemove } }
+        });
+      }
+    }
     
     res.json({ success: true, data: updated });
   } catch (error) {
@@ -54,7 +122,7 @@ export const updateProfile = async (req: Request, res: Response) => {
 
 export const getMentees = async (req: Request, res: Response) => {
   try {
-    const facultyId = req.headers['x-faculty-id'] as string || 'FAC001';
+    const facultyId = (req as any).user?.facultyId || 'FAC001';
     
     const mentees = await prisma.student.findMany({
       where: { mentorId: facultyId },
@@ -105,7 +173,7 @@ export const getMentees = async (req: Request, res: Response) => {
 
 export const addMenteeNote = async (req: Request, res: Response) => {
   try {
-    const facultyId = req.headers['x-faculty-id'] as string || 'FAC001';
+    const facultyId = (req as any).user?.facultyId || 'FAC001';
     const { id } = req.params; // student universityId
     if (!id) return res.status(400).json({ success: false, error: 'Student id is required.' });
     const { content, visibility } = req.body;
@@ -140,7 +208,7 @@ export const addMenteeNote = async (req: Request, res: Response) => {
 
 export const addMenteeAlert = async (req: Request, res: Response) => {
   try {
-    const facultyId = req.headers['x-faculty-id'] as string || 'FAC001';
+    const facultyId = (req as any).user?.facultyId || 'FAC001';
     const { id } = req.params;
     if (!id) return res.status(400).json({ success: false, error: 'Student id is required.' });
     const { type, severity, comment } = req.body;
@@ -174,13 +242,14 @@ export const addMenteeAlert = async (req: Request, res: Response) => {
 
 export const getClasses = async (req: Request, res: Response) => {
   try {
-    const facultyId = req.headers['x-faculty-id'] as string || 'FAC001';
+    const facultyId = (req as any).user?.facultyId || 'FAC001';
     
+    // Optimized: Only select what's needed
     const sections = await prisma.section.findMany({
       where: { facultyId },
       include: {
-        subject: true,
-        students: true
+        subject: { select: { name: true, code: true } },
+        students: { select: { id: true, attendance: true } }
       }
     });
     const mapped = sections.map((sec, idx) => {
@@ -222,12 +291,15 @@ export const getClasses = async (req: Request, res: Response) => {
 
 export const getAnalytics = async (req: Request, res: Response) => {
   try {
-    const facultyId = req.headers['x-faculty-id'] as string || 'FAC001';
+    const facultyId = (req as any).user?.facultyId || 'FAC001';
     
     // Get basic analytics based on mentees or classes
     const sections = await prisma.section.findMany({
       where: { facultyId },
-      include: { students: true, subject: true }
+      include: { 
+        students: { select: { id: true, attendance: true, fullName: true } }, 
+        subject: { select: { name: true, code: true } } 
+      }
     });
 
     const subjectsMap: Record<string, any> = {};
